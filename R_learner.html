@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="generator" content="quarto-0.9.194">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="author" content="Taro Mieno">
+  <title>Double Machine Learning</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+
+  <script src="R_learner_files/libs/clipboard/clipboard.min.js"></script>
+  <script src="R_learner_files/libs/quarto-html/quarto.js"></script>
+  <script src="R_learner_files/libs/quarto-html/popper.min.js"></script>
+  <script src="R_learner_files/libs/quarto-html/tippy.umd.min.js"></script>
+  <script src="R_learner_files/libs/quarto-html/anchor.min.js"></script>
+  <link href="R_learner_files/libs/quarto-html/tippy.css" rel="stylesheet">
+  <link id="quarto-text-highlighting-styles" href="R_learner_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+  <script src="R_learner_files/libs/bootstrap/bootstrap.min.js"></script>
+  <link href="R_learner_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+  <link href="R_learner_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <script src="R_learner_files/libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+  <script src="R_learner_files/libs/viz-1.8.2/viz.js"></script>
+  <link href="R_learner_files/libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet">
+  <script src="R_learner_files/libs/grViz-binding-1.0.9/grViz.js"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc">
+<h2 id="toc-title">Table of contents</h2>
+<ul>
+<li><a href="#r-learner" id="toc-r-learner" class="nav-link active" data-scroll-target="#r-learner">R learner</a>
+<ul class="collapse">
+<li><a href="#notation-and-definition" id="toc-notation-and-definition" class="nav-link" data-scroll-target="#notation-and-definition">Notation and definition</a>
+<ul class="collapse">
+<li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a></li>
+<li><a href="#potential-outcomes" id="toc-potential-outcomes" class="nav-link" data-scroll-target="#potential-outcomes">Potential outcomes</a></li>
+<li><a href="#conditional-average-treatment-effect-cate" id="toc-conditional-average-treatment-effect-cate" class="nav-link" data-scroll-target="#conditional-average-treatment-effect-cate">Conditional average treatment effect (CATE)</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#r-learner-1" id="toc-r-learner-1" class="nav-link" data-scroll-target="#r-learner-1">R-learner</a>
+<ul class="collapse">
+<li><a href="#cross-fitting" id="toc-cross-fitting" class="nav-link" data-scroll-target="#cross-fitting">Cross-fitting</a>
+<ul class="collapse">
+<li><a href="#econml-r-scorer" id="toc-econml-r-scorer" class="nav-link" data-scroll-target="#econml-r-scorer">econml R scorer</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+<header id="title-block-header" class="quarto-title-block default">
+
+
+<div class="quarto-title"><h1 class="title display-7">Double Machine Learning</h1></div><div class="quarto-title-meta"><div><div class="quarto-title-meta-heading">Author</div><div class="quarto-title-meta-contents"><div class="quarto-title-authors"><div><div>
+<p>Taro Mieno</p>
+</div></div></div></div></div></div></header>
+
+<section id="r-learner" class="level1">
+<h1>R learner</h1>
+<section id="notation-and-definition" class="level2">
+<h2 class="anchored" data-anchor-id="notation-and-definition">Notation and definition</h2>
+<section id="data" class="level3">
+<h3 class="anchored" data-anchor-id="data">Data</h3>
+<p><span class="math inline">(X_i, Y_i, W_i)</span> <span class="math inline">(i = 1, \dots, n)</span></p>
+<ul>
+<li><span class="math inline">X_i</span>: features for <span class="math inline">i</span> (e.g., education, age, etc)</li>
+<li><span class="math inline">Y_i \in \mathbb{R}</span>: obserbved outcome for <span class="math inline">i</span> (e.g., income)</li>
+<li><span class="math inline">W_i \in \{0, 1\}</span>: treatment assignment for <span class="math inline">i</span> (e.g., vocational training program)</li>
+</ul>
+</section>
+<section id="potential-outcomes" class="level3">
+<h3 class="anchored" data-anchor-id="potential-outcomes">Potential outcomes</h3>
+<ul>
+<li><span class="math inline">Y_i(0)</span>: potential outcomes under control (<span class="math inline">W_i = 0</span>)</li>
+<li><span class="math inline">Y_i(1)</span>: potential outcomes under treatment (<span class="math inline">W_i = 1</span>)</li>
+</ul>
+<p>We get to observe only one of them.</p>
+<p>Superscript <span class="math inline">^*</span> is used to denote unknown population quantities.</p>
+<ul>
+<li><span class="math inline">e^*(x) = prob(W = 1 | X= x)</span>: treatment propensity (the probability of getting treated given features <span class="math inline">x</span>)</li>
+<li><span class="math inline">\mu_{(w)}^*(x) = E[Y(w) |X = x]</span> for <span class="math inline">w \in {0, 1}</span>: conditional response surface (outcome for the given value of <span class="math inline">W</span> and <span class="math inline">X</span>)</li>
+</ul>
+</section>
+<section id="conditional-average-treatment-effect-cate" class="level3">
+<h3 class="anchored" data-anchor-id="conditional-average-treatment-effect-cate">Conditional average treatment effect (CATE)</h3>
+<p>We seek to estimate the effects of the treatment that differ based individual features (<span class="math inline">X_i</span>), termed <strong>conditional average treatment effect (CATE)</strong>.</p>
+<p>CATE is denoted by <span class="math inline">\tau^*(x)</span>:</p>
+<p><span class="math inline">\tau^*(x) = E[Y(1) - Y(0)|X=x]</span></p>
+<p>Verbally put, it is the expected difference between the income under treatment and control given (conditional on) the specific features <span class="math inline">X = x</span>.</p>
+<p><strong>Example</strong></p>
+<p>The impact of a vocational training program on income that differs by the level of education at the time of receving the vocational training (conditional on education level). The impact of the program may well vary based on the level of education of the individuals.</p>
+<p>Assumption 1: The treatment assignment <span class="math inline">W_i</span> is unconfounded, i.e., <span class="math inline">\{Y_i(0), Y_i(1)\perp W_i|X_i\}</span> (Given the features <span class="math inline">X_i</span>, the treatment status and potential outcomes are not correlated.)</p>
+<p>Under assumption 1 (unconfoundedness),</p>
+<p><span class="math inline">E[\varepsilon(W_i)|X_i, W_i] = 0</span>, where <span class="math inline">\varepsilon(W_i) = Y_i(w) - {\mu_{(0)}^*(X_i)} + w\tau^*(X_i)</span></p>
+<ul>
+<li><span class="math inline">Y_i(0) = {\mu_{(0)}^*(X_i)} + 0\cdot \tau^*(X_i) = \{\mu_{(0)}^*(X_i)\}</span></li>
+<li><span class="math inline">Y_i(1) = {\mu_{(0)}^*(X_i)} + 1\cdot \tau^*(X_i) = \{\mu_{(0)}^*(X_i) + \tau^*(X_i)\}</span></li>
+</ul>
+<p><span class="math inline">{\mu_{(0)}^*(X_i)}</span>: expected outcome given <span class="math inline">X_i</span> if not treated</p>
+<p><span class="math inline">Y_i(1)</span> is the sum of expected outcome given <span class="math inline">X_i</span> if not treated and treatment effect given <span class="math inline">X_i</span> (<span class="math inline">\tau^*(X_i)</span>).</p>
+<p>Conditional mean outcome (averaged across both treated and untreated) is</p>
+<p><span class="math inline">m^*(x) = E[Y|X=x] = \mu_{(0)}^*(X_i) + e^*(x) \cdot \tau^*(X_i)</span></p>
+<p>Then,</p>
+<p><span class="math inline">Y_i - m^*(X_i) = [W_i - e^*(X_i))]\cdot \tau^*(X_i) + \varepsilon(W_i)</span></p>
+<p>This is termed <strong>Robinson transformation</strong>.</p>
+<p>According to Robins (2004), the above equation is equivalent to</p>
+<p><span class="math inline">\tau^*(\cdot) = argmin_{\tau}\large\{\normalsize E\large(\normalsize[\{Y_i-m^*(X_i)\}-{W_i - e^*(X_i)}\tau(X_i)]^2\large)\large\}</span></p>
+<p>So, if we were to know <span class="math inline">m^*(X_i)</span> and <span class="math inline">e^*(X_i)</span> for some reason, we can estimate <span class="math inline">\tau^*(X_i)</span> by solving the following empirical loss minimization problem:</p>
+<p><span class="math inline">\tilde{\tau}(\cdot)= argmin_{\tau}\large\{\normalsize \frac{1}{n}\sum_{i=1}^{n}\normalsize[\{Y_i-m^*(X_i)\}-\{W_i - e^*(X_i)\}\tau(X_i)]^2+\Lambda_n\{\tau(\cdot)\}\large\}</span></p>
+<p>where <span class="math inline">\Lambda_n{\tau(\cdot)}</span> is interpreted as a regularizer on the complexity of the <span class="math inline">\tau(\cdot)</span> function.</p>
+<p>Of course the problem is that we do not know <span class="math inline">m^*(X_i)</span> and <span class="math inline">e^*(X_i)</span>, so the above solution is not feasible.</p>
+</section>
+</section>
+</section>
+<section id="r-learner-1" class="level1">
+<h1>R-learner</h1>
+<section id="cross-fitting" class="level2">
+<h2 class="anchored" data-anchor-id="cross-fitting">Cross-fitting</h2>
+<p><strong>Step 1</strong>: Divide up the data into Q evenly sized folds, where Q is typically set to 5 or 10. Let <span class="math inline">q(\cdot)</span> be a mapping from the sample indices <span class="math inline">i = 1,\dots, n</span> to the Q evenly sized data folds, and fit <span class="math inline">m^()</span> and <span class="math inline">e^()</span> with cross-fitting over the Q folds using methods tuned for optimal predictive accuracy.</p>
+<p>Note: <span class="math inline">q(i)</span> will let you know which group (fold) observation <span class="math inline">i</span> belongs to after dividing up the data (e.g., <span class="math inline">q(2) = 2</span> means that the second observation belongs to the second fold.)</p>
+<p><strong>Step 2</strong>: Estimate treatment effects via a plug-in version of (3), where the <span class="math inline">e^{−q(i)}(X_i)</span> and <span class="math inline">m^{−q(i)}(X_i)</span> denote predictions made without using the data fold that the ith training example belongs to:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="htmlwidget-d268abdc78432feb45b6" style="width:100%;height:464px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-d268abdc78432feb45b6">{"x":{"diagram":"\ndigraph {\n  graph [ranksep = 0.2]\n  node [shape = plaintext]\n    A [label = \"fold 1\"]\n    Y [label = \"folds 2 ~ 5\"]\n    C [label = \"whole dataset\"]\n  edge [minlen = 2]\n    C->A\n    C->Y\n  { rank = same; A; Y }\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<p>For fold 1 (observations that satisfy <span class="math inline">q(i = 1)</span>), use data from folds 2 through 5,</p>
+<ul>
+<li><p>Step 1: train a model that predicts <span class="math inline">Y</span> using <span class="math inline">X</span> (note that <span class="math inline">W</span> is not part of the regression) using any method (e.g., OLS, or any machine learning methods) using the data from folds 2 through 5 (fold 1 not included)</p></li>
+<li><p>Step 2: using the trained model in Step 1, predict <span class="math inline">m^(X_i)</span> for all the observations in fold 1 (cross-fitting).</p></li>
+<li><p>Step 3: train a classification model that predicts <span class="math inline">W</span> using <span class="math inline">X</span> using any method (e.g., probit, logit, or any machine learning classification methods) using the data from folds 2 through 5 (fold 1 not included)</p></li>
+<li><p>Step 4: using the trained model in Step 3, predict <span class="math inline">e^(X_i)</span> for all the observations in fold 1 (cross-fitting).</p></li>
+<li><p>Step 5: repeat Steps 1 through 4 for all the folds and obtain the estimates of <span class="math inline">m^(X_i)</span> and <span class="math inline">e^(X_i)</span> for all the observations</p></li>
+<li><p>Step 6: solve the following using a statistical method of your choice (e.g., random forest, extreme gradient boosting, LASSO, etc)</p></li>
+</ul>
+<p><span class="math inline">\hat{\tau}(\cdot) = argmin_{\tau}\large[\normalsize \hat{L_n}\{\tau(\cdot)\} + \Lambda_n\{\tau(\cdot)\}\large]</span>, where</p>
+<p><span class="math inline">\hat{L_n}\{\tau(\cdot)\} = \frac{1}{n}\sum_{i=1}^{n}\normalsize[\{Y_i-\hat{m}^{\{-q(i)\}}(X_i)\}-\{W_i - \hat{e}^{\{-q(i)\}}(X_i)\}\tau(X_i)]^2</span></p>
+<ul>
+<li><span class="math inline">\hat{m}^{\{-q(i)\}}(X_i)</span> is the estimated outcome (<span class="math inline">Y</span>) condittional on X for observation <span class="math inline">i</span> (this is an actual number)</li>
+<li><span class="math inline">\hat{e}^{\{-q(i)\}}(X_i)</span> is the estimated treatment propensity (<span class="math inline">e</span>) condittional on X for observation <span class="math inline">i</span> (this is an actual number)</li>
+</ul>
+<p><span class="math inline">\hat{L_n}\{\tau(\cdot)\}</span> is called <strong>R-loss</strong>.</p>
+<section id="econml-r-scorer" class="level3">
+<h3 class="anchored" data-anchor-id="econml-r-scorer">econml R scorer</h3>
+<p><img src="econml_r_score.png" class="img-fluid"></p>
+<ul>
+<li>Yres = Y - E[Y|X, W] refers to <span class="math inline">Y_i-\hat{m}^{\{-q(i)\}}(X_i)</span></li>
+<li>Tres = T - E[T|X, W] refers to <span class="math inline">W_i - \hat{e}^{\{-q(i)\}}(X_i)</span></li>
+<li>loss(cate) = E_n[(Yres - &lt;cate(X), Tres&gt;)^2] refers to <span class="math inline">\frac{1}{n}\sum_{i=1}^{n}\normalsize[\{Y_i-\hat{m}^{\{-q(i)\}}(X_i)\}-\{W_i - \hat{e}^{\{-q(i)\}}(X_i)\}\tau(X_i)]^2</span></li>
+</ul>
+
+</section>
+</section>
+</section>
+</main>
+<!-- /main column -->
+<script type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    setTimeout(function() {
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+</body></html>
