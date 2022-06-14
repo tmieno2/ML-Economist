@@ -1,0 +1,29 @@
+project:
+  type: book
+  output-dir: docs
+  
+book:
+  title: "Machine Learning for Economists"
+  author: "Taro Mieno"
+  # cover-image: images/cover.png
+  site-url: https://rstudio-education.github.io/hopr/
+  repo-url: https://github.com/tmieno2/ML-Economist
+  repo-branch: master
+  repo-actions: [edit]
+  sharing: [twitter, facebook, linkedin]
+  chapters:
+    - index.qmd
+    - preface.qmd
+    - part: bootstrap.qmd
+      chapters: 
+        - cross-validation.qmd
+        - lasso.qmd
+  # appendices:
+  #   - a1-starting.qmd
+
+format:
+  html: 
+    theme: cosmo
+    # cover-image: cover.png
+    code-link: true
+

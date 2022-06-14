@@ -1,0 +1,691 @@
+---
+title: "Tree-based Regression"
+format: 
+  html:
+    code-fold: show
+    toc: true
+    self-contained: true
+editor: visual
+---
+
+```{r}
+#| include: false
+
+library(tidyverse)
+library(data.table)
+library(rpart)
+library(rattle)
+library(wooldridge)
+```
+
+```{r}
+#| eval: false
+
+library(tidyverse)
+library(data.table)
+library(rpart)
+library(rattle)
+library(wooldridge)
+```
+
+## Regression tree {#sec-rt}
+
+### What is it?
+
+Here is an example of regression tree to explain logged salary (`lsalary`) using the `mlb1` data from the `wooldridge` package. 
+
+```{r}
+#| code-fold: true 
+#=== get mlb1 data (from wooldridge) ===#
+data(mlb1)
+
+#=== build a simple tree ===#
+simple_tree <-
+  rpart(
+    # lsalary ~ . - salary, 
+    lsalary ~ hits + runsyr, 
+    data = mlb1, 
+    control = rpart.control(minsplit = 200)
+  )
+
+fancyRpartPlot(simple_tree)
+```
+
+Here is how you read the figure. At the first node, all the observations belong to it ($n=353$) and the estimate of `lsalary` is 13. Now, the whole datasets are split into two based on the criteria of whether `hits` is less than `262` or not. If yes, then such observations will be grouped into the node with "2" on top (the leftmost node), and the estimated `lsalary` for all the observations in that group ($n = 132$) is 12. If no, then such observations will be grouped into the node with "3" on top, and the estimated `lsalary` for all the observations in that group ($n = 221$) is 14. This node is further split into two groups based on whether `runsyr` is less than 44 or not. For those observations with `runsyr` $< 44$ (second node a the bottom), estimated `lsalary` is 14. For those with `runsyr` $>= 44$ (rightmost node at the bottom), estimated `lsalary` is 15. The nodes that do not have any further bifurcations below are called terminal nodes or leafs. 
+
+As illustrated in the figure above, a regression tree splits the data into groups based on the value of explanatory variables, and all the observations in the same group will be assigned the same estimate (the sample average of the dependent variable of the group). 
+
+Another way of illustrating this grouping is shown below:
+
+```{r}
+#| code-fold: true 
+
+ggplot(mlb1) +
+  geom_point(aes(y = hits, x = runsyr, color = lsalary)) +
+  scale_color_viridis_c() +
+  geom_hline(yintercept = 262) +
+  geom_line(
+    data = data.table(x = 44, y = seq(262, max(mlb1$hits), length = 100)), 
+    aes(y = y, x = x)
+  ) +
+  annotate(
+    "text", 
+    x = 44, y = 111, 
+    label = "Region 2", 
+    color = "red"
+  ) +
+  annotate(
+    "text", 
+    x = 22, y = 1500, 
+    label = "Region 6", 
+    color = "red"
+  ) +
+  annotate(
+    "text", 
+    x = 75, y = 1500, 
+    label = "Region 7", 
+    color = "red"
+  )
+```
+
+The mechanism called recursive binary splitting is used to split the predictor space like the example above. Suppose you have K explanatory variables ($X_1, \dots, X_k$). Further, let $c$ denote the cutpoint that splits the sample into two regions: \{$X|X_k < c$\} and \{$X|X_k \geq c$\}.
+
+::: {.column-margin}
+\{$X|X_k < c$\} means observations that satisfy the condition stated right to the vertical bar (|). Here, it means all the observations for which its $X_k$ value is less than $c$.
+:::
+
++ Step 1: For each of the explanatory variables ($X_1$ through $X_K$), find the cutpoint that leads to the lowest sum of the squared residuals. 
++ Step 2: Among all the splits (as many as the number of explanatory variables), pick the variable-cutpoint combination that leads to the lowest sum of the squared residuals.
+
+The data is then split according to the chosen criteria and then the same process is repeated for each of the branches, ad infinitum until the user-specified stopping criteria is met. 
+
+Let's try to write (an inefficient version) this process for the first split from the beginning node using the `mlb1` data as an illustration based on a simple grid search to find the optimal cutpoints (Step 1). 
+
+```{r}
+#=== get data ===#
+library(wooldridge)
+data(mlb1)
+
+mlb1_dt <- 
+  mlb1 %>% 
+  data.table() %>% 
+  na.omit()
+```
+
+Let's work on the splitting rule using `hruns`. First, we define a sequence of values of cutpoints for `hruns`.
+
+```{r}
+value_seq <- 
+  quantile(
+    mlb1_dt$hruns, 
+    prob = seq(0.001, 0.999, length = 100)
+  ) %>% 
+  unique()
+```
+
+For each value in `value_seq`, we find the RSS. For example, for the 50th value in `value_seq`,
+
+```{r}
+copy(mlb1_dt) %>% 
+  #=== find the mean of lsalary by whether hruns is less than the cutpoint or not ===#
+  .[, y_hat := mean(lsalary), by = (hruns < value_seq[50])] %>% 
+  #=== get squared residuals ===#
+  .[, (lsalary - y_hat)^2] %>% 
+  #=== get RSS ===#
+  sum()
+```
+
+How about 70th value in `value_seq`?
+
+```{r}
+copy(mlb1_dt) %>% 
+  #=== find the mean of lsalary by whether hruns is less than the cutpoint or not ===#
+  .[, y_hat := mean(lsalary), by = (hruns < value_seq[70])] %>% 
+  #=== get squared residuals ===#
+  .[, (lsalary - y_hat)^2] %>% 
+  #=== get RSS ===#
+  sum()
+```
+
+This means `value_seq[70]` (`r value_seq[70]`) is a better cutpoint than `value_seq[50]` (`r value_seq[50]`).
+
+Okay, let's consider all the candidate values, not just 50 and 70, and then pick the best.
+
+```{r}
+get_rss <- function(i, var_name, value_seq, data)
+{
+  rss <-
+    copy(data) %>% 
+    setnames(var_name, "var") %>% 
+    .[, y_hat := mean(lsalary), by = (var < value_seq[i])] %>% 
+    .[, (lsalary - y_hat)^2] %>% 
+    sum()
+
+  return_data <-
+    data.table(
+      rss = rss,
+      var_name = var_name,
+      var_value = value_seq[i]
+    )
+
+  return(return_data)
+}
+```
+
+Here are RSS values at every value in `value_seq`.
+
+```{r}
+rss_value <-
+  lapply(
+    seq_len(length(value_seq)),
+    function(x) get_rss(x, "hruns", value_seq, mlb1_dt) 
+  ) %>% 
+  rbindlist()
+
+head(rss_value)
+tail(rss_value)
+```
+
+Finding the cutpoint value that minimizes RSS,
+
+```{r}
+rss_value[which.min(rss), ]
+```
+
+Okay, so, the best cutpoint for `hruns` is `r round(rss_value[which.min(rss), var_value], digits = 3)`
+
+Suppose we are considering only five variables to include as explanatory variables in building a regression tree: `hruns`, `bavg`, `games`, `doubles`, and `rbis`. Then we do the same operation we did for `hruns` for all the variables. 
+
+```{r}
+get_rss_by_var <- function(var_name, data)
+{
+  temp_data <- copy(data) 
+
+  #=== define a sequence of values of hruns ===#
+  value_seq <- 
+    quantile(
+      temp_data[, ..var_name] %>% unlist(), 
+      prob = seq(0.001, 0.999, length = 100)
+    ) %>% 
+    unique()
+
+  #=== get RSS ===#
+  rss_value <-
+    lapply(
+      seq_len(length(value_seq)),
+      function(x) get_rss(x, var_name, value_seq, temp_data) 
+    ) %>% 
+    rbindlist() %>% 
+    .[which.min(rss),]
+
+  return(rss_value)
+}
+```
+
+Looping over the set of variables,
+
+```{r}
+(
+min_rss_by_var <-
+  lapply(
+    c("hruns", "bavg", "games", "doubles", "rbis"),
+    function(x) get_rss_by_var(x, mlb1_dt)
+  ) %>% 
+  rbindlist()
+)
+```
+
+So, the variable-cutpoint combination that minimizes RSS is `r min_rss_by_var[which.min(rss), var_name]`-`r min_rss_by_var[which.min(rss), var_value]`. We now have the first split. This tree is developed further by splitting nodes like this. 
+
+
+### Training a regression tree in R
+
+You can fit a regression tree using `rpart()` from the `rpart` package. Its syntax is similar to that of `lm()` for a quick fitting.
+
+```{r}
+#| eval: false 
+
+rpart(
+  formula,
+  data
+)
+
+```
+
+Using `mlb1`, let's fit a regression tree where the dependent variable is `lsalary` and all the other variable except `salary` is included.
+
+```{r}
+ 
+#=== fit a tree ===#
+fitted_tree <-
+  rpart(
+    lsalary ~ . - salary, 
+    data = mlb1_dt
+  )
+```
+
+Here is the visualization of the fitted tree using `fancyRpartPlot()` from the `rattle` package.
+
+```{r}
+fancyRpartPlot(fitted_tree)
+```
+
+Now, you may wonder why `rpart()` is not a building a tree where there are as many leaves as the number of observations so that we have a perfect prediction for the train data (`mlb1`). If we are implementing recursive binary splitting, then there is nothing for it to stop where it stopped. This is because `rpart()` sets parameters that control the development of a tree by default. Those default parameters can be seen below:
+
+```{r}
+rpart.control()
+```
+
+For example, `minsplit` is the minimum number of observations that must exist in a node in order for a split to be attempted. `cp` refers to the complexity parameter. For a given value of `cp`, a tree is build to minimize the following:
+
+$$
+\sum_{t=1}^T\sum_{x_i\in R_t} (y_i - \hat{y_{R_t}})^2 + cp\cdot T
+$$
+
+where $R_t$ is the $t$th region and $\hat{y_{R_t}}$ is the estimate of $y$ for all the observations that reside in $R_t$. So, the first term is RSS. The objective function has a penalization term (the second term) just like shrinkage methods we saw in @sec-shrinkage. A higher value of `cp` leads to a less complex tree with less leaves.
+
+If you want to build a much more deep tree that has so many leaves, then you can do it using the `control` option like below.
+
+```{r}
+full_tree <-
+  rpart(
+    lsalary ~ . - salary, # formula
+    data = mlb1_dt, # data
+    control = # control of the hyper parameters
+      rpart.control(
+        minsplit = 2, 
+        cp = 0 # complexity parameter
+      )
+  )
+```
+
+Let's see how amazing this tree is by comparing the observed and fitted `lsalary` values.
+
+```{r}
+#=== get fitted values ===#
+mlb1_dt[, y_hat := predict(full_tree, newdata = mlb1_dt)]
+
+#=== visualize the fit ===#
+ggplot(data = mlb1_dt) +
+  geom_point(aes(y = lsalary, x = y_hat)) +
+  geom_abline(slope = 1, color = "red")
+```
+
+Yes, perfect prediction accuracy! At least for the train data anyway. But, we all know we want nothing to do with this kind of model. It is clearly over-fitting the train data.  
+
+In order to find a reasonable model, we can use KCV over `cp`. Fortunately, when we run `rpart()`, it automatically builds multiple trees at different values of `cp` that controls the number of leaves and conduct KCV. You can visualize this using `plotcp()`.
+
+```{r}
+plotcp(fitted_tree)
+```
+
+MSE and `cp` are presented on the y- and x-axis, respectively. According to the KCV results, `cp` $= 0.07$ provides the tree with the smallest number of leaves (the most simple) where the MSE value is within one standard deviation from the lowest MSE. You can access the tree built under `cp` $= 0.07$ like below.
+
+```{r}
+#=== get the best tree ===#
+best_tree <- prune(full_tree, cp = 0.07)
+
+#=== visualize it ===#
+fancyRpartPlot(best_tree)
+```
+
+Even though how a regression tree is build in R. In practice, you never use a regression tree itself as the final model for your research as its performance is rather poor and tend to over-fit compared to other competitive methods. But, understanding how building a regression tree is important to understand its derivatives like random forest, boosted regression forest.
+
+## Random Forest (RF) {#sec-rf}
+
+Regression tree approach is often not robust and suffers from high variance. Here, we look at the process called <span style="color:blue"> bagging </span> and how it can be used to generate a model that is much more robust than a regression tree, which is called random forest. 
+
+### Bagging (Bootstrap aggregation)
+
+Consider two random variables $x_1$ and $x_2$ from the identical distribution, where $E[x_i] = \alpha$ and $Var(x_i) = \sigma^2$. You are interested in estimating $E[x_i]$. We all know that the following relationship holds in general:
+
+$$
+\begin{aligned}
+Var(\frac{x_1 + x_2}{2}) & = \frac{Var(x_1)}{4} + \frac{Var(x_1)}{4} + \frac{Cov(x_1, x_2)}{2} \\
+& = \frac{\sigma^2}{2} + \frac{Cov(x_1, x_2)}{2}
+\end{aligned}
+$$
+
+So, instead of using a single draw from $x_1$, and use it as an estimate for $E[x_i]$. It is better to use values from both $x_1$ and $x_2$ and average them to obtain an estimate for $E[x_i]$ as long as $x_1$ and $x_2$ are not perfectly <span style="color:blue"> positively </span> correlated. The benefit of averaging is greater when the value of $Cov(x_1, x_2)$ is smaller. 
+
+Let's do a little experiment to see this. We consider three cases:
+
+```{r}
+#=== set the number of observations to 1000 ===#
+N <- 1000
+```
+
+```{r}
+#=== first case (no correlation) ===#
+x_1 <- rnorm(N)
+x_2 <- rnorm(N)
+
+cor(x_1, x_2)
+
+#=== second case (positively correlated) ===#
+x_1 <- rnorm(N)
+x_2 <- 0.8 * x_1 + sqrt(1-(0.8)^2) * rnorm(N)
+
+cor(x_1, x_2)
+
+#=== third case (negatively correlated) ===#
+x_1 <- rnorm(N)
+x_2 <- - 0.8 * x_1 - sqrt(1-(0.8)^2) * rnorm(N)
+
+cor(x_1, x_2)
+```
+
+```{r}
+N <- 1
+
+get_alpha <- function(i)
+{
+  #=== base case ===#
+  alpha_hat_0 <- rnorm(1)
+
+  #=== first case (no correlation) ===#
+  x_1 <- rnorm(N)
+  x_2 <- rnorm(N)
+
+  alpha_hat_1 <- (x_1 + x_2) / 2
+
+  #=== second case (positively correlated) ===#
+  x_1 <- rnorm(N)
+  x_2 <- 0.8 * x_1 + sqrt(1-(0.8)^2) * rnorm(N)
+
+  alpha_hat_2 <- (x_1 + x_2) / 2
+
+  #=== third case (negatively correlated) ===#
+  x_1 <- rnorm(N)
+  x_2 <- - 0.8 * x_1 - sqrt(1-(0.8)^2) * rnorm(N)
+
+  alpha_hat_3 <- (x_1 + x_2) / 2
+
+  return_data <-
+    data.table(
+      alpha_hat_0 = alpha_hat_0,
+      alpha_hat_1 = alpha_hat_1,
+      alpha_hat_2 = alpha_hat_2,
+      alpha_hat_3 = alpha_hat_3
+    )
+
+  return(return_data)
+
+} 
+```
+
+```{r}
+set.seed(234934)
+
+sim_results <-
+  lapply(
+    1:1000,
+    get_alpha
+  ) %>% 
+  rbindlist() %>% 
+  melt()
+
+```
+
+As you can see, they are all pretty much unbiased. However, all the cases that averaged two values (cases 1, 2, and 3) outperformed the base case that relied on a single value each iteration. You can see that when the random variables are negatively correlated, the power of averaging is greater compared to when they are independent or positively correlated. The independent case (case 1) is better than the positive correlation case (case 2). 
+
+```{r}
+#=== expected value ===#
+sim_results[, mean(value), by = variable]
+
+#=== standard error ===#
+sim_results[, sd(value), by = variable]
+```
+
+Bagging takes advantage of the power of averaging. Specifically, bagging takes the following steps:
+
++ Generate many bootstrapped datasets (say $B$ datasets)
++ Train a model on each of the bootstrapped datasets ($\hat{f}^1, \dots, \hat{f}^B$)
++ Average the estimates from all the trained models to come up with an estimate 
+$$
+\hat{f}(X) = \frac{\hat{f}^1(X) + \dots + \hat{f}^B(X)}{B}
+$$
+
+
+Let's implement this for $B = 5$ using `mlb1_dt`. 
+
+
+```{r}
+
+train_a_tree <- function(i, data)
+{
+  #=== number of observations ===#
+  N <- nrow(data)
+
+  #=== bootstrapped data ===#
+  boot_data <- data[sample(1:N, N, replace = TRUE), ]
+
+  #=== train a regression tree ===#
+  rpart <-
+    rpart(
+      lsalary ~ . - salary, 
+      data = boot_data
+    )
+
+  #=== predict ===#
+  return_data <-
+    copy(data) %>% 
+    .[, y_hat := predict(rpart, newdata = data)] %>% 
+    .[, .(id, y_hat)]
+
+  return(return_data)
+}
+```
+
+```{r}
+#=== create observation id for later ===#
+mlb1_dt[, id := 1:.N]
+
+(
+y_estimates <-
+  lapply(
+    1:5,
+    function(x) train_a_tree(x, mlb1_dt) 
+  ) %>% 
+  rbindlist()
+)
+
+```
+
+By averaging $y$ estimates by `id`, we can get out bagging estimates.
+
+```{r}
+y_estimates[, mean(y_hat), by = id]
+```
+
+Now, let's take a look at the individual estimates of $y$ for the first observation.
+
+```{r}
+y_estimates[id == 1, ]
+```
+
+Hmm, the estimates look very similar. Actually, that is the case for all the observations. This is because the trained trees are very similar for many reasons, and the trees are highly "positively" correlated with each other. From our very simple experiment above, we know that the power of bagging is not very high when that is the case. While RF does use bagging, popular R and python packages does it in a much better way than I demonstrated here. We see this next.
+
+
+### Random Forest (RF)
+
+Unlike a naive bagging approach I demonstrated above, RF does it in a clever way to *decorrelate* trees. Specifically, for any leave of any tree they are building, they consider only a subset of all the explanatory variables when deciding how to split the leave where the selection of the set of variables happen randomly. A typical choice of the number of variables considered at each split is $\sqrt{K}$, where $K$ is the number of the explanatory variables specified by the user. In the naive example above, all $K$ variables are considered for all the split decisions of all the trees. Some variables are more influential than others and they get to be picked as the splitting variable at similar places. Instead, RF gives other variables a chance, which helps decorrelate the trees.
+
+Let's implement this algorithm by ourselves to deepen our understanding of this algorithm using `mlb1_dt`. Here are all the explanatory variables we include in training an RF. 
+
+```{r}
+#=== get variables names except salary ===#
+(
+var_list <- names(mlb1_dt) %>% .[!. %in% c("salary", "lsalary")] 
+
+)
+``` 
+
+We will use the following numbers of variables in each splitting decision.
+
+```{r}
+(
+num_var_split <- 
+  var_list %>% 
+  length() %>% 
+  sqrt() %>% 
+  floor()
+)
+``` 
+
+Let's get a bootstrapped dataset.
+
+```{r}
+#=== number of observations ===#
+N <- nrow(mlb1_dt)
+
+#=== bootstrapped data ===#
+(
+boot_data <- mlb1_dt[sample(1:N, N, replace = TRUE), ]
+)
+```
+
+
+
+
+
+
+We can use `ranger()` from the `ranger` package to train an RF model using the same data. 
+
+::: {.column-margin}
+Another compelling R package for RF is the `randomForest` package.
+:::
+
+The `ranger()` function has many options you can specify that determine how trees are built. Here are some of the important onesv (see [here](https://cran.r-project.org/web/packages/ranger/ranger.pdf) for the complete description of the hyper-parameters.):
+
++ `mtry`: the number of variables considered in each split (default is the square root of the total numbers of explanatory variables rounded down.)
++ `num.trees`: the number of tree to be built (default is 500)
++ `min.node.size`: minimum number of observations in each node (default varies based on the the type of analysis)
++ `replace`: where sample with or without replacement when bootstrapping samples (default is `TRUE`)
++ `sample.fraction`: the fraction of the entire observations that are used in each tree (default is 1 if sampling with replacement, 0.632 if sampling without replacement)
+
+Let's try fitting an RF with `ranger()` with the default parameters.
+
+```{r}
+#=== load the package ===#
+library(ranger)
+
+#=== fit and RF ===#
+(
+rf_fit <- ranger(lsalary ~ . - salary, data = mlb1_dt)
+)
+```
+
+::: {.column-margin}
+Since we have many trees, it is no longer possible to have a nice graphical representation of the model like we did with a regression tree.
+:::
+
+In the output, you can see `OOB prediction error (MSE)`. OOB stands for <span style="color:red"> o</span>ut-<span style="color:red">o</span>f-<span style="color:red">b</span>ag. When bootstrapping (whether you do it with replacement or not), some of the train data will not be used to build a tree. 
+
+```{r}
+n_obs <- nrow(mlb1_dt)
+
+#=== bootstrapped data ===#
+boot_data <- mlb1_dt[sample(1:n_obs, n_obs, replace = TRUE), ]
+
+#=== which rows (observations) from the original datasets are missing? ===#
+mlb1_dt[, id %in% unique(boot_data$id)] %>% mean()
+```
+
+So, only $65\%$ of the rows from the original data (`mlb1_dt`) in this bootstrapped sample (many duplicates of the original observations). The observations that are NOT included in the bootstrapped sample is called out-of-bag observations. This provides a great opportunity to estimate test MSE while training an RF model! For a given regression tree, you can apply it to the out-of-bag samples to calculate MSE. You can repeat this for all the trees and average the MSEs, effectively conducting cross-validation. When the number of trees is large enough, OOB MSE is almost equivalent to MSE from LOOCV [@james2013introduction]. This means that we can tune hyper-parameters by comparing OOB MSEs of different configurations of them.
+
+You can use a simple grid-search to find the best hyper-parameters. Grid-search is simply a brute-force optimization methods that goes through all the combinations of hyper-parameters and see which combination comes at the top. The computational intensity of grid-search depends on how many hyper-parameters you want to vary and how many values you would like to look at for each of the hyper-parameters. Here, let's tune `mtry`, `min.node.size`, and `sample.fraction`.
+
+```{r}
+#=== define set of values you want to look at ===#
+mtry_seq <- c(3, 5, 8)
+min_node_size_seq <- c(2, 5, 10)
+sample_fraction_seq <- c(0.5, 0.75, 1)
+
+#=== create a complete combinations of the three parameters ===#
+(
+parameters <-
+  data.table::CJ(
+    mtry = mtry_seq,
+    min_node_size = min_node_size_seq,
+    sample_fraction = sample_fraction_seq
+  )
+)
+```
+
+In total, we have 27 ($3 \times 3 \times 3$) cases. You can see how quickly the number of cases increases  as you increase the number of parameters to tune and the values of each parameter. We can now loop over the rows of this parameter data (`parameters`) and get OOB MSE for each of them.
+
+```{r}
+oob_mse_all <-
+  lapply(
+    seq_len(nrow(parameters)),
+    function(x) {
+
+      #=== Fit the mode ===#
+      rf_fit <- 
+        ranger(
+          lsalary ~ . - salary, 
+          data = mlb1_dt,
+          num.trees = 1000,
+          mtry = parameters[x, mtry],
+          min.node.size = parameters[x, min_node_size],
+          sample.fraction = parameters[x, sample_fraction]
+        )
+
+      #=== return OOB SME ===#
+      return(rf_fit$prediction.error)
+      
+    }
+  ) %>% 
+  unlist()
+
+parameters[, oob_mse := oob_mse_all]
+
+parameters
+```
+
+So, the best choice among the ones tried is:
+
+```{r}
+parameters[which.min(oob_mse), ]
+```
+
+### Boosting 
+
+In training RF that uses the idea of bagging, the original data is used to generate many bootstrapped datasets, a regression tree is trained on each of them <span style="color:blue"> independently </span>, and then they are averaged to reach the final model. Boosting is similar to bagging (bootstrap aggregation) in that it trains many statistical models and then combine them to reach the final model. However, instead of building many trees independently, it builds trees <span style="color:blue"> sequentially </span> in a manner that improves prediction step by step.
+
+While there are many variants of boosting methods (see Chapter 10 of @hastie2009elements), we will look at gradient boosting using trees for regression in particular (Algorithm 10.3 in @hastie2009elements presents the generic gradient tree boosting algorithm), where squared error is used as the loss function.  
+
+1. Set $f_0(X_i)  = \frac{\sum_{i=1}^N y_i$}{N} for all $i = 1, \dots, N$
+2. For b = 1 to B,
+  * For $i = 1, \dots, N$, calculate
+    $$
+    r_{i,b} =  - (y_i - f_{b-1}(X_i))
+    $$
+  * Fit a regression tree to $r_{i, b}$, which generates terminal regions $R_{j,b}$, $j = 1, \dots, J$, and denote the predicted value of region $R_{j,b}$ as $\gamma_{j,b}$.
+  * Set $f_b(X_i) = f_{b-1}(X_i) + \lambda \cdot \sum_{j=1}^J\gamma_{j, b}\cdot I(X_i \in R_{j,b})$ 
+3. Finally, $\hat{f}(X_i) = f_B(X_i)$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,434 @@
+---
+title: "Regression Shrinkage Methods: LASSO (Ridge and Elastic Net)"
+format: html
+editor: visual
+---
+
+```{r}
+#| include: false
+
+library(data.table)
+library(tidyverse)
+library(glmnet)
+```
+
+## Shrinkage Methods {#sec-shrinkage}
+
+We have talked about variance-bias trade-off. When you "shrink" coefficients towards zero, you may be able to achieve lower the variance of $\hat{f}(x)$ while increasing bias, which can result in a lower MSE. 
+
+Consider the following generic linear model:
+
+$$
+y = X\beta + \mu
+$$
+
++ $y$: dependent variable
++ $X$: a collection of explanatory variables ($K$ variables)
++ $\beta$: a collection of coefficients on the explanatory variables $X$
++ $\mu$: error term
+
+Borrowing from the [documentation](https://glmnet.stanford.edu/articles/glmnet.html) of the `glmnet` package(), the minimization problem shrinkage methods solve to estimate coefficients for a linear model can be written as follows:
+
+$$
+Min_{\beta} \sum_{i=1}^N (y_i - X_i\beta)^2 + \lambda \huge[\normalsize(1-\alpha)||\beta||^2_2/2 + \alpha ||\beta||_1\huge] 
+$$ {#eq-shrinkage-general}
+
+
++ $||\beta||_1 = |\beta_1| + |\beta_2| + \dots+ |\beta_K|$ (called L1 norm)
+
++ $||\beta||_2 = (|\beta_1|^2 + |\beta_2|^2 + \dots+ |\beta_K|^2)^{\frac{1}{2}}$ (called L2 norm)
+
+$\lambda (> 0)$ is the penalization parameter that governs how much coefficients `shrinkage` happens (more details later).
+
+The shrinkage method is called LASSO when $\alpha = 0$, Ridge regression when $\alpha = 1$, and elastic net when $\alpha \in (0, 1)$. 
+
+Ridge regression and elastic net are rarely used. So, we are going to cover only LASSO here.
+ 
+
+## LASSO
+
+When there are many potential variables to include, it is hard to know which ones to include. LASSO can be used to select variables to build a more parsimonious model, which may help reducing MSE.
+
+As mentioned above, LASSO is a special case of shrinkage methods where $\alpha = 1$ in @eq-shrinkage-general. So, the optimization problem of LASSO is
+
+$$
+Min_{\beta} \sum_{i=1}^N (y_i - X_i\beta)^2 + \lambda \sum_{k=1}^K |\beta_k| 
+$$ {#eq-lagrangian-lasso}
+
+, where $\lambda$ is the penalization parameter.
+
+Alternatively, we can also write the optimization problem as the constrained minimization problem as follows^[You can consider @lagrangian-lasso the Lagrangian formulation of @eq-constrained-lasso.]:
+
+$$
+Min_{\beta} \sum_{i=1}^N (y_i - X_i\beta)^2 \\
+\mbox{subject to } \sum_{k=1}^K |\beta_k| < t
+$$ {#eq-constrained-lasso}
+
+A graphical representation of the minimization problem is highly illustrative on what LASSO does. Consider the following data generating process:
+
+$$
+y  = 0.2 x_1 + 2 * x_2 + \mu
+$$
+
+Using LASSO, we are trying to estimate the coefficient on $x_1$ and $x_2$ by solving the following problem where $t$ is set to 1 in @eq-constrained-lasso:
+
+$$
+Min_{\beta} \sum_{i=1}^N (y_i - \beta_1 x_1 - \beta_2 x_2)^2 \\
+\mbox{subject to } \sum_{k=1}^K |\beta_k| < \textcolor{red}{1} 
+$$
+
+This means that, we need to look for the combinations of $\beta_1$ and $\beta_2$ such that the sum of their absolute values is less than 1. Graphically, here is what the constraint looks like:
+
+
+```{r}
+#| code-fold: true 
+
+ggplot() +
+  geom_hline(yintercept = 0) +
+  geom_vline(xintercept = 0) +
+  geom_segment(aes(x = 1, y = 0, xend = 0, yend = 1), color = "red", size = 1.2) +
+  geom_segment(aes(x = 1, y = 0, xend = 0, yend = -1), color = "red", size = 1.2) +
+  geom_segment(aes(x = -1, y = 0, xend = 0, yend = 1), color = "red", size = 1.2) +
+  geom_segment(aes(x = -1, y = 0, xend = 0, yend = -1), color = "red", size = 1.2) +
+  coord_equal() +
+  xlab("beta_1") +
+  ylab("beta_2")
+``` 
+
+Now, let's calculate what value the objective function takes at different values of $\beta_1$ and $\beta_2$. 
+
+We first generate data.
+
+```{r}
+N <- 1000 # number of observations
+x_1 <- rnorm(N)
+x_2 <- rnorm(N)
+mu <- rnorm(N) # error term
+y <- 2 * x_1 + 0.2 * x_2 + mu
+
+data <-
+  data.table(
+    y = y,
+    x_1 = x_1,
+    x_2 = x_2
+  )
+```
+
+Without the constraint, here is the combination of $\beta_1$ and $\beta_2$ that minimizes the objective function of @eq-constrained-lasso, which is the same as OLS estimates.
+
+```{r}
+(
+ols_coefs <- lm(y ~ x_1 + x_2, data = data)$coefficient
+)
+```
+
+We now calculate the value of the objective functions at different values of $\beta_1$ and $\beta_2$. Here is the set of $\{\beta_1, \beta_2\}$ combinations we look at.
+
+```{r}
+(
+beta_table <- 
+  data.table::CJ(
+    beta_1 = seq(-2, 2, length = 50),
+    beta_2 = seq(-1, 1, length = 50) 
+  )
+)
+```
+
+:::{.callout-note}
+`data.table::CJ()` takes more than one set of vectors and find the complete combinations the values of the vectors. Trying 
+```{r}
+#| eval: false 
+data.table::CJ(x1 = c(1, 2, 3), x2 = c(4, 5, 6))
+```
+will help you understand exactly what it does.
+:::
+
+Loop over the row numbers of `beta_table` to find SSE for all the rows (all the combinations of $\beta_1$ and $\beta_2$).
+
+```{r}
+
+#=== define the function to get SSE ===#
+get_sse <- function(i, data)
+{
+  #=== extract beta_1 and beta_2 for ith observation  ===#
+  betas <- beta_table[i, ]
+
+  #=== calculate SSE ===#
+  sse <-
+    copy(data) %>% 
+    .[, y_hat := x_1 * betas[, beta_1] + x_2 * betas[, beta_2]] %>% 
+    .[, se := (y - y_hat)^2] %>% 
+    .[, sum(se)]
+
+  return(sse)
+}
+
+#=== calculate SSE for each row of beta_table ===#
+sse_all <-
+  lapply(
+    1:nrow(beta_table),
+    function(x) get_sse(x, data)
+  ) %>% 
+  unlist()
+
+#=== assign the calculated sse values as a variable ===#
+(
+beta_table[, sse := sse_all]
+)
+```
+
+Here is the contour map of SSE as a function of $\beta_1$ and $\beta_2$. The solution to the unconstrained problem (OLS estimates) is represented by the red point. Since LASSO needs to find a point within the red square, the solution would be $\beta_1 = 1$ and $\beta_2 = 0$ (yellow point). LASSO did not give anything to $\beta_2$ as $x_1$ is a much bigger contributor of the two included variables. LASSO tends to give the coefficient of $0$ to some of the variables when the constraint is harsh, effectively eliminating them from the model. For this reason, LASSO is often used as a variable selection method.
+
+```{r}
+#| code-fold: true 
+
+ggplot() +
+  stat_contour(
+    data = beta_table, 
+    aes(x = beta_1, y = beta_2, z = sse, color = ..level..),
+    size = 1.2,
+    breaks = 
+      round(
+        quantile(beta_table$sse, seq(0, 1, 0.05)),
+        0
+      )
+    ) +
+  scale_color_viridis_c(name = "SSE") +
+  geom_hline(yintercept = 0) +
+  geom_vline(xintercept = 0) +
+  geom_segment(aes(x = 1, y = 0, xend = 0, yend = 1), color = "red", size = 1.2) +
+  geom_segment(aes(x = 1, y = 0, xend = 0, yend = -1), color = "red", size = 1.2) +
+  geom_segment(aes(x = -1, y = 0, xend = 0, yend = 1), color = "red", size = 1.2) +
+  geom_segment(aes(x = -1, y = 0, xend = 0, yend = -1), color = "red", size = 1.2) +
+  #=== OLS point estimates (solutions without the constraint) ===#
+  geom_point(
+    aes(x = ols_coefs["x_1"], y = ols_coefs["x_2"]),
+    color = "red",
+    size = 3
+  ) +
+  geom_point(
+    aes(x = 1, y = 0),
+    color = "yellow",
+    size = 3
+  ) +
+  coord_equal()
+
+```
+
+Let's consider a different data generating process: $y = x_1 + x_2 + \mu$. Here, $x_1$ and $x_2$ are equally important unlike the previous case. Here is what happens: 
+
+```{r}
+#| code-fold: true
+
+N <- 1000 # number of observations
+x_1 <- rnorm(N)
+x_2 <- rnorm(N)
+mu <- rnorm(N) # error term
+y <- x_1 + x_2 + mu
+
+data <-
+  data.table(
+    y = y,
+    x_1 = x_1,
+    x_2 = x_2
+  )
+
+ols_coefs <- lm(y ~ x_1 + x_2, data = data)$coefficient
+
+#=== calculate sse for each row of beta_table ===#
+sse_all <-
+  lapply(
+    1:nrow(beta_table),
+    function(x) {
+      betas <- beta_table[x, ]
+      sse <-
+        copy(data) %>% 
+        .[, y_hat := x_1 * betas[, beta_1] + x_2 * betas[, beta_2]] %>% 
+        .[, se := (y - y_hat)^2] %>% 
+        .[, sum(se)]
+      return(sse)
+    }
+  ) %>% 
+  unlist()
+
+#=== assign the calculated sse values as a variable ===#
+beta_table[, sse := sse_all]
+
+#=== visualize ===#
+ggplot() +
+  stat_contour(
+    data = beta_table, 
+    aes(x = beta_1, y = beta_2, z = sse, color = ..level..),
+    size = 1.2,
+    breaks = 
+      round(
+        quantile(beta_table$sse, seq(0, 1, 0.05)),
+        0
+      )
+    ) +
+  scale_color_viridis_c(name = "SSE") +
+  geom_hline(yintercept = 0) +
+  geom_vline(xintercept = 0) +
+  geom_segment(aes(x = 1, y = 0, xend = 0, yend = 1), color = "red", size = 1.2) +
+  geom_segment(aes(x = 1, y = 0, xend = 0, yend = -1), color = "red", size = 1.2) +
+  geom_segment(aes(x = -1, y = 0, xend = 0, yend = 1), color = "red", size = 1.2) +
+  geom_segment(aes(x = -1, y = 0, xend = 0, yend = -1), color = "red", size = 1.2) +
+  #=== OLS point estimates (solutions without the constraint) ===#
+  geom_point(
+    aes(x = ols_coefs["x_1"], y = ols_coefs["x_2"]),
+    color = "red",
+    size = 3
+  ) +
+  geom_point(
+    aes(x = 0.5, y = 0.5),
+    color = "yellow",
+    size = 3
+  ) +
+  coord_equal()
+```
+
+In this case, the solution would be (very close to) $\{\beta_1 = 0.5, \beta_2 = 0.5\}$, with neither of them sent to zero. This is because $x_1$ and $x_2$ are equally important in explaining $y$.
+
+## LASSO implementation: R
+
+
+You can use the `glmnet()` from the `glmnet` package run LASSO. For demonstration, we use the `QuickStartExample` data.
+
+```{r}
+#=== get the data ===#
+data(QuickStartExample)
+
+#=== see the structure ===#
+str(QuickStartExample)
+```
+
+As you can see, `QuickStartExample` is a list of two elements. First one (`x`) is a matrix of dimension 100 by 20, which is the data of explanatory variables. Second one (`y`) is a matrix of dimension 100 by 1, which is the data for the dependent variable. 
+
+:::{.callout-note}
+If you are used to running regressions in R, you should have specified a model using `formula` (e.g., ```y ~ x```). However, most of the machine learning functions in R accept the dependent variable and explanatory variables in a matrix form (or `data.frame`). This is almost always the case for ML methods in Python as well.
+:::
+
+By default, `alpha` parameter for `glmnet()` ($\alpha$ in @eq-shrinkage-general) is set to 1. So, to run LASSO, you can simply do the following:
+
+```{r}
+#=== extract X and y ===#
+X <- QuickStartExample$x
+y <- QuickStartExample$y
+
+#=== run LASSO ===#
+lasso <- glmnet(X, y)
+```
+
+By looking at the output below, you can see that `glmnet()` tried many different values of $\lambda$.
+
+```{r}
+lasso
+```
+
+You can access the coefficients for each value of $lambdata$ by applying `coef()` method to `lasso`. 
+
+```{r}
+#=== get coefficient estimates ===#
+coef_lasso <- coef(lasso)
+
+#=== check the dimension ===#
+dim(coef_lasso)
+
+#=== take a look at the first and last three ===#
+coef_lasso[, c(1:3, 65:67)]
+```
+
+Applying `plot()` method gets you how the coefficient estimates change as the value of $\lambda$  changes:
+
+```{r}
+plot(lasso)
+```
+
+A high L1 Norm is associated with a "lower" value of $\lambda$ (weaker shrinkage). You can see that as $\lambda$ increases (L1 Norm decreases), coefficients on more and more variables are set to 0.
+
+Now, the obvious question is which $\lambda$ should we pick? One way to select a $\lambda$ is K-fold cross-validation (KCV), which we covered in section. We can implement KCV using the `cv.glmnet()` function. You can set the number of folds using the `nfolds` option (the default is 10). Here, let's 5-fold CV.
+
+```{r}
+cv_lasso <- cv.glmnet(X, y, nfolds = 5)
+```
+
+The results of KCV can be readily visualized by applying the `plot()` method:
+
+```{r}
+plot(cv_lasso)
+```
+
+There are two vertical dotted lines. The left one indicates the value of $\lambda$ where CV MSE is minimized (called `lambda.min`). The right one indicates the <span style="color:blue"> highest </span> (most regularized) value of $\lambda$ such that the CV error is within one standard error of the minimum (called `lambda.1se`). 
+
+You can access the MSE-minimizing $\lambda$ as follows:
+
+```{r}
+cv_lasso$lambda.min
+```
+
+You can access the coefficient estimates when $\lambda$ is `lambda.min` as follows
+
+```{r}
+coef(cv_lasso, s = "lambda.min")
+```  
+
+The following code gives you the coefficient estimates when $\lambda$ is `lambda.1se`
+
+```{r}
+coef(cv_lasso, s = "lambda.1se")
+```
+
+:::{.callout-note}
+glmnet() can be used to much broader class of models (e.g., Logistic regression, Poisson regression, Cox regression, etc). As the name suggests it's elastic <span style="color:red"> net </span> methods for <span style="color:red"> g</span>eneralized <span style="color:red"> l</span>inear <span style="color:red"> m</span>odel. 
+:::
+
+
+## LASSO implementation: Python
+
+Coming later.
+
+
+## Scaling 
+
+Unlike linear model estimation without shrinkage (regularization), shrinkage method is sensitive to the scaling of independent variables. Scaling of a variable has basically no consequence in linear model without regularization. It simply changes the interpretation of the scaled variable and the coefficient estimates on all the other variables remain unaffected. However, scaling of a single variable has a ripple effect to the other variables in shrinkage methods. This is because the penalization term: $\lambda \huge[\normalsize(1-\alpha)||\beta||^2_2/2 + \alpha ||\beta||_1\huge]$. As you can see, $\lambda$ is applied universally to all the coefficients without any consideration of the scale of the variables.
+
+Let's scale the first variable in `X` (this variable is influential as it survived even when $\lambda$ is very low) by 1/1000 and see what happens. Now, by default, the `standardize` option is set to `TRUE`. So, we need to set it to FALSE explicitly to see the effect.
+
+Here is before scaling:
+
+```{r}
+cv.glmnet(X, y, nfolds = 5, standardize = FALSE) %>% 
+  coef(s = "lambda.min")
+```
+
+Here is after scaling:
+
+```{r}
+#=== scale the first variable ===#
+X_scaled <- X
+X_scaled[, 1] <- X_scaled[, 1] / 1000
+
+cv.glmnet(X_scaled, y, nfolds = 5, standardize = FALSE) %>% 
+  coef(s = "lambda.min")
+```
+
+As you can see, the coefficient on the first variable is 0 after scaling. Setting `standardize = TRUE` (or not doing anything with this option) gives you very similar results whether the data is scaled or not.
+
+```{r}
+#=== not scaled ===#
+cv.glmnet(X, y, nfolds = 5, standardize = TRUE) %>% 
+  coef(s = "lambda.min")
+
+#=== scaled ===#
+cv.glmnet(X_scaled, y, nfolds = 5, standardize = TRUE) %>% 
+  coef(s = "lambda.min")
+```
+
+While you do not have to worry about scaling issues as long as uinsg `glmnet()`, this is something worth remembering.
+
+
+
+
+
+
+

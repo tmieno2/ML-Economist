@@ -54,3 +54,8 @@ https://www.r-bloggers.com/2020/04/how-to-run-pythons-scikit-learn-in-r-in-5-min
 + MC: How does predictive ML perform under endogeneity problem
 + Non-parametric model is worse than a parametric model when the parametric model is specified correctly.
 + MC simulations to check how well CV works in picking the best model
+
+
+# Resources
+
++ https://daviddalpiaz.github.io/r4sl/

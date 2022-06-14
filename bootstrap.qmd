@@ -1,0 +1,410 @@
+---
+title: "Bootstrap"
+format: 
+  html:
+    code-fold: show
+    toc: true
+    self-contained: true
+editor: visual
+---
+
+```{r}
+#| include: false
+library(data.table)
+library(tidyverse)
+library(mgcv)
+library(caret)
+library(parallel)
+library(fixest)
+library(ranger)
+```
+
+# What is it for?
+
+Bootstrap can be used to quantify the uncertainty associated with an estimator. For example, you can use it to estimate the standard error (SE) of a coefficient of a linear model. Since there are closed-form solutions for that, bootstrap is not really bringing any benefits to this case. However, the power of bootstrap comes in handy when you do NOT have a closed form solution. We will first demonstrate how bootstrap works using a linear model, and then apply it to a case where no-closed form solution is available.
+
+# How it works
+
+Here are the general steps of a bootstrap:
+
++ Step 1: Sample the data with replacement (You can sample the same observations more than one times. You draw a ball and then you put it back in the box.)
++ Step 2: Run a statistical analysis to estimate whatever quantity you are interested in estimating
++ Repeat Steps 1 and 2 many times and store the estimates
++ Derive uncertainty measures from the collection of estimates obtained above
+
+Let's demonstrate this using a very simple linear regression example.
+
+Here is the data generating process:
+
+```{r}
+set.seed(89343)
+N <- 100
+x <- rnorm(N)
+y <- 2 * x + 2 * rnorm(N)
+```
+
+We would like to estimate the coefficient on $x$ by applying OLS to the following model:
+
+$$
+y = \alpha + \beta_x + \mu
+$$
+
+We know from the econometric theory class that the SE of $\hat{\beta}_{OLS}$ is $\frac{\sigma}{\sqrt{SST_x}}$, where $\sigma^2$ is the variance of the error term ($\mu$) and $SST_x = \sum_{i=1}^N (x_i - \bar{x})^2$ ($\bar{x}$ is the mean of $x$).  
+
+```{r}
+mean_x <- mean(x)
+sst_x <- ((x-mean(x))^2) %>% sum()
+(
+se_bhat <- sqrt(4 / sst_x)
+)
+```
+
+So, we know that the true SE of $\hat{\beta}_{OLS}$ is `r se_bhat`. There is not really any point in using bootstrap in this case, but this is a good example to see if bootstrap works or not.
+
+Let's implement a single iteration of the entire bootstrap steps (Steps 1 and 2).
+
+```{r}
+#=== set up a dataset ===#
+data <-
+  data.table(
+    y = y,
+    x = x
+  )
+```
+
+Now, draw observations with replacement so the resulting dataset has the same number of observations as the original dataset.
+
+```{r}
+num_obs <- nrow(data)
+
+#=== draw row numbers ===#
+(
+row_indices <- sample(seq_len(num_obs), num_obs, replace = TRUE)
+)
+```
+
+Use the sampled indices to create a bootstrapped dataset:
+
+```{r}
+temp_data <- data[row_indices, ]
+```
+
+Now, apply OLS to get a coefficient estimate on $x$ using the bootstrapped dataset.
+
+```{r}
+lm(y ~ x, data = temp_data)$coefficient["x"]
+```
+
+This is the end of Steps 1 and 2. Now, let's repeat this step 1000 times. First, we define a function that implements Steps 1 and 2.
+
+```{r}
+get_beta <- function(i, data)
+{
+  num_obs <- nrow(data)
+
+  #=== sample row numbers ===#
+  row_indices <- sample(seq_len(num_obs), num_obs, replace = TRUE)
+
+  #=== bootstrapped data ===#
+  temp_data <- data[row_indices, ]
+
+  #=== get coefficient ===#
+  beta_hat <- lm(y ~ x, data = temp_data)$coefficient["x"]
+
+  return(beta_hat)
+}
+```
+
+Now repeat `get_beta()` many times:
+
+```{r}
+beta_store <-
+  lapply(
+    1:1000,
+    function(x) get_beta(x, data)
+  ) %>% 
+  unlist()
+```
+
+Calculate standard deviation of $\hat{\beta}_{OLS}$,
+
+```{r}
+sd(beta_store)
+```
+
+Not, bad. What if we make the number of observations to 1000 instead of 100?
+
+```{r}
+set.seed(67343)
+
+#=== generate data ===#
+N <- 1000
+x <- rnorm(N)
+y <- 2 * x + 2 * rnorm(N)
+
+#=== set up a dataset ===#
+data <-
+  data.table(
+    y = y,
+    x = x
+  )
+
+#=== true SE ===#
+mean_x <- mean(x)
+sst_x <- sum(((x-mean(x))^2))
+(
+se_bhat <- sqrt(4 / sst_x)
+)
+```
+
+```{r}
+#=== bootstrap-estimated SE ===#
+beta_store <-
+  lapply(
+    1:1000,
+    function(x) get_beta(x, data)
+  ) %>% 
+  unlist()
+
+sd(beta_store)
+```
+
+This is just a single simulation. So, we cannot say bootstrap works better when the number of sample size is larger only from these experiments. But, it is generally true that bootstrap indeed works better when the number of sample size is larger.
+
+# More complicated example
+
+Consider a simple production function (yield response functions for agronomists):
+
+$$
+y = \beta_1 x + \beta_2 x^2 + \mu
+$$
+
+-   $y$: output
+-   $x$: input
+-   $\mu$: error
+
+The price of $y$ is 5 and the cost of $x$ is 2. Your objective is to identify the amount of input that maximizes profit. You do not know $\beta_1$ and $\beta_2$, and will be estimating them using the data you have collected. Letting $\hat{\beta_1}$ and $\hat{\beta_2}$ denote the estimates of $\beta_1$ and $\beta_2$, respectively, the mathematical expression of the optimization problem is:
+
+$$
+Max_x 5(\hat{\beta}_1 x + \hat{\beta}_2 x^2) - 2 x
+$$
+
+The F.O.C is
+
+$$
+5\hat{\beta}_1 + 10 \hat{\beta}_2 x - 2 = 0
+$$
+So, the estimated profit-maximizing input level is $\hat{x}^* = \frac{2-5\hat{\beta}_1}{10\hat{\beta}_2}$. What we are interested in knowing is the SE of $x^*$. As you can see, it is a non-linear function of the coefficients, which makes it slightly harder than simply getting the SE of $\hat{\beta_1}$ or $\hat{\beta_2}$. However, bootstrap can easily get us an estimate of the SE of $\hat{x}^*$^[Alternatively, you could use the delta method to get an estimate of the SE of a statistics that is a non-linear function of estimated parameters.]. The bootstrap process will be very much the same as the first bootstrap example except that we will estimate $x^*$ in each iteration instead of stopping at estimating just coefficients. Let's work on a single iteration first.
+
+Here is the data generating process:
+
+```{r}
+set.seed(894334)
+
+N <-  1000
+x <-  runif(N) * 3
+ey <- 6 * x - 2 * x^2
+mu <- 2 * rnorm(N)
+y <- ey + mu
+
+data <- 
+  data.table(
+    x = x,
+    y = y,
+    ey = ey
+  )
+```
+
+Under the data generating process, here is the production function looks like:
+
+```{r}
+ggplot(data = data) +
+  geom_line(aes(y = ey, x = x))
+```
+
+
+```{r}
+num_obs <- nrow(data)
+row_indices <- sample(seq_len(num_obs), num_obs, replace = TRUE)
+boot_data <- data[row_indices, ]
+reg <- lm(y ~ x + I(x^2), data = boot_data)
+
+```
+
+Now that we have estimated $\beta_1$ and $\beta_2$, we can easily estimate $x^*$ using its analytical formula.
+
+```{r}
+(
+x_star <- (2 - 5 * reg$coef["x"])/ (10 * reg$coef["I(x^2)"])
+)
+```
+
+We can repeat this many times to get a collection of $x^*$ estimates and calculate the standard deviation.
+
+```{r}
+get_x_star <- function(i)
+{
+  row_indices <- sample(seq_len(num_obs), num_obs, replace = TRUE)
+  boot_data <- data[row_indices, ]
+  reg <- lm(y ~ x + I(x^2), data = boot_data)
+  x_star <- (2 - 5 * reg$coef["x"])/ (10 * reg$coef["I(x^2)"])
+}
+```
+
+```{r}
+x_stars <- 
+  lapply(
+    1:1000,
+    get_x_star
+  ) %>%
+  unlist()
+```
+
+Here is the histogram:
+
+```{r}
+hist(x_stars, breaks = 30)
+```
+
+So, it seems to follow a normal distribution. You can get standard deviation of `x_stars` as an estimate of the SE of $\hat{x}^*$.
+
+```{r}
+sd(x_stars)
+```
+You can get the 95% confidence interval (CI) like below:
+
+```{r}
+quantile(x_stars, prob = c(0.025, 0.975))
+```
+
+
+# One more example with a non-parametric model
+
+We now demonstrate how we can use bootstrap to get an estimate of the SE of $\hat{x}^*$ when we use random forest (RF) as our regression method instead of OLS. When RF is used, we do not have any coefficients like the OLS case above. Even then, bootstrap allows us to estimate the SE of $\hat{x}^*$.
+
+The procedure is exactly the same except that we use RF to estiamte the production function and also that we need to conduct numerical optimization as no analytical formula is available unlike the case above. 
+
+We first implement a single iteration. 
+
+```{r}
+#=== get bootstrapped data ===#
+row_indices <- sample(seq_len(num_obs), num_obs, replace = TRUE)
+boot_data <- data[row_indices, ]
+
+#=== train RF ===#
+reg_rf <- ranger(y ~ x, data = boot_data)
+```
+
+Once you train RF, we can predict yield at a range of values of $x$, calculate profit, and then pick the value of $x$ that maximizes the estimated profit. Here is what the estimated production function looks like:
+
+```{r}
+#=== create series of x values at which yield will be predicted ===#
+eval_data <- data.table(x = seq(0, 3, length = 1000))
+
+#=== predict yield based on the trained RF ===#
+eval_data[, y_hat := predict(reg_rf, eval_data)$predictions]
+
+#=== plot ===#
+ggplot(data = eval_data) +
+  geom_line(aes(y = y_hat, x = x))
+```
+
+Well, it is very spiky (we need to tune hyper-parameters using KCV. But, more on this later. The quality of RF estimation has nothing to do with the goal of this section). 
+
+We can now predict profit at each value of $x$.
+
+```{r}
+#=== calculate profit ===#
+eval_data[, profit_hat := 5 * y_hat - 2 * x]
+
+head(eval_data)
+```
+The only thing left for us to do is to find the $x$ value that maximizes profit. 
+
+
+```{r}
+eval_data[which.max(profit_hat), ]
+```
+Okay, so `r eval_data[which.max(profit_hat), x]` is the $\hat{x}^*$ from this iteration.
+
+As you might have guessed already, we can just repeat this step to get an estimate of the SE of $\hat{x}^*_{RF}$.
+
+```{r}
+get_x_star_rf <- function(i)
+{
+  print(i) # progress tracker
+  
+  #=== get bootstrapped data ===#
+  row_indices <- sample(seq_len(num_obs), num_obs, replace = TRUE)
+  boot_data <- data[row_indices, ]
+
+  #=== train RF ===#
+  reg_rf <- ranger(y ~ x, data = boot_data)
+
+  #=== create series of x values at which yield will be predicted ===#
+  eval_data <- data.table(x = seq(0, 3, length = 1000))
+
+  #=== predict yield based on the trained RF ===#
+  eval_data[, y_hat := predict(reg_rf, eval_data)$predictions]
+  
+  #=== calculate profit ===#
+  eval_data[, profit_hat := 5 * y_hat - 2 * x]
+  
+  #=== find x_star_hat ===#
+  x_star_hat <- eval_data[which.max(profit_hat), x]
+  
+  return(x_star_hat)
+}
+
+```
+
+
+```{r}
+#| cache: true
+
+x_stars_rf <- 
+  mclapply(
+    1:1000,
+    get_x_star_rf,
+    mc.cores = 12
+  ) %>%
+  unlist()
+
+#=== Windows user ===#
+# library(future.apply)
+# plan("multisession", workers = detectCores() - 2)
+# x_stars_rf <- 
+#   future_lapply(
+#     1:1000,
+#     get_x_star_rf
+#   ) %>%
+#   unlist()
+```
+
+Here are the estimate of the SE of $\hat{x}^*_{RF}$ and 95% CI.
+
+```{r}
+sd(x_stars_rf)
+quantile(x_stars_rf, prob = c(0.025, 0.975))
+```
+
+As you can see, the estimation of $x^*$ is much more inaccurate than the previous OLS approach. This is likely due to the fact that we are not doing a good job of tuning the hyper-parameters of RF (but, again, more on this later).
+
+This conclude the illustration of the power of using bootstrap to estimate the uncertainty of the statistics of interest ($x^*$ here) when the analytical formula of the statistics is non-linear or not even known. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
