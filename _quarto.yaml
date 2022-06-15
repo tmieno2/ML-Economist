@@ -3,7 +3,7 @@ project:
   output-dir: docs
   
 book:
-  title: "Machine Learning for Economists"
+  title: "Introduction to Machine Learning for Economists"
   author: "Taro Mieno"
   # cover-image: images/cover.png
   site-url: https://rstudio-education.github.io/hopr/
@@ -14,10 +14,15 @@ book:
   chapters:
     - index.qmd
     - preface.qmd
-    - part: bootstrap.qmd
+    - part: basics.qmd
       chapters: 
+        - bias-variance-tradeoff.qmd
         - cross-validation.qmd
         - lasso.qmd
+        - bootstrap.qmd
+    - part: prediction-ml.qmd
+      chapters: 
+        - tree-based-ml.qmd
   # appendices:
   #   - a1-starting.qmd
 
