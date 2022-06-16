@@ -1274,11 +1274,11 @@ get_info(data_R_1, 7, lambda, gamma)$gain
 So, neither of the splits has a positive gain value. Therefore, we do not adopt either of the splits. For this iteration ($b=1$), this is the end of tree building. 
 
 :::{.callout-note}
-If the value of $\gamma$ is lower (say, 1), then we would have adopted the first split. 
+If the value of $\gamma$ is lower (say, 0), then we would have adopted the second split. 
 
 ```{r}
-get_info(data_R_1, 5, lambda, 1)$gain # first split
-get_info(data_R_1, 7, lambda, 1)$gain # second split
+get_info(data_R_1, 5, lambda, 0)$gain # first split
+get_info(data_R_1, 7, lambda, 0)$gain # second split
 ```
 
 As you can see, a higher value of $\gamma$ leads to a more aggressive tree pruning. 
