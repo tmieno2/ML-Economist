@@ -51,10 +51,15 @@ https://www.r-bloggers.com/2020/04/how-to-run-pythons-scikit-learn-in-r-in-5-min
 + scikitlearn
 
 
++ Simple linear regression to introduce Loss function and K-nearest neighbor
++ GAM 
 + MC: How does predictive ML perform under endogeneity problem
 + Non-parametric model is worse than a parametric model when the parametric model is specified correctly.
 + MC simulations to check how well CV works in picking the best model
 
+## MC experiments
+
++ what happens to DML when $\eta$ and $\varepsilon$ are not orthogonal
 
 # Resources
 

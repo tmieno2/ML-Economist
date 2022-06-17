@@ -1,14 +1,6 @@
 ---
 title: "Variance-Bias Trade-off"
-format: 
-  html:
-    code-fold: show
-    toc: true
-    self-contained: true
-editor: visual
 ---
-
-
 
 ```{r}
 #| include: false
@@ -28,14 +20,13 @@ library(caret)
 library(parallel)
 ```
 
-
 <!--
 #==========================================
 # General MC application steps 
 #==========================================
 -->
 
-# General MC application steps
+## General MC application steps
 
 Suppose you have a dataset: $D = \{X_1, y_1\}, \{X_2, y_2\}, 
 \dots, \{X_N, y_N\}$, where $X_i$ is a collection of features and $y_i$ is the dependent variable for $i$th observation. Further, suppose you use $D$ for training ML models and $\hat{f}()$ is a trained model. 
@@ -173,7 +164,7 @@ ggplot(summary) +
 
 This clearly tells us that we should NOT use training MSE to pick the best model. 
 
-# Variance-bias trade-off
+## Variance-bias trade-off
 
 Expected test MSE at $x = x_0$ can be written in general (no matter what the trained model is) as follows:
 $$
@@ -289,7 +280,7 @@ ggplot(data = sum_stat) +
 ```
 
  
-# Additional Example (K-nearest neighbor regression)
+## Additional Example (K-nearest neighbor regression)
 
 ```{r}
 
@@ -334,7 +325,6 @@ sim_results <-
   lapply(1:50, function(x) fit_knn(x, train_data, test_data)) %>%
   rbindlist()
 ```
-
 
 @fig-indiv-fit-knn presents the fitted regression lines for $k = 1, 5, 15, 25$, and $50$ using `knnreg()`, along with the observed data points in the train dataset.
 

@@ -26,7 +26,7 @@ library(caret)
 library(parallel)
 ```
 
-# Motivations
+## Motivations
 
 No model works the best all the time, and searching for the best modeling approach and specifications is an essential part of modeling applications. 
 
@@ -56,14 +56,14 @@ Our goal here is to find the model that would performs the best when applied to 
 We saw earlier that training MSE is not appropriate for that purpose as picking the model with the lowest training MSE would very much likely to lead you to the over-fitted model. In this lecture, we consider a better way of selecting a model using only train data.
 
 
-# Leave-One-Out Cross-Validation (LOOCV)
+## Leave-One-Out Cross-Validation (LOOCV)
 
 Consider a dataset: $D = \{X_1, y_1\}, \{X_2, y_2\}, 
 \dots, \{X_N, y_N\}$, where $X_i$ is a collection of features and $y_i$ is the dependent variable for $i$th observation. Further, suppose you use $D$ for training ML models and $\hat{f}()$ is a trained model. 
 
 LOOCV leaves out a single observation (say $i$), and train a model (say, GAM with the number of knots of 10) using the all the other observations (-$i$), and then find MSE for the left-out observation. This process is repeated for all the observations, and then the average of the individual MSEs is calculated.
 
-## R demonstration using `mgcv::gam()`
+### R demonstration using `mgcv::gam()`
 
 Let's demonstrate this using R. Here is the dataset we use.
 
@@ -178,7 +178,7 @@ We now get the average MSE.
 mse_average <- mean(mse_indiv)
 ```
 
-## Selecting the best GAM specification: Illustration
+### Selecting the best GAM specification: Illustration
 
 Now, let's try to find the best (among the ones we try) GAM specification using LOOCV. We will try ten different GAM specifications which vary in penalization parameter. Penalization parameter can be set using the `sp` option for `mgcv::gam()`. A greater value of `sp` leads to a more smooth fitted curve.
 
@@ -285,7 +285,7 @@ for (plot in fitted_curves) {
 
 LOOCV is perfectly general and can be applied to any statistical methods. However, it can be extremely computationally burdensome because you need to fit the same model for as many as the number of observations. So, if you have 10,000 observations, then you need to fit the model 10,000 times, which can take a long long time. 
 
-## Summary
+### Summary
 
 :::{.callout-note}
 LOOCV is perfectly general and can be applied to any statistical methods. 
@@ -295,7 +295,7 @@ LOOCV is perfectly general and can be applied to any statistical methods.
 LOOCV can be highly computation-intensive when the dataset is large
 :::
 
-# K-fold Cross-Validation (KCV)
+## K-fold Cross-Validation (KCV)
 
 
 KCV is a type of cross-validation that overcomes the LOOCV's drawback of being computationally too intensive when the dataset is large. KCV first splits the entire dataset intro $K$ folds (K groups) randomly. It then leaves out a chunk of observations that belongs to a fold (group), trains the model using the rest of the observations in the other folds, evaluate the trained model using the left-out group. It repeats this process for all the groups and average the MSEs obtained for each group.
@@ -390,7 +390,7 @@ By averaging MSE values, we get
 mse_all[, mean(mse)]
 ```
 
-## Selecting the best GAM specification: Illustration
+### Selecting the best GAM specification: Illustration
 
 Just like we found the best gam specification (choice of penalization parameter), we do the same now using KCV.
 
@@ -465,7 +465,7 @@ ggplot(data = mse_results) +
 Even though we compared different specification of the same approach (GAM), we can compare across different models as well. For example, you can find KCV for an RF model with a particular specifications of its hyper-parameters and compare the KCV with those of the GAM model specifications and see what comes at the top.  
 :::
 
-# Does KCV really work?
+## Does KCV really work?
 
 LOOCV and KCV use the train data to estimate test MSE. But, does it really work? In other words, does it let us pick the parameter that minimizes the test MSE? We will run a simple MC simulations to test this. We continue to use the same data generating process and gam models for this simulation as well. 
 

@@ -19,11 +19,11 @@ library(fixest)
 library(ranger)
 ```
 
-# What is it for?
+## What is it for?
 
 Bootstrap can be used to quantify the uncertainty associated with an estimator. For example, you can use it to estimate the standard error (SE) of a coefficient of a linear model. Since there are closed-form solutions for that, bootstrap is not really bringing any benefits to this case. However, the power of bootstrap comes in handy when you do NOT have a closed form solution. We will first demonstrate how bootstrap works using a linear model, and then apply it to a case where no-closed form solution is available.
 
-# How it works
+## How it works
 
 Here are the general steps of a bootstrap:
 
@@ -171,7 +171,7 @@ sd(beta_store)
 
 This is just a single simulation. So, we cannot say bootstrap works better when the number of sample size is larger only from these experiments. But, it is generally true that bootstrap indeed works better when the number of sample size is larger.
 
-# More complicated example
+## More complicated example
 
 Consider a simple production function (yield response functions for agronomists):
 
@@ -278,7 +278,7 @@ quantile(x_stars, prob = c(0.025, 0.975))
 ```
 
 
-# One more example with a non-parametric model
+## One more example with a non-parametric model
 
 We now demonstrate how we can use bootstrap to get an estimate of the SE of $\hat{x}^*$ when we use random forest (RF) as our regression method instead of OLS. When RF is used, we do not have any coefficients like the OLS case above. Even then, bootstrap allows us to estimate the SE of $\hat{x}^*$.
 

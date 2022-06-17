@@ -23,6 +23,15 @@ quarto::quarto_render(here::here("LectureNotes/lasso.qmd"))
 # === Tree-based ===#
 quarto::quarto_render(here::here("LectureNotes/tree-based-ml.qmd"))
 
+# === causal-ml ===#
+quarto::quarto_render(here::here("LectureNotes/causal-ml.qmd"))
+
+# === grf ===#
+quarto::quarto_render(here::here("LectureNotes/grf.qmd"))
+
+# === cf ===#
+quarto::quarto_render(here::here("LectureNotes/cf.qmd"))
+
 
 
 
