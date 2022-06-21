@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-0.9.563">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Generalized Random Forest</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+<script src="grf_files/libs/clipboard/clipboard.min.js"></script>
+<script src="grf_files/libs/quarto-html/quarto.js"></script>
+<script src="grf_files/libs/quarto-html/popper.min.js"></script>
+<script src="grf_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="grf_files/libs/quarto-html/anchor.min.js"></script>
+<link href="grf_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="grf_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="grf_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="grf_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="grf_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+</div>
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Generalized Random Forest</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<section id="generalized-method-of-moment-gmm" class="level2">
+<h2 class="anchored" data-anchor-id="generalized-method-of-moment-gmm">Generalized Method of Moment (GMM)</h2>
+</section>
+<section id="generalized-random-forest-grf" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="generalized-random-forest-grf">Generalized Random Forest (GRF)</h2>
+<p><span class="math display">\[
+\begin{aligned}
+E[\psi_{\theta(x),\nu(x)}|X_i = x] = 0
+\end{aligned}
+\]</span></p>
+<p><span class="math inline">\(\psi_{\theta(x),\nu(x)}\)</span> is a scoring (moment) function.</p>
+<p><span style="color:blue"> Example 1: OLS on linear model </span></p>
+<p>Suppose we assume that <span class="math inline">\(E[u|x] = 0\)</span>. Then, the sample version of this moment condition (score function) is</p>
+<p><span class="math display">\[
+\begin{aligned}
+\frac{1}{N}\sum_{i=1}^N (y_i - X_i\beta) = 0
+\end{aligned}
+\]</span></p>
+<p>or equivalently,</p>
+<p><span class="math display">\[
+\begin{aligned}
+\sum_{i=1}^N (y_i - X_i\beta) = 0
+\end{aligned}
+\]</span></p>
+<p>Here, <span class="math inline">\(\theta(X) = X_i\beta\)</span> and <span class="math inline">\(\psi_{\theta(x),\nu(x)} = y_i - \theta(x)\)</span>. <span class="math inline">\(O_i = y_i\)</span></p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>No nuisance function (<span class="math inline">\(\nu(X)\)</span>) here.</p>
+</div></div><p>We can find <span class="math inline">\(\beta\)</span> so that the above condition is satisfied: that is, sum of the residuals is zero. This is called a method of moment.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>Note that this condition is actually exactly the same as the F.O.C of OLS. OLS</p>
+<p><span class="math display">\[
+\begin{aligned}
+Min_{\beta} \sum_{i=1}^N (y_i - X_i\beta)^2
+\end{aligned}
+\]</span></p>
+<p>The F.O.C is</p>
+<p><span class="math display">\[
+\begin{aligned}
+-2 \sum_{i=1}^N (y_i - X_i\beta) = 0
+\end{aligned}
+\]</span></p>
+<p>or equivalently,</p>
+<p><span class="math display">\[
+\begin{aligned}
+\sum_{i=1}^N (y_i - X_i\beta) = 0
+\end{aligned}
+\]</span></p>
+</div></div><p>Data: <span class="math inline">\((X_i, O_i)\)</span></p>
+<p>For the target value <span class="math inline">\(x\)</span> (a particular value of <span class="math inline">\(X\)</span> at which you want to <span class="math inline">\(\theta(x)\)</span>).</p>
+<p>GRF solves</p>
+<p><span class="math display">\[
+\begin{aligned}
+\sum_{i=1}^N \alpha_i(x) \cdot \psi_{\theta(x),\nu(x)}(O_i) = 0
+\end{aligned}
+\]</span></p>
+<p>w.r.t <span class="math inline">\(\theta(x)\)</span> and <span class="math inline">\(\nu(x)\)</span>, where <span class="math inline">\(\alpha_i(x)\)</span> is a weight for <span class="math inline">\(i\)</span> given <span class="math inline">\(x\)</span>.</p>
+<p>The weights <span class="math inline">\(\alpha_i(x)\)</span> used to specify the above solution were obtained via a deterministic kernel function [Hastie, Tibshirani and Friedman (2009)], which can be sensitive to the curse of dimensionality.”</p>
+<p>GRF proposes to use forest-based algorithms to learn problem-specific weights <span class="math inline">\(\alpha_i(x)\)</span> adaptively.</p>
+<p><span class="math inline">\(B\)</span> trees (<span class="math inline">\(b = 1, \dots, B\)</span>). For each tree, let <span class="math inline">\(L_b(x)\)</span> denote the set of training samples that belong to the same leaf as <span class="math inline">\(x\)</span>.</p>
+<p><span class="math display">\[
+\begin{aligned}
+\alpha_{b,i}(x) = \frac{I[X_i \in L_b(x)]}{|L_b(x)|}
+\end{aligned}
+\]</span></p>
+<p><span class="math inline">\(I[]\)</span> is the index function that take 1 if the condition inside is true and 0 if not. So, <span class="math inline">\(I[X_i \in L_b(x)] = 1\)</span> if observation <span class="math inline">\(i\)</span>’s attributes <span class="math inline">\(X_i\)</span> belongs to the leaf <span class="math inline">\(x\)</span> is in. <span class="math inline">\(|L_b(x)|\)</span> is the number of samples that are in the leaf that <span class="math inline">\(x\)</span> belongs to. If you sum <span class="math inline">\(\alpha_{b,i}(x)\)</span> over <span class="math inline">\(i\)</span>, they sum to 1.</p>
+<p><span class="math display">\[
+\begin{aligned}
+\alpha_{i}(x) = \frac{1}{B}\sum_{i=1}^B \alpha_{b,i}(x)
+\end{aligned}
+\]</span></p>
+<p>We then average <span class="math inline">\(\alpha_{b,i}(x)\)</span> over B trees.</p>
+<p>The questions is of course how to construct trees.</p>
+<p><span style="color:blue"> Special Case: Random Forest </span></p>
+<p><span class="math inline">\(\theta(x) = E[Y_i|X_i]\)</span>. That is the statistics of interest is the expected value of <span class="math inline">\(Y\)</span> conditional on <span class="math inline">\(X_i = x\)</span>. <span class="math inline">\(\psi_{\theta(x)} = Y_i - \theta(x)\)</span> (residual).</p>
+<p>We solve</p>
+<p><span class="math display">\[
+\begin{aligned}
+\sum_{i=1}^B\frac{1}{B}\sum_{b=1}^B \alpha_{b,i}(x)(Y_i - \hat{\theta}(x)) = 0
+\end{aligned}
+\]</span></p>
+<p>We can show that <span class="math inline">\(\hat{\theta}(x) = \frac{1}{B}\sum_{b=1}^B\hat{\theta}_b(x)\)</span>, where</p>
+<p><span class="math display">\[
+\begin{aligned}
+\hat{\theta}_b(x) = \frac{\sum_{\{i: X_i\in L_b(x)\}}Y_i}{|L_b(x)|}
+\end{aligned}
+\]</span></p>
+<p>satisfies the above condition.</p>
+<p><span class="math display">\[
+\begin{aligned}
+\sum_{i=1}^N\frac{1}{B}\sum_{b=1}^B \alpha_{b,i}(x)(Y_i - \hat{\theta}(x)) \\
+\sum_{i=1}^N\frac{1}{B}\sum_{b=1}^B \frac{I[X_i \in L_b(x)]}{|L_b(x)|} \huge(\normalsize Y_i - \frac{\sum_{\{i: X_i\in L_b(x)\}}Y_i}{|L_b(x)|}\huge)
+\end{aligned}
+\]</span></p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><span class="math inline">\(\{i: X_i\in L_b(x)\}\)</span> is the set of <span class="math inline">\(i\)</span> that belongs to leaf <span class="math inline">\(L_b(x)\)</span></p>
+</div></div></section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

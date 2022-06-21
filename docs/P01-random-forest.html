@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-0.9.563">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Introduction to Machine Learning for Economists - 7&nbsp; Random Forest</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./P02-boosted-regression-forest.html" rel="next">
+<link href="./prediction-ml.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+</head>
+<body class="nav-sidebar floating slimcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }"><div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">
+<span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Random Forest</span>
+</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Introduction to Machine Learning for Economists</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/tmieno2/ML-Economist" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+    <a href="" title="Share" id="sidebar-tool-dropdown-0" class="sidebar-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-share"></i></a>
+    <ul class="dropdown-menu" aria-labelledby="sidebar-tool-dropdown-0">
+<li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=%7Curl%7C">
+            <i class="bi bi-bi-twitter pe-1"></i>
+          Twitter
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=%7Curl%7C">
+            <i class="bi bi-bi-facebook pe-1"></i>
+          Facebook
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://www.linkedin.com/sharing/share-offsite/?url=%7Curl%7C">
+            <i class="bi bi-bi-linkedin pe-1"></i>
+          LinkedIn
+          </a>
+        </li>
+    </ul>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Welcome</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Preface: Prediction v.s. Causal Inference</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="./basics.html" class="sidebar-item-text sidebar-link">Basics</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./B01-gam.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Non-linear function estimation: Smoothing Splines and K-nearest neighbor regression</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./B02-bias-variance-tradeoff.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Variance-Bias Trade-off</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./B03-lasso.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Regression Shrinkage Methods: LASSO (Ridge and Elastic Net)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./B04-cross-validation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Cross-validation based on mean squared error (MSE)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./B05-bootstrap.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Bootstrap</span></a>
+  </div>
+</li>
+    </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="./prediction-ml.html" class="sidebar-item-text sidebar-link">Prediction ML</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./P01-random-forest.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Random Forest</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./P02-boosted-regression-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Boosted Regression Forest</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./P03-xgb.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Extreme Gradient Boosting</span></a>
+  </div>
+</li>
+    </ul>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./causal-ml.html" class="sidebar-item-text sidebar-link">Causal Machine Learning (CML) Methods</a>
+  </div>
+</li>
+    </ul>
+</div>
+</nav><!-- margin-sidebar --><div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc"><h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+<li><a href="#preparation" id="toc-preparation" class="nav-link active" data-scroll-target="#preparation">Preparation</a></li>
+  <li>
+<a href="#sec-rt" id="toc-sec-rt" class="nav-link" data-scroll-target="#sec-rt"> <span class="header-section-number">7.1</span> Regression tree</a>
+  <ul class="collapse">
+<li><a href="#what-is-it" id="toc-what-is-it" class="nav-link" data-scroll-target="#what-is-it"> <span class="header-section-number">7.1.1</span> What is it?</a></li>
+  <li><a href="#training-a-regression-tree-in-r" id="toc-training-a-regression-tree-in-r" class="nav-link" data-scroll-target="#training-a-regression-tree-in-r"> <span class="header-section-number">7.1.2</span> Training a regression tree in R</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#sec-rf" id="toc-sec-rf" class="nav-link" data-scroll-target="#sec-rf"> <span class="header-section-number">7.2</span> Random Forest (RF)</a>
+  <ul class="collapse">
+<li><a href="#bagging-bootstrap-aggregation" id="toc-bagging-bootstrap-aggregation" class="nav-link" data-scroll-target="#bagging-bootstrap-aggregation"> <span class="header-section-number">7.2.1</span> Bagging (Bootstrap aggregation)</a></li>
+  <li><a href="#random-forest-rf" id="toc-random-forest-rf" class="nav-link" data-scroll-target="#random-forest-rf"> <span class="header-section-number">7.2.2</span> Random Forest (RF)</a></li>
+  </ul>
+</li>
+  <li><a href="#over-fitting" id="toc-over-fitting" class="nav-link" data-scroll-target="#over-fitting"> <span class="header-section-number">7.3</span> Over-fitting</a></li>
+  <li><a href="#resources" id="toc-resources" class="nav-link" data-scroll-target="#resources"> <span class="header-section-number">7.4</span> Resources</a></li>
+  </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/P01-random-forest.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title d-none d-lg-block">
+<span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Random Forest</span>
+</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header><section id="preparation" class="level2 unnumbered"><h2 class="unnumbered anchored" data-anchor-id="preparation">Preparation</h2>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com">data.table</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bethatkinson/rpart">rpart</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rattle.togaware.com/">rattle</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://justinmshea.github.io/wooldridge/">wooldridge</a></span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="sec-rt" class="level2 page-columns page-full" data-number="7.1"><h2 data-number="7.1" class="anchored" data-anchor-id="sec-rt">
+<span class="header-section-number">7.1</span> Regression tree</h2>
+<section id="what-is-it" class="level3 page-columns page-full" data-number="7.1.1"><h3 data-number="7.1.1" class="anchored" data-anchor-id="what-is-it">
+<span class="header-section-number">7.1.1</span> What is it?</h3>
+<p>Here is an example of regression tree to explain logged salary (<code>lsalary</code>) using the <code>mlb1</code> data from the <code>wooldridge</code> package.</p>
+<div class="cell">
+<details><summary>Code</summary><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== get mlb1 data (from wooldridge) ===#</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">mlb1</span><span class="op">)</span>
+
+<span class="co">#=== build a simple tree ===#</span>
+<span class="va">simple_tree</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span>
+    <span class="va">lsalary</span> <span class="op">~</span> <span class="va">hits</span> <span class="op">+</span> <span class="va">runsyr</span>, 
+    data <span class="op">=</span> <span class="va">mlb1</span>, 
+    control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.control.html">rpart.control</a></span><span class="op">(</span>minsplit <span class="op">=</span> <span class="fl">200</span><span class="op">)</span>
+  <span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/pkg/rattle/man/fancyRpartPlot.html">fancyRpartPlot</a></span><span class="op">(</span><span class="va">simple_tree</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<p><img src="P01-random-forest_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Here is how you read the figure. At the first node, all the observations belong to it (<span class="math inline">\(n=353\)</span>) and the estimate of <code>lsalary</code> is 13. Now, the whole datasets are split into two based on the criteria of whether <code>hits</code> is less than <code>262</code> or not. If yes, then such observations will be grouped into the node with “2” on top (the leftmost node), and the estimated <code>lsalary</code> for all the observations in that group (<span class="math inline">\(n = 132\)</span>) is 12. If no, then such observations will be grouped into the node with “3” on top, and the estimated <code>lsalary</code> for all the observations in that group (<span class="math inline">\(n = 221\)</span>) is 14. This node is further split into two groups based on whether <code>runsyr</code> is less than 44 or not. For those observations with <code>runsyr</code> <span class="math inline">\(&lt; 44\)</span> (second node a the bottom), estimated <code>lsalary</code> is 14. For those with <code>runsyr</code> <span class="math inline">\(&gt;= 44\)</span> (rightmost node at the bottom), estimated <code>lsalary</code> is 15. The nodes that do not have any further bifurcations below are called terminal nodes or leafs.</p>
+<p>As illustrated in the figure above, a regression tree splits the data into groups based on the value of explanatory variables, and all the observations in the same group will be assigned the same estimate (the sample average of the dependent variable of the group).</p>
+<p>Another way of illustrating this grouping is shown below:</p>
+<div class="cell">
+<details><summary>Code</summary><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">mlb1</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">hits</span>, x <span class="op">=</span> <span class="va">runsyr</span>, color <span class="op">=</span> <span class="va">lsalary</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/scale_viridis.html">scale_color_viridis_c</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_abline.html">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">262</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_path.html">geom_line</a></span><span class="op">(</span>
+    data <span class="op">=</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/data.table.html">data.table</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">44</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">262</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">mlb1</span><span class="op">$</span><span class="va">hits</span><span class="op">)</span>, length <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span>, 
+    <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">y</span>, x <span class="op">=</span> <span class="va">x</span><span class="op">)</span>
+  <span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/annotate.html">annotate</a></span><span class="op">(</span>
+    <span class="st">"text"</span>, 
+    x <span class="op">=</span> <span class="fl">44</span>, y <span class="op">=</span> <span class="fl">111</span>, 
+    label <span class="op">=</span> <span class="st">"Region 2"</span>, 
+    color <span class="op">=</span> <span class="st">"red"</span>
+  <span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/annotate.html">annotate</a></span><span class="op">(</span>
+    <span class="st">"text"</span>, 
+    x <span class="op">=</span> <span class="fl">22</span>, y <span class="op">=</span> <span class="fl">1500</span>, 
+    label <span class="op">=</span> <span class="st">"Region 6"</span>, 
+    color <span class="op">=</span> <span class="st">"red"</span>
+  <span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/annotate.html">annotate</a></span><span class="op">(</span>
+    <span class="st">"text"</span>, 
+    x <span class="op">=</span> <span class="fl">75</span>, y <span class="op">=</span> <span class="fl">1500</span>, 
+    label <span class="op">=</span> <span class="st">"Region 7"</span>, 
+    color <span class="op">=</span> <span class="st">"red"</span>
+  <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<p><img src="P01-random-forest_files/figure-html/viz-tree-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The mechanism called recursive binary splitting is used to split the predictor space like the example above. Suppose you have K explanatory variables (<span class="math inline">\(X_1, \dots, X_k\)</span>). Further, let <span class="math inline">\(c\)</span> denote the cutpoint that splits the sample into two regions: {<span class="math inline">\(X|X_k &lt; c\)</span>} and {<span class="math inline">\(X|X_k \geq c\)</span>}.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>{<span class="math inline">\(X|X_k &lt; c\)</span>} means observations that satisfy the condition stated right to the vertical bar (|). Here, it means all the observations for which its <span class="math inline">\(X_k\)</span> value is less than <span class="math inline">\(c\)</span>.</p>
+</div></div><ul>
+<li>Step 1: For each of the explanatory variables (<span class="math inline">\(X_1\)</span> through <span class="math inline">\(X_K\)</span>), find the cutpoint that leads to the lowest sum of the squared residuals.</li>
+<li>Step 2: Among all the splits (as many as the number of explanatory variables), pick the variable-cutpoint combination that leads to the lowest sum of the squared residuals.</li>
+</ul>
+<p>The data is then split according to the chosen criteria and then the same process is repeated for each of the branches, ad infinitum until the user-specified stopping criteria is met.</p>
+<p>Let’s try to write (an inefficient version) this process for the first split from the beginning node using the <code>mlb1</code> data as an illustration based on a simple grid search to find the optimal cutpoints (Step 1).</p>
+<div class="cell">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== get data ===#</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://justinmshea.github.io/wooldridge/">wooldridge</a></span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">mlb1</span><span class="op">)</span>
+
+<span class="va">mlb1_dt</span> <span class="op">&lt;-</span> 
+  <span class="va">mlb1</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/data.table.html">data.table</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="co"># turn into data.table </span>
+  <span class="va">.</span><span class="op">[</span>, <span class="va">salary</span> <span class="op">:=</span> <span class="cn">NULL</span><span class="op">]</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="co"># remove salary (use lsalary instead)</span>
+  <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/na.omit.data.table.html">na.omit</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># remove observations with NA in any of the variables</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s work on splitting based on <code>hruns</code>. First, we define a sequence of values of cutpoints for <code>hruns</code>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">value_seq</span> <span class="op">&lt;-</span> 
+  <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span>
+    <span class="va">mlb1_dt</span><span class="op">$</span><span class="va">hruns</span>, 
+    prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0.001</span>, <span class="fl">0.999</span>, length <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>
+  <span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/duplicated.html">unique</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>For each value in <code>value_seq</code>, we find the RSS. For example, for the 50th value in <code>value_seq</code>,</p>
+<div class="cell">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/copy.html">copy</a></span><span class="op">(</span><span class="va">mlb1_dt</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+  <span class="co">#=== find the mean of lsalary by whether hruns is less than the cutpoint or not ===#</span>
+  <span class="va">.</span><span class="op">[</span>, <span class="va">y_hat</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">lsalary</span><span class="op">)</span>, by <span class="op">=</span> <span class="op">(</span><span class="va">hruns</span> <span class="op">&lt;</span> <span class="va">value_seq</span><span class="op">[</span><span class="fl">50</span><span class="op">]</span><span class="op">)</span><span class="op">]</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+  <span class="co">#=== get squared residuals ===#</span>
+  <span class="va">.</span><span class="op">[</span>, <span class="op">(</span><span class="va">lsalary</span> <span class="op">-</span> <span class="va">y_hat</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">]</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+  <span class="co">#=== get RSS ===#</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 318.2431</code></pre>
+</div>
+</div>
+<p>How about 70th value in <code>value_seq</code>?</p>
+<div class="cell">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/copy.html">copy</a></span><span class="op">(</span><span class="va">mlb1_dt</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+  <span class="co">#=== find the mean of lsalary by whether hruns is less than the cutpoint or not ===#</span>
+  <span class="va">.</span><span class="op">[</span>, <span class="va">y_hat</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">lsalary</span><span class="op">)</span>, by <span class="op">=</span> <span class="op">(</span><span class="va">hruns</span> <span class="op">&lt;</span> <span class="va">value_seq</span><span class="op">[</span><span class="fl">70</span><span class="op">]</span><span class="op">)</span><span class="op">]</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+  <span class="co">#=== get squared residuals ===#</span>
+  <span class="va">.</span><span class="op">[</span>, <span class="op">(</span><span class="va">lsalary</span> <span class="op">-</span> <span class="va">y_hat</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">]</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+  <span class="co">#=== get RSS ===#</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 419.1821</code></pre>
+</div>
+</div>
+<p>This means <code>value_seq[70]</code> (209.0880707) is a better cutpoint than <code>value_seq[50]</code> (71.7563535).</p>
+<p>Okay, let’s consider all the candidate values, not just 50th and 70th, and then pick the best.</p>
+<div class="cell">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">get_rss</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">i</span>, <span class="va">var_name</span>, <span class="va">value_seq</span>, <span class="va">data</span><span class="op">)</span>
+<span class="op">{</span>
+  <span class="va">rss</span> <span class="op">&lt;-</span>
+    <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/copy.html">copy</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/setattr.html">setnames</a></span><span class="op">(</span><span class="va">var_name</span>, <span class="st">"var"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+    <span class="va">.</span><span class="op">[</span>, <span class="va">y_hat</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">lsalary</span><span class="op">)</span>, by <span class="op">=</span> <span class="op">(</span><span class="va">var</span> <span class="op">&lt;</span> <span class="va">value_seq</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span><span class="op">]</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+    <span class="va">.</span><span class="op">[</span>, <span class="op">(</span><span class="va">lsalary</span> <span class="op">-</span> <span class="va">y_hat</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">]</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">)</span>
+
+  <span class="va">return_data</span> <span class="op">&lt;-</span>
+    <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/data.table.html">data.table</a></span><span class="op">(</span>
+      rss <span class="op">=</span> <span class="va">rss</span>,
+      var_name <span class="op">=</span> <span class="va">var_name</span>,
+      var_value <span class="op">=</span> <span class="va">value_seq</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>
+    <span class="op">)</span>
+
+  <span class="kw"><a href="https://justinmshea.github.io/wooldridge/reference/return.html">return</a></span><span class="op">(</span><span class="va">return_data</span><span class="op">)</span>
+<span class="op">}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Here are RSS values at every value in <code>value_seq</code>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">rss_value</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span>
+    <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">value_seq</span><span class="op">)</span><span class="op">)</span>,
+    <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">get_rss</span><span class="op">(</span><span class="va">x</span>, <span class="st">"hruns"</span>, <span class="va">value_seq</span>, <span class="va">mlb1_dt</span><span class="op">)</span> 
+  <span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/rbindlist.html">rbindlist</a></span><span class="op">(</span><span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">rss_value</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        rss var_name var_value
+1: 445.0615    hruns         0
+2: 396.8287    hruns         1
+3: 383.2393    hruns         2
+4: 362.5779    hruns         3
+5: 337.0760    hruns         4
+6: 325.4865    hruns         5</code></pre>
+</div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">tail</a></span><span class="op">(</span><span class="va">rss_value</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        rss var_name var_value
+1: 419.1821    hruns  209.0881
+2: 419.5111    hruns  231.0000
+3: 428.4163    hruns  242.4425
+4: 434.3318    hruns  258.5674
+5: 441.9307    hruns  333.4414
+6: 443.3740    hruns  426.0780</code></pre>
+</div>
+</div>
+<p>Finding the cutpoint value that minimizes RSS,</p>
+<div class="cell">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">rss_value</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html">which.min</a></span><span class="op">(</span><span class="va">rss</span><span class="op">)</span>, <span class="op">]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        rss var_name var_value
+1: 260.3094    hruns  28.47488</code></pre>
+</div>
+</div>
+<p>Okay, so, the best cutpoint for <code>hruns</code> is 28.475</p>
+<p>Suppose we are considering only five explanatory variables in building a regression tree: <code>hruns</code>, <code>years</code>, <code>rbisyr</code>, <code>allstar</code>, <code>runsyr</code>, <code>hits</code>, and <code>bavg</code>. We do the same operation we did for <code>hruns</code> for all the variables.</p>
+<div class="cell">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">get_rss_by_var</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">var_name</span>, <span class="va">data</span><span class="op">)</span>
+<span class="op">{</span>
+  <span class="va">temp_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/copy.html">copy</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span> 
+
+  <span class="co">#=== define a sequence of values of hruns ===#</span>
+  <span class="va">value_seq</span> <span class="op">&lt;-</span> 
+    <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span>
+      <span class="va">temp_data</span><span class="op">[</span>, <span class="va">..var_name</span><span class="op">]</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span><span class="op">)</span>, 
+      prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0.001</span>, <span class="fl">0.999</span>, length <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>
+    <span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/duplicated.html">unique</a></span><span class="op">(</span><span class="op">)</span>
+
+  <span class="co">#=== get RSS ===#</span>
+  <span class="va">rss_value</span> <span class="op">&lt;-</span>
+    <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span>
+      <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">value_seq</span><span class="op">)</span><span class="op">)</span>,
+      <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">get_rss</span><span class="op">(</span><span class="va">x</span>, <span class="va">var_name</span>, <span class="va">value_seq</span>, <span class="va">temp_data</span><span class="op">)</span> 
+    <span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/rbindlist.html">rbindlist</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+    <span class="va">.</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html">which.min</a></span><span class="op">(</span><span class="va">rss</span><span class="op">)</span>,<span class="op">]</span>
+
+  <span class="kw"><a href="https://justinmshea.github.io/wooldridge/reference/return.html">return</a></span><span class="op">(</span><span class="va">rss_value</span><span class="op">)</span>
+<span class="op">}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Looping over the set of variables,</p>
+<div class="cell">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="op">(</span>
+<span class="va">min_rss_by_var</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span>
+    <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"hruns"</span>, <span class="st">"years"</span>, <span class="st">"rbisyr"</span>, <span class="st">"allstar"</span>, <span class="st">"runsyr"</span>, <span class="st">"hits"</span>, <span class="st">"bavg"</span><span class="op">)</span>,
+    <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">get_rss_by_var</span><span class="op">(</span><span class="va">x</span>, <span class="va">mlb1_dt</span><span class="op">)</span>
+  <span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/rbindlist.html">rbindlist</a></span><span class="op">(</span><span class="op">)</span>
+<span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        rss var_name  var_value
+1: 260.3094    hruns  28.474879
+2: 249.9090    years   4.000000
+3: 265.1082   rbisyr  32.774949
+4: 279.7165  allstar   8.209356
+5: 251.6343   runsyr  38.079145
+6: 205.1488     hits 354.811444
+7: 375.0281     bavg 252.359257</code></pre>
+</div>
+</div>
+<p>So, the variable-cutpoint combination that minimizes RSS is hits - 354.81. We now have the first split. This tree is developed further by splitting nodes like this.</p>
+</section><section id="training-a-regression-tree-in-r" class="level3" data-number="7.1.2"><h3 data-number="7.1.2" class="anchored" data-anchor-id="training-a-regression-tree-in-r">
+<span class="header-section-number">7.1.2</span> Training a regression tree in R</h3>
+<p>You can fit a regression tree using <code><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart()</a></code> from the <code>rpart</code> package. Its syntax is similar to that of <code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code> for a quick fitting.</p>
+<div class="cell">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span>
+  <span class="va">formula</span>,
+  <span class="va">data</span>
+<span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Using <code>mlb1</code>, let’s fit a regression tree where <code>lsalary</code> is the dependent variable and <code>hruns</code>, <code>years</code>, <code>rbisyr</code>, <code>allstar</code>, <code>runsyr</code>, <code>hits</code>, and <code>bavg</code> are the explanatory variables.</p>
+<div class="cell">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== fit a tree ===#</span>
+<span class="va">fitted_tree</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span>
+    <span class="va">lsalary</span> <span class="op">~</span> <span class="va">hruns</span> <span class="op">+</span> <span class="va">years</span> <span class="op">+</span> <span class="va">rbisyr</span> <span class="op">+</span> <span class="va">allstar</span> <span class="op">+</span> <span class="va">runsyr</span> <span class="op">+</span> <span class="va">hits</span> <span class="op">+</span> <span class="va">bavg</span>, 
+    data <span class="op">=</span> <span class="va">mlb1_dt</span>
+  <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Here is the visualization of the fitted tree using <code><a href="https://rdrr.io/pkg/rattle/man/fancyRpartPlot.html">fancyRpartPlot()</a></code> from the <code>rattle</code> package.</p>
+<div class="cell">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/rattle/man/fancyRpartPlot.html">fancyRpartPlot</a></span><span class="op">(</span><span class="va">fitted_tree</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="P01-random-forest_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Now, you may wonder why <code><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart()</a></code> is not building a tree that has as many leaves as the number of observations so that we have a perfect prediction for the train data (<code>mlb1</code>). If we are simply implementing recursive binary splitting, then it should not have stopped where it stopped. This is because <code><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart()</a></code> sets parameter values that control the development of a tree by default. Those default parameters can be seen below:</p>
+<div class="cell">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.control.html">rpart.control</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$minsplit
+[1] 20
+
+$minbucket
+[1] 7
+
+$cp
+[1] 0.01
+
+$maxcompete
+[1] 4
+
+$maxsurrogate
+[1] 5
+
+$usesurrogate
+[1] 2
+
+$surrogatestyle
+[1] 0
+
+$maxdepth
+[1] 30
+
+$xval
+[1] 10</code></pre>
+</div>
+</div>
+<p>For example, <code>minsplit</code> is the minimum number of observations that must exist in a node in order for a split to be attempted. <code>cp</code> refers to the complexity parameter. For a given value of <code>cp</code>, a tree is build to minimize the following:</p>
+<p><span class="math display">\[
+\sum_{t=1}^T\sum_{x_i\in R_t} (y_i - \hat{y}_{R_t})^2 + cp\cdot T
+\]</span></p>
+<p>where <span class="math inline">\(R_t\)</span> is the <span class="math inline">\(t\)</span>th region and <span class="math inline">\(\hat{y_{R_t}}\)</span> is the estimate of <span class="math inline">\(y\)</span> for all the observations that reside in <span class="math inline">\(R_t\)</span>. So, the first term is RSS. The objective function has a penalization term (the second term) just like shrinkage methods we saw in <a href="#sec-shrinkage"><span class="quarto-unresolved-ref">sec-shrinkage</span></a>. A higher value of <code>cp</code> leads to a less complex tree with less leaves.</p>
+<p>If you want to build a much deeper tree that has many leaves, then you can do so using the <code>control</code> option like below.</p>
+<div class="cell">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">full_tree</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span>
+    <span class="va">lsalary</span> <span class="op">~</span> <span class="va">hruns</span> <span class="op">+</span> <span class="va">years</span> <span class="op">+</span> <span class="va">rbisyr</span> <span class="op">+</span> <span class="va">allstar</span> <span class="op">+</span> <span class="va">runsyr</span> <span class="op">+</span> <span class="va">hits</span> <span class="op">+</span> <span class="va">bavg</span>, <span class="co"># formula</span>
+    data <span class="op">=</span> <span class="va">mlb1_dt</span>, <span class="co"># data</span>
+    control <span class="op">=</span> <span class="co"># control of the hyper parameters</span>
+      <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.control.html">rpart.control</a></span><span class="op">(</span>
+        minsplit <span class="op">=</span> <span class="fl">2</span>, 
+        cp <span class="op">=</span> <span class="fl">0</span> <span class="co"># complexity parameter</span>
+      <span class="op">)</span>
+  <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s see how amazing this tree is by comparing the observed and fitted <code>lsalary</code> values.</p>
+<div class="cell">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== get fitted values ===#</span>
+<span class="va">mlb1_dt</span><span class="op">[</span>, <span class="va">y_hat</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">full_tree</span>, newdata <span class="op">=</span> <span class="va">mlb1_dt</span><span class="op">)</span><span class="op">]</span>
+
+<span class="co">#=== visualize the fit ===#</span>
+<span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggplot.html">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mlb1_dt</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">lsalary</span>, x <span class="op">=</span> <span class="va">y_hat</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_abline.html">geom_abline</a></span><span class="op">(</span>slope <span class="op">=</span> <span class="fl">1</span>, color <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="P01-random-forest_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Yes, perfect prediction accuracy! At least for the train data anyway. But, we all know we want nothing to do with this kind of model. It is clearly over-fitting the train data.</p>
+<p>In order to find a reasonable model, we can use KCV over <code>cp</code>. Fortunately, when we run <code><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart()</a></code>, it automatically builds multiple trees at different values of <code>cp</code> that controls the number of leaves and conduct KCV. You can visualize this using <code><a href="https://rdrr.io/pkg/rpart/man/plotcp.html">plotcp()</a></code>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/rpart/man/plotcp.html">plotcp</a></span><span class="op">(</span><span class="va">fitted_tree</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="P01-random-forest_files/figure-html/unnamed-chunk-34-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>MSE and <code>cp</code> are presented on the y- and x-axis, respectively. According to the KCV results, <code>cp</code> <span class="math inline">\(= 0.018\)</span> provides the tree with the smallest number of leaves (the most simple) where the MSE value is within one standard deviation from the lowest MSE. You can access the tree built under <code>cp</code> <span class="math inline">\(= 0.018\)</span> like below.</p>
+<div class="cell">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== get the best tree ===#</span>
+<span class="va">best_tree</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/prune.rpart.html">prune</a></span><span class="op">(</span><span class="va">full_tree</span>, cp <span class="op">=</span> <span class="fl">0.018</span><span class="op">)</span>
+
+<span class="co">#=== visualize it ===#</span>
+<span class="fu"><a href="https://rdrr.io/pkg/rattle/man/fancyRpartPlot.html">fancyRpartPlot</a></span><span class="op">(</span><span class="va">best_tree</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="P01-random-forest_files/figure-html/unnamed-chunk-36-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Even though how a regression tree is build in R. In practice, you never use a regression tree itself as the final model for your research as its performance is rather poor and tend to over-fit compared to other competitive methods. But, understanding how building a regression tree is important to understand its derivatives like random forest, boosted regression forest.</p>
+</section></section><section id="sec-rf" class="level2 page-columns page-full" data-number="7.2"><h2 data-number="7.2" class="anchored" data-anchor-id="sec-rf">
+<span class="header-section-number">7.2</span> Random Forest (RF)</h2>
+<p>Regression tree approach is often not robust and suffers from high variance. Here, we look at the process called <span style="color:blue"> bagging </span> and how it can be used to train RF model, which is much more robust than a regression tree.</p>
+<section id="bagging-bootstrap-aggregation" class="level3" data-number="7.2.1"><h3 data-number="7.2.1" class="anchored" data-anchor-id="bagging-bootstrap-aggregation">
+<span class="header-section-number">7.2.1</span> Bagging (Bootstrap aggregation)</h3>
+<p>Consider two random variables <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span> from the identical distribution, where <span class="math inline">\(E[x_i] = \alpha\)</span> and <span class="math inline">\(Var(x_i) = \sigma^2\)</span>. You are interested in estimating <span class="math inline">\(E[x_i]\)</span>. We all know that the following relationship holds in general:</p>
+<p><span class="math display">\[
+\begin{aligned}
+Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac{Cov(x_1, x_2)}{2} \\
+&amp; = \frac{\sigma^2}{2} + \frac{Cov(x_1, x_2)}{2}
+\end{aligned}
+\]</span></p>
+<p>So, instead of using a single draw from <span class="math inline">\(x_1\)</span> and using it as an estimate for <span class="math inline">\(E[x_i]\)</span>, it is better to use the values from both <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span> and average them to obtain an estimate for <span class="math inline">\(E[x_i]\)</span> as long as <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span> are not perfectly <span style="color:blue"> positively </span> correlated (in this case <span class="math inline">\(Cov(x_1, x_2) = Var(x_1) = Var(x_1) = \sigma^2\)</span>). The benefit of averaging is greater when the value of <span class="math inline">\(Cov(x_1, x_2)\)</span> is smaller.</p>
+<p>Let’s do a little experiment to see this. We consider three cases:</p>
+<div class="cell">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== set the number of observations to 1000 ===#</span>
+<span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">1000</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== first case (no correlation) ===#</span>
+<span class="va">x_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>
+<span class="va">x_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">x_1</span>, <span class="va">x_2</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -0.02523661</code></pre>
+</div>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== second case (positively correlated) ===#</span>
+<span class="va">x_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>
+<span class="va">x_2</span> <span class="op">&lt;-</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="va">x_1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">x_1</span>, <span class="va">x_2</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.5338858</code></pre>
+</div>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== third case (negatively correlated) ===#</span>
+<span class="va">x_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>
+<span class="va">x_2</span> <span class="op">&lt;-</span> <span class="op">-</span> <span class="fl">0.8</span> <span class="op">*</span> <span class="va">x_1</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="op">(</span><span class="fl">0.8</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">x_1</span>, <span class="va">x_2</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -0.7848348</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">get_alpha</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span>
+<span class="op">{</span>
+  <span class="co">#=== base case ===#</span>
+  <span class="va">alpha_hat_0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
+
+  <span class="co">#=== first case (no correlation) ===#</span>
+  <span class="va">x_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
+  <span class="va">x_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
+
+  <span class="va">alpha_hat_1</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">x_1</span> <span class="op">+</span> <span class="va">x_2</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span>
+
+  <span class="co">#=== second case (positively correlated) ===#</span>
+  <span class="va">x_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
+  <span class="va">x_2</span> <span class="op">&lt;-</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="va">x_1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
+
+  <span class="va">alpha_hat_2</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">x_1</span> <span class="op">+</span> <span class="va">x_2</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span>
+
+  <span class="co">#=== third case (negatively correlated) ===#</span>
+  <span class="va">x_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
+  <span class="va">x_2</span> <span class="op">&lt;-</span> <span class="op">-</span> <span class="fl">0.8</span> <span class="op">*</span> <span class="va">x_1</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="op">(</span><span class="fl">0.8</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
+
+  <span class="va">alpha_hat_3</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">x_1</span> <span class="op">+</span> <span class="va">x_2</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span>
+
+  <span class="va">return_data</span> <span class="op">&lt;-</span>
+    <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/data.table.html">data.table</a></span><span class="op">(</span>
+      alpha_hat_0 <span class="op">=</span> <span class="va">alpha_hat_0</span>,
+      alpha_hat_1 <span class="op">=</span> <span class="va">alpha_hat_1</span>,
+      alpha_hat_2 <span class="op">=</span> <span class="va">alpha_hat_2</span>,
+      alpha_hat_3 <span class="op">=</span> <span class="va">alpha_hat_3</span>
+    <span class="op">)</span>
+
+  <span class="kw"><a href="https://justinmshea.github.io/wooldridge/reference/return.html">return</a></span><span class="op">(</span><span class="va">return_data</span><span class="op">)</span>
+
+<span class="op">}</span> </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">234934</span><span class="op">)</span>
+
+<span class="va">sim_results</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span>
+    <span class="fl">1</span><span class="op">:</span><span class="fl">1000</span>,
+    <span class="va">get_alpha</span>
+  <span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/rbindlist.html">rbindlist</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/melt.data.table.html">melt</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in melt.data.table(.): id.vars and measure.vars are internally
+guessed when both are 'NULL'. All non-numeric/integer/logical type columns are
+considered id.vars, which in this case are columns []. Consider providing at
+least one of 'id' or 'measure' vars in future.</code></pre>
+</div>
+</div>
+<p>As you can see below, they are all pretty much unbiased. However, all the cases that averaged two values (cases 1, 2, and 3) outperformed the base case that relied on a single value each iteration. You can see that when the random variables are negatively correlated, the power of averaging is greater compared to when they are independent or positively correlated. The independent case (case 1) is better than the positive correlation case (case 2).</p>
+<div class="cell">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== expected value ===#</span>
+<span class="va">sim_results</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span>, by <span class="op">=</span> <span class="va">variable</span><span class="op">]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      variable          V1
+1: alpha_hat_0 0.037836191
+2: alpha_hat_1 0.008031971
+3: alpha_hat_2 0.008486035
+4: alpha_hat_3 0.004259832</code></pre>
+</div>
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== standard error ===#</span>
+<span class="va">sim_results</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span>, by <span class="op">=</span> <span class="va">variable</span><span class="op">]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      variable        V1
+1: alpha_hat_0 0.9840232
+2: alpha_hat_1 0.6969730
+3: alpha_hat_2 0.8660699
+4: alpha_hat_3 0.3103408</code></pre>
+</div>
+</div>
+<p>Bagging takes advantage of the power of averaging. Specifically, bagging takes the following steps:</p>
+<ol type="1">
+<li>Generate many bootstrapped datasets (say <span class="math inline">\(B\)</span> datasets)</li>
+<li>Train a model on each of the bootstrapped datasets (<span class="math inline">\(\hat{f}^1, \dots, \hat{f}^B\)</span>)</li>
+<li>Average the estimates from all the trained models to come up with an estimate</li>
+</ol>
+<p><span class="math display">\[
+\hat{f}(X) = \frac{\hat{f}^1(X) + \dots + \hat{f}^B(X)}{B}
+\]</span></p>
+<p>Let’s implement this for <span class="math inline">\(B = 10\)</span> using <code>mlb1_dt</code>. First, define a function (named <code>train_a_tree()</code>) that bootstrap data, fit a regression tree, and then return the fitted values.</p>
+<div class="cell">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">train_a_tree</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">i</span>, <span class="va">data</span><span class="op">)</span>
+<span class="op">{</span>
+  <span class="co">#=== number of observations ===#</span>
+  <span class="va">N</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>
+
+  <span class="co">#=== bootstrapped data ===#</span>
+  <span class="va">boot_data</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">N</span>, <span class="va">N</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="op">]</span>
+
+  <span class="co">#=== train a regression tree ===#</span>
+  <span class="va">rpart</span> <span class="op">&lt;-</span>
+    <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span>
+      <span class="va">lsalary</span> <span class="op">~</span> <span class="va">hruns</span> <span class="op">+</span> <span class="va">years</span> <span class="op">+</span> <span class="va">rbisyr</span> <span class="op">+</span> <span class="va">allstar</span> <span class="op">+</span> <span class="va">runsyr</span> <span class="op">+</span> <span class="va">hits</span> <span class="op">+</span> <span class="va">bavg</span>, 
+      data <span class="op">=</span> <span class="va">boot_data</span>
+    <span class="op">)</span>
+
+  <span class="co">#=== predict ===#</span>
+  <span class="va">return_data</span> <span class="op">&lt;-</span>
+    <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/copy.html">copy</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+    <span class="va">.</span><span class="op">[</span>, <span class="va">y_hat</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">rpart</span>, newdata <span class="op">=</span> <span class="va">data</span><span class="op">)</span><span class="op">]</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+    <span class="va">.</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">id</span>, <span class="va">y_hat</span><span class="op">)</span><span class="op">]</span>
+
+  <span class="kw"><a href="https://justinmshea.github.io/wooldridge/reference/return.html">return</a></span><span class="op">(</span><span class="va">return_data</span><span class="op">)</span>
+<span class="op">}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We now repeat <code>train_a_tree()</code> 10 times.</p>
+<div class="cell">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== create observation id for later group-by averaging ===#</span>
+<span class="va">mlb1_dt</span><span class="op">[</span>, <span class="va">id</span> <span class="op">:=</span> <span class="fl">1</span><span class="op">:</span><span class="va">.N</span><span class="op">]</span>
+
+<span class="op">(</span>
+<span class="va">y_estimates</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span>
+    <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,
+    <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">train_a_tree</span><span class="op">(</span><span class="va">x</span>, <span class="va">mlb1_dt</span><span class="op">)</span> 
+  <span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/rbindlist.html">rbindlist</a></span><span class="op">(</span><span class="op">)</span>
+<span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       id    y_hat
+   1:   1 15.15792
+   2:   2 14.23816
+   3:   3 15.15792
+   4:   4 14.23816
+   5:   5 14.23816
+  ---             
+3296: 326 13.17676
+3297: 327 12.64863
+3298: 328 12.64863
+3299: 329 13.61157
+3300: 330 12.02302</code></pre>
+</div>
+</div>
+<p>By averaging <span class="math inline">\(y\)</span> estimates by <code>id</code>, we can get bagging estimates.</p>
+<div class="cell">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">y_estimates</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">y_hat</span><span class="op">)</span>, by <span class="op">=</span> <span class="va">id</span><span class="op">]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      id       V1
+  1:   1 15.09137
+  2:   2 14.66143
+  3:   3 14.61425
+  4:   4 14.31035
+  5:   5 13.74852
+ ---             
+326: 326 13.04455
+327: 327 12.79717
+328: 328 12.79717
+329: 329 13.67179
+330: 330 12.02051</code></pre>
+</div>
+</div>
+<p>Now, let’s take a look at the individual estimates of <span class="math inline">\(y\)</span> for the first observation.</p>
+<div class="cell">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">y_estimates</span><span class="op">[</span><span class="va">id</span> <span class="op">==</span> <span class="fl">1</span>, <span class="op">]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    id    y_hat
+ 1:  1 15.15792
+ 2:  1 15.04446
+ 3:  1 15.21238
+ 4:  1 15.07311
+ 5:  1 14.92840
+ 6:  1 14.98571
+ 7:  1 15.12060
+ 8:  1 15.14064
+ 9:  1 15.05676
+10:  1 15.19375</code></pre>
+</div>
+</div>
+<p>Hmm, the estimates look very similar. Actually, that is the case for all the observations. This is because the trained trees are very similar for many reasons, and the trees are highly “positively” correlated with each other. From our very simple experiment above, we know that the power of bagging is not very high when that is the case. While RF does use bagging, popular R and python packages does it in a much better way than I demonstrated here. We see this next.</p>
+</section><section id="random-forest-rf" class="level3 page-columns page-full" data-number="7.2.2"><h3 data-number="7.2.2" class="anchored" data-anchor-id="random-forest-rf">
+<span class="header-section-number">7.2.2</span> Random Forest (RF)</h3>
+<p>Unlike a naive bagging approach demonstrated above, RF does it in a clever way to <em>decorrelate</em> trees. Specifically, for any leave of any tree, they consider only a randomly select subset of the explanatory variables when deciding how to split a leave. A typical choice of the number of variables considered at each split is <span class="math inline">\(\sqrt{K}\)</span>, where <span class="math inline">\(K\)</span> is the number of the explanatory variables specified by the user. In the naive example above, all <span class="math inline">\(K\)</span> variables are considered for all the split decisions of all the trees. Some variables are more influential than others and they get to be picked as the splitting variable at similar places, which can result in highly correlated trees. Instead, RF gives other variables a chance, which helps decorrelate the trees.</p>
+<p>We can use <code><a href="https://rdrr.io/pkg/ranger/man/ranger.html">ranger()</a></code> from the <code>ranger</code> package to train an RF model.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>Another compelling R package for RF is the <code>randomForest</code> package.</p>
+</div></div><p>The <code><a href="https://rdrr.io/pkg/ranger/man/ranger.html">ranger()</a></code> function has many options you can specify that determine how trees are built. Here are some of the important ones (see <a href="https://cran.r-project.org/web/packages/ranger/ranger.pdf">here</a> for the complete description of the hyper-parameters.):</p>
+<ul>
+<li>
+<code>mtry</code>: the number of variables considered in each split (default is the square root of the total numbers of explanatory variables rounded down.)</li>
+<li>
+<code>num.trees</code>: the number of tree to be built (default is 500)</li>
+<li>
+<code>min.node.size</code>: minimum number of observations in each node (default varies based on the the type of analysis)</li>
+<li>
+<code>replace</code>: where sample with or without replacement when bootstrapping samples (default is <code>TRUE</code>)</li>
+<li>
+<code>sample.fraction</code>: the fraction of the entire observations that are used in each tree (default is 1 if sampling with replacement, 0.632 if sampling without replacement)</li>
+</ul>
+<p>Let’s try fitting an RF with <code><a href="https://rdrr.io/pkg/ranger/man/ranger.html">ranger()</a></code> with the default parameters.</p>
+<div class="cell">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== load the package ===#</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/imbs-hl/ranger">ranger</a></span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'ranger'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:rattle':
+
+    importance</code></pre>
+</div>
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== fit and RF ===#</span>
+<span class="op">(</span>
+<span class="va">rf_fit</span> <span class="op">&lt;-</span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/ranger/man/ranger.html">ranger</a></span><span class="op">(</span>
+    <span class="va">lsalary</span> <span class="op">~</span> <span class="va">hruns</span> <span class="op">+</span> <span class="va">years</span> <span class="op">+</span> <span class="va">rbisyr</span> <span class="op">+</span> <span class="va">allstar</span> <span class="op">+</span> <span class="va">runsyr</span> <span class="op">+</span> <span class="va">hits</span> <span class="op">+</span> <span class="va">bavg</span>, 
+    data <span class="op">=</span> <span class="va">mlb1_dt</span>
+  <span class="op">)</span>
+<span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Ranger result
+
+Call:
+ ranger(lsalary ~ hruns + years + rbisyr + allstar + runsyr +      hits + bavg, data = mlb1_dt) 
+
+Type:                             Regression 
+Number of trees:                  500 
+Sample size:                      330 
+Number of independent variables:  7 
+Mtry:                             2 
+Target node size:                 5 
+Variable importance mode:         none 
+Splitrule:                        variance 
+OOB prediction error (MSE):       0.3668547 
+R squared (OOB):                  0.7288123 </code></pre>
+</div>
+</div>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>Since we have many trees, it is no longer possible to have a nice graphical representation of the trained RF model like we did with a regression tree.</p>
+</div></div><p>In the output, you can see <code>OOB prediction error (MSE)</code>. OOB stands for <span style="color:red"> o</span>ut-<span style="color:red">o</span>f-<span style="color:red">b</span>ag. When bootstrapping (whether you do it with replacement or not), some of the train data will not be used to build a tree.</p>
+<div class="cell">
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">n_obs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">mlb1_dt</span><span class="op">)</span>
+
+<span class="co">#=== bootstrapped data ===#</span>
+<span class="va">boot_data</span> <span class="op">&lt;-</span> <span class="va">mlb1_dt</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n_obs</span>, <span class="va">n_obs</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="op">]</span>
+
+<span class="co">#=== which rows (observations) from the original datasets are missing? ===#</span>
+<span class="va">mlb1_dt</span><span class="op">[</span>, <span class="va">id</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/duplicated.html">unique</a></span><span class="op">(</span><span class="va">boot_data</span><span class="op">$</span><span class="va">id</span><span class="op">)</span><span class="op">]</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.6212121</code></pre>
+</div>
+</div>
+<p>So, only <span class="math inline">\(65\%\)</span> of the rows from the original data (<code>mlb1_dt</code>) in this bootstrapped sample (many duplicates of the original observations). The observations that are NOT included in the bootstrapped sample is called out-of-bag observations. This provides a great opportunity to estimate test MSE while training an RF model! For a given regression tree, you can apply it to the out-of-bag samples to calculate MSE. You can repeat this for all the trees and average the MSEs, effectively conducting cross-validation. When the number of trees is large enough, OOB MSE is almost equivalent to MSE from LOOCV <span class="citation" data-cites="james2013introduction">[@james2013introduction]</span>. This means that we can tune hyper-parameters by comparing OOB MSEs of different configurations of them.</p>
+<p>You can use a simple grid-search to find the best hyper-parameters. Grid-search is simply a brute-force optimization methods that goes through all the combinations of hyper-parameters and see which combination comes at the top. The computational intensity of grid-search depends on how many hyper-parameters you want to vary and how many values you would like to look at for each of the hyper-parameters. Here, let’s tune <code>mtry</code>, <code>min.node.size</code>, and <code>sample.fraction</code>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== define set of values you want to look at ===#</span>
+<span class="va">mtry_seq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">7</span><span class="op">)</span>
+<span class="va">min_node_size_seq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span>
+<span class="va">sample_fraction_seq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">1</span><span class="op">)</span>
+
+<span class="co">#=== create a complete combinations of the three parameters ===#</span>
+<span class="op">(</span>
+<span class="va">parameters</span> <span class="op">&lt;-</span>
+  <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/J.html">CJ</a></span><span class="op">(</span>
+    mtry <span class="op">=</span> <span class="va">mtry_seq</span>,
+    min_node_size <span class="op">=</span> <span class="va">min_node_size_seq</span>,
+    sample_fraction <span class="op">=</span> <span class="va">sample_fraction_seq</span>
+  <span class="op">)</span>
+<span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    mtry min_node_size sample_fraction
+ 1:    2             2            0.50
+ 2:    2             2            0.75
+ 3:    2             2            1.00
+ 4:    2             5            0.50
+ 5:    2             5            0.75
+ 6:    2             5            1.00
+ 7:    2            10            0.50
+ 8:    2            10            0.75
+ 9:    2            10            1.00
+10:    4             2            0.50
+11:    4             2            0.75
+12:    4             2            1.00
+13:    4             5            0.50
+14:    4             5            0.75
+15:    4             5            1.00
+16:    4            10            0.50
+17:    4            10            0.75
+18:    4            10            1.00
+19:    7             2            0.50
+20:    7             2            0.75
+21:    7             2            1.00
+22:    7             5            0.50
+23:    7             5            0.75
+24:    7             5            1.00
+25:    7            10            0.50
+26:    7            10            0.75
+27:    7            10            1.00
+    mtry min_node_size sample_fraction</code></pre>
+</div>
+</div>
+<p>In total, we have 27 (<span class="math inline">\(3 \times 3 \times 3\)</span>) cases. You can see how quickly the number of cases increases as you increase the number of parameters to tune and the values of each parameter. We can now loop over the rows of this parameter data (<code>parameters</code>) and get OOB MSE for each of them.</p>
+<div class="cell">
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">oob_mse_all</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span>
+    <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">parameters</span><span class="op">)</span><span class="op">)</span>,
+    <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
+
+      <span class="co">#=== Fit the mode ===#</span>
+      <span class="va">rf_fit</span> <span class="op">&lt;-</span> 
+        <span class="fu"><a href="https://rdrr.io/pkg/ranger/man/ranger.html">ranger</a></span><span class="op">(</span>
+          <span class="va">lsalary</span> <span class="op">~</span> <span class="va">hruns</span> <span class="op">+</span> <span class="va">years</span> <span class="op">+</span> <span class="va">rbisyr</span> <span class="op">+</span> <span class="va">allstar</span> <span class="op">+</span> <span class="va">runsyr</span> <span class="op">+</span> <span class="va">hits</span> <span class="op">+</span> <span class="va">bavg</span>, 
+          data <span class="op">=</span> <span class="va">mlb1_dt</span>,
+          num.trees <span class="op">=</span> <span class="fl">1000</span>,
+          mtry <span class="op">=</span> <span class="va">parameters</span><span class="op">[</span><span class="va">x</span>, <span class="va">mtry</span><span class="op">]</span>,
+          min.node.size <span class="op">=</span> <span class="va">parameters</span><span class="op">[</span><span class="va">x</span>, <span class="va">min_node_size</span><span class="op">]</span>,
+          sample.fraction <span class="op">=</span> <span class="va">parameters</span><span class="op">[</span><span class="va">x</span>, <span class="va">sample_fraction</span><span class="op">]</span>
+        <span class="op">)</span>
+
+      <span class="co">#=== return OOB SME ===#</span>
+      <span class="kw"><a href="https://justinmshea.github.io/wooldridge/reference/return.html">return</a></span><span class="op">(</span><span class="va">rf_fit</span><span class="op">$</span><span class="va">prediction.error</span><span class="op">)</span>
+      
+    <span class="op">}</span>
+  <span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span><span class="op">)</span>
+
+<span class="co">#=== assign OOB MSE to the parameters data ===#</span>
+<span class="va">parameters</span><span class="op">[</span>, <span class="va">oob_mse</span> <span class="op">:=</span> <span class="va">oob_mse_all</span><span class="op">]</span>
+
+<span class="co">#=== take a look ===#</span>
+<span class="va">parameters</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    mtry min_node_size sample_fraction   oob_mse
+ 1:    2             2            0.50 0.3634654
+ 2:    2             2            0.75 0.3632539
+ 3:    2             2            1.00 0.3703735
+ 4:    2             5            0.50 0.3609772
+ 5:    2             5            0.75 0.3640391
+ 6:    2             5            1.00 0.3657121
+ 7:    2            10            0.50 0.3632176
+ 8:    2            10            0.75 0.3590104
+ 9:    2            10            1.00 0.3647577
+10:    4             2            0.50 0.3639452
+11:    4             2            0.75 0.3678789
+12:    4             2            1.00 0.3762502
+13:    4             5            0.50 0.3625460
+14:    4             5            0.75 0.3682806
+15:    4             5            1.00 0.3696961
+16:    4            10            0.50 0.3632466
+17:    4            10            0.75 0.3641201
+18:    4            10            1.00 0.3693227
+19:    7             2            0.50 0.3697563
+20:    7             2            0.75 0.3773171
+21:    7             2            1.00 0.3807321
+22:    7             5            0.50 0.3749875
+23:    7             5            0.75 0.3731546
+24:    7             5            1.00 0.3857696
+25:    7            10            0.50 0.3688267
+26:    7            10            0.75 0.3758684
+27:    7            10            1.00 0.3764331
+    mtry min_node_size sample_fraction   oob_mse</code></pre>
+</div>
+</div>
+<p>So, the best choice among the ones tried is:</p>
+<div class="cell">
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">parameters</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html">which.min</a></span><span class="op">(</span><span class="va">oob_mse</span><span class="op">)</span>, <span class="op">]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   mtry min_node_size sample_fraction   oob_mse
+1:    2            10            0.75 0.3590104</code></pre>
+</div>
+</div>
+</section></section><section id="over-fitting" class="level2" data-number="7.3"><h2 data-number="7.3" class="anchored" data-anchor-id="over-fitting">
+<span class="header-section-number">7.3</span> Over-fitting</h2>
+</section><section id="resources" class="level2" data-number="7.4"><h2 data-number="7.4" class="anchored" data-anchor-id="resources">
+<span class="header-section-number">7.4</span> Resources</h2>
+<ul>
+<li>
+<a href="https://machinelearningmastery.com/gradient-boosting-with-scikit-learn-xgboost-lightgbm-and-catboost/">Gradient Boosting with Scikit-Learn, XGBoost, LightGBM, and CatBoost</a> by Jason Brownlee</li>
+<li><a href="https://machinelearningmastery.com/gentle-introduction-xgboost-applied-machine-learning/">A Gentle Introduction to XGBoost for Applied Machine Learning</a></li>
+</ul>
+
+
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./prediction-ml.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Prediction ML</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./P02-boosted-regression-forest.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Boosted Regression Forest</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>
