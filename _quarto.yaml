@@ -16,23 +16,27 @@ book:
     - preface.qmd
     - part: basics.qmd
       chapters: 
-        - bias-variance-tradeoff.qmd
-        - cross-validation.qmd
-        - lasso.qmd
-        - bootstrap.qmd
+        - B01-gam.qmd
+        - B02-bias-variance-tradeoff.qmd
+        - B03-lasso.qmd
+        - B04-cross-validation.qmd
+        - B05-bootstrap.qmd
     - part: prediction-ml.qmd
       chapters: 
-        - tree-based-ml.qmd
+        - P01-random-forest.qmd
+        - P02-boosted-regression-forest.qmd
+        - P03-xgb.qmd
     - part: causal-ml.qmd
-      chapters: 
-        - cf.qmd
-  appendices:
-    - mc-simulation.qmd
-    - reticulate.qmd
+  #     chapters: 
+  #       - cf.qmd
+  # appendices:
+  #   - mc-simulation.qmd
+  #   - reticulate.qmd
+
+bibliograph: ref.bib
 
 format:
   html: 
     theme: cosmo
-    # cover-image: cover.png
     code-link: true
 

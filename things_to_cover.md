@@ -50,16 +50,21 @@ https://www.r-bloggers.com/2020/04/how-to-run-pythons-scikit-learn-in-r-in-5-min
 ## Python packages
 + scikitlearn
 
+## Extensions
 
-+ Simple linear regression to introduce Loss function and K-nearest neighbor
-+ GAM 
-+ MC: How does predictive ML perform under endogeneity problem
-+ Non-parametric model is worse than a parametric model when the parametric model is specified correctly.
-+ MC simulations to check how well CV works in picking the best model
++ Fixed effects
++ nonlinearity of the impact 
+
 
 ## MC experiments
 
-+ what happens to DML when $\eta$ and $\varepsilon$ are not orthogonal
++ Simple linear regression to introduce Loss function and K-nearest neighbor
++ GAM 
++ MC simulations to check how well CV works in picking the best model
++ Non-parametric model is worse than a parametric model when the parametric model is specified correctly.
++ MC: How does predictive ML perform under endogeneity problem
++ What happens to DML when $\eta$ and $\varepsilon$ are not orthogonal
++ What happen if you over-fit the first stage of DML?
 
 # Resources
 

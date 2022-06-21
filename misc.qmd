@@ -1,0 +1,55 @@
+# Data generator
+
+
+```{r}
+t_formula <- formula(~ x2 + I(x3^2/exp(x2)))
+y_formula <- formula(~ I(2 * (x2 + x3)^2*t) + I((x1 + x2)^2) + I(3*x3*x4))
+
+library(MASS)
+
+gen_exp_data <- function(
+  y_formula, t_formula, 
+  n_obs = 500, n_x = 10, 
+  mu_x = 0, vcov_x = NULL,
+  sigma = NULL 
+)
+{
+
+  if (is.null(vcov_x)) {
+
+    num_row <- n_x + n_w
+    vcov_x <- matrix(rep(0.4, num_row^2), nrow = num_row)
+    diag(vcov_x) <- 1
+
+  }
+
+  #=== draw from multivariate normal ===#
+  data <- 
+    mvrnorm(n_obs, mu_x = rep(0, n_vars), Sigma = vcov_x) %>% 
+    data.table() %>% 
+    setnames(names(.), paste0("x", 1:n_vars))  
+
+  #=== shift the data so that no observations is less than 1 for all the variables ===#
+  data <- data + 1 - min(data)
+
+  #=== generate t ===#
+  data[, t:= model.frame(t_formula, data = data) %>% rowSums()]
+
+  #=== generate y ===#
+  data[, y_det := model.frame(y_formula, data = data) %>% rowSums()]
+  data <- data[lower_y < y_det & upper_y > y_det, ]
+
+  if (is.null(sigma)) {
+
+    error_sd <- data[, sd(y_det) / 4] 
+    data[, e := rnorm(.N, sd = error_sd)]
+    data[, y := y_det + e]
+  }
+
+}
+
+```
+
+
+
+

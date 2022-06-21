@@ -1,0 +1,193 @@
+# Boosted Regression Forest
+
+## Preparation {.unnumbered}
+```{r}
+#| include: false
+
+library(tidyverse)
+library(data.table)
+library(rpart)
+library(rattle)
+library(wooldridge)
+```
+
+```{r}
+#| eval: false
+
+library(tidyverse)
+library(data.table)
+library(rpart)
+library(rattle)
+library(wooldridge)
+```
+
+```{r set-up-data}
+#=== get data ===#
+data(mlb1)
+
+mlb1_dt <- 
+  mlb1 %>% 
+  data.table() %>% # turn into data.table 
+  .[, salary := NULL] %>% # remove salary (use lsalary instead)
+  na.omit() # remove observations with NA in any of the variables
+```
+
+## Gradient Boosting
+
+In training RF that uses the idea of bagging, the original data is used to generate many bootstrapped datasets, a regression tree is trained on each of them <span style="color:blue"> independently </span>, and then they are averaged to reach the final model. Boosting is similar to bagging (bootstrap aggregation) in that it trains many statistical models and then combine them to reach the final model. However, instead of building many trees independently, it builds trees <span style="color:blue"> sequentially </span> in a manner that improves prediction step by step.
+
+While there are many variants of boosting methods (see Chapter 10 of @hastie2009elements), we will look at gradient boosting using trees for regression in particular (Algorithm 10.3 in @hastie2009elements presents the generic gradient tree boosting algorithm), where squared error is used as the loss function.  
+
+1. Set $f_0(X_i)  = \frac{\sum_{i=1}^N y_i}{N}$ for all $i = 1, \dots, N$
+2. For b = 1 to B,
+  i. For $i = 1, \dots, N$, calculate
+    $$
+    r_{i,b} =  (y_i - f_{b-1}(X_i))
+    $$
+  ii. Fit a regression tree to $r_{i, b}$, which generates terminal regions $R_{j,b}$, $j = 1, \dots, J$, and denote the predicted value of region $R_{j,b}$ as $\gamma_{j,b}$.
+  iii. Set $f_b(X_i) = f_{b-1}(X_i) + \lambda \cdot \sum_{j=1}^J\gamma_{j, b}\cdot I(X_i \in R_{j,b})$
+3. Finally, $\hat{f}(X_i) = f_B(X_i)$
+
+Let's try to go through this algorithm a bit to have it sink in for you.
+
+Step 1
+
+Step 1 finds the mean of the dependent variable. This quantity is used as the starting estimate for the dependent variable. 
+
+```{r}
+(
+f_0 <- mean(mlb1_dt$lsalary)
+)
+```
+
+Step 2: $b = 1$
+
+Now, we get residuals:
+
+```{r}
+mlb1_dt[, resid_1 := lsalary - f_0]
+```
+
+The residuals contain information in `lsalary` that was left unexplained. By training a regression tree using the residuals as the dependent variable, we are finding a tree that can explain the unexplained parts of `lsalary` using the explanatory variables. 
+
+```{r}
+tree_fit_b1 <- 
+  rpart(
+    resid_1 ~ ., # . means all variables
+    data = mlb1_dt 
+  )
+```
+
+Here is the fitted value of the residuals ($\sum_{j=1}^J\gamma_{j, b}\cdot I(X_i \in R_{j,b})$)
+
+```{r}
+resid_1_hat <- predict(tree_fit_b1, newdata = mlb1_dt)
+head(resid_1_hat)
+```
+
+Now, we update our prediction according to $f_b(X_i) = f_{b-1}(X_i) + \lambda \cdot \sum_{j=1}^J\gamma_{j, b}\cdot I(X_i \in R_{j,b})$. We set $\lambda$ to be $0.2$ in this illustration.
+
+```{r}
+lambda <- 0.2
+f_1 <- f_0 + lambda * resid_1_hat
+head(f_1)
+```
+
+Did we actually improve prediction accuracy? Let's compare `f_0` and `f_1`.
+
+```{r}
+sum((mlb1_dt$lsalary - f_0)^2)
+sum((mlb1_dt$lsalary - f_1)^2)
+```
+
+Great. Let's move on to $b = 2$.
+
+```{r}
+#=== get negative of the residuals ===#
+mlb1_dt[, resid_2 := lsalary - f_1]
+
+#=== fit a regression tree ===#
+tree_fit_b2 <- 
+  rpart(
+    resid_2 ~ ., # . means all variables
+    data = mlb1_dt 
+  )
+
+#=== get predicted values ===#
+resid_2_hat <- predict(tree_fit_b2, newdata = mlb1_dt)
+
+#=== update ===#
+f_2 <- f_1 + lambda * resid_2_hat
+```
+
+```{r}
+sum((mlb1_dt$lsalary - f_1)^2)
+sum((mlb1_dt$lsalary - f_2)^2)
+```
+
+We further improved our predictions. We repeat this process until certain user-specified stopping criteria is met. 
+
+As you probably have noticed, there are several key parameters in the process above that controls the performance of gradient boosting forest. $\lambda$ controls the speed of learning. The lower $\lambda$ is, slower the learning speed is. $B$ (the number of trees) determines how many times we want to make small improvements to the original prediction. When you increase the value of $\lambda$, you should decrease the value of $B$. Too high values of $\lambda$ and $B$ can lead to over-fitting. 
+
+You may have been wondering why this algorithm is called `Gradient` boosting. Gradient boosting is a much more general than the one described here particularly for gradient tree boosting for regression. It can be applied to both regression and classification^[Indeed, all the algorithms and models we have talked about can be applied to classification problems with some small changes.]. In general, Step 2.a can be written as follows:
+
+$$
+r_{i,b} = - \huge[\normalsize\frac{\partial L(y_i, f(x_i))}{\partial f(x_i)}\huge]\normalsize_{f = f_{b-1}}
+$$
+
+where $L(y_i, f(x_i))$ is the loss function. For regression, the loss function is almost always squared error: $(y_i - f(x_i))^2$. For, $L(y_i, f(x_i)) = (y_i - f(x_i))^2$, the negative of the derivative of the loss function with respect to $f(x_i)$ is 
+
+$$
+- \huge[\normalsize\frac{\partial L(y_i, f(x_i))}{\partial f(x_i)}\huge]\normalsize_{f = f_{b-1}} = - (- 2 (y_i - f(x_i))) = 2 (y_i - f(x_i)) 
+$$
+
+This is why we have $r_{i,b} = (y_i - f_{b-1}(X_i))$ at Step 2.a. And, as you just saw, we are using the gradient of the loss function for model updating, which is why it is called <span style="color:blue"> gradient </span> boosting. Note that it does not really matter whether you have $2$ in front of the residuals or not the fitted residuals is multiplied (scaled) by $\lambda$ to when updating the model. You can always find the same $\lambda$ that would result in the same results as when just non-scaled residuals are used.
+
+Most R and python packages allow you to use a fraction of the train sample that are randomly selected and/or to use a subset of the included variables in building a tree within Step 2. This generate randomness in the algorithm and they are referred to as <span style="color:blue"> stochastic </span>gradient boosting.
+
+## Implementation
+
+We can use the `gbm` package to train a gradient boosting regression. Just like `ranger()`, `gbm` takes formula and data like below.
+
+```{r}
+library(gbm)
+
+#=== fit a gbm model ===#
+gbm_fit <- 
+  gbm(
+    lsalary ~ hruns + years + rbisyr + allstar + runsyr + hits + bavg, 
+    data = mlb1_dt 
+  )
+```
+
+Here is the list of some parameters to be aware of:
+
++ `n.trees`: Number of trees ($B$). Default is $100$.
++ `interaction.depth`: 1 implies an additive model without interactions between included variables^[You can of course create interactions terms yourself in the data, which would allow simple linear 2-way interactions.], 2 implies a model with 2-way interactions. Default is 1.
++ `n.minobsinnode`: Minimum number of observations in a terminal node (leaf). 
++ `shrinkage`: Learning rate ($\lambda$). Default is 0.1.
++ `bag.fraction`: The fraction of the train data observations that are select randomly in building a tree. Default is 0.5.
++ `cv.folds`: The number of folds in conducting KCV
+
+By specifying `cv.folds`, `gbm()` automatically conducts cross-validation for you. 
+
+```{r}
+#=== gbm fit with CV ===#
+gbm_fit <- 
+  gbm(
+    lsalary ~ hruns + years + rbisyr + allstar + runsyr + hits + bavg, # . means all variables
+    data = mlb1_dt,
+    cv.folds = 5,
+  )
+
+#=== see the MSE history ===#  
+gbm_fit$cv.error
+```
+
+You can visualize the CV results using `gbm.perf()`.
+
+```{r}
+gbm.perf(gbm_fit)
+```
+
+Note that it will tell you what the optimal number of trees is <span style="color:blue"> given </span> the values of the other hyper-parameters (here default values). If you want to tune other parameters as well, you need to program it yourself.

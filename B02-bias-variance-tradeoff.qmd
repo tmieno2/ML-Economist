@@ -89,7 +89,7 @@ ggplot(data = train_data) +
   geom_line(aes(y = ey, x = x))
 ```
 
-Now, let's define a function that runs regression with different levels of flexibilities using a generalized additive model from the `mgcv` package, predict $y$ for both the train and test datasets, and find train and test MSEs.
+Now, let's define a function that runs regression with different levels of flexibility using a generalized additive model from the `mgcv` package, predict $y$ for both the train and test datasets, and find train and test MSEs. 
 
 ```{r}
 est_gam <- function(k, train_data, test_data) 

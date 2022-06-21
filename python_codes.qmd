@@ -1,0 +1,71 @@
+```{python}
+from sklearn.model_selection import train_test_split
+from sklearn.datasets import make_regression
+from sklearn.ensemble import RandomForestRegressor
+import numpy as np
+
+n_samples, n_features, n_informative, noise = 2000, 20, 15, 2
+rng = np.random.RandomState(8934)
+X, y = make_regression(n_samples, n_features, n_informative = n_informative, noise = noise, random_state = rng)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, random_state = rng
+)
+
+reg_rf = RandomForestRegressor(max_features = "sqrt")
+
+reg_rf.fit(X_train, y_train)
+reg_rf.score(X_test, y_test)
+
+reg_bagging = RandomForestRegressor(max_features = None)
+
+reg_bagging.fit(X_train, y_train)
+reg_bagging.score(X_test, y_test)
+
+```
+
+```{r}
+fake_data_train <-
+  data.table(
+    y = py$y_train
+  ) %>%
+  cbind(., py$X_train)
+
+fake_data_test <-
+  data.table(
+    y = py$y_test
+  ) %>%
+  cbind(., py$X_test)
+```
+
+```{r}
+rf_fit <-
+  ranger(
+    y ~ .,
+    data = fake_data_train,
+    num.trees = 2000,
+    mtry = 20
+  )
+
+rf_fit
+
+rf_fit_naive <-
+  ranger(
+    y ~ .,
+    data = fake_data_train,
+    num.trees = 2000,
+    mtry = 30
+  )
+
+rf_fit_naive
+```
+
+```{r}
+fake_data_test %>% 
+.[, y_fit_rf := predict(rf_fit, data = .)$predictions] %>% 
+.[, y_fit_naive := predict(rf_fit_naive, data = .)$predictions] %>% 
+.[, se_rf:= (y-y_fit_rf)^2] %>% 
+.[, se_rf_naive := (y-y_fit_naive)^2] %>% 
+.[, .(mse_rf = sum(se_rf), mse_rf_naive = sum(se_rf_naive))]
+
+```
+

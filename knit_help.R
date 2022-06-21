@@ -8,8 +8,14 @@ library(xaringanBuilder)
 #' # Render lecture notes
 # /*===========================================================
 
+# === prediction v.s. causal ===#
+quarto::quarto_render(here::here("LectureNotes/L00-prediction-vs-causal-inference.qmd"))
+
 # === bias-variance trade-off ===#
 quarto::quarto_render(here::here("LectureNotes/bias-variance-tradeoff.qmd"))
+
+# === gam ===#
+quarto::quarto_render(here::here("LectureNotes/gam.qmd"))
 
 # === cross-validation ===#
 quarto::quarto_render(here::here("LectureNotes/cross-validation.qmd"))
@@ -32,6 +38,18 @@ quarto::quarto_render(here::here("LectureNotes/grf.qmd"))
 # === cf ===#
 quarto::quarto_render(here::here("LectureNotes/cf.qmd"))
 
+# === scikitlearn ===#
+quarto::quarto_render(here::here("LectureNotes/scikitlearn.qmd"))
+
+# === linear-nonpar ===#
+quarto::quarto_render(here::here("LectureNotes/linear-nonparametric-efficiency.qmd"))
+
+
+#/*=================================================*/
+#' # Appendix
+#/*=================================================*/
+# === MC ===#
+quarto::quarto_render(here::here("LectureNotes/A01-mc-simulation.qmd"))
 
 
 

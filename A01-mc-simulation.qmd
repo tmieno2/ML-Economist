@@ -1,0 +1,178 @@
+# Monte Carlo (MC) Simulation
+
+Monte Carlo (MC) simulation is an important tool to test econometric hypothesis <span style="color:blue"> numerically</span> and it is highly desirable that you can conduct your own MC simulations that fit your need. Suppose you are interested in learning whether the OSL estimator of a simple linear-in-parameter model is unbiased when the error term is correlated with one of the explanatory variables. Well, it has been theoretically proven that the OLS estimator is biased under such a data generating process. So, we do not really have to show this numerically. But, what if you are facing with a more complex econometric task for which the answer is not clear for you? For example, what is the impact of over-fitting the first stage estimations in a double machine learning approach to the bias and efficiency of the estimation of treatment effect in the second stage? We can partially answer to this question (though not generalizable unlike theoretical expositions) using MC simulations. Indeed, this book uses MC simulations often to get insights into econometric problems for which the answers are not clear or to just confirm if econometric theories are correct. 
+
+It is important to first recognize that it is <span style="color:blue"> impossible </span> to test econometric theory using real-wold data. That is simply because you never know the underlying data generating process of real-world data. In MC simulations, we generate data according to the data generating process we specify. This allows us to check if the econometric outcome is consistent with the data generating process or not. This is the reason every journal article with newly developed statistical procedures published in an econometric journal has MC simulations to check the new econometric theories are indeed correct (e.g., whether the new estimator is unbiased or not).
+
+Here, we learn how to program MC simulations using a very simple econometric example. Specifically, suppose you are interested in checking what happens to OLS estimators if $E[u|x]=0$ (the error term and $x$ are not correlated) is violated in estimating $y = \alpha + \beta x + u$.
+
+```{r}
+#| include: false
+library(tidyverse)
+library(data.table)
+```
+
+## Random number generator
+
+To create a dateset, we use pseudo random number generators. In most cases, `runif()` and `rnorm()` are sufficient.
+
+```{r}
+#=== uniform ===#
+x_u <- runif(1000) 
+
+head(x_u)
+hist(x_u)
+```
+
+```{r}
+#=== normal ===#
+x_n <- rnorm(1000, mean = 0, sd = 1)
+
+head(x_n)
+hist(x_n)
+```
+
+We can use `runif()` to draw from the Bernouli distribution, which can be useful in generating a treatment variable.
+
+```{r}
+#=== Bernouli (0.7) ===#
+runif(30) > 0.3
+```
+
+They are called <span style="color:red"> pseudo </span> random number generators because they are not truly random. What sequence of numbers you get is determined by <span style="color:blue"> seed </span>. In R, you can use `set.seed()` to set seed.
+
+```{r}
+set.seed(43230)
+runif(10)
+```
+
+If you run the code on your computer, then you would get exactly the same set of numbers. So, pseudo random generators generate random-looking numbers, but it is not truly random. You are simply drawing from a pre-determined sequence of number that <span style="color:blue"> act like </span>random numbers. This is a very important feature of pseudo random number generators. The fact that <span style="color:blue"> anybody </span>can generate the same sequence of numbers mean that any results based on pseudo random number generators can be reproducible. When you use MC simulations, you <span style="color:blue"> must </span>set a seed so that your results are reproducible.
+
+## MC simulation steps
+
++ Step 1: Generate data based on the data generating process <span style="color:red"> you </span> specify
++ Step 2: Get an estimate based on the generated data (e.g. OLS, mean)
++ Step 3: Repeat Steps 1 and 2 many times (e.g., 1000)
++ Step 4: Compare your estimates with the true parameter specified in Step 1 
+
+Going though Steps 1 and 2 only once is not going to give you an idea of how the estimator of interest performs. So, you repeat Steps 1 and 2 many times to what you can expect form the estimator on average. 
+
+Let's use a very simple example to better understand the MC steps. The statistical question of interest here is whether sample mean is an unbiased estimator of the expected value: $E[\frac{1}{n}\sum_{i=1}^n x_i] = E[x]$, where $x_i$ is an independent random draw from the same distribution.
+
+::: {.column-margin}
+Of course, $x_i$ does not have to be independent. But, just making things as simple as possible.
+:::
+
+Here is Steps 1.
+
+```{r }
+x <- runif(100) 
+```
+
+Here, $x$ follows $Unif(0, 1)$ and $E[x] = 0.5$. This is the data generating process. And, data (`x`) has been generated using `x <- runif(100)`. 
+
+Step 2 is the estimation of $E[x]$. The estimator is the mean of the observed values of `x`.
+
+```{r}
+(
+mean_x <- mean(x)
+)
+```
+
+Okay, pretty close. But, remember this is just a single realization of the estimator. Let's move on to Step 3 (repeating the above many times). Let's write a function that does Steps 1 and 2.   
+
+```{r}
+get_estimate <- function()
+{
+  x <- runif(100) 
+  mean_x <- mean(x)
+  return(mean_x)
+}
+```
+
+You can now repeat `get_estimate()` many times. There are numerous ways to do this in R. But, let's use `lapply()` here.
+
+```{r}
+estimates <-
+  lapply(
+    1:1000,
+    function(x) get_estimate()
+  ) %>% 
+  unlist()
+```
+
+Here is the mean of the estimates (the estimate of $E[\frac{1}{n}\sum_{i=1}^n x_i]$).
+
+```{r}
+mean(estimates)
+```
+
+Very close. Of course, you will not get the exact number you are hoping to get, which is $0.5$ in this case as MC simulation is a random process.
+
+While this example may seem excessively simple, no matter what you are trying to test, the basic steps will be exactly the same.
+
+## Another Example
+
+Let's work on a slightly more complex MC simulations. We are interested in understanding what happens to $\beta_1$ if $E[u|x]\ne 0$ when estimating $y=\beta_0+\beta_1 x + u$ (classic endogeneity problem).
+
+Let's set some parameters first.
+
+```{r}
+B <- 1000 # the number of iterations
+N <- 100 # sample size
+```
+
+Let's write a code to generate data for a single iteration (Step 1).
+
+```{r}
+mu <- rnorm(N) # the common term shared by both x and u
+x <- rnorm(N) + mu # independent variable
+u <- rnorm(N) + mu # error
+y <- 1 + x + u # dependent variable
+data <- data.frame(y = y, x = x)
+```
+
+So, the target parameter ($\beta_1$) is 1 in this data generating process. `x` and `u` are correlated because they share the common term `mu`.
+
+```{r}
+cor(x, u)
+```
+
+This code gets the OLS estimate of $\beta_1$ (Step 2).
+
+```{r}
+lm(y ~ x, data = data)$coefficient["x"]
+```
+
+Okay, things are not looking good for OLS already. 
+
+Let's repeat Steps 1 and 2 many times (Step 3).
+
+```{r}
+get_ols_estimate <- function()
+{
+  mu <- rnorm(N) # the common term shared by both x and u
+  x <- rnorm(N) + mu # independent variable
+  u <- rnorm(N) + mu # error
+  y <- 1 + x + u # dependent variable
+  data <- data.frame(y = y, x = x)
+
+  beta_hat <- lm(y ~ x, data = data)$coefficient["x"]
+
+  return(beta_hat)
+}
+
+estimates <-
+  lapply(
+    1:1000,
+    function(x) get_ols_estimate()
+  ) %>% 
+  unlist()
+```
+
+Yes, the OLS estimator of $\beta_1$ is biased as we expected.
+
+```{r}
+mean(estimates)
+hist(estimates)
+```

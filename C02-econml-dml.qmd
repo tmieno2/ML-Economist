@@ -1,32 +1,9 @@
----
-title: "Double Machine Learning"
-author: "Machine Learning for Economists"
-output:
-  xaringan::moon_reader:
-    # css: [default, metropolis, metropolis-fonts] 
-    css: ../xaringan-themer.css 
-    lib_dir: libs
-    nature:
-      ratio: 12:8
-      highlightStyle: github
-      highlightLines: true
-      countIncrementalSlides: false
-bibliography: ../ref.bib
----
-class: middle
+# Double Machine Learning
 
-```{r, child = "../setup.Rmd"}
-```
 
-```{r knitr-setup, include = FALSE, cache = F}
-library(knitr)
-opts_chunk$set(
-  echo = F,
-  root.dir = here()
-)
-```
-
-```{r prep, include = FALSE, cache = F}
+```{r }
+#| include: false
+#| cache: false
 library(data.table)
 library(magick)
 library(fixest)
@@ -34,27 +11,11 @@ library(officer)
 library(flextable)
 library(dplyr)
 library(ggplot2)
+library(DoubleML)
 ```
 
 
-# Outline
-
-1. [Theoretical Framework](#theory)
-2. [Estimation](#est)
-
----
-
-class: inverse, center, middle
-name: theory
-
-# Framework
-
-<html><div style='float:left'></div><hr color='#EB811B' size=1px width=1000px></html>
-
----
-class: middle
-
-# Framework
+## Modeling Framework
 
 $$
 \begin{aligned}

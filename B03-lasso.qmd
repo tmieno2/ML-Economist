@@ -70,11 +70,13 @@ $$
 y  = 0.2 x_1 + 2 * x_2 + \mu
 $$
 
-Using LASSO, we are trying to estimate the coefficient on $x_1$ and $x_2$ by solving the following problem where $t$ is set to 1 in @eq-constrained-lasso:
+When $t$ is set to 1 in @eq-constrained-lasso, LASSO tries to estimate the coefficient on $x_1$ and $x_2$ by solving the following problem:
 
 $$
+\begin{align}
 Min_{\beta} \sum_{i=1}^N (y_i - \beta_1 x_1 - \beta_2 x_2)^2 \\
-\mbox{subject to } \sum_{k=1}^K |\beta_k| < \textcolor{red}{1} 
+\mbox{subject to } \sum_{k=1}^K |\beta_k| < \textcolor{red}{1}    
+\end{align}
 $$
 
 This means that, we need to look for the combinations of $\beta_1$ and $\beta_2$ such that the sum of their absolute values is less than 1. Graphically, here is what the constraint looks like:

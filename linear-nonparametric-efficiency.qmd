@@ -1,0 +1,160 @@
+---
+title: "Efficiency: Parametric vs Non-parametric Methods"
+---
+
+Parametric model: functional relationship between the variables are specified by the user and relatively small number of parameters quantify the relationship between the variables. A good example of a parametric model is a linear (in parameter) model like below.
+
+$$
+\begin{aligned}
+y = \beta_0 + \beta_1 log(x_1) + \beta_2 x^2 + \beta_3 x_1 \cdot x_2 + \mu
+\end{aligned}
+$$
+
+In this model, you are assuming that the marginal impact of $x_1$ and $x_2$ are
+
+$$
+\begin{aligned}
+\frac{\partial y}{\partial x_1} & = \beta_1 \frac{1}{x_1} + \beta_3 x_2 \\
+\frac{\partial y}{\partial x_2} & = 2\beta_2 + \beta_3 x_1 
+\end{aligned}
+$$
+
+Parametric models are not very flexible in the sense that they will not be able to correctly represent the model that cannot be expressed by any values of the parameters. Foe example, if the underlying true data generating process is $y = \alpha e^{x_1 + x_2}$. Then, the above model would perform terribly.
+
+Note that in practice we use contextual knowledge to come up with a model that we think is consistent with the theoretical and empirical expectation. For example, when you are modeling the impact of nitrogen on corn yield, biological theory of crop growth and past empirical evidence tells you that yield-nitrogen is a concave function where yield level hits a plateau as you increase nitrogen rate. So, the above example of a mis-specification problem is rather exaggerated (but you get the point).
+
+:::{.callout-tip}
+
++ parametric: 
+  - pro: can be efficient than non-parametric approach when the underlying process is modeled well with parametric models
+  * cons: not robust to functional form mis-specifications
++ non-parametric: 
+  * pro: safe-guard against model mis-specification especially when you are modeling highly complex (non-linear in a way that is hard to capture with parametric models and multi-way interactions of variables) 
+  * cons: possible loss in efficiency compared to parametric approach when the underlying model can be approximated well with parametric models
+
+:::
+
+## Monte Carlo Simulation (parametric vs non-parametric)
+
+$$
+\begin{aligned}
+y = log(x) + v
+\end{aligned}
+$$
+
+Objective is to understand the impact of treatment (increasing $x = 1$ to $x = 2$). The true impact of the treatment is $TE[x=1 \rightarrow x=2] = log(2) - log(1) = `r log(2)`$.
+
+
+```{r}
+#| include: false
+library(mgcv)
+library(ranger)
+library(gbm)
+library(tidyverse)
+library(parallel)
+library(data.table)
+library(caret)
+```
+
+```{r}
+#| eval: false
+library(mgcv)
+library(ranger)
+library(gbm)
+library(tidyverse)
+library(parallel)
+library(data.table)
+library(caret)
+```
+
+```{r}
+
+mc_run <- function(i)
+{
+  print(i) # progress tracker
+
+  #=== set the number of observations (not really have to be inside the function..) ===#
+  N <- 1000
+
+  #=== generate the data ===#
+  x <- 3 * runif(N)
+  e <- 2 * rnorm(N)
+  y <- log(x) + e
+
+  data <-
+    data.table(
+      x = x,
+      y = y
+    )
+
+  eval_data <- data.table(x = c(1, 2))
+
+  #=== linear model with OLS ===#
+  lm_trained <- lm(y ~ log(x), data = data)
+  te_lm <- lm_trained$coefficient["log(x)"] * log(2)
+
+  #=== gam ===#
+  gam_trained <- gam(y ~ s(x, k = 4), data = data)
+  y_hat_gam <- predict(gam_trained, newdata = eval_data)
+  te_gam <- y_hat_gam[2] - y_hat_gam[1]
+
+  #=== KNN ===#
+  knn_trained <- knnreg(y ~ x, k = 10, data = data)
+  y_hat_knn <- predict(knn_trained, newdata = eval_data)
+  te_knn <- y_hat_knn[2] - y_hat_knn[1]
+
+  #=== random forest ===#
+  rf_trained <- ranger(y ~ x, data = data)
+  y_hat_rf <- predict(rf_trained, data = eval_data)$predictions
+  te_rf <- y_hat_rf[2] - y_hat_rf[1]
+
+  #=== combined the results ===#
+  return_data <-
+    data.table(
+      te = c(te_lm, te_gam, te_knn, te_rf),
+      type = c("lm", "gam", "knn", "rf")
+    )
+
+  return(return_data)
+}
+
+```
+
+```{r}
+#| cache: true
+
+set.seed(5293)
+
+mc_results <-
+  mclapply(
+    1:500,
+    mc_run,
+    mc.cores = detectCores() - 2
+  ) %>% 
+  rbindlist()
+
+
+# lapply(
+#   1:100,
+#   mc_run
+# )
+```
+
+Here is a visualization of the results.
+
+```{r}
+#| code-fold: true
+
+ggplot(data = mc_results) +
+  geom_density(aes(x = te, fill = type), alpha = 0.4) +
+  geom_vline(xintercept = log(2))
+
+```
+
+As you can see, (correctly-specified) linear model performs better than the other methods. Specifically, all the methods are unbiased, however they differ substantially in terms of efficiency. Note that there was no point in applying random forest at all as there is only a single explanatory variable and the none of the strong points of RF over linear model manifest in this simulation. This simulation by no means is intended to claim that linear model is the best obviously. It is just showcasing <span style="color:red"> a </span>scenario where (correctly-specified) linear model performs far better than the non-parametric models. This is also a reminder that no method works the best all the time. There are many cases where parametric models perform better (contextual knowledge is critical). There are many cases non-parametric modeling work better than parametric modeling.
+
+
+
+
+
+

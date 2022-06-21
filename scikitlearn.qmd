@@ -1,0 +1,191 @@
+---
+title: "Machine Learning using `scikitlearn` in Python"
+---
+
+
+
+### LASSO
+
+### Random Forest
+
+### Gradient Boosting
+
+The `scikitlearn.ensemble` provides the `GradientBoostingRegressor()` method to implement gradient boosting. 
+
+```{python}
+#=== import methods ===#
+from sklearn.datasets import make_regression # to generate synthetic data
+from sklearn.ensemble import GradientBoostingRegressor # 
+from sklearn.model_selection import train_test_split
+```
+
+Let's create a synthetic dataset and split the data into the train and test datasets.
+
+```{python}
+#=== create synthetic data ===#
+X, y = make_regression(random_state = 0) # regressors saved to X, dependent variable saved to y
+
+#=== split the generated data into train and test datasets ===#
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state = 0)
+```
+
+Here are some parameters for `GradientBoostingRegressor()` to be aware of:
+
++ `n_estimators`: Number of trees ($B$). Default is $100$.
++ `min_samples_leaf`: Minimum number of observations in a terminal node (leaf). Default is 1.
++ `min_samples_split`: Minimum number of observations required to split an internal node. Default is 2.
++ `learning_rate`: Learning rate ($\lambda$). Default is 0.1.
++ `subsample`: The fraction of samples to be used for fitting the individual base learners. Default is 1.
++ `random_state` (int): seed 
+
+Let's now initiate a GradientBoostingRegressor instance using `GradientBoostingRegressor()`. This is where you set parameters.
+
+```{python}
+#=== initiate GB ===#
+gb_reg = GradientBoostingRegressor( 
+  n_estimators = 200,
+  min_samples_leaf = 5,
+  learning_rate = 0.5,
+  random_state = 123)
+
+```
+
+We can now train using the `fit` method.
+
+```{python}
+#=== train (fit) ===#
+gb_reg.fit(X_train, y_train)
+```
+
+
+```{python}
+#=== predict ===#
+gb_reg.predict(X_test[0:4])
+
+#=== check the score ===#
+gb_reg.score(X_test, y_test)
+```
+
+ 
+## Model Selection
+
+### `GridSearchCV()`
+
+You can use the `GridSearchCV()` method from `sklearn.model_selection`. Here, we demonstrate the use of `GridSearchCV()` on selecting the best set of parameters for `RandomForestRegressor()`.
+
+```{python}
+from sklearn import svm, datasets
+from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.datasets import make_regression # to generate synthetic data
+
+
+#=== create synthetic data ===#
+X, y = make_regression(random_state = 0)
+
+#=== split the data into train and test ===#
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state = 0)
+```
+
+We first create a `dictionary` of parameters. Here, we just look at two parameters: `n_estimators` and `max_features`. 
+
+```{python}
+parameters = {
+  'n_estimators':[10, 100, 500],
+  'max_features':[0.1, 0.3, 0.5]
+}
+```
+
+`GridSearchCV()` will consider all the combinations of the parameters provided internatlly. So, you do not need to create a matrix like blelow.
+
+```{python}
+#| code-fold: true
+import itertools
+iterables = [ [10, 100, 500], [0.1, 0.3, 0.5] ]
+for t in itertools.product(*iterables):
+    print(t)
+```
+
+We now define the estimator of interest.
+
+```{python}
+rfr = RandomForestRegressor()
+```
+
+Now, everything is ready. We provide the estimator and parameters to loop over to `GridSearchCV()` and then use the `fit()` method on it.
+
+```{python}
+#=== set up the search ===#
+reg = GridSearchCV(rfr, parameters)
+
+#=== do KCV on all the combinations of the parameters ===#
+reg.fit(X_train, y_train)
+```
+
+By default, the `refit` option of `GridSearchCV()` is `true`, which means that once it is done running KCV on all the parameter combinations, it will find the best set of parameter values, and then it fits the model with the parameter values on the entire train data (which is what you want as the final model). The trained model is saved in `best_estimator_` attribute.
+
+```{python}
+reg.best_estimator_
+```
+
+Let's use the `predict` method to predict values on a different dataset.
+
+```{python}
+reg.best_estimator_.predict(X_test)
+```
+
+You can check the quality of the trained model on the test dataset.
+
+```{python}
+reg.best_estimator_.score(X_test, y_test)
+```
+
+### `GridSearchCVList()`
+
+```{python}
+from econml.sklearn_extensions.model_selection import GridSearchCVList 
+from sklearn.linear_model import Lasso 
+```
+
+We first set up a grid search just like we did with `GridSearchCV`. Here is an example.
+
+```{python}
+gslist = GridSearchCVList(
+    #=== list of models ===#
+    [Lasso(max_iter = 10000), GradientBoostingRegressor()],
+    #=== list of parameters for each model ===#
+    param_grid_list=[
+        {"alpha": [0.001, 0.01, 0.1, 1, 10]},
+        {"max_depth": [3, 5, None], "n_estimators": [50, 100, 200]},
+    ],
+    cv=5,
+)
+```
+
+In `[Lasso(max_iter = 10000), GradientBoostingRegressor()]`, you are telling the function that you want to do KCV on `Lasso()` and `GradientBoostingRegressor()`. Notice that `Lasso()` has `max_iter` parameter set inside. When you want to set some of the parameters at certain values, you can do so when you are providing a list of models like above. Throughout the the KCV process `max_iter` will be always set at the value you specified there while the parameters you want to tune change during the process. You also provide a list (over models) of list (over parameters) of values to `param_grid_list`. The first element of the list is `{"alpha": [0.001, 0.01, 0.1, 1, 10]}`, which is for `Lasso(max_iter = 10000)` and `{"max_depth": [3, 5, None], "n_estimators": [50, 100, 200]}` is for `GradientBoostingRegressor()`. So, `GridSearchCVList()` goes through all the combinations of the values of `max_depth` and `n_estimators` for `GradientBoostingRegressor()`.
+
+`GridSearchCVList()` is an extension of `GridSearchCV()`, and its arguments parameters and attributes are identical except that you provide a list of models and parameter sets to `GridSearchCVList()`. This means that `refit=true` by default, and we can get the best model trained on the train dataset like below. 
+
+```{python}
+kcv_gsl = gslist.fit(X_train, y_train)
+best_model = kcv_gsl.best_estimator_
+```
+
+```{python}
+best_model
+```
+
+So, the among all the models tested (`Lasso()` and `GradientBoostingRegressor()` with different hyper-parameters for each model), `Lasso()` with `alpha = 0.01` (and `max_iter = 10000`) is the best.
+
+We can now use `best_model` for prediction and validation. 
+
+```{python}
+best_model.predict(X_test)
+best_model.score(X_test, y_test)
+```
+
+
+
+
+

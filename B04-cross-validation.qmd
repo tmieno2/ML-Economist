@@ -1,19 +1,11 @@
----
-title: "Cross-validation based on mean squared error (MSE)"
-format: 
-  html:
-    code-fold: show
-    toc: true
-    self-contained: true
-editor: visual
----
+# Cross-validation based on mean squared error (MSE) {#sec-cv}
 
 ```{r}
 #| include: false
 library(data.table)
 library(tidyverse)
 library(mgcv)
-library(caret)
+library(rsample)
 library(parallel)
 ```
 
@@ -22,7 +14,7 @@ library(parallel)
 library(data.table)
 library(tidyverse)
 library(mgcv)
-library(caret)
+library(rsample)
 library(parallel)
 ```
 
@@ -308,26 +300,27 @@ set.seed(89534)
 data <- gen_data(x = runif(500) * 5)
 ```
 
-You can use `caret::createFolds()` to split the data into groups. 
+You can use `rsample::vfold_cv()` to split the data into groups. 
 
 ```{r}
 #=== split into 5 groups ===#
-folds <- caret::createFolds(data$y, k = 5, list = TRUE, returnTrain = FALSE)
+(
+data_folds <- rsample::vfold_cv(data, v = 5)
+)
 ```
 
-The resulting output is a list of indices for each fold. For example, fold 1 consists of observations whose row indices are the following:
+As you can see, `rsample::vfold_cv()` creates $v$ ($=5$ here) splits. And each split has both train and test datasets. `<split [400/100]>` means that $400$ and $100$ observations for the train and test datasets, respectively. Note that, the $100$ observations in the first split (called `Fold 1`) are in the train datasets of the rest of the splits (`Fold 2` through `Fold 5`).
+
+You can extract the train and test datasets like below using the `training()` and `testing()` functions.
 
 ```{r}
-folds[[1]]
-``` 
+train_data <- data_folds[1, ]$splits[[1]] %>% training()
+test_data <- data_folds[1, ]$splits[[1]] %>% testing()
+```
 
 Now, let's get MSE for the first fold.
 
 ```{r}
-#=== define test and train data ===#
-test_data <- data[folds[[1]], ]
-train_data <- data[-folds[[1]], ]
-
 #=== train the model ===#
 fitted_model <- gam(y ~ s(x, k = 30), sp = 0, data = train_data)
 
@@ -344,8 +337,9 @@ Now that we know how to get MSE for a single fold, let's loop over folds and get
 
 get_mse_by_fold <- function(data, fold, model)
 {
-  test_data <- data[folds[[fold]], ]
-  train_data <- data[-folds[[fold]], ]
+
+  test_data <- data_folds[fold, ]$splits[[1]] %>% testing()
+  train_data <- data_folds[fold, ]$splits[[1]] %>% training()
 
   #=== train the model ===#
   fitted_model <- model(train_data)
@@ -373,15 +367,17 @@ This will get you MSE for the third fold.
 get_mse_by_fold(data, 3, gam_k_10)
 ```
 
-Now, let's loop over the folds.
+Now, let's loop over the row number of `data_folds` (loop over `splits`).
 
 ```{r}
+(
 mse_all <-
   lapply(
-    seq_len(length(folds)),
+    seq_len(nrow(data_folds)),
     function(x) get_mse_by_fold(data, x, gam_k_10)
   ) %>% 
   rbindlist()
+)
 ```
 
 By averaging MSE values, we get
@@ -403,7 +399,7 @@ get_mse_by_sp_kcv <- function(sp)
 
   mse_by_k <-
     lapply(
-      seq_len(length(folds)),
+      seq_len(nrow(data_folds)),
       function(x) get_mse_by_fold(train_data, x, temp_gam)
     ) %>% 
     rbindlist()
@@ -465,6 +461,33 @@ ggplot(data = mse_results) +
 Even though we compared different specification of the same approach (GAM), we can compare across different models as well. For example, you can find KCV for an RF model with a particular specifications of its hyper-parameters and compare the KCV with those of the GAM model specifications and see what comes at the top.  
 :::
 
+## Repeated K-fold Cross-Validation (KCV)
+
+As its name suggest, repeated KCV repeats the process of KCV multiple times. Each KCV iteration splits the original data into k-fold in a different way. A single KCV may not be reliable as the original data was split into such a way that favors one parameter set of or model class over the others. However, if we repeat KCV multiple times, then we can safe-guard against this randomness in a KCV procedure. Repeated KCV is preferred over a single KCV. 
+
+You can use `rsample::vfold_cv()` to create repeated k-fold datasets by using the `repeats` argument.
+
+```{r}
+#=== split into 5 groups ===#
+(
+data_folds <- rsample::vfold_cv(data, v = 5, repeats = 5)
+)
+```
+
+The output has 5 (number of folds) times 5 (number of repeats) splits. It also has an additional column that indicates which repeat each row is in (`id`). You can apply `get_mse_by_fold()` (this function is defined above and calculate MSE) to each row (split) one by one and calculate MSE just like we did above. 
+
+```{r}
+(
+mean_mse <-
+  lapply(
+    seq_len(nrow(data_folds)),
+    function(x) get_mse_by_fold(data, x, gam_k_10)
+  ) %>% 
+  rbindlist() %>% 
+  .[, mean(mse)]
+)
+```
+
 ## Does KCV really work?
 
 LOOCV and KCV use the train data to estimate test MSE. But, does it really work? In other words, does it let us pick the parameter that minimizes the test MSE? We will run a simple MC simulations to test this. We continue to use the same data generating process and gam models for this simulation as well. 
@@ -492,7 +515,7 @@ get_mse_by_sp <- function(sp)
   #' ## MSE from KCV 
   #/*----------------------------------*/
   #=== split train_data into 5 groups ===#
-  folds <- caret::createFolds(train_data$y, k = 5, list = TRUE, returnTrain = FALSE)
+  data_folds <- rsample::vfold_cv(train_data, v = 5)
   
   #=== specify the model ===#
   temp_gam <- specify_gam(sp)
@@ -500,7 +523,7 @@ get_mse_by_sp <- function(sp)
   #=== get MSE by fold ===#
   mse_by_k <-
     lapply(
-      seq_len(length(folds)),
+      seq_len(nrow(data_folds)),
       function(x) get_mse_by_fold(train_data, x, temp_gam)
     ) %>% 
     rbindlist()
@@ -619,7 +642,6 @@ ggplot(data = which_sp_optimal) +
 ```
 
 As you can see KCV gives you `sp` that is close to the `sp` based on pure MSE in many cases. But, you can also see that KCV can suggest you a very different number as well. KCV is not perfect, which is kind of obvious.
-
 
 
 
