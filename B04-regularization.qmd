@@ -1,16 +1,5 @@
----
-title: "Regression Shrinkage Methods"
-format: html
-editor: visual
----
+# Regression Shrinkage Methods
 
-```{r}
-#| include: false
-
-library(data.table)
-library(tidyverse)
-library(glmnet)
-```
 
 ## Shrinkage Methods {#sec-shrinkage}
 
@@ -53,6 +42,27 @@ Ridge regression and elastic net are rarely used. So, we are going to cover only
  
 
 ## Lasso
+
+::: {.column-margin}
+
+**Packages to load for replication**
+
+```{r}
+#| include: false
+
+library(data.table)
+library(tidyverse)
+library(glmnet)
+```
+
+```{r}
+#| eval: false
+
+library(data.table)
+library(tidyverse)
+library(glmnet)
+```
+:::
 
 When there are many potential variables to include, it is hard to know which ones to include. Lasso can be used to select variables to build a more parsimonious model, which may help reducing MSE.
 

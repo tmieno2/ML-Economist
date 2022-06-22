@@ -1,6 +1,11 @@
 # Boosted Regression Forest
 
-## Preparation {.unnumbered}
+
+## Gradient Boosting
+
+::: {.column-margin}
+**Packages to load to replication**
+
 ```{r}
 #| include: false
 
@@ -21,6 +26,8 @@ library(rattle)
 library(wooldridge)
 ```
 
+**Dataset for replication**
+
 ```{r set-up-data}
 #=== get data ===#
 data(mlb1)
@@ -31,8 +38,8 @@ mlb1_dt <-
   .[, salary := NULL] %>% # remove salary (use lsalary instead)
   na.omit() # remove observations with NA in any of the variables
 ```
+:::
 
-## Gradient Boosting
 
 In training RF that uses the idea of bagging, the original data is used to generate many bootstrapped datasets, a regression tree is trained on each of them <span style="color:blue"> independently </span>, and then they are averaged to reach the final model. Boosting is similar to bagging (bootstrap aggregation) in that it trains many statistical models and then combine them to reach the final model. However, instead of building many trees independently, it builds trees <span style="color:blue"> sequentially </span> in a manner that improves prediction step by step.
 

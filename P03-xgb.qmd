@@ -2,21 +2,7 @@
 
 Extreme gradient boosting (XGB) is a variant of gradient boosting that has been extremely popular due to its superb performance. The basic concept is the same as the gradient boosting algorithm described above, however, it has its own way of building a tree, which is more mindful of avoiding over-fitting trees. 
 
-## Preparation {.unnumbered}
 
-```{r}
-#| include: false
-
-library(tidyverse)
-library(data.table)
-```
-
-```{r}
-#| eval: false
-
-library(tidyverse)
-library(data.table)
-```
 
 ## Tree updating in XGB (general)
 
@@ -164,6 +150,25 @@ $$ {#eq-q-reg}
 
 
 ## Illustration of XGB for regression
+
+::: {.column-margin}
+
+**Packages to load for replication**
+```{r}
+#| include: false
+
+library(tidyverse)
+library(data.table)
+```
+
+```{r}
+#| eval: false
+
+library(tidyverse)
+library(data.table)
+```
+:::
+
 
 In order to further our understanding of the entire XGB algorithm, let's take a lookt at a simple regression problem as an illustration. We consider a four-observation data as follows:
 

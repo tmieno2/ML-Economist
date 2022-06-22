@@ -212,7 +212,7 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./B03-cross-validation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Cross-validation based on mean squared error (MSE)</span></a>
+  <a href="./B03-cross-validation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Cross-validation</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -278,9 +278,8 @@ div.csl-indent {
         <nav id="TOC" role="doc-toc"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
-<li><a href="#preparation" id="toc-preparation" class="nav-link active" data-scroll-target="#preparation">Preparation</a></li>
-  <li>
-<a href="#sec-rt" id="toc-sec-rt" class="nav-link" data-scroll-target="#sec-rt"> <span class="header-section-number">6.1</span> Regression tree</a>
+<li>
+<a href="#sec-rt" id="toc-sec-rt" class="nav-link active" data-scroll-target="#sec-rt"> <span class="header-section-number">6.1</span> Regression tree</a>
   <ul class="collapse">
 <li><a href="#what-is-it" id="toc-what-is-it" class="nav-link" data-scroll-target="#what-is-it"> <span class="header-section-number">6.1.1</span> What is it?</a></li>
   <li><a href="#training-a-regression-tree-in-r" id="toc-training-a-regression-tree-in-r" class="nav-link" data-scroll-target="#training-a-regression-tree-in-r"> <span class="header-section-number">6.1.2</span> Training a regression tree in R</a></li>
@@ -313,7 +312,11 @@ div.csl-indent {
   </div>
   
 
-</header><section id="preparation" class="level2 unnumbered"><h2 class="unnumbered anchored" data-anchor-id="preparation">Preparation</h2>
+</header><section id="sec-rt" class="level2 page-columns page-full" data-number="6.1"><h2 data-number="6.1" class="anchored" data-anchor-id="sec-rt">
+<span class="header-section-number">6.1</span> Regression tree</h2>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>Packages to load for replication.</p>
 <div class="cell">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com">data.table</a></span><span class="op">)</span>
@@ -321,9 +324,7 @@ div.csl-indent {
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rattle.togaware.com/">rattle</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://justinmshea.github.io/wooldridge/">wooldridge</a></span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section><section id="sec-rt" class="level2 page-columns page-full" data-number="6.1"><h2 data-number="6.1" class="anchored" data-anchor-id="sec-rt">
-<span class="header-section-number">6.1</span> Regression tree</h2>
-<section id="what-is-it" class="level3 page-columns page-full" data-number="6.1.1"><h3 data-number="6.1.1" class="anchored" data-anchor-id="what-is-it">
+</div></div><section id="what-is-it" class="level3 page-columns page-full" data-number="6.1.1"><h3 data-number="6.1.1" class="anchored" data-anchor-id="what-is-it">
 <span class="header-section-number">6.1.1</span> What is it?</h3>
 <p>Here is an example of regression tree to explain logged salary (<code>lsalary</code>) using the <code>mlb1</code> data from the <code>wooldridge</code> package.</p>
 <div class="cell">
@@ -675,7 +676,7 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 
 <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">x_1</span>, <span class="va">x_2</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -0.007464696</code></pre>
+<pre><code>[1] 0.01232037</code></pre>
 </div>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== second case (positively correlated) ===#</span>
 <span class="va">x_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>
@@ -683,7 +684,7 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 
 <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">x_1</span>, <span class="va">x_2</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.5071416</code></pre>
+<pre><code>[1] 0.4962625</code></pre>
 </div>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== third case (negatively correlated) ===#</span>
 <span class="va">x_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>
@@ -691,7 +692,7 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 
 <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">x_1</span>, <span class="va">x_2</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -0.7916475</code></pre>
+<pre><code>[1] -0.7926396</code></pre>
 </div>
 </div>
 <div class="cell">
