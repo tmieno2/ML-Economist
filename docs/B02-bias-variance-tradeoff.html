@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="generator" content="quarto-0.9.563">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>Introduction to Machine Learning for Economists - 3&nbsp; Variance-Bias Trade-off</title>
+<title>Introduction to Machine Learning for Economists - 3&nbsp; Bias-variance Trade-off</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -85,7 +85,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./B03-lasso.html" rel="next">
-<link href="./B01-gam.html" rel="prev">
+<link href="./B01-nonlinear.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -119,7 +119,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }"><div class="container-fluid d-flex justify-content-between">
       <h1 class="quarto-secondary-nav-title">
-<span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Variance-Bias Trade-off</span>
+<span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Bias-variance Trade-off</span>
 </h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
@@ -183,12 +183,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./B01-gam.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Non-linear function estimation: Smoothing Splines and K-nearest neighbor regression</span></a>
+  <a href="./B01-nonlinear.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Non-linear function estimation</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./B02-bias-variance-tradeoff.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Variance-Bias Trade-off</span></a>
+  <a href="./B02-bias-variance-tradeoff.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Bias-variance Trade-off</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -238,6 +238,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <a href="./causal-ml.html" class="sidebar-item-text sidebar-link">Causal Machine Learning (CML) Methods</a>
   </div>
 </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">Appendices</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./A01-mc-simulation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Monte Carlo (MC) Simulation</span></a>
+  </div>
+</li>
+    </ul>
+</li>
     </ul>
 </div>
 </nav><!-- margin-sidebar --><div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
@@ -252,7 +267,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
 <h1 class="title d-none d-lg-block">
-<span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Variance-Bias Trade-off</span>
+<span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Bias-variance Trade-off</span>
 </h1>
 </div>
 
@@ -359,7 +374,7 @@ y  = (x - 2.5)^3 + \mu
   <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">50</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">est_gam</span><span class="op">(</span><span class="va">x</span>, <span class="va">train_data</span>, <span class="va">test_data</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/rbindlist.html">rbindlist</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><a href="#fig-indiv-fit-gam">Figure&nbsp;<span class="quarto-unresolved-ref">fig-indiv-fit-gam</span></a> presents the fitted regression lines for <code>num_knots</code> <span class="math inline">\(= 1, 4, 5, 15, 25\)</span>, and <span class="math inline">\(50\)</span>, along with the observed data points in the train dataset.</p>
+<p><a href="#fig-indiv-fit-gam">Figure&nbsp;<span>3.1</span></a> presents the fitted regression lines for <code>num_knots</code> <span class="math inline">\(= 1, 4, 5, 15, 25\)</span>, and <span class="math inline">\(50\)</span>, along with the observed data points in the train dataset.</p>
 <div class="cell">
 <details><summary>Code</summary><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">sim_results</span><span class="op">[</span><span class="va">num_knots</span>  <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">4</span>, <span class="fl">15</span>, <span class="fl">25</span>, <span class="fl">50</span><span class="op">)</span>, <span class="op">]</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_point.html">geom_point</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">train_data</span>, <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">y</span>, x <span class="op">=</span> <span class="va">x</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span> <span class="op">+</span>
@@ -373,7 +388,7 @@ y  = (x - 2.5)^3 + \mu
 </div>
 </div>
 <p>When the number of knots is <span class="math inline">\(1\)</span>, gam is not flexible enough to capture the underlying cubic function. However, once the number of knots becomes <span class="math inline">\(4\)</span>, it is capable of capturing the underlying cubic curve. However, when you increase the number of knots to 15, you see that the fitted curve is very wiggly (sudden and large changes in <span class="math inline">\(y\)</span> when <span class="math inline">\(x\)</span> is changed slighly). When <code>num_knots</code> <span class="math inline">\(= 50\)</span>, the fitted curve looks crazy and does not resemble the underlying smooth cubic curve.</p>
-<p>Now, let’s check how train and test MSEs change as k changes. As you can see in <a href="#fig-train-test-mse">Figure&nbsp;<span class="quarto-unresolved-ref">fig-train-test-mse</span></a> below, train MSE goes down as k increases (the more complex the model is, the better fit you will get for the train data). However, test MSE is the lowest when <code>num_knots</code> <span class="math inline">\(= 4\)</span>, and it goes up afterward instead of going down. As we saw earlier, when model is made too flexible, it is trained to fit the trained data too well and lose generalizability (predict well for the dataset that has not been seen). This phenomenon is called over-fitting.</p>
+<p>Now, let’s check how train and test MSEs change as k changes. As you can see in <a href="#fig-train-test-mse">Figure&nbsp;<span>3.2</span></a> below, train MSE goes down as k increases (the more complex the model is, the better fit you will get for the train data). However, test MSE is the lowest when <code>num_knots</code> <span class="math inline">\(= 4\)</span>, and it goes up afterward instead of going down. As we saw earlier, when model is made too flexible, it is trained to fit the trained data too well and lose generalizability (predict well for the dataset that has not been seen). This phenomenon is called over-fitting.</p>
 <div class="cell">
 <details><summary>Code</summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#--- get train and test MSEs by k ---#</span>
 <span class="va">summary</span> <span class="op">&lt;-</span> 
@@ -439,9 +454,9 @@ E[(y_0 - \hat{f}(x_0))^2] = Var(\hat{f}(x_0)) + E[y - \hat{f}(x_0)]^2 + Var(\mu)
   <span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/rbindlist.html">rbindlist</a></span><span class="op">(</span>idcol <span class="op">=</span> <span class="st">"sim_id"</span><span class="op">)</span> </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><a href="#fig-bias-variance-1">Figure&nbsp;<span class="quarto-unresolved-ref">fig-bias-variance-1</span></a> shows plots fitted curves for all the 500 simulations by <span class="math inline">\(k\)</span> (grey lines). The blue line is the true <span class="math inline">\(E[y|x]\)</span>. The red line is <span class="math inline">\(E[\hat{f}(x)]\)</span><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Figure <a href="#fig-bias-variance-summary">Figure&nbsp;<span class="quarto-unresolved-ref">fig-bias-variance-summary</span></a> plots the average<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> <span class="math inline">\(Var(\hat{f}(x))\)</span> (red), <span class="math inline">\(E[y - \hat{f}(x)]^2\)</span> (blue), and MSE (darkgreen) from the test datasets for different values of <span class="math inline">\(k\)</span>.</p>
-<p>As you can see in <a href="#fig-bias-variance-1">Figure&nbsp;<span class="quarto-unresolved-ref">fig-bias-variance-1</span></a>, when <span class="math inline">\(k = 1\)</span>, it clealy has a significant bias in estimating <span class="math inline">\(E[y|x]\)</span> except for several values of <span class="math inline">\(x\)</span> at which <span class="math inline">\(E[f^(x)]\)</span> only <strong>happens</strong> to be unbiased. The model is simply too restrictive and suffers significant bias. However, the variance of <span class="math inline">\(\hat{f}(x)\)</span> is the smallest as shown in <a href="#fig-bias-variance-summary">Figure&nbsp;<span class="quarto-unresolved-ref">fig-bias-variance-summary</span></a>. As we increase the value of <span class="math inline">\(k\)</span> (making the model more flexible), bias dramatically reduces. However, the variance of <span class="math inline">\(\hat{f}(x)\)</span> slightly increases. Going from <span class="math inline">\(k = 5\)</span> to <span class="math inline">\(k = 10\)</span> further reduces bias. That is, even though individual fitted curves may look very bad, on average they perform well (as you know that what bias measures). However, the variance of <span class="math inline">\(\hat{f}(x)\)</span> dramatically increases (this is why individual fitted curves look terrible). Moving to a even higher value of <span class="math inline">\(k\)</span> does not reduce bias, but increases the variance of <span class="math inline">\(\hat{f}(x)\)</span> even further.</p>
-<p>According to MSE presented in <a href="#fig-bias-variance-summary">Figure&nbsp;<span class="quarto-unresolved-ref">fig-bias-variance-summary</span></a>, <span class="math inline">\(k = 5\)</span> is the best model among all the models tried in this experiment. In this experiment, we had test datasets available. However, in practice, we need to pick the best model when test datasets are not available most of the time. For such a case, we would like a clever way to estimate <em>test</em> MSE even when test datasets are not available. We will later talk about cross-validation as a means to do so.</p>
+<p><a href="#fig-bias-variance-1">Figure&nbsp;<span>3.3</span></a> shows plots fitted curves for all the 500 simulations by <span class="math inline">\(k\)</span> (grey lines). The blue line is the true <span class="math inline">\(E[y|x]\)</span>. The red line is <span class="math inline">\(E[\hat{f}(x)]\)</span><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Figure <a href="#fig-bias-variance-summary">Figure&nbsp;<span>3.4</span></a> plots the average<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> <span class="math inline">\(Var(\hat{f}(x))\)</span> (red), <span class="math inline">\(E[y - \hat{f}(x)]^2\)</span> (blue), and MSE (darkgreen) from the test datasets for different values of <span class="math inline">\(k\)</span>.</p>
+<p>As you can see in <a href="#fig-bias-variance-1">Figure&nbsp;<span>3.3</span></a>, when <span class="math inline">\(k = 1\)</span>, it clealy has a significant bias in estimating <span class="math inline">\(E[y|x]\)</span> except for several values of <span class="math inline">\(x\)</span> at which <span class="math inline">\(E[f^(x)]\)</span> only <strong>happens</strong> to be unbiased. The model is simply too restrictive and suffers significant bias. However, the variance of <span class="math inline">\(\hat{f}(x)\)</span> is the smallest as shown in <a href="#fig-bias-variance-summary">Figure&nbsp;<span>3.4</span></a>. As we increase the value of <span class="math inline">\(k\)</span> (making the model more flexible), bias dramatically reduces. However, the variance of <span class="math inline">\(\hat{f}(x)\)</span> slightly increases. Going from <span class="math inline">\(k = 5\)</span> to <span class="math inline">\(k = 10\)</span> further reduces bias. That is, even though individual fitted curves may look very bad, on average they perform well (as you know that what bias measures). However, the variance of <span class="math inline">\(\hat{f}(x)\)</span> dramatically increases (this is why individual fitted curves look terrible). Moving to a even higher value of <span class="math inline">\(k\)</span> does not reduce bias, but increases the variance of <span class="math inline">\(\hat{f}(x)\)</span> even further.</p>
+<p>According to MSE presented in <a href="#fig-bias-variance-summary">Figure&nbsp;<span>3.4</span></a>, <span class="math inline">\(k = 5\)</span> is the best model among all the models tried in this experiment. In this experiment, we had test datasets available. However, in practice, we need to pick the best model when test datasets are not available most of the time. For such a case, we would like a clever way to estimate <em>test</em> MSE even when test datasets are not available. We will later talk about cross-validation as a means to do so.</p>
 <div class="cell">
 <details><summary>Code</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">mc_results_sum</span> <span class="op">&lt;-</span> 
     <span class="va">mc_results</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span>
@@ -540,7 +555,7 @@ E[(y_0 - \hat{f}(x_0))^2] = Var(\hat{f}(x_0)) + E[y - \hat{f}(x_0)]^2 + Var(\mu)
   <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">50</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">fit_knn</span><span class="op">(</span><span class="va">x</span>, <span class="va">train_data</span>, <span class="va">test_data</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/rbindlist.html">rbindlist</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><a href="#fig-indiv-fit-knn">Figure&nbsp;<span class="quarto-unresolved-ref">fig-indiv-fit-knn</span></a> presents the fitted regression lines for <span class="math inline">\(k = 1, 5, 15, 25\)</span>, and <span class="math inline">\(50\)</span> using <code><a href="https://rdrr.io/pkg/caret/man/knnreg.html">knnreg()</a></code>, along with the observed data points in the train dataset.</p>
+<p><a href="#fig-indiv-fit-knn">Figure&nbsp;<span>3.5</span></a> presents the fitted regression lines for <span class="math inline">\(k = 1, 5, 15, 25\)</span>, and <span class="math inline">\(50\)</span> using <code><a href="https://rdrr.io/pkg/caret/man/knnreg.html">knnreg()</a></code>, along with the observed data points in the train dataset.</p>
 <div class="cell">
 <details><summary>Code</summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">sim_results</span><span class="op">[</span><span class="va">num_nbs</span>  <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span>, <span class="fl">15</span>, <span class="fl">25</span>, <span class="fl">50</span><span class="op">)</span>, <span class="op">]</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_point.html">geom_point</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">train_data</span>, <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">y</span>, x <span class="op">=</span> <span class="va">x</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"gray"</span><span class="op">)</span> <span class="op">+</span>
@@ -577,7 +592,7 @@ E[(y_0 - \hat{f}(x_0))^2] = Var(\hat{f}(x_0)) + E[y - \hat{f}(x_0)]^2 + Var(\mu)
 
 </section><section class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
 <ol>
-<li id="fn1" role="doc-endnote"><p>This figure is a collection of individual fitted curve just like the ones shown in <a href="#fig-indiv-fit-gam">Figure&nbsp;<span class="quarto-unresolved-ref">fig-indiv-fit-gam</span></a>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1" role="doc-endnote"><p>This figure is a collection of individual fitted curve just like the ones shown in <a href="#fig-indiv-fit-gam">Figure&nbsp;<span>3.1</span></a>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2" role="doc-endnote"><p>averaged over <span class="math inline">\(x\)</span>, and then averaged over iterations<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
@@ -658,8 +673,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-      <a href="./B01-gam.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Non-linear function estimation: Smoothing Splines and K-nearest neighbor regression</span></span>
+      <a href="./B01-nonlinear.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Non-linear function estimation</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

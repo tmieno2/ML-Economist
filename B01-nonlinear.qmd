@@ -1,4 +1,4 @@
-# Non-linear function estimation: Smoothing Splines and K-nearest neighbor regression
+# Non-linear function estimation
 
 ```{r}
 #| include: false
@@ -10,9 +10,9 @@ library(mgcv)
 
 The purpose of this section is to introduce you to the idea of semi-parametric and non-parametric regression methods. We only scratch the surface by just looking at smoothing splines and K-nearest neighbor regression methods. The world of semi-parametric and non-parametric regression is much deeper. But, that's out of the scope of this section. The primary goal of this section is to familiarize you with the concepts of over-fitting, regularization, hyper-parameters, and parameter tuning using smoothing splines and K-nearest neighbor regression methods as examples. 
 
-## Flexible functional form estimation
+## Flexible functional form estimation {#sec-functional-form}
 
-There are many quantitative relationship of two variables that cannot be represented easily by liner (in parameter) parametric models. For example, consider crop yield response to fertilizer. Typically, yield increases at the diminishing rate as fertilizer rate increases. However, at a high enough fertilizer rate, yield stops increasing (fertilizer is not a limiting factor at that point). This relationship is illustrated in the figure below.
+There is a clear limit to liner (in parameter) parametric models in flexibility to represent quantitative relationships between variables. For example, consider crop yield response to fertilizer. Typically, yield increases at the diminishing rate as fertilizer rate increases. However, at a high enough fertilizer rate, yield stops increasing (fertilizer is not a limiting factor at that point). This relationship is illustrated in the figure below.
 
 ```{r}
 set.seed(83944)
@@ -69,7 +69,7 @@ ggplot(plot_data) +
 
 None of the specifications do quite well. Indeed, you cannot represent the relationship well using well-known popular functional forms. Let's now look at methods that are flexible enough to capture the relationship. First, smoothing splines, and then K-nearest neighbor next. 
 
-## Flexible representation using spline basis functions
+## Smoothing Splines (semi-parametric)
 
 Detailed discussion of smoothing splines is out of the scope of this book. Only its basic ideas will be presented in this chapter. See @wood2006generalized for a fuller treatment of this topic.
 
@@ -278,7 +278,7 @@ ggplot(data = data) +
 
 Hyper-parameters can significantly influence the outcome. Since the user get to pick any numbers, it can be potentially used to twist the results in a way that favors the outcomes they want to have. Therefore, it is important to pick the values of hyper-parameters wisely. One way of achieving the goal is cross-validation, which is a data-driven way to finding the best value of hyper-parameters. We will discuss cross-validation in @sec-cv in detail. 
 
-Here is the fitted curve when the optimal value of `sp` is picked given `k = 40` and `bs = "cr"` using cross-validation.
+Here is the fitted curve when the optimal value of `sp` is picked by `gam()` automatically given `k = 40` and `bs = "cr"` using cross-validation.
 
 ::: {.column-margin}
 That is, we are not tuning `k` and `bs` here.
@@ -300,7 +300,66 @@ ggplot(data = data) +
 
 You can see that the tuning of `sp` is successful and has resulted in a much better fitted curve compared to the case where `sp` was forced to be 0. As you will see, hyper-parameter tuning will be critical for many of the machine learning methods we will look at later. 
 
-## Flexible representation using K-nearest neighbor 
+## K-nearest neighbor (non-parametric)
+
+The idea of K-nearest neighbor (KNN) regression (a special case of kernel regression with a uniform kernel) is very simple. The prediction of $y$ conditional on $x$ is simply the average of $y$ observed for the K closest (in terms of distance to $x$) observations in the data. 
+
+Let's illustrate the method using the `data` generated in @sec-functional-form. Suppose you are interested in estimating $E[y|x = 100]$. Here is a visualization of the 10 closest data points to $x = 100$. Blue points are the 10-closest observed data points. The red point is the 10-nearest neighbor estimate of $E[y|x = 100]$.
+
+```{r}
+#| code-fold: true 
+
+neighbors <-
+  copy(data)[, abs_dist_100 := abs(x -100)] %>% 
+  .[order(abs_dist_100), ] %>%
+  .[1:10, ] 
+
+y_estimate <- neighbors[, mean(y)]
+
+ggplot() +
+  geom_point(data = data, aes(y = y, x = x), color = "darkgray") +
+  geom_point(data = neighbors, aes(y = y, x = x), color = "blue") +
+  geom_point(aes(y = y_estimate, x = 100), color = "red") +
+  geom_line(
+    data  = data.table(y = y_estimate, x = 0:100),
+    aes(y = y, x = x),
+    color = "red",
+    linetype = 2
+  )
+```
+
+One critical difference between KNN and smoothing splines is that KNN fits data locally while smoothing splines fit the data globally, meaning use all the data to fit a single curve at the same time. 
+
+The hyper-parameter for KNN regression is `k` (the number of neighbors). The choice of the value of $k$ has a dramatic impacts on the fitted curve.
+
+
+```{r}
+
+plot_data <-
+  data.table(
+    k = c(1, 5, 10, 20)
+  ) %>% 
+  rowwise() %>% 
+  mutate(knn_fit = list(
+    knnreg(y ~ x, k = k, data = data)
+  )) %>% 
+  mutate(eval_data = list(
+    data.table(x = seq(0, 250, length = 1000)) %>% 
+    .[, y := predict(knn_fit, newdata = .)]
+  )) %>% 
+  dplyr::select(k, eval_data) %>% 
+  unnest() %>% 
+  mutate(k_txt = paste0("k = ", k)) %>% 
+  mutate(k_txt = factor(k_txt, levels = paste0("k = ", c(1, 5, 10, 20))))
+
+ggplot() +
+  geom_point(data = data, aes(y = y, x = x), color = "darkgray") +
+  geom_line(data = plot_data, aes(y = y, x = x), color = "red") +
+  facet_wrap(k_txt ~ ., nrow = 2)
+
+```
+
+As you can see, at `k` $= 1$, the fitted curve fits perfectly with the observed data, and it is highly over-fitted. While increasing `k` to $5$ alleviates the over-fitting problem, the fitted curve is still very much wiggly. Nobody uses KNN for any practical applications. However, KNN is great to illustrate the importance of the choice of an arbitrary parameter (hyper-parameter). As discussed above, we will later look at cross-validation as a way to tune hyper-parameters.  
 
 
 

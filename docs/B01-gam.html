@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="generator" content="quarto-0.9.563">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>Introduction to Machine Learning for Economists - 2&nbsp; Non-linear function estimation: Smoothing Splines and K-nearest neighbor regression</title>
+<title>Introduction to Machine Learning for Economists - 2&nbsp; Non-linear function estimation</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -119,7 +119,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }"><div class="container-fluid d-flex justify-content-between">
       <h1 class="quarto-secondary-nav-title">
-<span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Non-linear function estimation: Smoothing Splines and K-nearest neighbor regression</span>
+<span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Non-linear function estimation</span>
 </h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
@@ -183,12 +183,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./B01-gam.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Non-linear function estimation: Smoothing Splines and K-nearest neighbor regression</span></a>
+  <a href="./B01-gam.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Non-linear function estimation</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./B02-bias-variance-tradeoff.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Variance-Bias Trade-off</span></a>
+  <a href="./B02-bias-variance-tradeoff.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Bias-variance Trade-off</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -238,6 +238,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <a href="./causal-ml.html" class="sidebar-item-text sidebar-link">Causal Machine Learning (CML) Methods</a>
   </div>
 </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">Appendices</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./A01-mc-simulation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Monte Carlo (MC) Simulation</span></a>
+  </div>
+</li>
+    </ul>
+</li>
     </ul>
 </div>
 </nav><!-- margin-sidebar --><div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
@@ -245,14 +260,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
    
   <ul>
 <li><a href="#flexible-functional-form-estimation" id="toc-flexible-functional-form-estimation" class="nav-link active" data-scroll-target="#flexible-functional-form-estimation"> <span class="header-section-number">2.1</span> Flexible functional form estimation</a></li>
-  <li><a href="#flexible-representation-using-spline-basis-functions" id="toc-flexible-representation-using-spline-basis-functions" class="nav-link" data-scroll-target="#flexible-representation-using-spline-basis-functions"> <span class="header-section-number">2.2</span> Flexible representation using spline basis functions</a></li>
-  <li><a href="#flexible-representation-using-k-nearest-neighbor" id="toc-flexible-representation-using-k-nearest-neighbor" class="nav-link" data-scroll-target="#flexible-representation-using-k-nearest-neighbor"> <span class="header-section-number">2.3</span> Flexible representation using K-nearest neighbor</a></li>
+  <li><a href="#smoothing-splines" id="toc-smoothing-splines" class="nav-link" data-scroll-target="#smoothing-splines"> <span class="header-section-number">2.2</span> Smoothing Splines</a></li>
+  <li><a href="#k-nearest-neighbor" id="toc-k-nearest-neighbor" class="nav-link" data-scroll-target="#k-nearest-neighbor"> <span class="header-section-number">2.3</span> K-nearest neighbor</a></li>
   </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/B01-gam.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
 <h1 class="title d-none d-lg-block">
-<span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Non-linear function estimation: Smoothing Splines and K-nearest neighbor regression</span>
+<span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Non-linear function estimation</span>
 </h1>
 </div>
 
@@ -268,7 +283,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </header><p>The purpose of this section is to introduce you to the idea of semi-parametric and non-parametric regression methods. We only scratch the surface by just looking at smoothing splines and K-nearest neighbor regression methods. The world of semi-parametric and non-parametric regression is much deeper. But, that’s out of the scope of this section. The primary goal of this section is to familiarize you with the concepts of over-fitting, regularization, hyper-parameters, and parameter tuning using smoothing splines and K-nearest neighbor regression methods as examples.</p>
 <section id="flexible-functional-form-estimation" class="level2" data-number="2.1"><h2 data-number="2.1" class="anchored" data-anchor-id="flexible-functional-form-estimation">
 <span class="header-section-number">2.1</span> Flexible functional form estimation</h2>
-<p>There are many quantitative relationship of two variables that cannot be represented easily by liner (in parameter) parametric models. For example, consider crop yield response to fertilizer. Typically, yield increases at the diminishing rate as fertilizer rate increases. However, at a high enough fertilizer rate, yield stops increasing (fertilizer is not a limiting factor at that point). This relationship is illustrated in the figure below.</p>
+<p>There is a clear limit to liner (in parameter) parametric models in flexibility to represent quantitative relationships between varaiables. For example, consider crop yield response to fertilizer. Typically, yield increases at the diminishing rate as fertilizer rate increases. However, at a high enough fertilizer rate, yield stops increasing (fertilizer is not a limiting factor at that point). This relationship is illustrated in the figure below.</p>
 <div class="cell">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">83944</span><span class="op">)</span>
 
@@ -323,8 +338,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <p>None of the specifications do quite well. Indeed, you cannot represent the relationship well using well-known popular functional forms. Let’s now look at methods that are flexible enough to capture the relationship. First, smoothing splines, and then K-nearest neighbor next.</p>
-</section><section id="flexible-representation-using-spline-basis-functions" class="level2 page-columns page-full" data-number="2.2"><h2 data-number="2.2" class="anchored" data-anchor-id="flexible-representation-using-spline-basis-functions">
-<span class="header-section-number">2.2</span> Flexible representation using spline basis functions</h2>
+</section><section id="smoothing-splines" class="level2 page-columns page-full" data-number="2.2"><h2 data-number="2.2" class="anchored" data-anchor-id="smoothing-splines">
+<span class="header-section-number">2.2</span> Smoothing Splines</h2>
 <p>Detailed discussion of smoothing splines is out of the scope of this book. Only its basic ideas will be presented in this chapter. See <span class="citation" data-cites="wood2006generalized">@wood2006generalized</span> for a fuller treatment of this topic.</p>
 <p>Consider a simple quantitative relationship of two variables <span class="math inline">\(y\)</span> and <span class="math inline">\(x\)</span>: <span class="math inline">\(y = f(x)\)</span>.</p>
 <p><span class="math display">\[
@@ -469,7 +484,7 @@ Min_{\hat{f}(x)} \sum_{i=1}^N(y_i - \hat{f}(x_i))^2 + \lambda \Omega(\hat{f}(x))
 \end{aligned}
 \]</span></p>
 <p>where <span class="math inline">\(\Omega(\hat{f}(x)) &gt; 0\)</span> is a function that captures how wavy the resulting function is. It takes a higher value when <span class="math inline">\(\hat{f}(x)\)</span> is more wiggly. <span class="math inline">\(\lambda &gt; 0\)</span> is the penalization parameter. As <span class="math inline">\(\lambda\)</span> gets larger, a greater penalty on the wiggliness of <span class="math inline">\(\hat{f}(x)\)</span>, thus resulting in a smoother curve.</p>
-<p>You can specify <span class="math inline">\(\lambda\)</span> by <code>sp</code> parameter in <code>gam()</code>. When <code>sp</code> is not specified by the user, <code>gam()</code> finds the optimal value of <code>sp</code> internally using cross-validation (cross-validation will be introduce formally in <a href="#sec-cross-validation"><span class="quarto-unresolved-ref">sec-cross-validation</span></a>). For now, just consider it as a method to find parameters that make the trained model a good representation of the underlying conditional mean function (<span class="math inline">\(E[y|x]\)</span>).</p>
+<p>You can specify <span class="math inline">\(\lambda\)</span> by <code>sp</code> parameter in <code>gam()</code>. When <code>sp</code> is not specified by the user, <code>gam()</code> finds the optimal value of <code>sp</code> internally using cross-validation (cross-validation will be introduce formally in <span class="quarto-unresolved-ref">?sec-cross-validation</span>). For now, just consider it as a method to find parameters that make the trained model a good representation of the underlying conditional mean function (<span class="math inline">\(E[y|x]\)</span>).</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p>More specifically, it uses generalized cross-validation (GCV). A special type of cross-validation that can be done when the model is linear in parameter.</p>
@@ -529,7 +544,7 @@ Important
 <p><img src="B01-gam_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>Hyper-parameters can significantly influence the outcome. Since the user get to pick any numbers, it can be potentially used to twist the results in a way that favors the outcomes they want to have. Therefore, it is important to pick the values of hyper-parameters wisely. One way of achieving the goal is cross-validation, which is a data-driven way to finding the best value of hyper-parameters. We will discuss cross-validation in <a href="#sec-cv"><span class="quarto-unresolved-ref">sec-cv</span></a> in detail.</p>
+<p>Hyper-parameters can significantly influence the outcome. Since the user get to pick any numbers, it can be potentially used to twist the results in a way that favors the outcomes they want to have. Therefore, it is important to pick the values of hyper-parameters wisely. One way of achieving the goal is cross-validation, which is a data-driven way to finding the best value of hyper-parameters. We will discuss cross-validation in <a href="B04-cross-validation.html"><span>Chapter&nbsp;5</span></a> in detail.</p>
 <p>Here is the fitted curve when the optimal value of <code>sp</code> is picked given <code>k = 40</code> and <code>bs = "cr"</code> using cross-validation.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
@@ -551,8 +566,8 @@ Important
 </div>
 </div>
 <p>You can see that the tuning of <code>sp</code> is successful and has resulted in a much better fitted curve compared to the case where <code>sp</code> was forced to be 0. As you will see, hyper-parameter tuning will be critical for many of the machine learning methods we will look at later.</p>
-</section><section id="flexible-representation-using-k-nearest-neighbor" class="level2" data-number="2.3"><h2 data-number="2.3" class="anchored" data-anchor-id="flexible-representation-using-k-nearest-neighbor">
-<span class="header-section-number">2.3</span> Flexible representation using K-nearest neighbor</h2>
+</section><section id="k-nearest-neighbor" class="level2" data-number="2.3"><h2 data-number="2.3" class="anchored" data-anchor-id="k-nearest-neighbor">
+<span class="header-section-number">2.3</span> K-nearest neighbor</h2>
 
 
 </section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
@@ -640,7 +655,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
   <div class="nav-page nav-page-next">
       <a href="./B02-bias-variance-tradeoff.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Variance-Bias Trade-off</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Bias-variance Trade-off</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
