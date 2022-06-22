@@ -397,7 +397,7 @@ Min_{\beta} \sum_{i=1}^N (y_i - \beta_1 x_1 - \beta_2 x_2)^2 \\
 <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>(Intercept)         x_1         x_2 
-0.005487254 1.991328620 0.227197583 </code></pre>
+ 0.01666832  2.00711701  0.18010906 </code></pre>
 </div>
 </div>
 <p>We now calculate the value of the objective functions at different values of <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\beta_2\)</span>. Here is the set of <span class="math inline">\(\{\beta_1, \beta_2\}\)</span> combinations we look at.</p>
@@ -779,7 +779,7 @@ V20         -1.144987654</code></pre>
 <div class="cell">
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">cv_lasso</span><span class="op">$</span><span class="va">lambda.min</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.08307327</code></pre>
+<pre><code>[1] 0.06896889</code></pre>
 </div>
 </div>
 <p>You can access the coefficient estimates when <span class="math inline">\(\lambda\)</span> is <code>lambda.min</code> as follows</p>
@@ -787,28 +787,28 @@ V20         -1.144987654</code></pre>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">cv_lasso</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
-                     s1
-(Intercept)  0.14936467
-V1           1.32975267
-V2           .         
-V3           0.69096092
-V4           .         
-V5          -0.83122558
-V6           0.53669611
-V7           0.02005438
-V8           0.33193760
-V9           .         
-V10          .         
-V11          0.16239419
-V12          .         
-V13          .         
-V14         -1.07081121
-V15          .         
-V16          .         
-V17          .         
-V18          .         
-V19          .         
-V20         -1.04340741</code></pre>
+                      s1
+(Intercept)  0.147927056
+V1           1.337393911
+V2           .          
+V3           0.704086481
+V4           .          
+V5          -0.842853150
+V6           0.549403480
+V7           0.032703914
+V8           0.342430521
+V9           .          
+V10          0.001206608
+V11          0.178995989
+V12          .          
+V13          .          
+V14         -1.079993473
+V15          .          
+V16          .          
+V17          .          
+V18          .          
+V19          .          
+V20         -1.061382444</code></pre>
 </div>
 </div>
 <p>The following code gives you the coefficient estimates when <span class="math inline">\(\lambda\)</span> is <code>lambda.1se</code></p>
@@ -867,27 +867,27 @@ Note
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
                     s1
-(Intercept)  0.1477086
-V1           1.3413552
+(Intercept)  0.1482955
+V1           1.3381070
 V2           .        
-V3           0.7003682
+V3           0.6936938
 V4           .        
-V5          -0.8315680
-V6           0.5507735
-V7           0.0294112
-V8           0.3446125
+V5          -0.8249778
+V6           0.5448439
+V7           0.0230429
+V8           0.3398575
 V9           .        
 V10          .        
-V11          0.1733043
+V11          0.1648445
 V12          .        
 V13          .        
-V14         -1.0840644
+V14         -1.0801745
 V15          .        
 V16          .        
 V17          .        
 V18          .        
 V19          .        
-V20         -1.0441256</code></pre>
+V20         -1.0338882</code></pre>
 </div>
 </div>
 <p>Here is after scaling:</p>
@@ -932,27 +932,27 @@ V20         -1.32068655</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
                      s1
-(Intercept)  0.14936467
-V1           1.32975267
+(Intercept)  0.14867414
+V1           1.33377821
 V2           .         
-V3           0.69096092
+V3           0.69787701
 V4           .         
-V5          -0.83122558
-V6           0.53669611
-V7           0.02005438
-V8           0.33193760
+V5          -0.83726751
+V6           0.54334327
+V7           0.02668633
+V8           0.33741131
 V9           .         
 V10          .         
-V11          0.16239419
+V11          0.17105029
 V12          .         
 V13          .         
-V14         -1.07081121
+V14         -1.07552680
 V15          .         
 V16          .         
 V17          .         
 V18          .         
 V19          .         
-V20         -1.04340741</code></pre>
+V20         -1.05278699</code></pre>
 </div>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== scaled ===#</span>
 <span class="fu">cv.glmnet</span><span class="op">(</span><span class="va">X_scaled</span>, <span class="va">y</span>, nfolds <span class="op">=</span> <span class="fl">5</span>, standardize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">%&gt;%</span> 
@@ -960,27 +960,27 @@ V20         -1.04340741</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
                        s1
-(Intercept)  1.458320e-01
-V1           1.340981e+03
+(Intercept)  1.479271e-01
+V1           1.337394e+03
 V2           .           
-V3           7.083471e-01
+V3           7.040865e-01
 V4           .           
-V5          -8.480878e-01
-V6           5.548238e-01
-V7           3.851974e-02
-V8           3.472213e-01
+V5          -8.428531e-01
+V6           5.494035e-01
+V7           3.270391e-02
+V8           3.424305e-01
 V9           .           
-V10          1.003405e-02
-V11          1.863653e-01
+V10          1.206608e-03
+V11          1.789960e-01
 V12          .           
 V13          .           
-V14         -1.086007e+00
-V15         -4.444319e-03
+V14         -1.079993e+00
+V15          .           
 V16          .           
 V17          .           
 V18          .           
 V19          .           
-V20         -1.069943e+00</code></pre>
+V20         -1.061382e+00</code></pre>
 </div>
 </div>
 <p>While you do not have to worry about scaling issues as long as you are using <code>glmnet()</code>, this is something worth remembering.</p>
