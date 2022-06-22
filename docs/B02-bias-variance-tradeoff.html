@@ -75,6 +75,25 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -84,7 +103,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./B03-lasso.html" rel="next">
+<link href="./B03-regularization.html" rel="next">
 <link href="./B01-nonlinear.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -114,7 +133,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   }
 }</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 </head>
-<body class="nav-sidebar floating">
+<body class="nav-sidebar floating slimcontent">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }"><div class="container-fluid d-flex justify-content-between">
@@ -193,7 +212,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./B03-lasso.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Regression Shrinkage Methods: LASSO (Ridge and Elastic Net)</span></a>
+  <a href="./B03-regularization.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Regression Shrinkage Methods: LASSO (Ridge and Elastic Net)</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -262,10 +281,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#general-mc-application-steps" id="toc-general-mc-application-steps" class="nav-link active" data-scroll-target="#general-mc-application-steps"> <span class="header-section-number">3.1</span> General MC application steps</a></li>
   <li><a href="#variance-bias-trade-off" id="toc-variance-bias-trade-off" class="nav-link" data-scroll-target="#variance-bias-trade-off"> <span class="header-section-number">3.2</span> Variance-bias trade-off</a></li>
   <li><a href="#additional-example-k-nearest-neighbor-regression" id="toc-additional-example-k-nearest-neighbor-regression" class="nav-link" data-scroll-target="#additional-example-k-nearest-neighbor-regression"> <span class="header-section-number">3.3</span> Additional Example (K-nearest neighbor regression)</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/B02-bias-variance-tradeoff.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
 <h1 class="title d-none d-lg-block">
 <span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Bias-variance Trade-off</span>
 </h1>
@@ -280,33 +300,49 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </div>
   
 
-</header><div class="cell">
+</header><!--
+#==========================================
+# General MC application steps 
+#==========================================
+--><section id="general-mc-application-steps" class="level2 page-columns page-full" data-number="3.1"><h2 data-number="3.1" class="anchored" data-anchor-id="general-mc-application-steps">
+<span class="header-section-number">3.1</span> General MC application steps</h2>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>Packages to load for replication:</p>
+<div class="cell">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com">data.table</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">mgcv</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/topepo/caret/">caret</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">parallel</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<!--
-#==========================================
-# General MC application steps 
-#==========================================
--->
-<section id="general-mc-application-steps" class="level2" data-number="3.1"><h2 data-number="3.1" class="anchored" data-anchor-id="general-mc-application-steps">
-<span class="header-section-number">3.1</span> General MC application steps</h2>
-<p>Suppose you have a dataset: <span class="math inline">\(D = \{X_1, y_1\}, \{X_2, y_2\}, \dots, \{X_N, y_N\}\)</span>, where <span class="math inline">\(X_i\)</span> is a collection of features and <span class="math inline">\(y_i\)</span> is the dependent variable for <span class="math inline">\(i\)</span>th observation. Further, suppose you use <span class="math inline">\(D\)</span> for training ML models and <span class="math inline">\(\hat{f}()\)</span> is a trained model.</p>
+</div></div><p>Suppose you have a dataset: <span class="math inline">\(D = \{X_1, y_1\}, \{X_2, y_2\}, \dots, \{X_N, y_N\}\)</span>, where <span class="math inline">\(X_i\)</span> is a collection of features and <span class="math inline">\(y_i\)</span> is the dependent variable for <span class="math inline">\(i\)</span>th observation. Further, suppose you use <span class="math inline">\(D\)</span> for training ML models and <span class="math inline">\(\hat{f}()\)</span> is a trained model.</p>
 <p>A most common measure of how good a model is <em>mean squared error</em> (MSE) defined as below:</p>
 <p><span class="math display">\[
 MSE = \frac{1}{N} \sum_{i=1}^N (y_i - \hat{f}(x_i))^2
 \]</span></p>
-<p><span class="math inline">\(f^(x_i)\)</span> is the value of <span class="math inline">\(y\)</span> predicted by the trained model <span class="math inline">\(\hat{f}()\)</span>, so <span class="math inline">\(y_i - \hat{f}(x_i)\)</span> is the residual (termed error more often).</p>
+<p><span class="math inline">\(\hat{f}(x_i)\)</span> is the value of <span class="math inline">\(y\)</span> predicted by the trained model <span class="math inline">\(\hat{f}()\)</span>, so <span class="math inline">\(y_i - \hat{f}(x_i)\)</span> is the residual (termed error more often).</p>
 <p>When you get the MSE of a trained model for the very data that is used to train the model, then we may call it <strong>training</strong> MSE.</p>
 <p>However, we are typically interested in how the trained model performs for the data that we have not seen. Let <span class="math inline">\(D^{test} = \{X^{test}_1, y^{test}_1\}, \{X^{test}_2, y^{test}_2\}, \dots, \{X^{test}_M, y^{test}_M\}\)</span> denote new data set with <span class="math inline">\(M\)</span> data points. Then the test MSE would be:</p>
 <p><span class="math display">\[
 MSE_{test} = \frac{1}{M} \sum_{i=1}^M (y^{test}_{i} - \hat{f}(x^{test}_{i}))^2
 \]</span></p>
 <p>Typically, we try different ML approaches (Random Forest, Support Vector Machine, Causal Forest, Boosted Regression Forest, Neural Network, etc). We also try different values of hyper-parameters for the same approach (e.g., tree depth and minimum observations per leaf for RF). Ideally, we would like to pick the model that has the smallest test <span class="math inline">\(MSE\)</span> among all the models.</p>
-<p>Suppose you do not have a sufficiently large dataset to split to a train and test datasets (often the case). So, you used all the available observations to train a model. That means you can get only training <span class="math inline">\(MSE\)</span>. In this case, can we trust the model that has the lowest training <span class="math inline">\(MSE\)</span>? The quick answer is no. The problem is that the model with the lowest training <span class="math inline">\(MSE\)</span> does not necessarily achieve the lowest test <span class="math inline">\(MSE\)</span>.</p>
+<p>Suppose you do not have a sufficiently large dataset to split to train and test datasets (often the case). So, you used all the available observations to train a model. That means you can get only training <span class="math inline">\(MSE\)</span>.</p>
+<div class="callout-important callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In this case, can we trust the model that has the lowest training <span class="math inline">\(MSE\)</span>?</p>
+</div>
+</div>
+<p>The quick answer is no. The problem is that the model with the lowest training <span class="math inline">\(MSE\)</span> does not necessarily achieve the lowest test <span class="math inline">\(MSE\)</span>.</p>
 <p>Let’s run some simulations to see this. The data generating process is as follows:</p>
 <p><span class="math display">\[
 y  = (x - 2.5)^3 + \mu
@@ -337,13 +373,17 @@ y  = (x - 2.5)^3 + \mu
 <p>Visually, here is the relationship between <span class="math inline">\(E[y]\)</span> and <span class="math inline">\(x\)</span>:</p>
 <div class="cell">
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggplot.html">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">train_data</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">ey</span>, x <span class="op">=</span> <span class="va">x</span><span class="op">)</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">ey</span>, x <span class="op">=</span> <span class="va">x</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="B02-bias-variance-tradeoff_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>Now, let’s define a function that runs regression with different levels of flexibility using a generalized additive model from the <code>mgcv</code> package, predict <span class="math inline">\(y\)</span> for both the train and test datasets, and find train and test MSEs.</p>
-<div class="cell">
+<p>Now, let’s define a function that runs regression with different levels of flexibility using a generalized additive model from the <code>mgcv</code> package, predict <span class="math inline">\(y\)</span> for both the train and test datasets, and find train and test MSEs. Specifically, we vary the value of <code>k</code> (the number of knots) in <code><a href="https://rdrr.io/pkg/mgcv/man/gam.html">gam()</a></code> while intentionally setting <code>sp</code> to <span class="math inline">\(0\)</span> so that the wiggliness of the fitted curve is not punished.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>A very brief introduction of generalized additive mode is available in <a href="B01-nonlinear.html"><span>Chapter&nbsp;2</span></a></p>
+</div></div><div class="cell">
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">est_gam</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">k</span>, <span class="va">train_data</span>, <span class="va">test_data</span><span class="op">)</span> 
 <span class="op">{</span>
 
@@ -378,7 +418,8 @@ y  = (x - 2.5)^3 + \mu
 <div class="cell">
 <details><summary>Code</summary><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">sim_results</span><span class="op">[</span><span class="va">num_knots</span>  <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">4</span>, <span class="fl">15</span>, <span class="fl">25</span>, <span class="fl">50</span><span class="op">)</span>, <span class="op">]</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_point.html">geom_point</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">train_data</span>, <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">y</span>, x <span class="op">=</span> <span class="va">x</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">y_hat</span>, x <span class="op">=</span> <span class="va">x</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">num_knots</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">y_hat</span>, x <span class="op">=</span> <span class="va">x</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">num_knots</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
 <div id="fig-indiv-fit-gam" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="B02-bias-variance-tradeoff_files/figure-html/fig-indiv-fit-gam-1.png" class="img-fluid figure-img" width="672"></p>
@@ -387,7 +428,7 @@ y  = (x - 2.5)^3 + \mu
 </div>
 </div>
 </div>
-<p>When the number of knots is <span class="math inline">\(1\)</span>, gam is not flexible enough to capture the underlying cubic function. However, once the number of knots becomes <span class="math inline">\(4\)</span>, it is capable of capturing the underlying cubic curve. However, when you increase the number of knots to 15, you see that the fitted curve is very wiggly (sudden and large changes in <span class="math inline">\(y\)</span> when <span class="math inline">\(x\)</span> is changed slighly). When <code>num_knots</code> <span class="math inline">\(= 50\)</span>, the fitted curve looks crazy and does not resemble the underlying smooth cubic curve.</p>
+<p>When the number of knots is <span class="math inline">\(1\)</span>, gam is not flexible enough to capture the underlying cubic function. However, once the number of knots becomes <span class="math inline">\(4\)</span>, it is capable of capturing the underlying non-linearity. However, when you increase the number of knots to 15, you see that the fitted curve is very wiggly (sudden and large changes in <span class="math inline">\(y\)</span> when <span class="math inline">\(x\)</span> is changed slighly). When <code>num_knots</code> <span class="math inline">\(= 50\)</span>, the fitted curve looks crazy and does not resemble the underlying smooth cubic curve.</p>
 <p>Now, let’s check how train and test MSEs change as k changes. As you can see in <a href="#fig-train-test-mse">Figure&nbsp;<span>3.2</span></a> below, train MSE goes down as k increases (the more complex the model is, the better fit you will get for the train data). However, test MSE is the lowest when <code>num_knots</code> <span class="math inline">\(= 4\)</span>, and it goes up afterward instead of going down. As we saw earlier, when model is made too flexible, it is trained to fit the trained data too well and lose generalizability (predict well for the dataset that has not been seen). This phenomenon is called over-fitting.</p>
 <div class="cell">
 <details><summary>Code</summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#--- get train and test MSEs by k ---#</span>
@@ -399,7 +440,8 @@ y  = (x - 2.5)^3 + \mu
   <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">mse</span>, x <span class="op">=</span> <span class="va">num_knots</span>, color <span class="op">=</span> <span class="va">type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html">xlab</a></span><span class="op">(</span><span class="st">"Number of knots"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html">ylab</a></span><span class="op">(</span><span class="st">"MSE"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/scale_colour_discrete.html">scale_color_discrete</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">""</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/scale_colour_discrete.html">scale_color_discrete</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
 <div id="fig-train-test-mse" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="B02-bias-variance-tradeoff_files/figure-html/fig-train-test-mse-1.png" class="img-fluid figure-img" width="672"></p>
@@ -408,7 +450,7 @@ y  = (x - 2.5)^3 + \mu
 </div>
 </div>
 </div>
-<p>This clearly tells us that we should NOT use training MSE to pick the best model.</p>
+<p>If we were to trust train MSE in picking the model, we would pick the model with <code>k</code> <span class="math inline">\(= 50\)</span> in this particular instance. This clearly tells us that we should <span style="color:blue"> NOT </span> use training MSE to pick the best model.</p>
 </section><section id="variance-bias-trade-off" class="level2" data-number="3.2"><h2 data-number="3.2" class="anchored" data-anchor-id="variance-bias-trade-off">
 <span class="header-section-number">3.2</span> Variance-bias trade-off</h2>
 <p>Expected test MSE at <span class="math inline">\(x = x_0\)</span> can be written in general (no matter what the trained model is) as follows:</p>
@@ -454,9 +496,7 @@ E[(y_0 - \hat{f}(x_0))^2] = Var(\hat{f}(x_0)) + E[y - \hat{f}(x_0)]^2 + Var(\mu)
   <span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/rbindlist.html">rbindlist</a></span><span class="op">(</span>idcol <span class="op">=</span> <span class="st">"sim_id"</span><span class="op">)</span> </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><a href="#fig-bias-variance-1">Figure&nbsp;<span>3.3</span></a> shows plots fitted curves for all the 500 simulations by <span class="math inline">\(k\)</span> (grey lines). The blue line is the true <span class="math inline">\(E[y|x]\)</span>. The red line is <span class="math inline">\(E[\hat{f}(x)]\)</span><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Figure <a href="#fig-bias-variance-summary">Figure&nbsp;<span>3.4</span></a> plots the average<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> <span class="math inline">\(Var(\hat{f}(x))\)</span> (red), <span class="math inline">\(E[y - \hat{f}(x)]^2\)</span> (blue), and MSE (darkgreen) from the test datasets for different values of <span class="math inline">\(k\)</span>.</p>
-<p>As you can see in <a href="#fig-bias-variance-1">Figure&nbsp;<span>3.3</span></a>, when <span class="math inline">\(k = 1\)</span>, it clealy has a significant bias in estimating <span class="math inline">\(E[y|x]\)</span> except for several values of <span class="math inline">\(x\)</span> at which <span class="math inline">\(E[f^(x)]\)</span> only <strong>happens</strong> to be unbiased. The model is simply too restrictive and suffers significant bias. However, the variance of <span class="math inline">\(\hat{f}(x)\)</span> is the smallest as shown in <a href="#fig-bias-variance-summary">Figure&nbsp;<span>3.4</span></a>. As we increase the value of <span class="math inline">\(k\)</span> (making the model more flexible), bias dramatically reduces. However, the variance of <span class="math inline">\(\hat{f}(x)\)</span> slightly increases. Going from <span class="math inline">\(k = 5\)</span> to <span class="math inline">\(k = 10\)</span> further reduces bias. That is, even though individual fitted curves may look very bad, on average they perform well (as you know that what bias measures). However, the variance of <span class="math inline">\(\hat{f}(x)\)</span> dramatically increases (this is why individual fitted curves look terrible). Moving to a even higher value of <span class="math inline">\(k\)</span> does not reduce bias, but increases the variance of <span class="math inline">\(\hat{f}(x)\)</span> even further.</p>
-<p>According to MSE presented in <a href="#fig-bias-variance-summary">Figure&nbsp;<span>3.4</span></a>, <span class="math inline">\(k = 5\)</span> is the best model among all the models tried in this experiment. In this experiment, we had test datasets available. However, in practice, we need to pick the best model when test datasets are not available most of the time. For such a case, we would like a clever way to estimate <em>test</em> MSE even when test datasets are not available. We will later talk about cross-validation as a means to do so.</p>
+<p><a href="#fig-bias-variance-1">Figure&nbsp;<span>3.3</span></a> shows plots fitted curves for all the 500 simulations by <span class="math inline">\(k\)</span> (grey lines). The blue line is the true <span class="math inline">\(E[y|x]\)</span>. The red line is <span class="math inline">\(E[\hat{f}(x)]\)</span><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Figure <a href="#fig-bias-variance-summary">Figure&nbsp;<span>3.4</span></a> plots the average<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> <span class="math inline">\(Var(\hat{f}(x))\)</span> (red), <span class="math inline">\(E[y - \hat{f}(x)]^2\)</span> (blue), and test MSE (darkgreen) from the test datasets for different values of <span class="math inline">\(k\)</span>.</p>
 <div class="cell">
 <details><summary>Code</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">mc_results_sum</span> <span class="op">&lt;-</span> 
     <span class="va">mc_results</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span>
@@ -467,7 +507,8 @@ E[(y_0 - \hat{f}(x_0))^2] = Var(\hat{f}(x_0)) + E[y - \hat{f}(x_0)]^2 + Var(\mu)
     <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_path.html">geom_line</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mc_results</span><span class="op">[</span><span class="va">type</span> <span class="op">==</span> <span class="st">"Test"</span>, <span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">y_hat</span>, x <span class="op">=</span> <span class="va">x</span>, group <span class="op">=</span> <span class="va">sim_id</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"gray"</span><span class="op">)</span> <span class="op">+</span>
     <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_path.html">geom_line</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mc_results_sum</span>, <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">mean_y_hat</span>, x <span class="op">=</span> <span class="va">x</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span>
     <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_path.html">geom_line</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mc_results_sum</span>, <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">ey</span>, x<span class="op">=</span> <span class="va">x</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span> <span class="op">+</span>
-    <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="va">.</span> <span class="op">~</span> <span class="va">num_knots</span>, ncol <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+    <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="va">.</span> <span class="op">~</span> <span class="va">num_knots</span>, ncol <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
 <div id="fig-bias-variance-1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="B02-bias-variance-tradeoff_files/figure-html/fig-bias-variance-1-1.png" class="img-fluid figure-img" width="672"></p>
@@ -476,6 +517,8 @@ E[(y_0 - \hat{f}(x_0))^2] = Var(\hat{f}(x_0)) + E[y - \hat{f}(x_0)]^2 + Var(\mu)
 </div>
 </div>
 </div>
+<p>As you can see in <a href="#fig-bias-variance-1">Figure&nbsp;<span>3.3</span></a>, when <span class="math inline">\(k = 1\)</span>, it clearly has a significant bias in estimating <span class="math inline">\(E[y|x]\)</span> except for several values of <span class="math inline">\(x\)</span> at which <span class="math inline">\(E[\hat{f}(x)]\)</span> only <strong>happens</strong> to be unbiased. The model is simply too restrictive and suffers significant bias. However, the variance of <span class="math inline">\(\hat{f}(x)\)</span> is the smallest as shown in <a href="#fig-bias-variance-summary">Figure&nbsp;<span>3.4</span></a>. As we increase the value of <span class="math inline">\(k\)</span> (making the model more flexible), bias dramatically reduces. However, the variance of <span class="math inline">\(\hat{f}(x)\)</span> slightly increases. Going from <span class="math inline">\(k = 5\)</span> to <span class="math inline">\(k = 15\)</span> further reduces bias. That is, even though individual fitted curves may look very bad, on average they perform well (as you know that what bias measures). However, the variance of <span class="math inline">\(\hat{f}(x)\)</span> dramatically increases (this is why individual fitted curves look terrible). Moving to a even higher value of <span class="math inline">\(k\)</span> does not reduce bias, but increases the variance of <span class="math inline">\(\hat{f}(x)\)</span> even further. That is, increasing <span class="math inline">\(k\)</span> from 15 to a higher value of <span class="math inline">\(k\)</span> increases the variance of <span class="math inline">\(\hat{f}(x)\)</span> while not reducing bias at all.</p>
+<p>According to MSE presented in <a href="#fig-bias-variance-summary">Figure&nbsp;<span>3.4</span></a>, <span class="math inline">\(k = 5\)</span> is the best model among all the models tried in this experiment. In this experiment, we had test datasets available. However, in practice, we need to pick the best model when test datasets are not available most of the time. For such a case, we would like a clever way to estimate <em>test</em> MSE even when test datasets are not available. We will later talk about cross-validation as a means to do so.</p>
 <div class="cell">
 <details><summary>Code</summary><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">sum_stat</span> <span class="op">&lt;-</span> 
   <span class="va">mc_results</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span>
@@ -500,24 +543,30 @@ E[(y_0 - \hat{f}(x_0))^2] = Var(\hat{f}(x_0)) + E[y - \hat{f}(x_0)]^2 + Var(\mu)
   <span class="op">]</span>
 
 <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggplot.html">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sum_stat</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">mean_var_hat</span>, x <span class="op">=</span> <span class="va">num_knots</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">mean_var_hat</span>, x <span class="op">=</span> <span class="va">num_knots</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">mean_bias_sq</span>, x <span class="op">=</span> <span class="va">num_knots</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">mean_bias_sq</span>, x <span class="op">=</span> <span class="va">num_knots</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">mean_mse</span>, x <span class="op">=</span> <span class="va">num_knots</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"darkgreen"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">mean_mse</span>, x <span class="op">=</span> <span class="va">num_knots</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"darkgreen"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">mean_var_hat</span>, x <span class="op">=</span> <span class="va">num_knots</span>, color <span class="op">=</span> <span class="st">"Variance"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">mean_var_hat</span>, x <span class="op">=</span> <span class="va">num_knots</span>, color <span class="op">=</span> <span class="st">"Variance"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">mean_bias_sq</span>, x <span class="op">=</span> <span class="va">num_knots</span>, color <span class="op">=</span> <span class="st">"Bias"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">mean_bias_sq</span>, x <span class="op">=</span> <span class="va">num_knots</span>, color <span class="op">=</span> <span class="st">"Bias"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">mean_mse</span>, x <span class="op">=</span> <span class="va">num_knots</span>, color <span class="op">=</span> <span class="st">"test MSE"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">mean_mse</span>, x <span class="op">=</span> <span class="va">num_knots</span>, color <span class="op">=</span> <span class="st">"test MSE"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/scale_manual.html">scale_color_manual</a></span><span class="op">(</span>
+    values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Variance"</span> <span class="op">=</span> <span class="st">"red"</span>, <span class="st">"Bias"</span> <span class="op">=</span> <span class="st">"blue"</span>, <span class="st">"test MSE"</span> <span class="op">=</span> <span class="st">"darkgreen"</span><span class="op">)</span>,
+    name <span class="op">=</span> <span class="st">""</span>
+    <span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html">ylab</a></span><span class="op">(</span><span class="st">""</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html">xlab</a></span><span class="op">(</span><span class="st">"Number of knots"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html">xlab</a></span><span class="op">(</span><span class="st">"Number of knots"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
 <div id="fig-bias-variance-summary" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="B02-bias-variance-tradeoff_files/figure-html/fig-bias-variance-summary-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 3.4: Expected variance of predicted values and bias</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 3.4: Expected variance of predicted values, bias, and test ME</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
 </section><section id="additional-example-k-nearest-neighbor-regression" class="level2" data-number="3.3"><h2 data-number="3.3" class="anchored" data-anchor-id="additional-example-k-nearest-neighbor-regression">
 <span class="header-section-number">3.3</span> Additional Example (K-nearest neighbor regression)</h2>
+<p>Another example of bias-variance trade-off is presented using KNN as the regression method. Its hyper-parameter - the number of neighbors (<code>k</code>) - is varied to see its effect.</p>
 <div class="cell">
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">fit_knn</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">k</span>, <span class="va">train_data</span>, <span class="va">test_data</span><span class="op">)</span> 
 <span class="op">{</span>
@@ -560,7 +609,8 @@ E[(y_0 - \hat{f}(x_0))^2] = Var(\hat{f}(x_0)) + E[y - \hat{f}(x_0)]^2 + Var(\mu)
 <details><summary>Code</summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">sim_results</span><span class="op">[</span><span class="va">num_nbs</span>  <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span>, <span class="fl">15</span>, <span class="fl">25</span>, <span class="fl">50</span><span class="op">)</span>, <span class="op">]</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_point.html">geom_point</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">train_data</span>, <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">y</span>, x <span class="op">=</span> <span class="va">x</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"gray"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">y_hat</span>, x <span class="op">=</span> <span class="va">x</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/facet_grid.html">facet_grid</a></span><span class="op">(</span><span class="va">num_nbs</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/facet_grid.html">facet_grid</a></span><span class="op">(</span><span class="va">num_nbs</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
 <div id="fig-indiv-fit-knn" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="B02-bias-variance-tradeoff_files/figure-html/fig-indiv-fit-knn-1.png" class="img-fluid figure-img" width="672"></p>
@@ -579,7 +629,8 @@ E[(y_0 - \hat{f}(x_0))^2] = Var(\hat{f}(x_0)) + E[y - \hat{f}(x_0)]^2 + Var(\mu)
   <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">mse</span>, x <span class="op">=</span> <span class="va">num_nbs</span>, color <span class="op">=</span> <span class="va">type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html">xlab</a></span><span class="op">(</span><span class="st">"Number of neighbors"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html">ylab</a></span><span class="op">(</span><span class="st">"MSE"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/scale_colour_discrete.html">scale_color_discrete</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">""</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/scale_colour_discrete.html">scale_color_discrete</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
 <div id="fig-train-test-mse-knn" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="B02-bias-variance-tradeoff_files/figure-html/fig-train-test-mse-knn-1.png" class="img-fluid figure-img" width="672"></p>
@@ -587,6 +638,10 @@ E[(y_0 - \hat{f}(x_0))^2] = Var(\hat{f}(x_0)) + E[y - \hat{f}(x_0)]^2 + Var(\mu)
 </figure>
 </div>
 </div>
+</div>
+</section><section id="references" class="level2 unnumbered"><h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
+<div id="refs" role="doc-bibliography">
+
 </div>
 
 
@@ -678,7 +733,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./B03-lasso.html" class="pagination-link">
+      <a href="./B03-regularization.html" class="pagination-link">
         <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Regression Shrinkage Methods: LASSO (Ridge and Elastic Net)</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>

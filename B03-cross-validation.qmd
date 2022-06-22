@@ -1,22 +1,7 @@
-# Cross-validation based on mean squared error (MSE) {#sec-cv}
+# Cross-validation based on mean squared error (MSE) {#sec-cross-validation}
 
-```{r}
-#| include: false
-library(data.table)
-library(tidyverse)
-library(mgcv)
-library(rsample)
-library(parallel)
-```
 
-```{r}
-#| eval: false
-library(data.table)
-library(tidyverse)
-library(mgcv)
-library(rsample)
-library(parallel)
-```
+
 
 ## Motivations
 
@@ -49,6 +34,29 @@ We saw earlier that training MSE is not appropriate for that purpose as picking 
 
 
 ## Leave-One-Out Cross-Validation (LOOCV)
+
+::: {.column-margin}
+
+Packages to load for replication.
+
+```{r}
+#| include: false
+library(data.table)
+library(tidyverse)
+library(mgcv)
+library(rsample)
+library(parallel)
+```
+
+```{r}
+#| eval: false
+library(data.table)
+library(tidyverse)
+library(mgcv)
+library(rsample)
+library(parallel)
+```
+:::
 
 Consider a dataset: $D = \{X_1, y_1\}, \{X_2, y_2\}, 
 \dots, \{X_N, y_N\}$, where $X_i$ is a collection of features and $y_i$ is the dependent variable for $i$th observation. Further, suppose you use $D$ for training ML models and $\hat{f}()$ is a trained model. 

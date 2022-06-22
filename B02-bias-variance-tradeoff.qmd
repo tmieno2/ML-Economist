@@ -1,5 +1,18 @@
 # Bias-variance Trade-off
 
+
+
+<!--
+#==========================================
+# General MC application steps 
+#==========================================
+-->
+
+## General MC application steps
+
+::: {.column-margin}
+Packages to load for replication:
+
 ```{r}
 #| include: false
 library(data.table)
@@ -17,14 +30,8 @@ library(mgcv)
 library(caret)
 library(parallel)
 ```
+:::
 
-<!--
-#==========================================
-# General MC application steps 
-#==========================================
--->
-
-## General MC application steps
 
 Suppose you have a dataset: $D = \{X_1, y_1\}, \{X_2, y_2\}, 
 \dots, \{X_N, y_N\}$, where $X_i$ is a collection of features and $y_i$ is the dependent variable for $i$th observation. Further, suppose you use $D$ for training ML models and $\hat{f}()$ is a trained model. 
@@ -35,7 +42,7 @@ $$
 MSE = \frac{1}{N} \sum_{i=1}^N (y_i - \hat{f}(x_i))^2
 $$
 
-$f^(x_i)$ is the value of $y$ predicted by the trained model $\hat{f}()$, so $y_i - \hat{f}(x_i)$ is the residual (termed error more often). 
+$\hat{f}(x_i)$ is the value of $y$ predicted by the trained model $\hat{f}()$, so $y_i - \hat{f}(x_i)$ is the residual (termed error more often). 
 
 When you get the MSE of a trained model for the very data that is used to train the model, then we may call it **training** MSE.  
 
@@ -47,7 +54,13 @@ $$
 
 Typically, we try different ML approaches (Random Forest, Support Vector Machine, Causal Forest, Boosted Regression Forest, Neural Network, etc). We also try different values of hyper-parameters for the same approach (e.g., tree depth and minimum observations per leaf for RF). Ideally, we would like to pick the model that has the smallest test $MSE$ among all the models. 
 
-Suppose you do not have a sufficiently large dataset to split to a train and test datasets (often the case). So, you used all the available observations to train a model. That means you can get only training $MSE$. In this case, can we trust the model that has the lowest training $MSE$? The quick answer is no. The problem is that the model with the lowest training $MSE$ does not necessarily achieve the lowest test $MSE$. 
+Suppose you do not have a sufficiently large dataset to split to train and test datasets (often the case). So, you used all the available observations to train a model. That means you can get only training $MSE$. 
+
+:::{.callout-important}
+In this case, can we trust the model that has the lowest training $MSE$?
+:::
+
+The quick answer is no. The problem is that the model with the lowest training $MSE$ does not necessarily achieve the lowest test $MSE$. 
 
 Let's run some simulations to see this. The data generating process is as follows:
 
@@ -84,10 +97,15 @@ Visually, here is the relationship between $E[y]$ and $x$:
 
 ```{r}
 ggplot(data = train_data) +
-  geom_line(aes(y = ey, x = x))
+  geom_line(aes(y = ey, x = x)) +
+  theme_bw()
 ```
 
-Now, let's define a function that runs regression with different levels of flexibility using a generalized additive model from the `mgcv` package, predict $y$ for both the train and test datasets, and find train and test MSEs. 
+Now, let's define a function that runs regression with different levels of flexibility using a generalized additive model from the `mgcv` package, predict $y$ for both the train and test datasets, and find train and test MSEs. Specifically, we vary the value of `k` (the number of knots) in `gam()` while intentionally setting `sp` to $0$ so that the wiggliness of the fitted curve is not punished.
+
+::: {.column-margin}
+A very brief introduction of generalized additive mode is available in @sec-nonlinear
+:::
 
 ```{r}
 est_gam <- function(k, train_data, test_data) 
@@ -134,10 +152,11 @@ sim_results <-
 
 ggplot(sim_results[num_knots  %in% c(1, 4, 15, 25, 50), ]) +
   geom_point(data = train_data, aes(y = y, x = x), color = "grey") +
-  geom_line(aes(y = y_hat, x = x, color = factor(num_knots))) 
+  geom_line(aes(y = y_hat, x = x, color = factor(num_knots))) +
+  theme_bw()
 ```
 
-When the number of knots is $1$, gam is not flexible enough to capture the underlying cubic function. However, once the number of knots becomes $4$, it is capable of capturing the underlying cubic curve. However, when you increase the number of knots to 15, you see that the fitted curve is very wiggly (sudden and large changes in $y$ when $x$ is changed slighly). When `num_knots` $= 50$, the fitted curve looks crazy and does not resemble the underlying smooth cubic curve. 
+When the number of knots is $1$, gam is not flexible enough to capture the underlying cubic function. However, once the number of knots becomes $4$, it is capable of capturing the underlying non-linearity. However, when you increase the number of knots to 15, you see that the fitted curve is very wiggly (sudden and large changes in $y$ when $x$ is changed slighly). When `num_knots` $= 50$, the fitted curve looks crazy and does not resemble the underlying smooth cubic curve. 
 
 
 Now, let's check how train and test MSEs change as k changes. As you can see in @fig-train-test-mse below, train MSE goes down as k increases (the more complex the model is, the better fit you will get for the train data). However, test MSE is the lowest when `num_knots` $= 4$, and it goes up afterward instead of going down. As we saw earlier, when model is made too flexible, it is trained to fit the trained data too well and lose generalizability (predict well for the dataset that has not been seen). This phenomenon is called over-fitting.  
@@ -157,10 +176,11 @@ ggplot(summary) +
   geom_point(aes(y = mse, x = num_knots, color = type)) +
   xlab("Number of knots") +
   ylab("MSE") +
-  scale_color_discrete(name = "")
+  scale_color_discrete(name = "") +
+  theme_bw()
 ```
 
-This clearly tells us that we should NOT use training MSE to pick the best model. 
+If we were to trust train MSE in picking the model, we would pick the model with `k` $= 50$ in this particular instance. This clearly tells us that we should <span style="color:blue"> NOT </span> use training MSE to pick the best model. 
 
 ## Variance-bias trade-off
 
@@ -214,11 +234,7 @@ mc_results <-
   rbindlist(idcol = "sim_id") 
 ```
 
-@fig-bias-variance-1 shows plots fitted curves for all the 500 simulations by $k$ (grey lines). The blue line is the true $E[y|x]$. The red line is $E[\hat{f}(x)]$^[This figure is a collection of individual fitted curve just like the ones shown in @fig-indiv-fit-gam.]. Figure @fig-bias-variance-summary plots the average^[averaged over $x$, and then averaged over iterations] $Var(\hat{f}(x))$ (red), $E[y - \hat{f}(x)]^2$ (blue), and MSE (darkgreen) from the test datasets for different values of $k$. 
-
-As you can see in @fig-bias-variance-1, when $k = 1$, it clealy has a significant bias in estimating $E[y|x]$ except for several values of $x$ at which $E[f^(x)]$ only **happens** to be unbiased. The model is simply too restrictive and suffers significant bias. However, the variance of $\hat{f}(x)$ is the smallest as shown in @fig-bias-variance-summary. As we increase the value of $k$ (making the model more flexible), bias dramatically reduces. However, the variance of $\hat{f}(x)$ slightly increases. Going from $k = 5$ to $k = 10$ further reduces bias. That is, even though individual fitted curves may look very bad, on average they perform well (as you know that what bias measures). However, the variance of $\hat{f}(x)$ dramatically increases (this is why individual fitted curves look terrible). Moving to a even higher value of $k$ does not reduce bias, but increases the variance of $\hat{f}(x)$ even further. 
-
-According to MSE presented in @fig-bias-variance-summary, $k = 5$ is the best model among all the models tried in this experiment. In this experiment, we had test datasets available. However, in practice, we need to pick the best model when test datasets are not available most of the time. For such a case, we would like a clever way to estimate *test* MSE even when test datasets are not available. We will later talk about cross-validation as a means to do so.
+@fig-bias-variance-1 shows plots fitted curves for all the 500 simulations by $k$ (grey lines). The blue line is the true $E[y|x]$. The red line is $E[\hat{f}(x)]$^[This figure is a collection of individual fitted curve just like the ones shown in @fig-indiv-fit-gam.]. Figure @fig-bias-variance-summary plots the average^[averaged over $x$, and then averaged over iterations] $Var(\hat{f}(x))$ (red), $E[y - \hat{f}(x)]^2$ (blue), and test MSE (darkgreen) from the test datasets for different values of $k$. 
 
 ```{r}
 #| label: fig-bias-variance-1
@@ -234,14 +250,20 @@ ggplot() +
     geom_line(data = mc_results[type == "Test", ], aes(y = y_hat, x = x, group = sim_id), color = "gray") +
     geom_line(data = mc_results_sum, aes(y = mean_y_hat, x = x), color = "red") +
     geom_line(data = mc_results_sum, aes(y = ey, x= x), color = "blue") +
-    facet_wrap(. ~ num_knots, ncol = 5)
+    facet_wrap(. ~ num_knots, ncol = 5) +
+    theme_bw()
 
 ```
+
+As you can see in @fig-bias-variance-1, when $k = 1$, it clearly has a significant bias in estimating $E[y|x]$ except for several values of $x$ at which $E[\hat{f}(x)]$ only **happens** to be unbiased. The model is simply too restrictive and suffers significant bias. However, the variance of $\hat{f}(x)$ is the smallest as shown in @fig-bias-variance-summary. As we increase the value of $k$ (making the model more flexible), bias dramatically reduces. However, the variance of $\hat{f}(x)$ slightly increases. Going from $k = 5$ to $k = 15$ further reduces bias. That is, even though individual fitted curves may look very bad, on average they perform well (as you know that what bias measures). However, the variance of $\hat{f}(x)$ dramatically increases (this is why individual fitted curves look terrible). Moving to a even higher value of $k$ does not reduce bias, but increases the variance of $\hat{f}(x)$ even further. That is, increasing $k$ from 15 to a higher value of $k$ increases the variance of $\hat{f}(x)$ while not reducing bias at all. 
+
+According to MSE presented in @fig-bias-variance-summary, $k = 5$ is the best model among all the models tried in this experiment. In this experiment, we had test datasets available. However, in practice, we need to pick the best model when test datasets are not available most of the time. For such a case, we would like a clever way to estimate *test* MSE even when test datasets are not available. We will later talk about cross-validation as a means to do so.
+
 
 ```{r}
 #| label: fig-bias-variance-summary
 #| code-fold: true
-#| fig-cap: Expected variance of predicted values and bias 
+#| fig-cap: Expected variance of predicted values, bias, and test ME
 
 sum_stat <- 
   mc_results %>%
@@ -266,19 +288,26 @@ sum_stat <-
   ]
 
 ggplot(data = sum_stat) +
-  geom_line(aes(y = mean_var_hat, x = num_knots), color = "red") +
-  geom_point(aes(y = mean_var_hat, x = num_knots), color = "red") +
-  geom_line(aes(y = mean_bias_sq, x = num_knots), color = "blue") +
-  geom_point(aes(y = mean_bias_sq, x = num_knots), color = "blue") +
-  geom_line(aes(y = mean_mse, x = num_knots), color = "darkgreen") +
-  geom_point(aes(y = mean_mse, x = num_knots), color = "darkgreen") +
+  geom_line(aes(y = mean_var_hat, x = num_knots, color = "Variance")) +
+  geom_point(aes(y = mean_var_hat, x = num_knots, color = "Variance")) +
+  geom_line(aes(y = mean_bias_sq, x = num_knots, color = "Bias")) +
+  geom_point(aes(y = mean_bias_sq, x = num_knots, color = "Bias")) +
+  geom_line(aes(y = mean_mse, x = num_knots, color = "test MSE")) +
+  geom_point(aes(y = mean_mse, x = num_knots, color = "test MSE")) +
+  scale_color_manual(
+    values = c("Variance" = "red", "Bias" = "blue", "test MSE" = "darkgreen"),
+    name = ""
+    ) +
   ylab("") +
-  xlab("Number of knots")
+  xlab("Number of knots") +
+  theme_bw()
 
 ```
 
  
 ## Additional Example (K-nearest neighbor regression)
+
+Another example of bias-variance trade-off is presented using KNN as the regression method. Its hyper-parameter - the number of neighbors (`k`) - is varied to see its effect. 
 
 ```{r}
 
@@ -335,7 +364,8 @@ sim_results <-
 ggplot(sim_results[num_nbs  %in% c(1, 5, 15, 25, 50), ]) +
   geom_point(data = train_data, aes(y = y, x = x), color = "gray") +
   geom_line(aes(y = y_hat, x = x), color = "red") +
-  facet_grid(num_nbs ~ .)
+  facet_grid(num_nbs ~ .) +
+  theme_bw()
 ```
 
 ```{r}
@@ -352,6 +382,10 @@ ggplot(summary) +
   geom_point(aes(y = mse, x = num_nbs, color = type)) +
   xlab("Number of neighbors") +
   ylab("MSE") +
-  scale_color_discrete(name = "")
+  scale_color_discrete(name = "") +
+  theme_bw()
 ```
 
+## References {.unnumbered}
+
+<div id="refs"></div>

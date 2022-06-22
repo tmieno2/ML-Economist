@@ -1,12 +1,13 @@
----
-title: "Bootstrap"
-format: 
-  html:
-    code-fold: show
-    toc: true
-    self-contained: true
-editor: visual
----
+# Bootstrap
+
+## What is it for?
+
+Bootstrap can be used to quantify the uncertainty associated with an estimator. For example, you can use it to estimate the standard error (SE) of a coefficient of a linear model. Since there are closed-form solutions for that, bootstrap is not really bringing any benefits to this case. However, the power of bootstrap comes in handy when you do NOT have a closed form solution. We will first demonstrate how bootstrap works using a linear model, and then apply it to a case where no-closed form solution is available.
+
+## How it works
+
+::: {.column-margin}
+Packages to load for replication.
 
 ```{r}
 #| include: false
@@ -19,11 +20,18 @@ library(fixest)
 library(ranger)
 ```
 
-## What is it for?
+```{r}
+#| eval: false
+library(data.table)
+library(tidyverse)
+library(mgcv)
+library(caret)
+library(parallel)
+library(fixest)
+library(ranger)
+```
+:::
 
-Bootstrap can be used to quantify the uncertainty associated with an estimator. For example, you can use it to estimate the standard error (SE) of a coefficient of a linear model. Since there are closed-form solutions for that, bootstrap is not really bringing any benefits to this case. However, the power of bootstrap comes in handy when you do NOT have a closed form solution. We will first demonstrate how bootstrap works using a linear model, and then apply it to a case where no-closed form solution is available.
-
-## How it works
 
 Here are the general steps of a bootstrap:
 
@@ -84,6 +92,10 @@ row_indices <- sample(seq_len(num_obs), num_obs, replace = TRUE)
 ```
 
 Use the sampled indices to create a bootstrapped dataset:
+
+::: {.column-margin}
+You could also use `bootstraps()` from the `rsample` package. 
+:::
 
 ```{r}
 temp_data <- data[row_indices, ]

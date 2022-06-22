@@ -1,5 +1,5 @@
 ---
-title: "Regression Shrinkage Methods: LASSO (Ridge and Elastic Net)"
+title: "Regression Shrinkage Methods"
 format: html
 editor: visual
 ---
@@ -14,7 +14,7 @@ library(glmnet)
 
 ## Shrinkage Methods {#sec-shrinkage}
 
-We have talked about variance-bias trade-off. When you "shrink" coefficients towards zero, you may be able to achieve lower the variance of $\hat{f}(x)$ while increasing bias, which can result in a lower MSE. 
+We have talked about variance-bias trade-off. When you "shrink" coefficients towards zero, you may be able to achieve lower variance of $\hat{f}(x)$ while increasing bias, which can result in a lower MSE. 
 
 Consider the following generic linear model:
 
@@ -40,16 +40,23 @@ $$ {#eq-shrinkage-general}
 
 $\lambda (> 0)$ is the penalization parameter that governs how much coefficients `shrinkage` happens (more details later).
 
-The shrinkage method is called LASSO when $\alpha = 0$, Ridge regression when $\alpha = 1$, and elastic net when $\alpha \in (0, 1)$. 
+The shrinkage method is called Lasso when $\alpha = 0$, Ridge regression when $\alpha = 1$, and elastic net when $\alpha \in (0, 1)$. 
 
-Ridge regression and elastic net are rarely used. So, we are going to cover only LASSO here.
+:::{.callout-note}
++ <span style="color:blue">Lasso </span>: $\alpha = 0$
++ <span style="color:blue">Ridge </span>: $\alpha = 1$
++ <span style="color:blue">Elastic net </span>: $0 < \alpha < 1$
+
+:::
+
+Ridge regression and elastic net are rarely used. So, we are going to cover only Lasso here.
  
 
-## LASSO
+## Lasso
 
-When there are many potential variables to include, it is hard to know which ones to include. LASSO can be used to select variables to build a more parsimonious model, which may help reducing MSE.
+When there are many potential variables to include, it is hard to know which ones to include. Lasso can be used to select variables to build a more parsimonious model, which may help reducing MSE.
 
-As mentioned above, LASSO is a special case of shrinkage methods where $\alpha = 1$ in @eq-shrinkage-general. So, the optimization problem of LASSO is
+As mentioned above, Lasso is a special case of shrinkage methods where $\alpha = 1$ in @eq-shrinkage-general. So, the optimization problem of Lasso is
 
 $$
 Min_{\beta} \sum_{i=1}^N (y_i - X_i\beta)^2 + \lambda \sum_{k=1}^K |\beta_k| 
@@ -64,13 +71,13 @@ Min_{\beta} \sum_{i=1}^N (y_i - X_i\beta)^2 \\
 \mbox{subject to } \sum_{k=1}^K |\beta_k| < t
 $$ {#eq-constrained-lasso}
 
-A graphical representation of the minimization problem is highly illustrative on what LASSO does. Consider the following data generating process:
+A graphical representation of the minimization problem is highly illustrative on what Lasso does. Consider the following data generating process:
 
 $$
 y  = 0.2 x_1 + 2 * x_2 + \mu
 $$
 
-When $t$ is set to 1 in @eq-constrained-lasso, LASSO tries to estimate the coefficient on $x_1$ and $x_2$ by solving the following problem:
+When $t$ is set to 1 in @eq-constrained-lasso, Lasso tries to estimate the coefficient on $x_1$ and $x_2$ by solving the following problem:
 
 $$
 \begin{align}
@@ -179,7 +186,7 @@ beta_table[, sse := sse_all]
 )
 ```
 
-Here is the contour map of SSE as a function of $\beta_1$ and $\beta_2$. The solution to the unconstrained problem (OLS estimates) is represented by the red point. Since LASSO needs to find a point within the red square, the solution would be $\beta_1 = 1$ and $\beta_2 = 0$ (yellow point). LASSO did not give anything to $\beta_2$ as $x_1$ is a much bigger contributor of the two included variables. LASSO tends to give the coefficient of $0$ to some of the variables when the constraint is harsh, effectively eliminating them from the model. For this reason, LASSO is often used as a variable selection method.
+Here is the contour map of SSE as a function of $\beta_1$ and $\beta_2$. The solution to the unconstrained problem (OLS estimates) is represented by the red point. Since Lasso needs to find a point within the red square, the solution would be $\beta_1 = 1$ and $\beta_2 = 0$ (yellow point). Lasso did not give anything to $\beta_2$ as $x_1$ is a much bigger contributor of the two included variables. Lasso tends to give the coefficient of $0$ to some of the variables when the constraint is harsh, effectively eliminating them from the model. For this reason, Lasso is often used as a variable selection method.
 
 ```{r}
 #| code-fold: true 
@@ -291,10 +298,10 @@ ggplot() +
 
 In this case, the solution would be (very close to) $\{\beta_1 = 0.5, \beta_2 = 0.5\}$, with neither of them sent to zero. This is because $x_1$ and $x_2$ are equally important in explaining $y$.
 
-## LASSO implementation: R
+## Lasso implementation: R
 
 
-You can use the `glmnet()` from the `glmnet` package run LASSO. For demonstration, we use the `QuickStartExample` data.
+You can use the `glmnet()` from the `glmnet` package run Lasso. For demonstration, we use the `QuickStartExample` data.
 
 ```{r}
 #=== get the data ===#
@@ -310,14 +317,14 @@ As you can see, `QuickStartExample` is a list of two elements. First one (`x`) i
 If you are used to running regressions in R, you should have specified a model using `formula` (e.g., ```y ~ x```). However, most of the machine learning functions in R accept the dependent variable and explanatory variables in a matrix form (or `data.frame`). This is almost always the case for ML methods in Python as well.
 :::
 
-By default, `alpha` parameter for `glmnet()` ($\alpha$ in @eq-shrinkage-general) is set to 1. So, to run LASSO, you can simply do the following:
+By default, `alpha` parameter for `glmnet()` ($\alpha$ in @eq-shrinkage-general) is set to 1. So, to run Lasso, you can simply do the following:
 
 ```{r}
 #=== extract X and y ===#
 X <- QuickStartExample$x
 y <- QuickStartExample$y
 
-#=== run LASSO ===#
+#=== run Lasso ===#
 lasso <- glmnet(X, y)
 ```
 
@@ -385,7 +392,7 @@ glmnet() can be used to much broader class of models (e.g., Logistic regression,
 :::
 
 
-## LASSO implementation: Python
+## Lasso implementation: Python
 
 Coming later.
 
@@ -426,7 +433,7 @@ cv.glmnet(X_scaled, y, nfolds = 5, standardize = TRUE) %>%
   coef(s = "lambda.min")
 ```
 
-While you do not have to worry about scaling issues as long as uinsg `glmnet()`, this is something worth remembering.
+While you do not have to worry about scaling issues as long as you are using `glmnet()`, this is something worth remembering.
 
 
 

@@ -1,4 +1,12 @@
-# Non-linear function estimation
+# Non-linear function estimation {#sec-nonlinear}
+
+
+The purpose of this section is to introduce you to the idea of semi-parametric and non-parametric regression methods. We only scratch the surface by just looking at smoothing splines and K-nearest neighbor regression methods. The world of semi-parametric and non-parametric regression is much deeper. But, that's out of the scope of this section. The primary goal of this section is to familiarize you with the concepts of over-fitting, regularization, hyper-parameters, and parameter tuning using smoothing splines and K-nearest neighbor regression methods as examples. 
+
+## Flexible functional form estimation {#sec-functional-form}
+
+::: {.column-margin}
+Packages to load for replications:
 
 ```{r}
 #| include: false
@@ -6,11 +14,19 @@
 library(data.table)
 library(tidyverse)
 library(mgcv)
+library(caret)
 ```
 
-The purpose of this section is to introduce you to the idea of semi-parametric and non-parametric regression methods. We only scratch the surface by just looking at smoothing splines and K-nearest neighbor regression methods. The world of semi-parametric and non-parametric regression is much deeper. But, that's out of the scope of this section. The primary goal of this section is to familiarize you with the concepts of over-fitting, regularization, hyper-parameters, and parameter tuning using smoothing splines and K-nearest neighbor regression methods as examples. 
+```{r}
+#| eval: false
 
-## Flexible functional form estimation {#sec-functional-form}
+library(data.table)
+library(tidyverse)
+library(mgcv)
+library(caret)
+```
+:::
+
 
 There is a clear limit to liner (in parameter) parametric models in flexibility to represent quantitative relationships between variables. For example, consider crop yield response to fertilizer. Typically, yield increases at the diminishing rate as fertilizer rate increases. However, at a high enough fertilizer rate, yield stops increasing (fertilizer is not a limiting factor at that point). This relationship is illustrated in the figure below.
 
@@ -91,10 +107,11 @@ $$
 
 where $\beta_k$ is the coefficient on $b_k(x)$. 
 
-Here are example of $b_1(x), \dots, b_K(x)$ may look like (1 intercept and 9 cubic spline functions).
+Here are what $b_1(x), \dots, b_K(x)$ may look like (1 intercept and 9 cubic spline functions).
 
 ```{r}
 #| code-fold: true
+#| fig-height: 9 
 
 basis_data <-
   gam(y_det ~ s(x, k = 10, bs = "cr"), data = data) %>% 
@@ -362,6 +379,8 @@ ggplot() +
 As you can see, at `k` $= 1$, the fitted curve fits perfectly with the observed data, and it is highly over-fitted. While increasing `k` to $5$ alleviates the over-fitting problem, the fitted curve is still very much wiggly. Nobody uses KNN for any practical applications. However, KNN is great to illustrate the importance of the choice of an arbitrary parameter (hyper-parameter). As discussed above, we will later look at cross-validation as a way to tune hyper-parameters.  
 
 
+## References {.unnumbered}
 
+<div id="refs"></div>
 
 
