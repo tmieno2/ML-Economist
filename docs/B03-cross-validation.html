@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="generator" content="quarto-0.9.563">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>Introduction to Machine Learning for Economists - 4&nbsp; Cross-validation based on mean squared error (MSE)</title>
+<title>Introduction to Machine Learning for Economists - 3&nbsp; Cross-validation based on mean squared error (MSE)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -118,7 +118,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }"><div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Cross-validation based on mean squared error (MSE)</span></h1>
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Cross-validation based on mean squared error (MSE)</span></h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -168,7 +168,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./preface.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Preface: Prediction v.s. Causal Inference</span></a>
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">Preface: Prediction v.s. Causal Inference</a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -181,27 +181,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./B01-nonlinear.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Non-linear function estimation</span></a>
+  <a href="./B01-nonlinear.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Non-linear function estimation</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./B02-bias-variance-tradeoff.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Bias-variance Trade-off</span></a>
+  <a href="./B02-bias-variance-tradeoff.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Bias-variance Trade-off</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./B03-cross-validation.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Cross-validation based on mean squared error (MSE)</span></a>
+  <a href="./B03-cross-validation.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Cross-validation based on mean squared error (MSE)</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./B04-regularization.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regression Shrinkage Methods</span></a>
+  <a href="./B04-regularization.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Regression Shrinkage Methods</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./B05-bootstrap.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Bootstrap</span></a>
+  <a href="./B05-bootstrap.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Bootstrap</span></a>
   </div>
 </li>
     </ul>
@@ -216,17 +216,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./P01-random-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Random Forest</span></a>
+  <a href="./P01-random-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Random Forest</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./P02-boosted-regression-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Boosted Regression Forest</span></a>
+  <a href="./P02-boosted-regression-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Boosted Regression Forest</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./P03-xgb.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Extreme Gradient Boosting</span></a>
+  <a href="./P03-xgb.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Extreme Gradient Boosting</span></a>
   </div>
 </li>
     </ul>
@@ -257,28 +257,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         <nav id="TOC" role="doc-toc"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
-<li><a href="#motivations" id="toc-motivations" class="nav-link active" data-scroll-target="#motivations"> <span class="header-section-number">4.1</span> Motivations</a></li>
+<li><a href="#motivations" id="toc-motivations" class="nav-link active" data-scroll-target="#motivations"> <span class="header-section-number">3.1</span> Motivations</a></li>
   <li>
-<a href="#leave-one-out-cross-validation-loocv" id="toc-leave-one-out-cross-validation-loocv" class="nav-link" data-scroll-target="#leave-one-out-cross-validation-loocv"> <span class="header-section-number">4.2</span> Leave-One-Out Cross-Validation (LOOCV)</a>
+<a href="#leave-one-out-cross-validation-loocv" id="toc-leave-one-out-cross-validation-loocv" class="nav-link" data-scroll-target="#leave-one-out-cross-validation-loocv"> <span class="header-section-number">3.2</span> Leave-One-Out Cross-Validation (LOOCV)</a>
   <ul class="collapse">
-<li><a href="#r-demonstration-using-mgcvgam" id="toc-r-demonstration-using-mgcvgam" class="nav-link" data-scroll-target="#r-demonstration-using-mgcvgam"> <span class="header-section-number">4.2.1</span> R demonstration using <code>mgcv::gam()</code></a></li>
-  <li><a href="#selecting-the-best-gam-specification-illustration" id="toc-selecting-the-best-gam-specification-illustration" class="nav-link" data-scroll-target="#selecting-the-best-gam-specification-illustration"> <span class="header-section-number">4.2.2</span> Selecting the best GAM specification: Illustration</a></li>
-  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"> <span class="header-section-number">4.2.3</span> Summary</a></li>
+<li><a href="#r-demonstration-using-mgcvgam" id="toc-r-demonstration-using-mgcvgam" class="nav-link" data-scroll-target="#r-demonstration-using-mgcvgam"> <span class="header-section-number">3.2.1</span> R demonstration using <code>mgcv::gam()</code></a></li>
+  <li><a href="#selecting-the-best-gam-specification-illustration" id="toc-selecting-the-best-gam-specification-illustration" class="nav-link" data-scroll-target="#selecting-the-best-gam-specification-illustration"> <span class="header-section-number">3.2.2</span> Selecting the best GAM specification: Illustration</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"> <span class="header-section-number">3.2.3</span> Summary</a></li>
   </ul>
 </li>
   <li>
-<a href="#k-fold-cross-validation-kcv" id="toc-k-fold-cross-validation-kcv" class="nav-link" data-scroll-target="#k-fold-cross-validation-kcv"> <span class="header-section-number">4.3</span> K-fold Cross-Validation (KCV)</a>
+<a href="#k-fold-cross-validation-kcv" id="toc-k-fold-cross-validation-kcv" class="nav-link" data-scroll-target="#k-fold-cross-validation-kcv"> <span class="header-section-number">3.3</span> K-fold Cross-Validation (KCV)</a>
   <ul class="collapse">
-<li><a href="#selecting-the-best-gam-specification-illustration-1" id="toc-selecting-the-best-gam-specification-illustration-1" class="nav-link" data-scroll-target="#selecting-the-best-gam-specification-illustration-1"> <span class="header-section-number">4.3.1</span> Selecting the best GAM specification: Illustration</a></li>
+<li><a href="#selecting-the-best-gam-specification-illustration-1" id="toc-selecting-the-best-gam-specification-illustration-1" class="nav-link" data-scroll-target="#selecting-the-best-gam-specification-illustration-1"> <span class="header-section-number">3.3.1</span> Selecting the best GAM specification: Illustration</a></li>
   </ul>
 </li>
-  <li><a href="#repeated-k-fold-cross-validation-kcv" id="toc-repeated-k-fold-cross-validation-kcv" class="nav-link" data-scroll-target="#repeated-k-fold-cross-validation-kcv"> <span class="header-section-number">4.4</span> Repeated K-fold Cross-Validation (KCV)</a></li>
-  <li><a href="#does-kcv-really-work" id="toc-does-kcv-really-work" class="nav-link" data-scroll-target="#does-kcv-really-work"> <span class="header-section-number">4.5</span> Does KCV really work?</a></li>
+  <li><a href="#repeated-k-fold-cross-validation-kcv" id="toc-repeated-k-fold-cross-validation-kcv" class="nav-link" data-scroll-target="#repeated-k-fold-cross-validation-kcv"> <span class="header-section-number">3.4</span> Repeated K-fold Cross-Validation (KCV)</a></li>
+  <li><a href="#does-kcv-really-work" id="toc-does-kcv-really-work" class="nav-link" data-scroll-target="#does-kcv-really-work"> <span class="header-section-number">3.5</span> Does KCV really work?</a></li>
   </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/B03-cross-validation.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
-<h1 class="title"><span id="sec-cross-validation" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Cross-validation based on mean squared error (MSE)</span></span></h1>
+<h1 class="title"><span id="sec-cross-validation" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Cross-validation based on mean squared error (MSE)</span></span></h1>
 </div>
 
 
@@ -290,8 +290,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </div>
   
 
-</header><section id="motivations" class="level2" data-number="4.1"><h2 data-number="4.1" class="anchored" data-anchor-id="motivations">
-<span class="header-section-number">4.1</span> Motivations</h2>
+</header><section id="motivations" class="level2" data-number="3.1"><h2 data-number="3.1" class="anchored" data-anchor-id="motivations">
+<span class="header-section-number">3.1</span> Motivations</h2>
 <p>No model works the best all the time, and searching for the best modeling approach and specifications is an essential part of modeling applications.</p>
 <p>For example, we may consider five approaches with varying modeling specifications for each of the approaches:</p>
 <ul>
@@ -331,8 +331,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <p>Our goal here is to find the model that would performs the best when applied to the data that has not been seen yet.</p>
 <p>We saw earlier that training MSE is not appropriate for that purpose as picking the model with the lowest training MSE would very much likely to lead you to the over-fitted model. In this lecture, we consider a better way of selecting a model using only train data.</p>
-</section><section id="leave-one-out-cross-validation-loocv" class="level2 page-columns page-full" data-number="4.2"><h2 data-number="4.2" class="anchored" data-anchor-id="leave-one-out-cross-validation-loocv">
-<span class="header-section-number">4.2</span> Leave-One-Out Cross-Validation (LOOCV)</h2>
+</section><section id="leave-one-out-cross-validation-loocv" class="level2 page-columns page-full" data-number="3.2"><h2 data-number="3.2" class="anchored" data-anchor-id="leave-one-out-cross-validation-loocv">
+<span class="header-section-number">3.2</span> Leave-One-Out Cross-Validation (LOOCV)</h2>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p>Packages to load for replication.</p>
@@ -345,8 +345,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div></div><p>Consider a dataset: <span class="math inline">\(D = \{X_1, y_1\}, \{X_2, y_2\}, \dots, \{X_N, y_N\}\)</span>, where <span class="math inline">\(X_i\)</span> is a collection of features and <span class="math inline">\(y_i\)</span> is the dependent variable for <span class="math inline">\(i\)</span>th observation. Further, suppose you use <span class="math inline">\(D\)</span> for training ML models and <span class="math inline">\(\hat{f}()\)</span> is a trained model.</p>
 <p>LOOCV leaves out a single observation (say <span class="math inline">\(i\)</span>), and train a model (say, GAM with the number of knots of 10) using the all the other observations (-<span class="math inline">\(i\)</span>), and then find MSE for the left-out observation. This process is repeated for all the observations, and then the average of the individual MSEs is calculated.</p>
-<section id="r-demonstration-using-mgcvgam" class="level3" data-number="4.2.1"><h3 data-number="4.2.1" class="anchored" data-anchor-id="r-demonstration-using-mgcvgam">
-<span class="header-section-number">4.2.1</span> R demonstration using <code>mgcv::gam()</code>
+<section id="r-demonstration-using-mgcvgam" class="level3" data-number="3.2.1"><h3 data-number="3.2.1" class="anchored" data-anchor-id="r-demonstration-using-mgcvgam">
+<span class="header-section-number">3.2.1</span> R demonstration using <code>mgcv::gam()</code>
 </h3>
 <p>Let’s demonstrate this using R. Here is the dataset we use.</p>
 <div class="cell">
@@ -450,8 +450,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="cell">
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">mse_average</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">mse_indiv</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section><section id="selecting-the-best-gam-specification-illustration" class="level3" data-number="4.2.2"><h3 data-number="4.2.2" class="anchored" data-anchor-id="selecting-the-best-gam-specification-illustration">
-<span class="header-section-number">4.2.2</span> Selecting the best GAM specification: Illustration</h3>
+</section><section id="selecting-the-best-gam-specification-illustration" class="level3" data-number="3.2.2"><h3 data-number="3.2.2" class="anchored" data-anchor-id="selecting-the-best-gam-specification-illustration">
+<span class="header-section-number">3.2.2</span> Selecting the best GAM specification: Illustration</h3>
 <p>Now, let’s try to find the best (among the ones we try) GAM specification using LOOCV. We will try ten different GAM specifications which vary in penalization parameter. Penalization parameter can be set using the <code>sp</code> option for <code><a href="https://rdrr.io/pkg/mgcv/man/gam.html">mgcv::gam()</a></code>. A greater value of <code>sp</code> leads to a more smooth fitted curve.</p>
 <div class="cell">
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">specify_gam</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">sp</span><span class="op">)</span> <span class="op">{</span>
@@ -580,13 +580,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </div>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 4.1: Fitted curves at various penalization parameters</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 3.1: Fitted curves at various penalization parameters</figcaption><p></p>
 </figure>
 </div>
 </div>
 <p>LOOCV is perfectly general and can be applied to any statistical methods. However, it can be extremely computationally burdensome because you need to fit the same model for as many as the number of observations. So, if you have 10,000 observations, then you need to fit the model 10,000 times, which can take a long long time.</p>
-</section><section id="summary" class="level3" data-number="4.2.3"><h3 data-number="4.2.3" class="anchored" data-anchor-id="summary">
-<span class="header-section-number">4.2.3</span> Summary</h3>
+</section><section id="summary" class="level3" data-number="3.2.3"><h3 data-number="3.2.3" class="anchored" data-anchor-id="summary">
+<span class="header-section-number">3.2.3</span> Summary</h3>
 <div class="callout-note callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -613,8 +613,8 @@ Warning
 <p>LOOCV can be highly computation-intensive when the dataset is large</p>
 </div>
 </div>
-</section></section><section id="k-fold-cross-validation-kcv" class="level2" data-number="4.3"><h2 data-number="4.3" class="anchored" data-anchor-id="k-fold-cross-validation-kcv">
-<span class="header-section-number">4.3</span> K-fold Cross-Validation (KCV)</h2>
+</section></section><section id="k-fold-cross-validation-kcv" class="level2" data-number="3.3"><h2 data-number="3.3" class="anchored" data-anchor-id="k-fold-cross-validation-kcv">
+<span class="header-section-number">3.3</span> K-fold Cross-Validation (KCV)</h2>
 <p>KCV is a type of cross-validation that overcomes the LOOCV’s drawback of being computationally too intensive when the dataset is large. KCV first splits the entire dataset intro <span class="math inline">\(K\)</span> folds (K groups) randomly. It then leaves out a chunk of observations that belongs to a fold (group), trains the model using the rest of the observations in the other folds, evaluate the trained model using the left-out group. It repeats this process for all the groups and average the MSEs obtained for each group.</p>
 <p>Let’s demonstrate this process using R.</p>
 <div class="cell">
@@ -719,8 +719,8 @@ Warning
 <pre><code>[1] 10.68863</code></pre>
 </div>
 </div>
-<section id="selecting-the-best-gam-specification-illustration-1" class="level3" data-number="4.3.1"><h3 data-number="4.3.1" class="anchored" data-anchor-id="selecting-the-best-gam-specification-illustration-1">
-<span class="header-section-number">4.3.1</span> Selecting the best GAM specification: Illustration</h3>
+<section id="selecting-the-best-gam-specification-illustration-1" class="level3" data-number="3.3.1"><h3 data-number="3.3.1" class="anchored" data-anchor-id="selecting-the-best-gam-specification-illustration-1">
+<span class="header-section-number">3.3.1</span> Selecting the best GAM specification: Illustration</h3>
 <p>Just like we found the best gam specification (choice of penalization parameter), we do the same now using KCV.</p>
 <div class="cell">
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">get_mse_by_sp_kcv</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">sp</span><span class="op">)</span>
@@ -870,8 +870,8 @@ Note
 <p>Even though we compared different specification of the same approach (GAM), we can compare across different models as well. For example, you can find KCV for an RF model with a particular specifications of its hyper-parameters and compare the KCV with those of the GAM model specifications and see what comes at the top.</p>
 </div>
 </div>
-</section></section><section id="repeated-k-fold-cross-validation-kcv" class="level2" data-number="4.4"><h2 data-number="4.4" class="anchored" data-anchor-id="repeated-k-fold-cross-validation-kcv">
-<span class="header-section-number">4.4</span> Repeated K-fold Cross-Validation (KCV)</h2>
+</section></section><section id="repeated-k-fold-cross-validation-kcv" class="level2" data-number="3.4"><h2 data-number="3.4" class="anchored" data-anchor-id="repeated-k-fold-cross-validation-kcv">
+<span class="header-section-number">3.4</span> Repeated K-fold Cross-Validation (KCV)</h2>
 <p>As its name suggest, repeated KCV repeats the process of KCV multiple times. Each KCV iteration splits the original data into k-fold in a different way. A single KCV may not be reliable as the original data was split into such a way that favors one parameter set of or model class over the others. However, if we repeat KCV multiple times, then we can safe-guard against this randomness in a KCV procedure. Repeated KCV is preferred over a single KCV.</p>
 <p>You can use <code><a href="https://rsample.tidymodels.org/reference/vfold_cv.html">rsample::vfold_cv()</a></code> to create repeated k-fold datasets by using the <code>repeats</code> argument.</p>
 <div class="cell">
@@ -912,8 +912,8 @@ Note
 <pre><code>[1] 10.65908</code></pre>
 </div>
 </div>
-</section><section id="does-kcv-really-work" class="level2" data-number="4.5"><h2 data-number="4.5" class="anchored" data-anchor-id="does-kcv-really-work">
-<span class="header-section-number">4.5</span> Does KCV really work?</h2>
+</section><section id="does-kcv-really-work" class="level2" data-number="3.5"><h2 data-number="3.5" class="anchored" data-anchor-id="does-kcv-really-work">
+<span class="header-section-number">3.5</span> Does KCV really work?</h2>
 <p>LOOCV and KCV use the train data to estimate test MSE. But, does it really work? In other words, does it let us pick the parameter that minimizes the test MSE? We will run a simple MC simulations to test this. We continue to use the same data generating process and gam models for this simulation as well.</p>
 <p>Now, since we know the data generating process, we can actually use the following metric instead of MSE.</p>
 <p><span class="math display">\[
@@ -1170,12 +1170,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
       <a href="./B02-bias-variance-tradeoff.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Bias-variance Trade-off</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Bias-variance Trade-off</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./B04-regularization.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regression Shrinkage Methods</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Regression Shrinkage Methods</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

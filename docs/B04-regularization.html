@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="generator" content="quarto-0.9.563">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>Introduction to Machine Learning for Economists - 5&nbsp; Regression Shrinkage Methods</title>
+<title>Introduction to Machine Learning for Economists - 4&nbsp; Regression Shrinkage Methods</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -119,7 +119,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }"><div class="container-fluid d-flex justify-content-between">
       <h1 class="quarto-secondary-nav-title">
-<span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regression Shrinkage Methods</span>
+<span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Regression Shrinkage Methods</span>
 </h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
@@ -170,7 +170,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./preface.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Preface: Prediction v.s. Causal Inference</span></a>
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">Preface: Prediction v.s. Causal Inference</a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -183,27 +183,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./B01-nonlinear.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Non-linear function estimation</span></a>
+  <a href="./B01-nonlinear.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Non-linear function estimation</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./B02-bias-variance-tradeoff.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Bias-variance Trade-off</span></a>
+  <a href="./B02-bias-variance-tradeoff.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Bias-variance Trade-off</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./B03-cross-validation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Cross-validation based on mean squared error (MSE)</span></a>
+  <a href="./B03-cross-validation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Cross-validation based on mean squared error (MSE)</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./B04-regularization.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regression Shrinkage Methods</span></a>
+  <a href="./B04-regularization.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Regression Shrinkage Methods</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./B05-bootstrap.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Bootstrap</span></a>
+  <a href="./B05-bootstrap.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Bootstrap</span></a>
   </div>
 </li>
     </ul>
@@ -218,17 +218,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./P01-random-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Random Forest</span></a>
+  <a href="./P01-random-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Random Forest</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./P02-boosted-regression-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Boosted Regression Forest</span></a>
+  <a href="./P02-boosted-regression-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Boosted Regression Forest</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./P03-xgb.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Extreme Gradient Boosting</span></a>
+  <a href="./P03-xgb.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Extreme Gradient Boosting</span></a>
   </div>
 </li>
     </ul>
@@ -259,17 +259,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         <nav id="TOC" role="doc-toc"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
-<li><a href="#sec-shrinkage" id="toc-sec-shrinkage" class="nav-link active" data-scroll-target="#sec-shrinkage"> <span class="header-section-number">5.1</span> Shrinkage Methods</a></li>
-  <li><a href="#lasso" id="toc-lasso" class="nav-link" data-scroll-target="#lasso"> <span class="header-section-number">5.2</span> Lasso</a></li>
-  <li><a href="#lasso-implementation-r" id="toc-lasso-implementation-r" class="nav-link" data-scroll-target="#lasso-implementation-r"> <span class="header-section-number">5.3</span> Lasso implementation: R</a></li>
-  <li><a href="#lasso-implementation-python" id="toc-lasso-implementation-python" class="nav-link" data-scroll-target="#lasso-implementation-python"> <span class="header-section-number">5.4</span> Lasso implementation: Python</a></li>
-  <li><a href="#scaling" id="toc-scaling" class="nav-link" data-scroll-target="#scaling"> <span class="header-section-number">5.5</span> Scaling</a></li>
+<li><a href="#sec-shrinkage" id="toc-sec-shrinkage" class="nav-link active" data-scroll-target="#sec-shrinkage"> <span class="header-section-number">4.1</span> Shrinkage Methods</a></li>
+  <li><a href="#lasso" id="toc-lasso" class="nav-link" data-scroll-target="#lasso"> <span class="header-section-number">4.2</span> Lasso</a></li>
+  <li><a href="#lasso-implementation-r" id="toc-lasso-implementation-r" class="nav-link" data-scroll-target="#lasso-implementation-r"> <span class="header-section-number">4.3</span> Lasso implementation: R</a></li>
+  <li><a href="#lasso-implementation-python" id="toc-lasso-implementation-python" class="nav-link" data-scroll-target="#lasso-implementation-python"> <span class="header-section-number">4.4</span> Lasso implementation: Python</a></li>
+  <li><a href="#scaling" id="toc-scaling" class="nav-link" data-scroll-target="#scaling"> <span class="header-section-number">4.5</span> Scaling</a></li>
   </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/B04-regularization.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
 <h1 class="title d-none d-lg-block">
-<span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regression Shrinkage Methods</span>
+<span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Regression Shrinkage Methods</span>
 </h1>
 </div>
 
@@ -282,8 +282,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </div>
   
 
-</header><section id="sec-shrinkage" class="level2" data-number="5.1"><h2 data-number="5.1" class="anchored" data-anchor-id="sec-shrinkage">
-<span class="header-section-number">5.1</span> Shrinkage Methods</h2>
+</header><section id="sec-shrinkage" class="level2" data-number="4.1"><h2 data-number="4.1" class="anchored" data-anchor-id="sec-shrinkage">
+<span class="header-section-number">4.1</span> Shrinkage Methods</h2>
 <p>We have talked about variance-bias trade-off. When you “shrink” coefficients towards zero, you may be able to achieve lower variance of <span class="math inline">\(\hat{f}(x)\)</span> while increasing bias, which can result in a lower MSE.</p>
 <p>Consider the following generic linear model:</p>
 <p><span class="math display">\[
@@ -303,7 +303,7 @@ y = X\beta + \mu
 <p>Borrowing from the <a href="https://glmnet.stanford.edu/articles/glmnet.html">documentation</a> of the <code>glmnet</code> package(), the minimization problem shrinkage methods solve to estimate coefficients for a linear model can be written as follows:</p>
 <p><span id="eq-shrinkage-general"><span class="math display">\[
 Min_{\beta} \sum_{i=1}^N (y_i - X_i\beta)^2 + \lambda \huge[\normalsize(1-\alpha)||\beta||^2_2/2 + \alpha ||\beta||_1\huge]
-\tag{5.1}\]</span></span></p>
+\tag{4.1}\]</span></span></p>
 <ul>
 <li><p><span class="math inline">\(||\beta||_1 = |\beta_1| + |\beta_2| + \dots+ |\beta_K|\)</span> (called L1 norm)</p></li>
 <li><p><span class="math inline">\(||\beta||_2 = (|\beta_1|^2 + |\beta_2|^2 + \dots+ |\beta_K|^2)^{\frac{1}{2}}\)</span> (called L2 norm)</p></li>
@@ -334,24 +334,24 @@ Note
 </div>
 </div>
 <p>Ridge regression and elastic net are rarely used. So, we are going to cover only Lasso here.</p>
-</section><section id="lasso" class="level2" data-number="5.2"><h2 data-number="5.2" class="anchored" data-anchor-id="lasso">
-<span class="header-section-number">5.2</span> Lasso</h2>
+</section><section id="lasso" class="level2" data-number="4.2"><h2 data-number="4.2" class="anchored" data-anchor-id="lasso">
+<span class="header-section-number">4.2</span> Lasso</h2>
 <p>When there are many potential variables to include, it is hard to know which ones to include. Lasso can be used to select variables to build a more parsimonious model, which may help reducing MSE.</p>
-<p>As mentioned above, Lasso is a special case of shrinkage methods where <span class="math inline">\(\alpha = 1\)</span> in <a href="#eq-shrinkage-general">Equation&nbsp;<span>5.1</span></a>. So, the optimization problem of Lasso is</p>
+<p>As mentioned above, Lasso is a special case of shrinkage methods where <span class="math inline">\(\alpha = 1\)</span> in <a href="#eq-shrinkage-general">Equation&nbsp;<span>4.1</span></a>. So, the optimization problem of Lasso is</p>
 <p><span id="eq-lagrangian-lasso"><span class="math display">\[
 Min_{\beta} \sum_{i=1}^N (y_i - X_i\beta)^2 + \lambda \sum_{k=1}^K |\beta_k|
-\tag{5.2}\]</span></span></p>
+\tag{4.2}\]</span></span></p>
 <p>, where <span class="math inline">\(\lambda\)</span> is the penalization parameter.</p>
 <p>Alternatively, we can also write the optimization problem as the constrained minimization problem as follows<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>:</p>
 <p><span id="eq-constrained-lasso"><span class="math display">\[
 Min_{\beta} \sum_{i=1}^N (y_i - X_i\beta)^2 \\
 \mbox{subject to } \sum_{k=1}^K |\beta_k| &lt; t
-\tag{5.3}\]</span></span></p>
+\tag{4.3}\]</span></span></p>
 <p>A graphical representation of the minimization problem is highly illustrative on what Lasso does. Consider the following data generating process:</p>
 <p><span class="math display">\[
 y  = 0.2 x_1 + 2 * x_2 + \mu
 \]</span></p>
-<p>When <span class="math inline">\(t\)</span> is set to 1 in <a href="#eq-constrained-lasso">Equation&nbsp;<span>5.3</span></a>, Lasso tries to estimate the coefficient on <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span> by solving the following problem:</p>
+<p>When <span class="math inline">\(t\)</span> is set to 1 in <a href="#eq-constrained-lasso">Equation&nbsp;<span>4.3</span></a>, Lasso tries to estimate the coefficient on <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span> by solving the following problem:</p>
 <p><span class="math display">\[
 \begin{align}
 Min_{\beta} \sum_{i=1}^N (y_i - \beta_1 x_1 - \beta_2 x_2)^2 \\
@@ -390,14 +390,14 @@ Min_{\beta} \sum_{i=1}^N (y_i - \beta_1 x_1 - \beta_2 x_2)^2 \\
     x_2 <span class="op">=</span> <span class="va">x_2</span>
   <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Without the constraint, here is the combination of <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\beta_2\)</span> that minimizes the objective function of <a href="#eq-constrained-lasso">Equation&nbsp;<span>5.3</span></a>, which is the same as OLS estimates.</p>
+<p>Without the constraint, here is the combination of <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\beta_2\)</span> that minimizes the objective function of <a href="#eq-constrained-lasso">Equation&nbsp;<span>4.3</span></a>, which is the same as OLS estimates.</p>
 <div class="cell">
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="op">(</span>
 <span class="va">ols_coefs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x_1</span> <span class="op">+</span> <span class="va">x_2</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span><span class="op">$</span><span class="va">coefficient</span>
 <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>(Intercept)         x_1         x_2 
- 0.01666832  2.00711701  0.18010906 </code></pre>
+-0.04487426  2.00154607  0.22906471 </code></pre>
 </div>
 </div>
 <p>We now calculate the value of the objective functions at different values of <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\beta_2\)</span>. Here is the set of <span class="math inline">\(\{\beta_1, \beta_2\}\)</span> combinations we look at.</p>
@@ -580,8 +580,8 @@ Note
 </div>
 </div>
 <p>In this case, the solution would be (very close to) <span class="math inline">\(\{\beta_1 = 0.5, \beta_2 = 0.5\}\)</span>, with neither of them sent to zero. This is because <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span> are equally important in explaining <span class="math inline">\(y\)</span>.</p>
-</section><section id="lasso-implementation-r" class="level2" data-number="5.3"><h2 data-number="5.3" class="anchored" data-anchor-id="lasso-implementation-r">
-<span class="header-section-number">5.3</span> Lasso implementation: R</h2>
+</section><section id="lasso-implementation-r" class="level2" data-number="4.3"><h2 data-number="4.3" class="anchored" data-anchor-id="lasso-implementation-r">
+<span class="header-section-number">4.3</span> Lasso implementation: R</h2>
 <p>You can use the <code>glmnet()</code> from the <code>glmnet</code> package run Lasso. For demonstration, we use the <code>QuickStartExample</code> data.</p>
 <div class="cell">
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== get the data ===#</span>
@@ -609,7 +609,7 @@ Note
 <p>If you are used to running regressions in R, you should have specified a model using <code>formula</code> (e.g., <code>y ~ x</code>). However, most of the machine learning functions in R accept the dependent variable and explanatory variables in a matrix form (or <code>data.frame</code>). This is almost always the case for ML methods in Python as well.</p>
 </div>
 </div>
-<p>By default, <code>alpha</code> parameter for <code>glmnet()</code> (<span class="math inline">\(\alpha\)</span> in <a href="#eq-shrinkage-general">Equation&nbsp;<span>5.1</span></a>) is set to 1. So, to run Lasso, you can simply do the following:</p>
+<p>By default, <code>alpha</code> parameter for <code>glmnet()</code> (<span class="math inline">\(\alpha\)</span> in <a href="#eq-shrinkage-general">Equation&nbsp;<span>4.1</span></a>) is set to 1. So, to run Lasso, you can simply do the following:</p>
 <div class="cell">
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== extract X and y ===#</span>
 <span class="va">X</span> <span class="op">&lt;-</span> <span class="va">QuickStartExample</span><span class="op">$</span><span class="va">x</span>
@@ -779,7 +779,7 @@ V20         -1.144987654</code></pre>
 <div class="cell">
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">cv_lasso</span><span class="op">$</span><span class="va">lambda.min</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.06896889</code></pre>
+<pre><code>[1] 0.08307327</code></pre>
 </div>
 </div>
 <p>You can access the coefficient estimates when <span class="math inline">\(\lambda\)</span> is <code>lambda.min</code> as follows</p>
@@ -787,28 +787,28 @@ V20         -1.144987654</code></pre>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">cv_lasso</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
-                      s1
-(Intercept)  0.147927056
-V1           1.337393911
-V2           .          
-V3           0.704086481
-V4           .          
-V5          -0.842853150
-V6           0.549403480
-V7           0.032703914
-V8           0.342430521
-V9           .          
-V10          0.001206608
-V11          0.178995989
-V12          .          
-V13          .          
-V14         -1.079993473
-V15          .          
-V16          .          
-V17          .          
-V18          .          
-V19          .          
-V20         -1.061382444</code></pre>
+                     s1
+(Intercept)  0.14936467
+V1           1.32975267
+V2           .         
+V3           0.69096092
+V4           .         
+V5          -0.83122558
+V6           0.53669611
+V7           0.02005438
+V8           0.33193760
+V9           .         
+V10          .         
+V11          0.16239419
+V12          .         
+V13          .         
+V14         -1.07081121
+V15          .         
+V16          .         
+V17          .         
+V18          .         
+V19          .         
+V20         -1.04340741</code></pre>
 </div>
 </div>
 <p>The following code gives you the coefficient estimates when <span class="math inline">\(\lambda\)</span> is <code>lambda.1se</code></p>
@@ -816,28 +816,28 @@ V20         -1.061382444</code></pre>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">cv_lasso</span>, s <span class="op">=</span> <span class="st">"lambda.1se"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
-                    s1
-(Intercept)  0.1536661
-V1           1.3019575
-V2           .        
-V3           0.6422426
-V4           .        
-V5          -0.7892388
-V6           0.4944794
-V7           .        
-V8           0.2943189
-V9           .        
-V10          .        
-V11          0.1058440
-V12          .        
-V13          .        
-V14         -1.0402312
-V15          .        
-V16          .        
-V17          .        
-V18          .        
-V19          .        
-V20         -0.9791172</code></pre>
+                     s1
+(Intercept)  0.15721186
+V1           1.27705027
+V2           .         
+V3           0.59821036
+V4           .         
+V5          -0.75164619
+V6           0.45947857
+V7           .         
+V8           0.26088201
+V9           .         
+V10          .         
+V11          0.05783249
+V12          .         
+V13          .         
+V14         -1.01440902
+V15          .         
+V16          .         
+V17          .         
+V18          .         
+V19          .         
+V20         -0.92227009</code></pre>
 </div>
 </div>
 <div class="callout-note callout callout-style-default callout-captioned">
@@ -853,11 +853,11 @@ Note
 <p>glmnet() can be used to much broader class of models (e.g., Logistic regression, Poisson regression, Cox regression, etc). As the name suggests it’s elastic <span style="color:red"> net </span> methods for <span style="color:red"> g</span>eneralized <span style="color:red"> l</span>inear <span style="color:red"> m</span>odel.</p>
 </div>
 </div>
-</section><section id="lasso-implementation-python" class="level2" data-number="5.4"><h2 data-number="5.4" class="anchored" data-anchor-id="lasso-implementation-python">
-<span class="header-section-number">5.4</span> Lasso implementation: Python</h2>
+</section><section id="lasso-implementation-python" class="level2" data-number="4.4"><h2 data-number="4.4" class="anchored" data-anchor-id="lasso-implementation-python">
+<span class="header-section-number">4.4</span> Lasso implementation: Python</h2>
 <p>Coming later.</p>
-</section><section id="scaling" class="level2" data-number="5.5"><h2 data-number="5.5" class="anchored" data-anchor-id="scaling">
-<span class="header-section-number">5.5</span> Scaling</h2>
+</section><section id="scaling" class="level2" data-number="4.5"><h2 data-number="4.5" class="anchored" data-anchor-id="scaling">
+<span class="header-section-number">4.5</span> Scaling</h2>
 <p>Unlike linear model estimation without shrinkage (regularization), shrinkage method is sensitive to the scaling of independent variables. Scaling of a variable has basically no consequence in linear model without regularization. It simply changes the interpretation of the scaled variable and the coefficient estimates on all the other variables remain unaffected. However, scaling of a single variable has a ripple effect to the other variables in shrinkage methods. This is because the penalization term: <span class="math inline">\(\lambda \huge[\normalsize(1-\alpha)||\beta||^2_2/2 + \alpha ||\beta||_1\huge]\)</span>. As you can see, <span class="math inline">\(\lambda\)</span> is applied universally to all the coefficients without any consideration of the scale of the variables.</p>
 <p>Let’s scale the first variable in <code>X</code> (this variable is influential as it survived even when <span class="math inline">\(\lambda\)</span> is very low) by 1/1000 and see what happens. Now, by default, the <code>standardize</code> option is set to <code>TRUE</code>. So, we need to set it to FALSE explicitly to see the effect.</p>
 <p>Here is before scaling:</p>
@@ -866,28 +866,28 @@ Note
   <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span>s <span class="op">=</span> <span class="st">"lambda.min"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
-                    s1
-(Intercept)  0.1482955
-V1           1.3381070
-V2           .        
-V3           0.6936938
-V4           .        
-V5          -0.8249778
-V6           0.5448439
-V7           0.0230429
-V8           0.3398575
-V9           .        
-V10          .        
-V11          0.1648445
-V12          .        
-V13          .        
-V14         -1.0801745
-V15          .        
-V16          .        
-V17          .        
-V18          .        
-V19          .        
-V20         -1.0338882</code></pre>
+                      s1
+(Intercept)  0.149648882
+V1           1.330607169
+V2           .          
+V3           0.678361561
+V4           .          
+V5          -0.809868853
+V6           0.531201043
+V7           0.008364484
+V8           0.328900898
+V9           .          
+V10          .          
+V11          0.145393969
+V12          .          
+V13          .          
+V14         -1.071215278
+V15          .          
+V16          .          
+V17          .          
+V18          .          
+V19          .          
+V20         -1.010342665</code></pre>
 </div>
 </div>
 <p>Here is after scaling:</p>
@@ -901,27 +901,27 @@ V20         -1.0338882</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
                      s1
-(Intercept)  0.49789782
+(Intercept)  0.51535530
 V1           .         
 V2           .         
-V3           0.60938060
-V4          -0.02028196
-V5          -0.79629764
-V6           0.75033487
-V7           0.05928865
-V8           0.09916745
+V3           0.63682001
+V4          -0.05304167
+V5          -0.82486898
+V6           0.78726754
+V7           0.08895672
+V8           0.11278493
 V9           .         
 V10          .         
-V11          0.49890470
+V11          0.54136308
 V12          .         
 V13          .         
-V14         -1.03083531
+V14         -1.03897489
 V15          .         
 V16          .         
 V17          .         
-V18          0.12642122
+V18          0.16981466
 V19          .         
-V20         -1.32068655</code></pre>
+V20         -1.36535141</code></pre>
 </div>
 </div>
 <p>As you can see, the coefficient on the first variable is 0 after scaling. Setting <code>standardize = TRUE</code> (or not doing anything with this option) gives you very similar results whether the data is scaled or not.</p>
@@ -988,7 +988,7 @@ V20         -1.061382e+00</code></pre>
 
 </section><section class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
 <ol>
-<li id="fn1" role="doc-endnote"><p>You can consider <span class="citation" data-cites="lagrangian-lasso">(<a href="#ref-lagrangian-lasso" role="doc-biblioref"><strong>lagrangian-lasso?</strong></a>)</span> the Lagrangian formulation of <a href="#eq-constrained-lasso">Equation&nbsp;<span>5.3</span></a>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1" role="doc-endnote"><p>You can consider <span class="citation" data-cites="lagrangian-lasso">(<a href="#ref-lagrangian-lasso" role="doc-biblioref"><strong>lagrangian-lasso?</strong></a>)</span> the Lagrangian formulation of <a href="#eq-constrained-lasso">Equation&nbsp;<span>4.3</span></a>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const icon = "";
@@ -1069,12 +1069,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
       <a href="./B03-cross-validation.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Cross-validation based on mean squared error (MSE)</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Cross-validation based on mean squared error (MSE)</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./B05-bootstrap.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Bootstrap</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Bootstrap</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

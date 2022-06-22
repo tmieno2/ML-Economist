@@ -9,7 +9,7 @@ library(xaringanBuilder)
 # /*===========================================================
 
 # === prediction v.s. causal ===#
-quarto::quarto_render(here::here("LectureNotes/B00-prediction-vs-causal-inference.qmd"))
+quarto::quarto_render(here::here("LectureNotes/preface.qmd"))
 
 # === non-linear ===#
 quarto::quarto_render(here::here("LectureNotes/B01-nonlinear.qmd"))

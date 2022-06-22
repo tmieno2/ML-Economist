@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="generator" content="quarto-0.9.563">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>Introduction to Machine Learning for Economists - 7&nbsp; Random Forest</title>
+<title>Introduction to Machine Learning for Economists - 6&nbsp; Random Forest</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -138,7 +138,7 @@ div.csl-indent {
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }"><div class="container-fluid d-flex justify-content-between">
       <h1 class="quarto-secondary-nav-title">
-<span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Random Forest</span>
+<span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Random Forest</span>
 </h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
@@ -189,7 +189,7 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./preface.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Preface: Prediction v.s. Causal Inference</span></a>
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">Preface: Prediction v.s. Causal Inference</a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -202,27 +202,27 @@ div.csl-indent {
     <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./B01-nonlinear.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Non-linear function estimation</span></a>
+  <a href="./B01-nonlinear.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Non-linear function estimation</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./B02-bias-variance-tradeoff.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Bias-variance Trade-off</span></a>
+  <a href="./B02-bias-variance-tradeoff.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Bias-variance Trade-off</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./B03-cross-validation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Cross-validation based on mean squared error (MSE)</span></a>
+  <a href="./B03-cross-validation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Cross-validation based on mean squared error (MSE)</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./B04-regularization.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regression Shrinkage Methods</span></a>
+  <a href="./B04-regularization.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Regression Shrinkage Methods</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./B05-bootstrap.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Bootstrap</span></a>
+  <a href="./B05-bootstrap.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Bootstrap</span></a>
   </div>
 </li>
     </ul>
@@ -237,17 +237,17 @@ div.csl-indent {
     <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./P01-random-forest.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Random Forest</span></a>
+  <a href="./P01-random-forest.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Random Forest</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./P02-boosted-regression-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Boosted Regression Forest</span></a>
+  <a href="./P02-boosted-regression-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Boosted Regression Forest</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./P03-xgb.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Extreme Gradient Boosting</span></a>
+  <a href="./P03-xgb.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Extreme Gradient Boosting</span></a>
   </div>
 </li>
     </ul>
@@ -280,27 +280,27 @@ div.csl-indent {
   <ul>
 <li><a href="#preparation" id="toc-preparation" class="nav-link active" data-scroll-target="#preparation">Preparation</a></li>
   <li>
-<a href="#sec-rt" id="toc-sec-rt" class="nav-link" data-scroll-target="#sec-rt"> <span class="header-section-number">7.1</span> Regression tree</a>
+<a href="#sec-rt" id="toc-sec-rt" class="nav-link" data-scroll-target="#sec-rt"> <span class="header-section-number">6.1</span> Regression tree</a>
   <ul class="collapse">
-<li><a href="#what-is-it" id="toc-what-is-it" class="nav-link" data-scroll-target="#what-is-it"> <span class="header-section-number">7.1.1</span> What is it?</a></li>
-  <li><a href="#training-a-regression-tree-in-r" id="toc-training-a-regression-tree-in-r" class="nav-link" data-scroll-target="#training-a-regression-tree-in-r"> <span class="header-section-number">7.1.2</span> Training a regression tree in R</a></li>
+<li><a href="#what-is-it" id="toc-what-is-it" class="nav-link" data-scroll-target="#what-is-it"> <span class="header-section-number">6.1.1</span> What is it?</a></li>
+  <li><a href="#training-a-regression-tree-in-r" id="toc-training-a-regression-tree-in-r" class="nav-link" data-scroll-target="#training-a-regression-tree-in-r"> <span class="header-section-number">6.1.2</span> Training a regression tree in R</a></li>
   </ul>
 </li>
   <li>
-<a href="#sec-rf" id="toc-sec-rf" class="nav-link" data-scroll-target="#sec-rf"> <span class="header-section-number">7.2</span> Random Forest (RF)</a>
+<a href="#sec-rf" id="toc-sec-rf" class="nav-link" data-scroll-target="#sec-rf"> <span class="header-section-number">6.2</span> Random Forest (RF)</a>
   <ul class="collapse">
-<li><a href="#bagging-bootstrap-aggregation" id="toc-bagging-bootstrap-aggregation" class="nav-link" data-scroll-target="#bagging-bootstrap-aggregation"> <span class="header-section-number">7.2.1</span> Bagging (Bootstrap aggregation)</a></li>
-  <li><a href="#random-forest-rf" id="toc-random-forest-rf" class="nav-link" data-scroll-target="#random-forest-rf"> <span class="header-section-number">7.2.2</span> Random Forest (RF)</a></li>
+<li><a href="#bagging-bootstrap-aggregation" id="toc-bagging-bootstrap-aggregation" class="nav-link" data-scroll-target="#bagging-bootstrap-aggregation"> <span class="header-section-number">6.2.1</span> Bagging (Bootstrap aggregation)</a></li>
+  <li><a href="#random-forest-rf" id="toc-random-forest-rf" class="nav-link" data-scroll-target="#random-forest-rf"> <span class="header-section-number">6.2.2</span> Random Forest (RF)</a></li>
   </ul>
 </li>
-  <li><a href="#over-fitting" id="toc-over-fitting" class="nav-link" data-scroll-target="#over-fitting"> <span class="header-section-number">7.3</span> Over-fitting</a></li>
-  <li><a href="#resources" id="toc-resources" class="nav-link" data-scroll-target="#resources"> <span class="header-section-number">7.4</span> Resources</a></li>
+  <li><a href="#over-fitting" id="toc-over-fitting" class="nav-link" data-scroll-target="#over-fitting"> <span class="header-section-number">6.3</span> Over-fitting</a></li>
+  <li><a href="#resources" id="toc-resources" class="nav-link" data-scroll-target="#resources"> <span class="header-section-number">6.4</span> Resources</a></li>
   </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/P01-random-forest.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
 <h1 class="title d-none d-lg-block">
-<span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Random Forest</span>
+<span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Random Forest</span>
 </h1>
 </div>
 
@@ -321,10 +321,10 @@ div.csl-indent {
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rattle.togaware.com/">rattle</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://justinmshea.github.io/wooldridge/">wooldridge</a></span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section><section id="sec-rt" class="level2 page-columns page-full" data-number="7.1"><h2 data-number="7.1" class="anchored" data-anchor-id="sec-rt">
-<span class="header-section-number">7.1</span> Regression tree</h2>
-<section id="what-is-it" class="level3 page-columns page-full" data-number="7.1.1"><h3 data-number="7.1.1" class="anchored" data-anchor-id="what-is-it">
-<span class="header-section-number">7.1.1</span> What is it?</h3>
+</section><section id="sec-rt" class="level2 page-columns page-full" data-number="6.1"><h2 data-number="6.1" class="anchored" data-anchor-id="sec-rt">
+<span class="header-section-number">6.1</span> Regression tree</h2>
+<section id="what-is-it" class="level3 page-columns page-full" data-number="6.1.1"><h3 data-number="6.1.1" class="anchored" data-anchor-id="what-is-it">
+<span class="header-section-number">6.1.1</span> What is it?</h3>
 <p>Here is an example of regression tree to explain logged salary (<code>lsalary</code>) using the <code>mlb1</code> data from the <code>wooldridge</code> package.</p>
 <div class="cell">
 <details><summary>Code</summary><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== get mlb1 data (from wooldridge) ===#</span>
@@ -542,8 +542,8 @@ div.csl-indent {
 </div>
 </div>
 <p>So, the variable-cutpoint combination that minimizes RSS is hits - 354.81. We now have the first split. This tree is developed further by splitting nodes like this.</p>
-</section><section id="training-a-regression-tree-in-r" class="level3" data-number="7.1.2"><h3 data-number="7.1.2" class="anchored" data-anchor-id="training-a-regression-tree-in-r">
-<span class="header-section-number">7.1.2</span> Training a regression tree in R</h3>
+</section><section id="training-a-regression-tree-in-r" class="level3" data-number="6.1.2"><h3 data-number="6.1.2" class="anchored" data-anchor-id="training-a-regression-tree-in-r">
+<span class="header-section-number">6.1.2</span> Training a regression tree in R</h3>
 <p>You can fit a regression tree using <code><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart()</a></code> from the <code>rpart</code> package. Its syntax is similar to that of <code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code> for a quick fitting.</p>
 <div class="cell">
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span>
@@ -603,7 +603,7 @@ $xval
 <p><span class="math display">\[
 \sum_{t=1}^T\sum_{x_i\in R_t} (y_i - \hat{y}_{R_t})^2 + cp\cdot T
 \]</span></p>
-<p>where <span class="math inline">\(R_t\)</span> is the <span class="math inline">\(t\)</span>th region and <span class="math inline">\(\hat{y_{R_t}}\)</span> is the estimate of <span class="math inline">\(y\)</span> for all the observations that reside in <span class="math inline">\(R_t\)</span>. So, the first term is RSS. The objective function has a penalization term (the second term) just like shrinkage methods we saw in <a href="B04-regularization.html#sec-shrinkage"><span>Section&nbsp;5.1</span></a>. A higher value of <code>cp</code> leads to a less complex tree with less leaves.</p>
+<p>where <span class="math inline">\(R_t\)</span> is the <span class="math inline">\(t\)</span>th region and <span class="math inline">\(\hat{y_{R_t}}\)</span> is the estimate of <span class="math inline">\(y\)</span> for all the observations that reside in <span class="math inline">\(R_t\)</span>. So, the first term is RSS. The objective function has a penalization term (the second term) just like shrinkage methods we saw in <a href="B04-regularization.html#sec-shrinkage"><span>Section&nbsp;4.1</span></a>. A higher value of <code>cp</code> leads to a less complex tree with less leaves.</p>
 <p>If you want to build a much deeper tree that has many leaves, then you can do so using the <code>control</code> option like below.</p>
 <div class="cell">
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">full_tree</span> <span class="op">&lt;-</span>
@@ -650,11 +650,11 @@ $xval
 </div>
 </div>
 <p>Even though how a regression tree is build in R. In practice, you never use a regression tree itself as the final model for your research as its performance is rather poor and tend to over-fit compared to other competitive methods. But, understanding how building a regression tree is important to understand its derivatives like random forest, boosted regression forest.</p>
-</section></section><section id="sec-rf" class="level2 page-columns page-full" data-number="7.2"><h2 data-number="7.2" class="anchored" data-anchor-id="sec-rf">
-<span class="header-section-number">7.2</span> Random Forest (RF)</h2>
+</section></section><section id="sec-rf" class="level2 page-columns page-full" data-number="6.2"><h2 data-number="6.2" class="anchored" data-anchor-id="sec-rf">
+<span class="header-section-number">6.2</span> Random Forest (RF)</h2>
 <p>Regression tree approach is often not robust and suffers from high variance. Here, we look at the process called <span style="color:blue"> bagging </span> and how it can be used to train RF model, which is much more robust than a regression tree.</p>
-<section id="bagging-bootstrap-aggregation" class="level3" data-number="7.2.1"><h3 data-number="7.2.1" class="anchored" data-anchor-id="bagging-bootstrap-aggregation">
-<span class="header-section-number">7.2.1</span> Bagging (Bootstrap aggregation)</h3>
+<section id="bagging-bootstrap-aggregation" class="level3" data-number="6.2.1"><h3 data-number="6.2.1" class="anchored" data-anchor-id="bagging-bootstrap-aggregation">
+<span class="header-section-number">6.2.1</span> Bagging (Bootstrap aggregation)</h3>
 <p>Consider two random variables <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span> from the identical distribution, where <span class="math inline">\(E[x_i] = \alpha\)</span> and <span class="math inline">\(Var(x_i) = \sigma^2\)</span>. You are interested in estimating <span class="math inline">\(E[x_i]\)</span>. We all know that the following relationship holds in general:</p>
 <p><span class="math display">\[
 \begin{aligned}
@@ -675,7 +675,7 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 
 <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">x_1</span>, <span class="va">x_2</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -0.04817562</code></pre>
+<pre><code>[1] -0.007464696</code></pre>
 </div>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== second case (positively correlated) ===#</span>
 <span class="va">x_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>
@@ -683,7 +683,7 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 
 <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">x_1</span>, <span class="va">x_2</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.5265198</code></pre>
+<pre><code>[1] 0.5071416</code></pre>
 </div>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== third case (negatively correlated) ===#</span>
 <span class="va">x_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>
@@ -691,7 +691,7 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 
 <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">x_1</span>, <span class="va">x_2</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -0.8031794</code></pre>
+<pre><code>[1] -0.7916475</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -867,8 +867,8 @@ least one of 'id' or 'measure' vars in future.</code></pre>
 </div>
 </div>
 <p>Hmm, the estimates look very similar. Actually, that is the case for all the observations. This is because the trained trees are very similar for many reasons, and the trees are highly “positively” correlated with each other. From our very simple experiment above, we know that the power of bagging is not very high when that is the case. While RF does use bagging, popular R and python packages does it in a much better way than I demonstrated here. We see this next.</p>
-</section><section id="random-forest-rf" class="level3 page-columns page-full" data-number="7.2.2"><h3 data-number="7.2.2" class="anchored" data-anchor-id="random-forest-rf">
-<span class="header-section-number">7.2.2</span> Random Forest (RF)</h3>
+</section><section id="random-forest-rf" class="level3 page-columns page-full" data-number="6.2.2"><h3 data-number="6.2.2" class="anchored" data-anchor-id="random-forest-rf">
+<span class="header-section-number">6.2.2</span> Random Forest (RF)</h3>
 <p>Unlike a naive bagging approach demonstrated above, RF does it in a clever way to <em>decorrelate</em> trees. Specifically, for any leave of any tree, they consider only a randomly select subset of the explanatory variables when deciding how to split a leave. A typical choice of the number of variables considered at each split is <span class="math inline">\(\sqrt{K}\)</span>, where <span class="math inline">\(K\)</span> is the number of the explanatory variables specified by the user. In the naive example above, all <span class="math inline">\(K\)</span> variables are considered for all the split decisions of all the trees. Some variables are more influential than others and they get to be picked as the splitting variable at similar places, which can result in highly correlated trees. Instead, RF gives other variables a chance, which helps decorrelate the trees.</p>
 <p>We can use <code><a href="https://rdrr.io/pkg/ranger/man/ranger.html">ranger()</a></code> from the <code>ranger</code> package to train an RF model.</p>
 
@@ -1061,10 +1061,10 @@ R squared (OOB):                  0.7288123 </code></pre>
 1:    2            10            0.75 0.3590104</code></pre>
 </div>
 </div>
-</section></section><section id="over-fitting" class="level2" data-number="7.3"><h2 data-number="7.3" class="anchored" data-anchor-id="over-fitting">
-<span class="header-section-number">7.3</span> Over-fitting</h2>
-</section><section id="resources" class="level2" data-number="7.4"><h2 data-number="7.4" class="anchored" data-anchor-id="resources">
-<span class="header-section-number">7.4</span> Resources</h2>
+</section></section><section id="over-fitting" class="level2" data-number="6.3"><h2 data-number="6.3" class="anchored" data-anchor-id="over-fitting">
+<span class="header-section-number">6.3</span> Over-fitting</h2>
+</section><section id="resources" class="level2" data-number="6.4"><h2 data-number="6.4" class="anchored" data-anchor-id="resources">
+<span class="header-section-number">6.4</span> Resources</h2>
 <ul>
 <li>
 <a href="https://machinelearningmastery.com/gradient-boosting-with-scikit-learn-xgboost-lightgbm-and-catboost/">Gradient Boosting with Scikit-Learn, XGBoost, LightGBM, and CatBoost</a> by Jason Brownlee</li>
@@ -1162,7 +1162,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
   <div class="nav-page nav-page-next">
       <a href="./P02-boosted-regression-forest.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Boosted Regression Forest</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Boosted Regression Forest</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
