@@ -114,7 +114,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   }
 }</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 </head>
-<body class="nav-sidebar floating">
+<body class="nav-sidebar floating slimcontent">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }"><div class="container-fluid d-flex justify-content-between">
@@ -196,7 +196,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./B04-regularization.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regression Shrinkage Methods: LASSO (Ridge and Elastic Net)</span></a>
+  <a href="./B04-regularization.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regression Shrinkage Methods</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -277,7 +277,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/B03-cross-validation.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
 <h1 class="title"><span id="sec-cross-validation" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Cross-validation based on mean squared error (MSE)</span></span></h1>
 </div>
 
@@ -290,14 +290,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </div>
   
 
-</header><div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com">data.table</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">mgcv</span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rsample.tidymodels.org">rsample</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">parallel</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<section id="motivations" class="level2" data-number="4.1"><h2 data-number="4.1" class="anchored" data-anchor-id="motivations">
+</header><section id="motivations" class="level2" data-number="4.1"><h2 data-number="4.1" class="anchored" data-anchor-id="motivations">
 <span class="header-section-number">4.1</span> Motivations</h2>
 <p>No model works the best all the time, and searching for the best modeling approach and specifications is an essential part of modeling applications.</p>
 <p>For example, we may consider five approaches with varying modeling specifications for each of the approaches:</p>
@@ -338,9 +331,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <p>Our goal here is to find the model that would performs the best when applied to the data that has not been seen yet.</p>
 <p>We saw earlier that training MSE is not appropriate for that purpose as picking the model with the lowest training MSE would very much likely to lead you to the over-fitted model. In this lecture, we consider a better way of selecting a model using only train data.</p>
-</section><section id="leave-one-out-cross-validation-loocv" class="level2" data-number="4.2"><h2 data-number="4.2" class="anchored" data-anchor-id="leave-one-out-cross-validation-loocv">
+</section><section id="leave-one-out-cross-validation-loocv" class="level2 page-columns page-full" data-number="4.2"><h2 data-number="4.2" class="anchored" data-anchor-id="leave-one-out-cross-validation-loocv">
 <span class="header-section-number">4.2</span> Leave-One-Out Cross-Validation (LOOCV)</h2>
-<p>Consider a dataset: <span class="math inline">\(D = \{X_1, y_1\}, \{X_2, y_2\}, \dots, \{X_N, y_N\}\)</span>, where <span class="math inline">\(X_i\)</span> is a collection of features and <span class="math inline">\(y_i\)</span> is the dependent variable for <span class="math inline">\(i\)</span>th observation. Further, suppose you use <span class="math inline">\(D\)</span> for training ML models and <span class="math inline">\(\hat{f}()\)</span> is a trained model.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>Packages to load for replication.</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com">data.table</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">mgcv</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rsample.tidymodels.org">rsample</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">parallel</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div></div><p>Consider a dataset: <span class="math inline">\(D = \{X_1, y_1\}, \{X_2, y_2\}, \dots, \{X_N, y_N\}\)</span>, where <span class="math inline">\(X_i\)</span> is a collection of features and <span class="math inline">\(y_i\)</span> is the dependent variable for <span class="math inline">\(i\)</span>th observation. Further, suppose you use <span class="math inline">\(D\)</span> for training ML models and <span class="math inline">\(\hat{f}()\)</span> is a trained model.</p>
 <p>LOOCV leaves out a single observation (say <span class="math inline">\(i\)</span>), and train a model (say, GAM with the number of knots of 10) using the all the other observations (-<span class="math inline">\(i\)</span>), and then find MSE for the left-out observation. This process is repeated for all the observations, and then the average of the individual MSEs is calculated.</p>
 <section id="r-demonstration-using-mgcvgam" class="level3" data-number="4.2.1"><h3 data-number="4.2.1" class="anchored" data-anchor-id="r-demonstration-using-mgcvgam">
 <span class="header-section-number">4.2.1</span> R demonstration using <code>mgcv::gam()</code>
@@ -365,8 +368,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <p>Visually, here is the relationship between <span class="math inline">\(E[y]\)</span> and <span class="math inline">\(x\)</span>:</p>
 <div class="cell">
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggplot.html">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">ey</span>, x <span class="op">=</span> <span class="va">x</span><span class="op">)</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">ey</span>, x <span class="op">=</span> <span class="va">x</span><span class="op">)</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="B03-cross-validation_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -432,7 +435,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span>
     <span class="fl">1</span><span class="op">:</span><span class="fl">100</span>,
     <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">get_mse</span><span class="op">(</span><span class="va">x</span>, <span class="va">gam_k_10</span><span class="op">)</span>
-  <span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
   <span class="co">#=== list to a vector ===#</span>
   <span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span><span class="op">)</span> </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -466,9 +469,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span>
       <span class="fl">1</span><span class="op">:</span><span class="fl">100</span>,
       <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">get_mse</span><span class="op">(</span><span class="va">x</span>, <span class="va">temp_gam</span><span class="op">)</span>
-    <span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+    <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
     <span class="co">#=== list to a vector ===#</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
     <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">)</span>
 
   <span class="va">return_data</span> <span class="op">&lt;-</span>
@@ -495,7 +498,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span>
     <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, by <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span>,
     <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">get_mse_by_sp</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-  <span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/rbindlist.html">rbindlist</a></span><span class="op">(</span><span class="op">)</span>
 <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -618,11 +621,11 @@ Warning
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">89534</span><span class="op">)</span>
 <span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">gen_data</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">500</span><span class="op">)</span> <span class="op">*</span> <span class="fl">5</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>You can use <code><a href="https://rdrr.io/pkg/rsample/man/vfold_cv.html">rsample::vfold_cv()</a></code> to split the data into groups.</p>
+<p>You can use <code><a href="https://rsample.tidymodels.org/reference/vfold_cv.html">rsample::vfold_cv()</a></code> to split the data into groups.</p>
 <div class="cell">
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== split into 5 groups ===#</span>
 <span class="op">(</span>
-<span class="va">data_folds</span> <span class="op">&lt;-</span> <span class="fu">rsample</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/rsample/man/vfold_cv.html">vfold_cv</a></span><span class="op">(</span><span class="va">data</span>, v <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
+<span class="va">data_folds</span> <span class="op">&lt;-</span> <span class="fu">rsample</span><span class="fu">::</span><span class="fu"><a href="https://rsample.tidymodels.org/reference/vfold_cv.html">vfold_cv</a></span><span class="op">(</span><span class="va">data</span>, v <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
 <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#  5-fold cross-validation 
@@ -636,11 +639,11 @@ Warning
 5 &lt;split [400/100]&gt; Fold5</code></pre>
 </div>
 </div>
-<p>As you can see, <code><a href="https://rdrr.io/pkg/rsample/man/vfold_cv.html">rsample::vfold_cv()</a></code> creates <span class="math inline">\(v\)</span> (<span class="math inline">\(=5\)</span> here) splits. And each split has both train and test datasets. <code>&lt;split [400/100]&gt;</code> means that <span class="math inline">\(400\)</span> and <span class="math inline">\(100\)</span> observations for the train and test datasets, respectively. Note that, the <span class="math inline">\(100\)</span> observations in the first split (called <code>Fold 1</code>) are in the train datasets of the rest of the splits (<code>Fold 2</code> through <code>Fold 5</code>).</p>
-<p>You can extract the train and test datasets like below using the <code><a href="https://rdrr.io/pkg/rsample/man/initial_split.html">training()</a></code> and <code><a href="https://rdrr.io/pkg/rsample/man/initial_split.html">testing()</a></code> functions.</p>
+<p>As you can see, <code><a href="https://rsample.tidymodels.org/reference/vfold_cv.html">rsample::vfold_cv()</a></code> creates <span class="math inline">\(v\)</span> (<span class="math inline">\(=5\)</span> here) splits. And each split has both train and test datasets. <code>&lt;split [400/100]&gt;</code> means that <span class="math inline">\(400\)</span> and <span class="math inline">\(100\)</span> observations for the train and test datasets, respectively. Note that, the <span class="math inline">\(100\)</span> observations in the first split (called <code>Fold 1</code>) are in the train datasets of the rest of the splits (<code>Fold 2</code> through <code>Fold 5</code>).</p>
+<p>You can extract the train and test datasets like below using the <code><a href="https://rsample.tidymodels.org/reference/initial_split.html">training()</a></code> and <code><a href="https://rsample.tidymodels.org/reference/initial_split.html">testing()</a></code> functions.</p>
 <div class="cell">
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">train_data</span> <span class="op">&lt;-</span> <span class="va">data_folds</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span><span class="op">$</span><span class="va">splits</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/rsample/man/initial_split.html">training</a></span><span class="op">(</span><span class="op">)</span>
-<span class="va">test_data</span> <span class="op">&lt;-</span> <span class="va">data_folds</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span><span class="op">$</span><span class="va">splits</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/rsample/man/initial_split.html">testing</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">train_data</span> <span class="op">&lt;-</span> <span class="va">data_folds</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span><span class="op">$</span><span class="va">splits</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rsample.tidymodels.org/reference/initial_split.html">training</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">test_data</span> <span class="op">&lt;-</span> <span class="va">data_folds</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span><span class="op">$</span><span class="va">splits</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rsample.tidymodels.org/reference/initial_split.html">testing</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now, let’s get MSE for the first fold.</p>
 <div class="cell">
@@ -651,7 +654,7 @@ Warning
 <span class="va">y_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">fitted_model</span>, <span class="va">test_data</span><span class="op">)</span>
 
 <span class="co">#=== calculate MSE for the fold ===#</span>
-<span class="op">(</span><span class="va">test_data</span><span class="op">[</span>, <span class="va">y</span><span class="op">]</span> <span class="op">-</span> <span class="va">y_hat</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span class="op">(</span><span class="va">test_data</span><span class="op">[</span>, <span class="va">y</span><span class="op">]</span> <span class="op">-</span> <span class="va">y_hat</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 12.05604</code></pre>
 </div>
@@ -661,8 +664,8 @@ Warning
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">get_mse_by_fold</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">fold</span>, <span class="va">model</span><span class="op">)</span>
 <span class="op">{</span>
 
-  <span class="va">test_data</span> <span class="op">&lt;-</span> <span class="va">data_folds</span><span class="op">[</span><span class="va">fold</span>, <span class="op">]</span><span class="op">$</span><span class="va">splits</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/rsample/man/initial_split.html">testing</a></span><span class="op">(</span><span class="op">)</span>
-  <span class="va">train_data</span> <span class="op">&lt;-</span> <span class="va">data_folds</span><span class="op">[</span><span class="va">fold</span>, <span class="op">]</span><span class="op">$</span><span class="va">splits</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/rsample/man/initial_split.html">training</a></span><span class="op">(</span><span class="op">)</span>
+  <span class="va">test_data</span> <span class="op">&lt;-</span> <span class="va">data_folds</span><span class="op">[</span><span class="va">fold</span>, <span class="op">]</span><span class="op">$</span><span class="va">splits</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rsample.tidymodels.org/reference/initial_split.html">testing</a></span><span class="op">(</span><span class="op">)</span>
+  <span class="va">train_data</span> <span class="op">&lt;-</span> <span class="va">data_folds</span><span class="op">[</span><span class="va">fold</span>, <span class="op">]</span><span class="op">$</span><span class="va">splits</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rsample.tidymodels.org/reference/initial_split.html">training</a></span><span class="op">(</span><span class="op">)</span>
 
   <span class="co">#=== train the model ===#</span>
   <span class="va">fitted_model</span> <span class="op">&lt;-</span> <span class="fu">model</span><span class="op">(</span><span class="va">train_data</span><span class="op">)</span>
@@ -671,7 +674,7 @@ Warning
   <span class="va">y_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">fitted_model</span>, <span class="va">test_data</span><span class="op">)</span>
 
   <span class="co">#=== calculate MSE for the fold ===#</span>
-  <span class="va">mse</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">test_data</span><span class="op">[</span>, <span class="va">y</span><span class="op">]</span> <span class="op">-</span> <span class="va">y_hat</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">)</span> 
+  <span class="va">mse</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">test_data</span><span class="op">[</span>, <span class="va">y</span><span class="op">]</span> <span class="op">-</span> <span class="va">y_hat</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">)</span> 
 
   <span class="va">return_data</span> <span class="op">&lt;-</span> 
     <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/data.table.html">data.table</a></span><span class="op">(</span>
@@ -697,7 +700,7 @@ Warning
   <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span>
     <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">data_folds</span><span class="op">)</span><span class="op">)</span>,
     <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">get_mse_by_fold</span><span class="op">(</span><span class="va">data</span>, <span class="va">x</span>, <span class="va">gam_k_10</span><span class="op">)</span>
-  <span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/rbindlist.html">rbindlist</a></span><span class="op">(</span><span class="op">)</span>
 <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -729,11 +732,11 @@ Warning
     <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span>
       <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">data_folds</span><span class="op">)</span><span class="op">)</span>,
       <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">get_mse_by_fold</span><span class="op">(</span><span class="va">train_data</span>, <span class="va">x</span>, <span class="va">temp_gam</span><span class="op">)</span>
-    <span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+    <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
     <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/rbindlist.html">rbindlist</a></span><span class="op">(</span><span class="op">)</span>
 
   <span class="va">return_data</span> <span class="op">&lt;-</span>
-    <span class="va">mse_by_k</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+    <span class="va">mse_by_k</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
     <span class="va">.</span><span class="op">[</span>, <span class="va">sp</span> <span class="op">:=</span> <span class="va">sp</span><span class="op">]</span>
 
   <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">return_data</span><span class="op">[</span><span class="op">]</span><span class="op">)</span>
@@ -758,7 +761,7 @@ Warning
   <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span>
     <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, by <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span>,
     <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">get_mse_by_sp_kcv</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-  <span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/rbindlist.html">rbindlist</a></span><span class="op">(</span><span class="op">)</span>
 <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -847,9 +850,9 @@ Warning
 <p>So, according to the KCV, we should pick <code>sp</code> <span class="math inline">\(= 0.2\)</span> as the penalty parameter.</p>
 <p>By the way, here is what MSE values look like for each fold based on the value of <code>sp</code>.</p>
 <div class="cell">
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggplot.html">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mse_results</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">mse</span>, x <span class="op">=</span> <span class="va">sp</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">k</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/scale_colour_discrete.html">scale_color_discrete</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">""</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mse_results</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">mse</span>, x <span class="op">=</span> <span class="va">sp</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">k</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_colour_discrete.html">scale_color_discrete</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">""</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="B03-cross-validation_files/figure-html/unnamed-chunk-63-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -870,11 +873,11 @@ Note
 </section></section><section id="repeated-k-fold-cross-validation-kcv" class="level2" data-number="4.4"><h2 data-number="4.4" class="anchored" data-anchor-id="repeated-k-fold-cross-validation-kcv">
 <span class="header-section-number">4.4</span> Repeated K-fold Cross-Validation (KCV)</h2>
 <p>As its name suggest, repeated KCV repeats the process of KCV multiple times. Each KCV iteration splits the original data into k-fold in a different way. A single KCV may not be reliable as the original data was split into such a way that favors one parameter set of or model class over the others. However, if we repeat KCV multiple times, then we can safe-guard against this randomness in a KCV procedure. Repeated KCV is preferred over a single KCV.</p>
-<p>You can use <code><a href="https://rdrr.io/pkg/rsample/man/vfold_cv.html">rsample::vfold_cv()</a></code> to create repeated k-fold datasets by using the <code>repeats</code> argument.</p>
+<p>You can use <code><a href="https://rsample.tidymodels.org/reference/vfold_cv.html">rsample::vfold_cv()</a></code> to create repeated k-fold datasets by using the <code>repeats</code> argument.</p>
 <div class="cell">
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== split into 5 groups ===#</span>
 <span class="op">(</span>
-<span class="va">data_folds</span> <span class="op">&lt;-</span> <span class="fu">rsample</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/rsample/man/vfold_cv.html">vfold_cv</a></span><span class="op">(</span><span class="va">data</span>, v <span class="op">=</span> <span class="fl">5</span>, repeats <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
+<span class="va">data_folds</span> <span class="op">&lt;-</span> <span class="fu">rsample</span><span class="fu">::</span><span class="fu"><a href="https://rsample.tidymodels.org/reference/vfold_cv.html">vfold_cv</a></span><span class="op">(</span><span class="va">data</span>, v <span class="op">=</span> <span class="fl">5</span>, repeats <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
 <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#  5-fold cross-validation repeated 5 times 
@@ -901,8 +904,8 @@ Note
   <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span>
     <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">data_folds</span><span class="op">)</span><span class="op">)</span>,
     <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">get_mse_by_fold</span><span class="op">(</span><span class="va">data</span>, <span class="va">x</span>, <span class="va">gam_k_10</span><span class="op">)</span>
-  <span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
-  <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/rbindlist.html">rbindlist</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/rbindlist.html">rbindlist</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
   <span class="va">.</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">mse</span><span class="op">)</span><span class="op">]</span>
 <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -930,7 +933,7 @@ Note
   <span class="co">#' ## MSE from KCV </span>
   <span class="co">#/*----------------------------------*/</span>
   <span class="co">#=== split train_data into 5 groups ===#</span>
-  <span class="va">data_folds</span> <span class="op">&lt;-</span> <span class="fu">rsample</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/rsample/man/vfold_cv.html">vfold_cv</a></span><span class="op">(</span><span class="va">train_data</span>, v <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
+  <span class="va">data_folds</span> <span class="op">&lt;-</span> <span class="fu">rsample</span><span class="fu">::</span><span class="fu"><a href="https://rsample.tidymodels.org/reference/vfold_cv.html">vfold_cv</a></span><span class="op">(</span><span class="va">train_data</span>, v <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
   
   <span class="co">#=== specify the model ===#</span>
   <span class="va">temp_gam</span> <span class="op">&lt;-</span> <span class="fu">specify_gam</span><span class="op">(</span><span class="va">sp</span><span class="op">)</span>
@@ -940,14 +943,14 @@ Note
     <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span>
       <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">data_folds</span><span class="op">)</span><span class="op">)</span>,
       <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">get_mse_by_fold</span><span class="op">(</span><span class="va">train_data</span>, <span class="va">x</span>, <span class="va">temp_gam</span><span class="op">)</span>
-    <span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+    <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
     <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/rbindlist.html">rbindlist</a></span><span class="op">(</span><span class="op">)</span>
 
   <span class="co">#=== find the average MSE (over folds) ===#</span>
   <span class="va">mse_kcv</span> <span class="op">&lt;-</span>
-    <span class="va">mse_by_k</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
-    <span class="va">.</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span>mse <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">mse</span><span class="op">)</span><span class="op">)</span><span class="op">]</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
-    <span class="va">.</span><span class="op">[</span>, <span class="va">sp</span> <span class="op">:=</span> <span class="va">sp</span><span class="op">]</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+    <span class="va">mse_by_k</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+    <span class="va">.</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span>mse <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">mse</span><span class="op">)</span><span class="op">)</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+    <span class="va">.</span><span class="op">[</span>, <span class="va">sp</span> <span class="op">:=</span> <span class="va">sp</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
     <span class="va">.</span><span class="op">[</span>, <span class="va">type</span> <span class="op">:=</span> <span class="st">"KCV"</span><span class="op">]</span>
 
   <span class="co">#/*----------------------------------*/</span>
@@ -958,11 +961,11 @@ Note
 
   <span class="co">#=== find the average MSE (over observations) ===#</span>
   <span class="va">mse_test</span> <span class="op">&lt;-</span> 
-    <span class="va">test_data</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+    <span class="va">test_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
     <span class="co">#=== predict y ===#</span>
-    <span class="va">.</span><span class="op">[</span>, <span class="va">y_hat</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">fitted</span>, newdata <span class="op">=</span> <span class="va">.</span><span class="op">)</span><span class="op">]</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
-    <span class="va">.</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span>mse <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">ey</span> <span class="op">-</span> <span class="va">y_hat</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">]</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
-    <span class="va">.</span><span class="op">[</span>, <span class="va">sp</span> <span class="op">:=</span> <span class="va">sp</span><span class="op">]</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+    <span class="va">.</span><span class="op">[</span>, <span class="va">y_hat</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">fitted</span>, newdata <span class="op">=</span> <span class="va">.</span><span class="op">)</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+    <span class="va">.</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span>mse <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">ey</span> <span class="op">-</span> <span class="va">y_hat</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+    <span class="va">.</span><span class="op">[</span>, <span class="va">sp</span> <span class="op">:=</span> <span class="va">sp</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
     <span class="va">.</span><span class="op">[</span>, <span class="va">type</span> <span class="op">:=</span> <span class="st">"Pure"</span><span class="op">]</span>
 
   <span class="co">#/*----------------------------------*/</span>
@@ -1006,7 +1009,7 @@ Warning
   <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span>
     <span class="va">sp_seq</span>,
     <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">get_mse_by_sp</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-  <span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/rbindlist.html">rbindlist</a></span><span class="op">(</span><span class="op">)</span>
 <span class="op">}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -1050,7 +1053,7 @@ Warning
     <span class="fl">1</span><span class="op">:</span><span class="fl">500</span>,
     <span class="va">get_mse</span>,
     mc.cores <span class="op">=</span> <span class="fl">12</span>
-  <span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/rbindlist.html">rbindlist</a></span><span class="op">(</span>idcol <span class="op">=</span> <span class="st">"sim_id"</span><span class="op">)</span>
 
 <span class="co">#=== use this if you are a Windows user ===#</span>
@@ -1064,11 +1067,11 @@ Warning
 <div class="cell">
 <div class="sourceCode" id="cb53"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="op">(</span>
 <span class="va">which_sp_optimal</span> <span class="op">&lt;-</span>
-  <span class="va">mse_results</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
-  <span class="va">.</span><span class="op">[</span>, <span class="va">.SD</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html">which.min</a></span><span class="op">(</span><span class="va">mse</span><span class="op">)</span>, <span class="op">]</span>, by <span class="op">=</span> <span class="fu">.</span><span class="op">(</span><span class="va">type</span>, <span class="va">sim_id</span><span class="op">)</span><span class="op">]</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+  <span class="va">mse_results</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="va">.</span><span class="op">[</span>, <span class="va">.SD</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html">which.min</a></span><span class="op">(</span><span class="va">mse</span><span class="op">)</span>, <span class="op">]</span>, by <span class="op">=</span> <span class="fu">.</span><span class="op">(</span><span class="va">type</span>, <span class="va">sim_id</span><span class="op">)</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
   <span class="co">#=== drop mse ===#</span>
-  <span class="va">.</span><span class="op">[</span>, <span class="va">mse</span> <span class="op">:=</span> <span class="cn">NULL</span><span class="op">]</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
-  <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/dcast.data.table.html">dcast</a></span><span class="op">(</span><span class="va">sim_id</span> <span class="op">~</span> <span class="va">type</span>, value.var <span class="op">=</span> <span class="st">"sp"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> 
+  <span class="va">.</span><span class="op">[</span>, <span class="va">mse</span> <span class="op">:=</span> <span class="cn">NULL</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/dcast.data.table.html">dcast</a></span><span class="op">(</span><span class="va">sim_id</span> <span class="op">~</span> <span class="va">type</span>, value.var <span class="op">=</span> <span class="st">"sp"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
   <span class="va">.</span><span class="op">[</span>, <span class="va">num_comb</span> <span class="op">:=</span> <span class="va">.N</span>, by <span class="op">=</span> <span class="fu">.</span><span class="op">(</span><span class="va">KCV</span>, <span class="va">Pure</span><span class="op">)</span><span class="op">]</span>
 <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -1076,10 +1079,10 @@ Warning
 <p>The following figure shows the relationship between KCV-based and pure MSE-based <code>sp</code> values.</p>
 <div class="cell">
 <div class="sourceCode" id="cb54"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== plot the frequency of sp chosen by KCV ===#</span>
-<span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggplot.html">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">which_sp_optimal</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">Pure</span>, x <span class="op">=</span> <span class="va">KCV</span>, size <span class="op">=</span> <span class="va">num_comb</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="va">sp_seq</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="va">sp_seq</span><span class="op">)</span> </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">which_sp_optimal</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">Pure</span>, x <span class="op">=</span> <span class="va">KCV</span>, size <span class="op">=</span> <span class="va">num_comb</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="va">sp_seq</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="va">sp_seq</span><span class="op">)</span> </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="B03-cross-validation_files/figure-html/unnamed-chunk-81-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -1172,7 +1175,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
   <div class="nav-page nav-page-next">
       <a href="./B04-regularization.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regression Shrinkage Methods: LASSO (Ridge and Elastic Net)</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regression Shrinkage Methods</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

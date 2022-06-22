@@ -1,5 +1,8 @@
 # Preface: Prediction v.s. Causal Inference {.unnumbered}
 
+It is critical to understand the distinctions between <span style="color:blue"> prediction </span> and <span style="color:blue"> causal inference </span> for anybody who is interested in using machine learning (ML) methods. This is because a method designed to for former objective may not work well for the latter objective, and vice versa.
+
+
 :::{.callout-important}
 
 + <span style="color:blue"> Prediction</span>: it aims at predicting accurately the `level` of the variable of interest (the dependent variable) well based on explanatory variables. 
@@ -33,7 +36,7 @@ $$
 
 You are indeed right and you can predict the change in the dependent variable when the value of an explanatory variable changes once the model is trained to predict the level of the dependent variable. However, this way of predicting the impact of $X$ (the continuous treatment version of the so-called S-learner) is often biased. Instead, (most of) causal machine learning methods razor-focus on <span style="color:blue"> directly </span> estimating the change in the dependent variable when the value of an explanatory variable changes and typically performs better. 
 
-The goal of this book is to learn such causal machine learning methods to add them to your econometric tool box for practical applications. This, however, does not mean we do not learn any prediction-oriented (traditional) machine learning methods. Indeed, it is essential to understand them because the prominent causal machine learning methods do use prediction-oriented ML methods in its process as we will see later. It is just that we do not use prediction-oriented ML methods by themselves for the task of identifying the causal impact of a treatment. 
+Traditionally, the vast majority of ML methods focused on prediction, rather than causal inference. It is only recently (I would say around 2015) that academics and practitioners in industry started to realize the limitation of prediction-oriented methods for many of the research and business problems they need to solve. In response, there are now an emerging tide of new kinds of machine learning methods called causal machine learning methods, which focus on causal identification of a treatment (e.g., pricing of a product, policy intervention, etc). The goal of this book is to learn such causal machine learning methods and add them to your econometric tool box for practical applications. This, however, does not mean we do not learn any prediction-oriented (traditional) machine learning methods. Indeed, it is essential to understand them because the prominent causal machine learning methods do use prediction-oriented ML methods in its process as we will see later. It is just that we do not use prediction-oriented ML methods by themselves for the task of identifying the causal impact of a treatment. 
 
 
 
