@@ -18,10 +18,10 @@ quarto::quarto_render(here::here("LectureNotes/B01-nonlinear.qmd"))
 quarto::quarto_render(here::here("LectureNotes/B02-bias-variance-tradeoff.qmd"))
 
 # === LASSO ===#
-quarto::quarto_render(here::here("LectureNotes/B03-regularization.qmd"))
+quarto::quarto_render(here::here("LectureNotes/B04-regularization.qmd"))
 
 # === cross-validation ===#
-quarto::quarto_render(here::here("LectureNotes/B04-cross-validation.qmd"))
+quarto::quarto_render(here::here("LectureNotes/B03-cross-validation.qmd"))
 
 # === bootstrap ===#
 quarto::quarto_render(here::here("LectureNotes/B05-bootstrap.qmd")) # === bootstrap ===#
