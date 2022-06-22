@@ -29,7 +29,8 @@ quarto::quarto_render(here::here("LectureNotes/B05-bootstrap.qmd")) # === bootst
 
 
 # === Tree-based ===#
-quarto::quarto_render(here::here("LectureNotes/tree-based-ml.qmd"))
+quarto::quarto_render(here::here("LectureNotes/P01-random-forest.qmd"))
+quarto::quarto_render(here::here("LectureNotes/P02-boosted-regression-forest.qmd"))
 
 # === causal-ml ===#
 quarto::quarto_render(here::here("LectureNotes/causal-ml.qmd"))

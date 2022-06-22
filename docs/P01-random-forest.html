@@ -316,7 +316,7 @@ div.csl-indent {
 <span class="header-section-number">6.1</span> Regression tree</h2>
 
 <div class="no-row-height column-margin column-container"><div class="">
-<p>Packages to load for replication.</p>
+<p><strong>Packages to load for replication</strong></p>
 <div class="cell">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com">data.table</a></span><span class="op">)</span>
@@ -676,7 +676,7 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 
 <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">x_1</span>, <span class="va">x_2</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.01232037</code></pre>
+<pre><code>[1] 0.01239905</code></pre>
 </div>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== second case (positively correlated) ===#</span>
 <span class="va">x_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>
@@ -684,7 +684,7 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 
 <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">x_1</span>, <span class="va">x_2</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.4962625</code></pre>
+<pre><code>[1] 0.4956332</code></pre>
 </div>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== third case (negatively correlated) ===#</span>
 <span class="va">x_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>
@@ -692,7 +692,7 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 
 <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">x_1</span>, <span class="va">x_2</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -0.7926396</code></pre>
+<pre><code>[1] -0.806552</code></pre>
 </div>
 </div>
 <div class="cell">

@@ -302,7 +302,7 @@ div.csl-indent {
 <span class="header-section-number">7.1</span> Gradient Boosting</h2>
 
 <div class="no-row-height column-margin column-container"><div class="">
-<p><strong>Packages to load to replication</strong></p>
+<p><strong>Packages to load for replication</strong></p>
 <div class="cell">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com">data.table</a></span><span class="op">)</span>
@@ -483,21 +483,21 @@ r_{i,b} = - \huge[\normalsize\frac{\partial L(y_i, f(x_i))}{\partial f(x_i)}\hug
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== see the MSE history ===#  </span>
 <span class="va">gbm_fit</span><span class="op">$</span><span class="va">cv.error</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  [1] 1.2190779 1.1123001 1.0271897 0.9466099 0.8811160 0.8253980 0.7721033
-  [8] 0.7221442 0.6812098 0.6526217 0.6176795 0.5918802 0.5681528 0.5467629
- [15] 0.5301672 0.5147009 0.4997657 0.4886834 0.4780176 0.4687043 0.4564005
- [22] 0.4477852 0.4424737 0.4361501 0.4292901 0.4244504 0.4216592 0.4206044
- [29] 0.4161974 0.4122046 0.4104307 0.4061102 0.4040143 0.4021606 0.3997074
- [36] 0.3985545 0.3974637 0.3962119 0.3938924 0.3930113 0.3915690 0.3908210
- [43] 0.3892412 0.3879285 0.3861002 0.3848925 0.3832333 0.3828796 0.3804666
- [50] 0.3806760 0.3792973 0.3798032 0.3785231 0.3783431 0.3787325 0.3774673
- [57] 0.3764334 0.3762296 0.3761403 0.3750945 0.3733916 0.3734870 0.3732152
- [64] 0.3727071 0.3716710 0.3713560 0.3704109 0.3711731 0.3716388 0.3704773
- [71] 0.3699890 0.3695567 0.3697547 0.3692163 0.3678025 0.3670705 0.3661951
- [78] 0.3662291 0.3662118 0.3666377 0.3653619 0.3645367 0.3633498 0.3638785
- [85] 0.3632812 0.3630201 0.3614112 0.3619908 0.3626415 0.3622732 0.3623811
- [92] 0.3614646 0.3618733 0.3621664 0.3631263 0.3626033 0.3618557 0.3612868
- [99] 0.3623412 0.3621967</code></pre>
+<pre><code>  [1] 1.2383278 1.1226990 1.0217720 0.9402954 0.8679033 0.8119098 0.7604121
+  [8] 0.7171977 0.6765694 0.6393784 0.6081043 0.5828532 0.5596728 0.5333846
+ [15] 0.5145796 0.4983562 0.4828236 0.4673177 0.4535691 0.4479609 0.4394243
+ [22] 0.4305242 0.4279620 0.4236438 0.4160711 0.4103068 0.4080603 0.4062070
+ [29] 0.4032652 0.3991078 0.3978416 0.3973248 0.3947150 0.3932496 0.3924916
+ [36] 0.3903995 0.3893508 0.3891556 0.3881932 0.3883510 0.3867350 0.3875850
+ [43] 0.3863228 0.3842545 0.3828797 0.3824921 0.3804268 0.3795724 0.3799175
+ [50] 0.3795583 0.3781073 0.3777838 0.3779341 0.3795220 0.3786273 0.3778889
+ [57] 0.3765695 0.3751282 0.3746029 0.3739799 0.3729257 0.3725334 0.3734908
+ [64] 0.3736130 0.3731679 0.3738483 0.3722778 0.3728358 0.3724663 0.3723119
+ [71] 0.3723976 0.3721760 0.3720869 0.3709490 0.3697624 0.3696650 0.3699786
+ [78] 0.3697036 0.3702301 0.3707577 0.3712292 0.3707780 0.3686874 0.3682173
+ [85] 0.3673723 0.3659473 0.3657309 0.3662641 0.3667505 0.3670318 0.3661611
+ [92] 0.3656338 0.3652155 0.3649934 0.3655403 0.3666075 0.3667853 0.3661200
+ [99] 0.3666010 0.3671433</code></pre>
 </div>
 </div>
 <p>You can visualize the CV results using <code><a href="https://rdrr.io/pkg/gbm/man/gbm.perf.html">gbm.perf()</a></code>.</p>
@@ -507,7 +507,7 @@ r_{i,b} = - \huge[\normalsize\frac{\partial L(y_i, f(x_i))}{\partial f(x_i)}\hug
 <p><img src="P02-boosted-regression-forest_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 98</code></pre>
+<pre><code>[1] 94</code></pre>
 </div>
 </div>
 <p>Note that it will tell you what the optimal number of trees is <span style="color:blue"> given </span> the values of the other hyper-parameters (here default values). If you want to tune other parameters as well, you need to program it yourself.</p>
