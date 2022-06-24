@@ -132,12 +132,12 @@ div.csl-indent {
     "search-submit-button-title": "Submit"
   }
 }</script><link href="style.css" rel="stylesheet" type="text/css">
-<!-- Global site tag (gtag.js) - Google Analytics --><script async="" src="https://www.googletagmanager.com/gtag/js?id=3792736425"></script><script>
+<!-- Global site tag (gtag.js) - Google Analytics --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-45VKT2HZSL"></script><script>
   window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
+  function gtag() { dataLayer.push(arguments); }
   gtag('js', new Date());
 
-  gtag('config', '3792736425');
+  gtag('config', 'G-45VKT2HZSL');
 </script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 </head>
 <body class="nav-sidebar floating slimcontent">
@@ -505,21 +505,21 @@ r_{i,b} = - \huge[\normalsize\frac{\partial L(y_i, f(x_i))}{\partial f(x_i)}\hug
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== see the MSE history ===#  </span>
 <span class="va">gbm_fit</span><span class="op">$</span><span class="va">cv.error</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  [1] 1.2214535 1.1078861 1.0167040 0.9327892 0.8658115 0.7992568 0.7461446
-  [8] 0.7048421 0.6716200 0.6373021 0.6074412 0.5753089 0.5512351 0.5359623
- [15] 0.5224519 0.5072109 0.4930284 0.4787130 0.4676956 0.4569767 0.4488299
- [22] 0.4419613 0.4353559 0.4265831 0.4220068 0.4147871 0.4099852 0.4065999
- [29] 0.4051052 0.4034251 0.4033659 0.4006026 0.3991544 0.3981022 0.3949108
- [36] 0.3940094 0.3922412 0.3904849 0.3884241 0.3861765 0.3854742 0.3833819
- [43] 0.3830761 0.3828042 0.3815845 0.3801290 0.3796338 0.3798335 0.3783207
- [50] 0.3763761 0.3756261 0.3765199 0.3747743 0.3730290 0.3716747 0.3705646
- [57] 0.3699135 0.3696476 0.3691735 0.3683478 0.3674640 0.3691360 0.3689170
- [64] 0.3692309 0.3696067 0.3700655 0.3693830 0.3682011 0.3682918 0.3686224
- [71] 0.3677105 0.3672585 0.3670052 0.3663988 0.3663794 0.3660769 0.3659839
- [78] 0.3658506 0.3662832 0.3656583 0.3661607 0.3658734 0.3655626 0.3651000
- [85] 0.3660762 0.3661761 0.3663389 0.3663698 0.3660623 0.3651208 0.3660504
- [92] 0.3653279 0.3656432 0.3639708 0.3624717 0.3625313 0.3619761 0.3622557
- [99] 0.3633067 0.3636934</code></pre>
+<pre><code>  [1] 1.2192685 1.1019341 1.0135007 0.9299477 0.8620604 0.8076936 0.7607022
+  [8] 0.7161817 0.6732476 0.6379772 0.6061855 0.5794042 0.5597671 0.5400480
+ [15] 0.5235648 0.5037308 0.4887715 0.4759608 0.4630025 0.4501975 0.4384379
+ [22] 0.4305112 0.4236263 0.4152798 0.4092745 0.4028396 0.4000152 0.3975382
+ [29] 0.3960277 0.3944913 0.3914480 0.3892675 0.3860803 0.3832158 0.3818236
+ [36] 0.3792990 0.3774374 0.3753477 0.3729566 0.3720547 0.3732248 0.3717881
+ [43] 0.3700012 0.3690969 0.3698981 0.3697320 0.3694576 0.3683745 0.3667434
+ [50] 0.3673605 0.3656048 0.3661001 0.3661341 0.3653736 0.3645468 0.3651414
+ [57] 0.3639921 0.3638617 0.3635981 0.3640853 0.3614628 0.3619863 0.3614204
+ [64] 0.3605797 0.3605722 0.3592594 0.3589600 0.3584162 0.3588906 0.3579578
+ [71] 0.3580855 0.3578420 0.3563726 0.3561626 0.3552290 0.3553979 0.3557340
+ [78] 0.3549836 0.3545966 0.3540274 0.3541736 0.3543495 0.3542435 0.3549671
+ [85] 0.3547083 0.3539301 0.3533350 0.3528380 0.3553390 0.3542254 0.3523205
+ [92] 0.3528195 0.3532481 0.3528978 0.3533992 0.3549893 0.3545315 0.3538091
+ [99] 0.3525130 0.3521909</code></pre>
 </div>
 </div>
 <p>You can visualize the CV results using <code><a href="https://rdrr.io/pkg/gbm/man/gbm.perf.html">gbm.perf()</a></code>.</p>
@@ -529,7 +529,7 @@ r_{i,b} = - \huge[\normalsize\frac{\partial L(y_i, f(x_i))}{\partial f(x_i)}\hug
 <p><img src="P02-boosted-regression-forest_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 97</code></pre>
+<pre><code>[1] 100</code></pre>
 </div>
 </div>
 <p>Note that it will tell you what the optimal number of trees is <span style="color:blue"> given </span> the values of the other hyper-parameters (here default values). If you want to tune other parameters as well, you need to program it yourself.</p>
