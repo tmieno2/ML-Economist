@@ -201,7 +201,7 @@ This translate into the following fitted curve.
 ```{r}
 #| code-fold: true
 data.table(
-  variable = unique(basis_data$variable),
+  variable = unique(basis_data$variable)[-1],
   coef = gam_fit$coefficient[-1]
 ) %>% 
 .[basis_data, on = "variable"] %>% 

@@ -47,6 +47,10 @@ quarto::quarto_render(here::here("LectureNotes/scikitlearn.qmd"))
 # === linear-nonpar ===#
 quarto::quarto_render(here::here("LectureNotes/linear-nonparametric-efficiency.qmd"))
 
+#/*=================================================*/
+#' # Extensions
+#/*=================================================*/
+quarto::quarto_render(here::here("LectureNotes/E01-spatial-cv.qmd"))
 
 #/*=================================================*/
 #' # Appendix

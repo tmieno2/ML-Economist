@@ -4,7 +4,7 @@ Monte Carlo (MC) simulation is an important tool to test econometric hypothesis 
 
 It is important to first recognize that it is <span style="color:blue"> impossible </span> to test econometric theory using real-wold data. That is simply because you never know the underlying data generating process of real-world data. In MC simulations, we generate data according to the data generating process we specify. This allows us to check if the econometric outcome is consistent with the data generating process or not. This is the reason every journal article with newly developed statistical procedures published in an econometric journal has MC simulations to check the new econometric theories are indeed correct (e.g., whether the new estimator is unbiased or not).
 
-Here, we learn how to program MC simulations using a very simple econometric example. Specifically, suppose you are interested in checking what happens to OLS estimators if $E[u|x]=0$ (the error term and $x$ are not correlated) is violated in estimating $y = \alpha + \beta x + u$.
+Here, we learn how to program MC simulations using very simple econometric examples.
 
 ```{r}
 #| include: false
@@ -55,7 +55,7 @@ If you run the code on your computer, then you would get exactly the same set of
 + Step 3: Repeat Steps 1 and 2 many times (e.g., 1000)
 + Step 4: Compare your estimates with the true parameter specified in Step 1 
 
-Going though Steps 1 and 2 only once is not going to give you an idea of how the estimator of interest performs. So, you repeat Steps 1 and 2 many times to what you can expect form the estimator on average. 
+Going though Steps 1 and 2 only once is not going to give you an idea of how the estimator of interest performs. So, you repeat Steps 1 and 2 many times to see what you can expect form the estimator on average. 
 
 Let's use a very simple example to better understand the MC steps. The statistical question of interest here is whether sample mean is an unbiased estimator of the expected value: $E[\frac{1}{n}\sum_{i=1}^n x_i] = E[x]$, where $x_i$ is an independent random draw from the same distribution.
 
@@ -63,7 +63,7 @@ Let's use a very simple example to better understand the MC steps. The statistic
 Of course, $x_i$ does not have to be independent. But, just making things as simple as possible.
 :::
 
-Here is Steps 1.
+Here is Step 1.
 
 ```{r }
 x <- runif(100) 

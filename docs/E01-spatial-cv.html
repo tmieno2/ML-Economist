@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-0.9.563">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Introduction to Machine Learning for Economists - 9&nbsp; Spatial Cross-validation</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./A01-mc-simulation.html" rel="next">
+<link href="./extensions.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+</head>
+<body class="nav-sidebar floating slimcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }"><div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">
+<span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span>
+</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Introduction to Machine Learning for Economists</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/tmieno2/ML-Economist" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+    <a href="" title="Share" id="sidebar-tool-dropdown-0" class="sidebar-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-share"></i></a>
+    <ul class="dropdown-menu" aria-labelledby="sidebar-tool-dropdown-0">
+<li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=%7Curl%7C">
+            <i class="bi bi-bi-twitter pe-1"></i>
+          Twitter
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=%7Curl%7C">
+            <i class="bi bi-bi-facebook pe-1"></i>
+          Facebook
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://www.linkedin.com/sharing/share-offsite/?url=%7Curl%7C">
+            <i class="bi bi-bi-linkedin pe-1"></i>
+          LinkedIn
+          </a>
+        </li>
+    </ul>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Welcome</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">Preface: Prediction v.s. Causal Inference</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="./basics.html" class="sidebar-item-text sidebar-link">Basics</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./B01-nonlinear.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Non-linear function estimation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./B02-bias-variance-tradeoff.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Bias-variance Trade-off</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./B03-cross-validation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Cross-validation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./B04-regularization.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Regression Shrinkage Methods</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./B05-bootstrap.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Bootstrap</span></a>
+  </div>
+</li>
+    </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="./prediction-ml.html" class="sidebar-item-text sidebar-link">Prediction ML</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./P01-random-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Random Forest</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./P02-boosted-regression-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Boosted Regression Forest</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./P03-xgb.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Extreme Gradient Boosting</span></a>
+  </div>
+</li>
+    </ul>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./causal-ml.html" class="sidebar-item-text sidebar-link">Causal Machine Learning (CML) Methods</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="./extensions.html" class="sidebar-item-text sidebar-link">Extensions</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./E01-spatial-cv.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></a>
+  </div>
+</li>
+    </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">Appendices</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./A01-mc-simulation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Monte Carlo (MC) Simulation</span></a>
+  </div>
+</li>
+    </ul>
+</li>
+    </ul>
+</div>
+</nav><!-- margin-sidebar --><div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc"><h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+<li><a href="#hyper-parameter-tuning" id="toc-hyper-parameter-tuning" class="nav-link active" data-scroll-target="#hyper-parameter-tuning"> <span class="header-section-number">9.1</span> Hyper-parameter tuning</a></li>
+  </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/E01-spatial-cv.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title d-none d-lg-block">
+<span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span>
+</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header><p>K-fold and repeated K-fold cross-validation methods can under-estimate test MSE (that is how good the trained model is in predicting <span class="math inline">\(y\)</span> in a new dataset) when the observations in the train data are not independent with each other. A typical example would be spatial correlation of the error term. In many applications including environmental and agricultural events, spatially correlated error is commonly observed. In order to combat the problem of test MSE underestimation by regular K-fold cross-validation (hereafter, simply KCV), you can use spatial K-fold cross-validation (SKCV) instead.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><strong>Packages to load for replication</strong></p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/spatialsample">spatialsample</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com">data.table</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com">patchwork</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">mgcv</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">parallel</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-spatial/gstat/">gstat</a></span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div></div><div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Goals of this section</strong></p>
+<ul>
+<li>Examine the consequence of using KCV when the data are spatially correlated</li>
+<li>Understand how SKCV is conducted and how to implement it in R</li>
+<li>Examine the difference in the estimate of MSEs from KCV and spatial KCV</li>
+<li>Check if the optimal hyper-parameters suggested by KCV and SKCV are any different</li>
+</ul>
+</div>
+</div>
+<p>For this section, we will consider the following data generating process.</p>
+<p><span class="math display">\[
+\begin{aligned}
+y = \alpha + \beta_1 x - 0.5 \beta_2 x^2 + u
+\end{aligned}
+\]</span></p>
+<p>where <span class="math inline">\(x\)</span> and <span class="math inline">\(u\)</span> are spatially correlated (which makes <span class="math inline">\(y\)</span> spatially correlated).</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><strong>Code to create the dataset</strong></p>
+<div class="cell">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== create grids (on top of IL state border) ===#</span>
+<span class="co"># any spatial object will do. IL state border is picked</span>
+<span class="co"># just because it is easy to get without reading a shapefile</span>
+
+<span class="va">grids_il</span> <span class="op">&lt;-</span>
+  <span class="fu">tigris</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tigris/man/counties.html">counties</a></span><span class="op">(</span>
+    state <span class="op">=</span> <span class="st">"IL"</span>,
+    progress_bar <span class="op">=</span> <span class="cn">FALSE</span>
+  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_make_grid.html">st_make_grid</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="va">id</span> <span class="op">:=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>geometry <span class="op">=</span> <span class="va">x</span><span class="op">)</span>
+
+<span class="co">#=== set up a model ===#</span>
+<span class="va">g_temp</span> <span class="op">&lt;-</span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/gstat/man/gstat.html">gstat</a></span><span class="op">(</span>
+    formula <span class="op">=</span> <span class="va">z</span> <span class="op">~</span> <span class="fl">1</span>,
+    locations <span class="op">=</span> <span class="op">~</span> <span class="va">X</span> <span class="op">+</span> <span class="va">Y</span>,
+    beta <span class="op">=</span> <span class="fl">0</span>,
+    dummy <span class="op">=</span> <span class="cn">T</span>,
+    model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/gstat/man/vgm.html">vgm</a></span><span class="op">(</span>
+      psill <span class="op">=</span> <span class="fl">12</span>,
+      range <span class="op">=</span> <span class="fl">10</span>,
+      nugget <span class="op">=</span> <span class="fl">0</span>,
+      model <span class="op">=</span> <span class="st">"Sph"</span> 
+    <span class="op">)</span>,
+    nmax <span class="op">=</span> <span class="fl">50</span>
+  <span class="op">)</span>
+
+<span class="co">#=== get coordinates ===#</span>
+<span class="va">xy</span> <span class="op">&lt;-</span> 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_coordinates.html">st_coordinates</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_centroid</a></span><span class="op">(</span><span class="va">grids_il</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/data.table.html">data.table</a></span><span class="op">(</span><span class="op">)</span>
+
+<span class="co">#=== generate error and x ===#</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">24034</span><span class="op">)</span>
+<span class="va">error</span> <span class="op">&lt;-</span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/gstat/man/predict.gstat.html">predict</a></span><span class="op">(</span><span class="va">g_temp</span>, newdata <span class="op">=</span> <span class="va">xy</span>, nsim <span class="op">=</span> <span class="fl">1</span>, debug.level <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/data.table.html">data.table</a></span><span class="op">(</span><span class="op">)</span>
+
+<span class="va">var1</span> <span class="op">&lt;-</span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/gstat/man/predict.gstat.html">predict</a></span><span class="op">(</span><span class="va">g_temp</span>, newdata <span class="op">=</span> <span class="va">xy</span>, nsim <span class="op">=</span> <span class="fl">1</span>, debug.level <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/data.table.html">data.table</a></span><span class="op">(</span><span class="op">)</span>
+
+<span class="co">#=== assign the generated values to the data ===#</span>
+<span class="va">data</span> <span class="op">&lt;-</span> 
+  <span class="va">grids_il</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>
+    e <span class="op">=</span> <span class="va">error</span><span class="op">[</span>, <span class="va">sim1</span><span class="op">]</span>, 
+    x <span class="op">=</span> <span class="va">var1</span><span class="op">[</span>, <span class="va">sim1</span><span class="op">]</span>,
+    y_det <span class="op">=</span> <span class="va">x</span> <span class="op">-</span> <span class="va">x</span><span class="op">^</span><span class="fl">2</span>,
+    y <span class="op">=</span> <span class="va">y_det</span> <span class="op">+</span> <span class="va">e</span>
+  <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div></div><p>Here is the data we are going to work with (see the side note for the code to generate the data):</p>
+<div class="cell">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 2500 features and 5 fields
+Geometry type: POLYGON
+Dimension:     XY
+Bounding box:  xmin: -91.51308 ymin: 36.9703 xmax: -87.01993 ymax: 42.50848
+Geodetic CRS:  NAD83
+First 10 features:
+   id                       geometry        e          x      y_det        y
+1   1 POLYGON ((-91.51308 36.9703... 7.019440  1.0553782 -0.0584449 6.960995
+2   2 POLYGON ((-91.42322 36.9703... 7.338642  0.3638512  0.2314635 7.570106
+3   3 POLYGON ((-91.33335 36.9703... 6.916762  0.5415847  0.2482707 7.165033
+4   4 POLYGON ((-91.24349 36.9703... 6.616489 -0.2135838 -0.2592019 6.357287
+5   5 POLYGON ((-91.15363 36.9703... 6.545079 -0.2505120 -0.3132682 6.231811
+6   6 POLYGON ((-91.06376 36.9703... 5.694419 -0.4592597 -0.6701791 5.024240
+7   7 POLYGON ((-90.9739 36.9703,... 5.315004 -0.2554948 -0.3207723 4.994232
+8   8 POLYGON ((-90.88404 36.9703... 5.675372  0.4401116  0.2464134 5.921785
+9   9 POLYGON ((-90.79418 36.9703... 5.690427  0.2916046  0.2065713 5.896998
+10 10 POLYGON ((-90.70431 36.9703... 5.728366  0.7202707  0.2014808 5.929847</code></pre>
+</div>
+</div>
+<p>We have three main variables, <code>y</code> (dependent variable), <code>x</code> (explanatory variable), and <code>e</code> (error). <a href="#fig-viz">Figure&nbsp;<span>9.1</span></a> shows how they are spatially distributed. It also shows that all of them are spatially positively correlated.</p>
+<div class="cell">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">g_error</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">e</span><span class="op">)</span>, color <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html">scale_fill_viridis_c</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_void</a></span><span class="op">(</span><span class="op">)</span>
+
+<span class="va">g_x</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">x</span><span class="op">)</span>, color <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html">scale_fill_viridis_c</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_void</a></span><span class="op">(</span><span class="op">)</span>
+
+<span class="va">g_y</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">y</span><span class="op">)</span>, color <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html">scale_fill_viridis_c</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_void</a></span><span class="op">(</span><span class="op">)</span>
+
+<span class="va">g_y</span> <span class="op">|</span> <span class="va">g_x</span> <span class="op">|</span> <span class="va">g_error</span>  </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-viz" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="E01-spatial-cv_files/figure-html/fig-viz-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 9.1: Visualization of the data</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We are going to use <code><a href="https://rdrr.io/pkg/mgcv/man/gam.html">gam()</a></code> with <code>k</code> <span class="math inline">\(= 30\)</span> and <code>sp</code> <span class="math inline">\(= 0\)</span> as the model in conducting KCV and spatial KCV. Let’s first create folds for KCV and SKCV. First, here is KCV folds.</p>
+<div class="cell" data-hash="E01-spatial-cv_cache/html/unnamed-chunk-11_93a0a2e9757d078ef90d53ac6a2bcf54">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">93043</span><span class="op">)</span>
+<span class="op">(</span>
+<span class="va">kcv_folds</span> <span class="op">&lt;-</span> 
+  <span class="fu">rsample</span><span class="fu">::</span><span class="fu"><a href="https://rsample.tidymodels.org/reference/vfold_cv.html">vfold_cv</a></span><span class="op">(</span><span class="va">data</span>, v <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="va">type</span> <span class="op">:=</span> <span class="st">"KCV"</span><span class="op">)</span>
+<span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#  6-fold cross-validation 
+# A tibble: 6 × 3
+  splits             id    type 
+  &lt;list&gt;             &lt;chr&gt; &lt;chr&gt;
+1 &lt;split [2083/417]&gt; Fold1 KCV  
+2 &lt;split [2083/417]&gt; Fold2 KCV  
+3 &lt;split [2083/417]&gt; Fold3 KCV  
+4 &lt;split [2083/417]&gt; Fold4 KCV  
+5 &lt;split [2084/416]&gt; Fold5 KCV  
+6 &lt;split [2084/416]&gt; Fold6 KCV  </code></pre>
+</div>
+</div>
+<p><a href="#fig-kcv">Figure&nbsp;<span>9.2</span></a> is the visualization of the spatial distribution of training and test datasets for each of the five folds for KCV.</p>
+<div class="cell">
+<details><summary>Code</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">plot_kcv_data</span> <span class="op">&lt;-</span>
+  <span class="va">kcv_folds</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rowwise.html">rowwise</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>folds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+    <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/rbindlist.html">rbind</a></span><span class="op">(</span>
+      <span class="fu"><a href="https://rsample.tidymodels.org/reference/as.data.frame.rsplit.html">analysis</a></span><span class="op">(</span><span class="va">splits</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"training"</span><span class="op">)</span>,
+      <span class="fu"><a href="https://rsample.tidymodels.org/reference/as.data.frame.rsplit.html">assessment</a></span><span class="op">(</span><span class="va">splits</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span>
+    <span class="op">)</span>
+  <span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">folds</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span><span class="op">)</span>
+
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">plot_kcv_data</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">type</span><span class="op">)</span>, color <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="va">id</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_void</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-kcv" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="E01-spatial-cv_files/figure-html/fig-kcv-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 9.2: Spatial distribution of train and test data points by fold</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Now, let’s create a five spatially clustered folds using the <code>spatialsample</code> package for SKCV.</p>
+<div class="cell" data-hash="E01-spatial-cv_cache/html/unnamed-chunk-14_81a3bd01e539debdcf1757e81e825fe6">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">2493</span><span class="op">)</span>
+<span class="op">(</span>
+<span class="va">skcv_folds</span> <span class="op">&lt;-</span> 
+  <span class="fu"><a href="https://spatialsample.tidymodels.org/reference/spatial_clustering_cv.html">spatial_clustering_cv</a></span><span class="op">(</span><span class="va">data</span>, v <span class="op">=</span> <span class="fl">6</span>, cluster_function <span class="op">=</span> <span class="st">"hclust"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="va">type</span> <span class="op">:=</span> <span class="st">"SKCV"</span><span class="op">)</span>
+<span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#  6-fold spatial cross-validation 
+# A tibble: 6 × 3
+  splits             id    type 
+  &lt;list&gt;             &lt;chr&gt; &lt;chr&gt;
+1 &lt;split [1861/639]&gt; Fold1 SKCV 
+2 &lt;split [2231/269]&gt; Fold2 SKCV 
+3 &lt;split [1968/532]&gt; Fold3 SKCV 
+4 &lt;split [2206/294]&gt; Fold4 SKCV 
+5 &lt;split [2260/240]&gt; Fold5 SKCV 
+6 &lt;split [1974/526]&gt; Fold6 SKCV </code></pre>
+</div>
+</div>
+<p><a href="#fig-sp-kcv">Figure&nbsp;<span>9.3</span></a> presents the spatial distribution of training and test datasets for each of the five folds for SKCV.</p>
+<div class="cell">
+<details><summary>Code</summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">plot_kcv_data</span> <span class="op">&lt;-</span>
+  <span class="va">skcv_folds</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rowwise.html">rowwise</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>folds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+    <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/rbindlist.html">rbind</a></span><span class="op">(</span>
+      <span class="fu"><a href="https://rsample.tidymodels.org/reference/as.data.frame.rsplit.html">analysis</a></span><span class="op">(</span><span class="va">splits</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"training"</span><span class="op">)</span>,
+      <span class="fu"><a href="https://rsample.tidymodels.org/reference/as.data.frame.rsplit.html">assessment</a></span><span class="op">(</span><span class="va">splits</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span>
+    <span class="op">)</span>
+  <span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">folds</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span><span class="op">)</span>
+
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">plot_kcv_data</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">type</span><span class="op">)</span>, color <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="va">id</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_void</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-sp-kcv" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="E01-spatial-cv_files/figure-html/fig-sp-kcv-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 9.3: Spatial distribution of spatially clustered train and test data points by fold</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Let’s now implement KCV and SKCV. Since we observe the true generating process, we can calculate how good the fitted curve is compared to true <span class="math inline">\(E[y|X]\)</span> in addition to observed <span class="math inline">\(y\)</span> for the left-out samples in each fold.</p>
+<div class="cell" data-hash="E01-spatial-cv_cache/html/unnamed-chunk-17_6ac351bae12d045549bb8ce21e36c581">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="op">(</span>
+<span class="va">cv_results</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/rbindlist.html">rbind</a></span><span class="op">(</span><span class="va">kcv_folds</span>, <span class="va">skcv_folds</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="co">#=== make it possible to apply function row by row ===#</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rowwise.html">rowwise</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="co">#=== train the model ===#</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>gam_fit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+    <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/gam.html">gam</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/s.html">s</a></span><span class="op">(</span><span class="va">x</span>, k <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>, data <span class="op">=</span> <span class="fu"><a href="https://rsample.tidymodels.org/reference/as.data.frame.rsplit.html">analysis</a></span><span class="op">(</span><span class="va">splits</span><span class="op">)</span><span class="op">)</span>
+  <span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="co">#=== get mse ===#</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>mse_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+    <span class="fu"><a href="https://rsample.tidymodels.org/reference/as.data.frame.rsplit.html">assessment</a></span><span class="op">(</span><span class="va">splits</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/data.table.html">data.table</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+    <span class="va">.</span><span class="op">[</span>, <span class="va">y_hat</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/pkg/gstat/man/predict.gstat.html">predict</a></span><span class="op">(</span><span class="va">gam_fit</span>, newdata <span class="op">=</span> <span class="va">.</span><span class="op">)</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+    <span class="va">.</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span>
+      mse_obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">y</span> <span class="op">-</span> <span class="va">y_hat</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>, <span class="co"># MSE</span>
+      mse_true <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">y_det</span> <span class="op">-</span> <span class="va">y_hat</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="co"># deviation from E[y|x]</span>
+    <span class="op">)</span><span class="op">]</span>
+  <span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">type</span>, <span class="va">mse_data</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/data.table.html">data.table</a></span><span class="op">(</span><span class="op">)</span>
+<span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: `cols` is now required when using unnest().
+Please use `cols = c(mse_data)`</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       id type  mse_obs mse_true
+ 1: Fold1  KCV 2.625128 6.220206
+ 2: Fold2  KCV 2.626409 6.018337
+ 3: Fold3  KCV 2.737267 6.048986
+ 4: Fold4  KCV 2.165378 6.022577
+ 5: Fold5  KCV 2.577193 6.071233
+ 6: Fold6  KCV 2.491927 6.163692
+ 7: Fold1 SKCV 1.546412 5.124519
+ 8: Fold2 SKCV 1.627511 5.086778
+ 9: Fold3 SKCV 2.075309 8.094507
+10: Fold4 SKCV 2.564556 6.308404
+11: Fold5 SKCV 8.237099 4.688359
+12: Fold6 SKCV 3.905704 6.441366</code></pre>
+</div>
+</div>
+<p>You can see that MSE values (<code>mse_obs</code>) are mostly greater and also more variable for SKCV. By averaging MSE over folds by CV type,</p>
+<div class="cell">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">cv_results</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span>mse_obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">mse_obs</span><span class="op">)</span><span class="op">)</span>, by <span class="op">=</span> <span class="va">type</span><span class="op">]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   type  mse_obs
+1:  KCV 2.537217
+2: SKCV 3.326099</code></pre>
+</div>
+</div>
+<p>So, indeed KCV provides lower estimate of test MSE than SKCV. Now, it is important to recognize the fundamental difference in what is measured by KCV and SKCV. KCV measures the accuracy of the trained model applied to the new data points that are located inside the area where the train data covers geographically. SKCV, on the other hand, measures the accuracy of the trained model applied to the new data points that are <span style="color:blue"> outside </span> the area where the train data covers geographically. In other words, it measure the modeling accuracy when the trained model is applied to a new region. So, KCV does overstate the accuracy of the model if your interest is applying the model to a new region.</p>
+<div class="cell">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">cv_results</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span>mse_true <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">mse_true</span><span class="op">)</span><span class="op">)</span>, by <span class="op">=</span> <span class="va">type</span><span class="op">]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   type mse_true
+1:  KCV 6.090839
+2: SKCV 5.957322</code></pre>
+</div>
+</div>
+<section id="hyper-parameter-tuning" class="level2" data-number="9.1"><h2 data-number="9.1" class="anchored" data-anchor-id="hyper-parameter-tuning">
+<span class="header-section-number">9.1</span> Hyper-parameter tuning</h2>
+<p>Now, let’s see whether KCV and SKCV lead to different tuning results using <code><a href="https://rdrr.io/pkg/mgcv/man/gam.html">gam()</a></code>. Here, we fix <code>k</code> at <span class="math inline">\(30\)</span> and vary <code>sp</code> to find the best <code>sp</code> value. The following function takes an <code>sp</code> value and return MSE values from both KCV and SKCV.</p>
+<div class="cell">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">get_mse</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">sp</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">cv_results</span> <span class="op">&lt;-</span>
+    <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/rbindlist.html">rbind</a></span><span class="op">(</span><span class="va">kcv_folds</span>, <span class="va">skcv_folds</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+    <span class="co">#=== make it possible to apply function row by row ===#</span>
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rowwise.html">rowwise</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+    <span class="co">#=== train the model ===#</span>
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>gam_fit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+      <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/gam.html">gam</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/s.html">s</a></span><span class="op">(</span><span class="va">x</span>, k <span class="op">=</span> <span class="fl">30</span>, sp <span class="op">=</span> <span class="va">sp</span><span class="op">)</span>, data <span class="op">=</span> <span class="fu"><a href="https://rsample.tidymodels.org/reference/as.data.frame.rsplit.html">analysis</a></span><span class="op">(</span><span class="va">splits</span><span class="op">)</span><span class="op">)</span>
+    <span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+    <span class="co">#=== get mse ===#</span>
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>mse_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+      <span class="fu"><a href="https://rsample.tidymodels.org/reference/as.data.frame.rsplit.html">assessment</a></span><span class="op">(</span><span class="va">splits</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+      <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/data.table.html">data.table</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+      <span class="va">.</span><span class="op">[</span>, <span class="va">y_hat</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/pkg/gstat/man/predict.gstat.html">predict</a></span><span class="op">(</span><span class="va">gam_fit</span>, newdata <span class="op">=</span> <span class="va">.</span><span class="op">)</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+      <span class="va">.</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span>
+        mse_obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">y</span> <span class="op">-</span> <span class="va">y_hat</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>, <span class="co"># MSE</span>
+        mse_true <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">y_det</span> <span class="op">-</span> <span class="va">y_hat</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="co"># deviation from E[y|x]</span>
+      <span class="op">)</span><span class="op">]</span>
+    <span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">type</span>, <span class="va">mse_data</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/data.table.html">data.table</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+    <span class="va">.</span><span class="op">[</span>, <span class="va">sp_v</span> <span class="op">:=</span> <span class="va">sp</span><span class="op">]</span>
+
+  <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">cv_results</span><span class="op">)</span>
+
+<span class="op">}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Here is an example at <code>sp</code> <span class="math inline">\(= 0.5\)</span>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu">get_mse</span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span><span class="op">[</span><span class="op">]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: `cols` is now required when using unnest().
+Please use `cols = c(mse_data)`</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       id type   mse_obs  mse_true sp_v
+ 1: Fold1  KCV 2.6107678  6.213120  0.5
+ 2: Fold2  KCV 2.6116715  6.039916  0.5
+ 3: Fold3  KCV 2.7443189  6.084217  0.5
+ 4: Fold4  KCV 2.1724188  6.040122  0.5
+ 5: Fold5  KCV 2.6088837  6.074788  0.5
+ 6: Fold6  KCV 2.4559528  6.147874  0.5
+ 7: Fold1 SKCV 4.2759947  6.045903  0.5
+ 8: Fold2 SKCV 1.4296273  7.991988  0.5
+ 9: Fold3 SKCV 1.6658406  8.524963  0.5
+10: Fold4 SKCV 0.9765504  7.309499  0.5
+11: Fold5 SKCV 1.7216495 11.168836  0.5
+12: Fold6 SKCV 1.1060965  8.363119  0.5</code></pre>
+</div>
+</div>
+<p>Let’s try <code>sp</code> = 0, 0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2.</p>
+<div class="cell">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">cv_results</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="https://rdrr.io/r/parallel/mclapply.html">mclapply</a></span><span class="op">(</span>
+    <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, length <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,
+    <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">get_mse</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>,
+    mc.cores <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html">detectCores</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">2</span>
+  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/rbindlist.html">rbindlist</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Panel (a) of <a href="#fig-mse-tune">Figure&nbsp;<span>9.4</span></a> plots MSE against the value of <code>sp</code> for KCV and SKCV. As you can see both of the suggested 0.2 as the MSE-minimizing value of <code>sp</code>. Panel (b) of <a href="#fig-mse-tune">Figure&nbsp;<span>9.4</span></a> shows the squared deviations from <span class="math inline">\(E[y|x]\)</span> as a function of <code>sp</code>, which tells us what value of <code>sp</code> would result in the curve that is the closest to <span class="math inline">\(E[y|x]\)</span>, the quantity of interest. Both KCV and SKCV suggest that <code>sp</code> value of 0.2 is the best. This means that both KCV and SKCV based on train data successfully identified the optimal value of <code>sp</code>. Remember that we do not really care about prediction accuracy. That is not our ultimate goal. Using KCV instead of SKCV is likely to result in a more optimistic view of how good the model actually is as we saw earlier. However, the purpose of cross-validation is tuning, but not trying to measure the accuracy of our trained model (at least for those who do not care about prediction itself).</p>
+<div>
+<details><summary>Code</summary><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">cv_plot_data</span> <span class="op">&lt;-</span> 
+  <span class="va">cv_results</span><span class="op">[</span>
+    , 
+    <span class="fu">.</span><span class="op">(</span>mse_obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">mse_obs</span><span class="op">)</span>, mse_true <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">mse_true</span><span class="op">)</span><span class="op">)</span>, 
+    by <span class="op">=</span> <span class="fu">.</span><span class="op">(</span><span class="va">type</span>, <span class="va">sp_v</span><span class="op">)</span>
+  <span class="op">]</span>
+
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">cv_plot_data</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">mse_obs</span>, x <span class="op">=</span> <span class="va">sp_v</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">mse_obs</span>, x <span class="op">=</span> <span class="va">sp_v</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html">facet_grid</a></span><span class="op">(</span><span class="va">type</span> <span class="op">~</span> <span class="va">.</span>, scale <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"MSE"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">"sp"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> 
+
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">cv_plot_data</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">mse_true</span>, x <span class="op">=</span> <span class="va">sp_v</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">mse_true</span>, x <span class="op">=</span> <span class="va">sp_v</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html">facet_grid</a></span><span class="op">(</span><span class="va">type</span> <span class="op">~</span> <span class="va">.</span>, scale <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"Square Deviation from E[y|x]"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">"sp"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div id="fig-mse-tune" class="cell quarto-layout-panel">
+<figure class="figure"><div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 100.0%;justify-content: center;">
+<div id="fig-mse-tune-1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="E01-spatial-cv_files/figure-html/fig-mse-tune-1.png" class="img-fluid figure-img" data-ref-parent="fig-mse-tune" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">(a) MSE</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 100.0%;justify-content: center;">
+<div id="fig-mse-tune-2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="E01-spatial-cv_files/figure-html/fig-mse-tune-2.png" class="img-fluid figure-img" data-ref-parent="fig-mse-tune" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">(b) Square Deviation from E[y|x]</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 9.4: MSE and squared deviation from E[y|x] by KCV and SKCV</figcaption><p></p>
+</figure>
+</div>
+</div>
+
+
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./extensions.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Extensions</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./A01-mc-simulation.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Monte Carlo (MC) Simulation</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

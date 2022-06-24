@@ -74,11 +74,13 @@ $$ {#eq-lagrangian-lasso}
 
 , where $\lambda$ is the penalization parameter.
 
-Alternatively, we can also write the optimization problem as the constrained minimization problem as follows^[You can consider @lagrangian-lasso the Lagrangian formulation of @eq-constrained-lasso.]:
+Alternatively, we can also write the optimization problem as the constrained minimization problem as follows^[You can consider @eq-lagrangian-lasso the Lagrangian formulation of @eq-constrained-lasso.]:
 
 $$
-Min_{\beta} \sum_{i=1}^N (y_i - X_i\beta)^2 \\
-\mbox{subject to } \sum_{k=1}^K |\beta_k| < t
+\begin{aligned}
+Min_{\beta} & \sum_{i=1}^N (y_i - X_i\beta)^2 \\
+\mbox{s.t. } & \sum_{k=1}^K |\beta_k| < t
+\end{aligned}
 $$ {#eq-constrained-lasso}
 
 A graphical representation of the minimization problem is highly illustrative on what Lasso does. Consider the following data generating process:
@@ -91,8 +93,8 @@ When $t$ is set to 1 in @eq-constrained-lasso, Lasso tries to estimate the coeff
 
 $$
 \begin{align}
-Min_{\beta} \sum_{i=1}^N (y_i - \beta_1 x_1 - \beta_2 x_2)^2 \\
-\mbox{subject to } \sum_{k=1}^K |\beta_k| < \textcolor{red}{1}    
+Min_{\beta} & \sum_{i=1}^N (y_i - \beta_1 x_1 - \beta_2 x_2)^2 \\
+\mbox{s.t. } & \sum_{k=1}^K |\beta_k| < \textcolor{red}{1}    
 \end{align}
 $$
 
@@ -111,7 +113,8 @@ ggplot() +
   geom_segment(aes(x = -1, y = 0, xend = 0, yend = -1), color = "red", size = 1.2) +
   coord_equal() +
   xlab("beta_1") +
-  ylab("beta_2")
+  ylab("beta_2") +
+  theme_minimal()
 ``` 
 
 Now, let's calculate what value the objective function takes at different values of $\beta_1$ and $\beta_2$. 
@@ -137,7 +140,7 @@ Without the constraint, here is the combination of $\beta_1$ and $\beta_2$ that 
 
 ```{r}
 (
-ols_coefs <- lm(y ~ x_1 + x_2, data = data)$coefficient
+ols_coefs_1 <- lm(y ~ x_1 + x_2, data = data)$coefficient
 )
 ```
 
@@ -192,7 +195,7 @@ sse_all <-
 
 #=== assign the calculated sse values as a variable ===#
 (
-beta_table[, sse := sse_all]
+beta_table[, sse_1 := sse_all]
 )
 ```
 
@@ -204,11 +207,11 @@ Here is the contour map of SSE as a function of $\beta_1$ and $\beta_2$. The sol
 ggplot() +
   stat_contour(
     data = beta_table, 
-    aes(x = beta_1, y = beta_2, z = sse, color = ..level..),
+    aes(x = beta_1, y = beta_2, z = sse_1, color = ..level..),
     size = 1.2,
     breaks = 
       round(
-        quantile(beta_table$sse, seq(0, 1, 0.05)),
+        quantile(beta_table$sse_1, seq(0, 1, 0.05)),
         0
       )
     ) +
@@ -221,7 +224,7 @@ ggplot() +
   geom_segment(aes(x = -1, y = 0, xend = 0, yend = -1), color = "red", size = 1.2) +
   #=== OLS point estimates (solutions without the constraint) ===#
   geom_point(
-    aes(x = ols_coefs["x_1"], y = ols_coefs["x_2"]),
+    aes(x = ols_coefs_1["x_1"], y = ols_coefs_1["x_2"]),
     color = "red",
     size = 3
   ) +
@@ -230,7 +233,8 @@ ggplot() +
     color = "yellow",
     size = 3
   ) +
-  coord_equal()
+  coord_equal() +
+  theme_minimal()
 
 ```
 
@@ -252,7 +256,7 @@ data <-
     x_2 = x_2
   )
 
-ols_coefs <- lm(y ~ x_1 + x_2, data = data)$coefficient
+ols_coefs_2 <- lm(y ~ x_1 + x_2, data = data)$coefficient
 
 #=== calculate sse for each row of beta_table ===#
 sse_all <-
@@ -271,17 +275,17 @@ sse_all <-
   unlist()
 
 #=== assign the calculated sse values as a variable ===#
-beta_table[, sse := sse_all]
+beta_table[, sse_2 := sse_all]
 
 #=== visualize ===#
 ggplot() +
   stat_contour(
     data = beta_table, 
-    aes(x = beta_1, y = beta_2, z = sse, color = ..level..),
+    aes(x = beta_1, y = beta_2, z = sse_2, color = ..level..),
     size = 1.2,
     breaks = 
       round(
-        quantile(beta_table$sse, seq(0, 1, 0.05)),
+        quantile(beta_table$sse_2, seq(0, 1, 0.05)),
         0
       )
     ) +
@@ -294,7 +298,7 @@ ggplot() +
   geom_segment(aes(x = -1, y = 0, xend = 0, yend = -1), color = "red", size = 1.2) +
   #=== OLS point estimates (solutions without the constraint) ===#
   geom_point(
-    aes(x = ols_coefs["x_1"], y = ols_coefs["x_2"]),
+    aes(x = ols_coefs_2["x_1"], y = ols_coefs_2["x_2"]),
     color = "red",
     size = 3
   ) +
@@ -303,15 +307,134 @@ ggplot() +
     color = "yellow",
     size = 3
   ) +
-  coord_equal()
+  coord_equal() +
+  theme_minimal()
 ```
 
 In this case, the solution would be (very close to) $\{\beta_1 = 0.5, \beta_2 = 0.5\}$, with neither of them sent to zero. This is because $x_1$ and $x_2$ are equally important in explaining $y$.
 
+## Ridge and Elastic Net regression
+
+Ridge regression uses L2 norm for regularization and solves the following minimization problem:
+
+$$
+\begin{aligned}
+Min_{\beta} & \sum_{i=1}^N (y_i - X_i\beta)^2 \\
+\mbox{s.t. } & \sum_{k=1}^K \beta_k^2 < t
+\end{aligned}
+$$ {#eq-constrained-ridge}
+
+@fig-ridge-min shows the constraint when $t=1$ (red circle) and the contour of SSE for the first model we considered ($E[y|x] = 2 \times x_1 + 0.2 \times x_2$). Unlike Lasso, the constraint is a circle (since it is two-dimensional), and you can expect that Ridge coefficient estimates do not generally become 0. Therefore, Ridge regression cannot be used for variable selection. 
+
+```{r}
+#| code-fold: true
+#| fig-cap: Illustration of Ridge Regression
+#| label: fig-ridge-min
+
+ggplot() +
+  stat_contour(
+    data = beta_table, 
+    aes(x = beta_1, y = beta_2, z = sse_1, color = ..level..),
+    size = 1.2,
+    breaks = 
+      round(
+        quantile(beta_table$sse_1, seq(0.033, 1, 0.05)),
+        0
+      )
+    ) +
+  scale_color_viridis_c(name = "SSE") +
+  geom_hline(yintercept = 0) +
+  geom_vline(xintercept = 0) +
+  ggforce::geom_circle(aes(x0 = 0, y0 = 0, r = 1), color = "red") +
+  #=== OLS point estimates (solutions without the constraint) ===#
+  geom_point(
+    aes(x = ols_coefs_1["x_1"], y = ols_coefs_1["x_2"]),
+    color = "red",
+    size = 3
+  ) +
+  geom_point(
+    aes(x = 0.99, y = 0.1),
+    color = "orange",
+    size = 3
+  ) +
+  coord_equal() +
+  theme_minimal()
+```
+
+Elastic net is at somewhere between Lasso and Ridge with $0 < \alpha < 1$ in @eq-shrinkage-general and solves the following minimization problem:
+
+$$
+\begin{aligned}
+Min_{\beta} & \sum_{i=1}^N (y_i - X_i\beta)^2 \\
+\mbox{s.t. } & \frac{1-\alpha}{2}\sqrt{\sum_{k=1}^K \beta_k^2} + \alpha\sum_{k=1}^K |\beta_k| < t
+\end{aligned}
+$$ {#eq-constrained-ridge}
+
+@fig-en-min shows the constraint when $t=1$ (red circle) and the contour of SSE for the first model we considered ($E[y|x] = 2 \times x_1 + 0.2 \times x_2$). Its constraint is a mix of that of Lasso and Ridge regression. It has four pointy points at the points where either one of $\beta_1$ and $\beta_2$ just like Lasso. But, the curves that connect those points are not straight. Elastic net can eliminate variables (setting coefficients to 0), but not as strongly as Lasso does.
+
+```{r}
+#| fig-cap: Illustration of Ridge Regression 
+#| label: fig-en-min 
+#| code-fold: true
+
+get_const <- function(x1, x2, alpha){
+  (1 - alpha) * sqrt(x1^2 + x2^2) / 2 + alpha * (abs(x1) + abs(x2))
+}
+
+alpha <- 0.5
+
+en_const_data <-
+  CJ(
+    x1 = seq(-2, 2, length = 1000),
+    x2 = seq(-2, 2, length = 1000)
+  ) %>% 
+  .[, c := abs(get_const(x1, x2, alpha)-1)] %>% 
+  .[, x2_sign := x2 < 0] %>% 
+  .[, .SD[which.min(c), ], by = .(x1, x2_sign)] %>% 
+  .[abs(x1) <= 2/(1+alpha), ]
+
+ggplot() +
+  stat_contour(
+    data = beta_table, 
+    aes(x = beta_1, y = beta_2, z = sse_1, color = ..level..),
+    size = 1.2,
+    breaks = 
+      round(
+        quantile(beta_table$sse_1, seq(0, 1, 0.05)),
+        0
+      )
+    ) +
+  scale_color_viridis_c(name = "SSE") +
+  geom_hline(yintercept = 0) +
+  geom_vline(xintercept = 0) +
+  #=== elastic net constraint ===#
+  geom_line(data = en_const_data[x1 > 0 & x2 > 0], aes(x=x1, y = x2), color = "red") +
+  geom_line(data = en_const_data[x1 < 0 & x2 > 0], aes(x=x1, y = x2), color = "red") +
+  geom_line(data = en_const_data[x1 > 0 & x2 < 0], aes(x=x1, y = x2), color = "red") +
+  geom_line(data = en_const_data[x1 < 0 & x2 < 0], aes(x=x1, y = x2), color = "red") +
+  #=== OLS point estimates (solutions without the constraint) ===#
+  geom_point(
+    aes(x = ols_coefs_1["x_1"], y = ols_coefs_1["x_2"]),
+    color = "red",
+    size = 3
+  ) +
+  geom_point(
+    aes(x = 1.33, y = 0),
+    color = "orange",
+    size = 3
+  ) +
+  coord_equal() +
+  theme_minimal()
+```
+
+:::{.callout-note}
+While Lasso is frequently used. Ridge regression or elastic net is nowhere near as popular. 
+:::
+
 ## Lasso implementation: R
 
 
-You can use the `glmnet()` from the `glmnet` package run Lasso. For demonstration, we use the `QuickStartExample` data.
+You can use the `glmnet()` from the `glmnet` package to run Lasso. For demonstration, we use the `QuickStartExample` data.
 
 ```{r}
 #=== get the data ===#
@@ -344,7 +467,7 @@ By looking at the output below, you can see that `glmnet()` tried many different
 lasso
 ```
 
-You can access the coefficients for each value of $lambdata$ by applying `coef()` method to `lasso`. 
+You can access the coefficients for each value of `lambda` by applying `coef()` method to `lasso`. 
 
 ```{r}
 #=== get coefficient estimates ===#

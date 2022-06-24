@@ -261,9 +261,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <ul>
 <li><a href="#sec-shrinkage" id="toc-sec-shrinkage" class="nav-link active" data-scroll-target="#sec-shrinkage"> <span class="header-section-number">4.1</span> Shrinkage Methods</a></li>
   <li><a href="#lasso" id="toc-lasso" class="nav-link" data-scroll-target="#lasso"> <span class="header-section-number">4.2</span> Lasso</a></li>
-  <li><a href="#lasso-implementation-r" id="toc-lasso-implementation-r" class="nav-link" data-scroll-target="#lasso-implementation-r"> <span class="header-section-number">4.3</span> Lasso implementation: R</a></li>
-  <li><a href="#lasso-implementation-python" id="toc-lasso-implementation-python" class="nav-link" data-scroll-target="#lasso-implementation-python"> <span class="header-section-number">4.4</span> Lasso implementation: Python</a></li>
-  <li><a href="#scaling" id="toc-scaling" class="nav-link" data-scroll-target="#scaling"> <span class="header-section-number">4.5</span> Scaling</a></li>
+  <li><a href="#ridge-and-elastic-net-regression" id="toc-ridge-and-elastic-net-regression" class="nav-link" data-scroll-target="#ridge-and-elastic-net-regression"> <span class="header-section-number">4.3</span> Ridge and Elastic Net regression</a></li>
+  <li><a href="#lasso-implementation-r" id="toc-lasso-implementation-r" class="nav-link" data-scroll-target="#lasso-implementation-r"> <span class="header-section-number">4.4</span> Lasso implementation: R</a></li>
+  <li><a href="#lasso-implementation-python" id="toc-lasso-implementation-python" class="nav-link" data-scroll-target="#lasso-implementation-python"> <span class="header-section-number">4.5</span> Lasso implementation: Python</a></li>
+  <li><a href="#scaling" id="toc-scaling" class="nav-link" data-scroll-target="#scaling"> <span class="header-section-number">4.6</span> Scaling</a></li>
   </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/B04-regularization.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
 <!-- main -->
@@ -352,8 +353,10 @@ Min_{\beta} \sum_{i=1}^N (y_i - X_i\beta)^2 + \lambda \sum_{k=1}^K |\beta_k|
 <p>, where <span class="math inline">\(\lambda\)</span> is the penalization parameter.</p>
 <p>Alternatively, we can also write the optimization problem as the constrained minimization problem as follows<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>:</p>
 <p><span id="eq-constrained-lasso"><span class="math display">\[
-Min_{\beta} \sum_{i=1}^N (y_i - X_i\beta)^2 \\
-\mbox{subject to } \sum_{k=1}^K |\beta_k| &lt; t
+\begin{aligned}
+Min_{\beta} &amp; \sum_{i=1}^N (y_i - X_i\beta)^2 \\
+\mbox{s.t. } &amp; \sum_{k=1}^K |\beta_k| &lt; t
+\end{aligned}
 \tag{4.3}\]</span></span></p>
 <p>A graphical representation of the minimization problem is highly illustrative on what Lasso does. Consider the following data generating process:</p>
 <p><span class="math display">\[
@@ -362,8 +365,8 @@ y  = 0.2 x_1 + 2 * x_2 + \mu
 <p>When <span class="math inline">\(t\)</span> is set to 1 in <a href="#eq-constrained-lasso">Equation&nbsp;<span>4.3</span></a>, Lasso tries to estimate the coefficient on <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span> by solving the following problem:</p>
 <p><span class="math display">\[
 \begin{align}
-Min_{\beta} \sum_{i=1}^N (y_i - \beta_1 x_1 - \beta_2 x_2)^2 \\
-\mbox{subject to } \sum_{k=1}^K |\beta_k| &lt; \textcolor{red}{1}    
+Min_{\beta} &amp; \sum_{i=1}^N (y_i - \beta_1 x_1 - \beta_2 x_2)^2 \\
+\mbox{s.t. } &amp; \sum_{k=1}^K |\beta_k| &lt; \textcolor{red}{1}    
 \end{align}
 \]</span></p>
 <p>This means that, we need to look for the combinations of <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\beta_2\)</span> such that the sum of their absolute values is less than 1. Graphically, here is what the constraint looks like:</p>
@@ -377,7 +380,8 @@ Min_{\beta} \sum_{i=1}^N (y_i - \beta_1 x_1 - \beta_2 x_2)^2 \\
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_segment.html">geom_segment</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, y <span class="op">=</span> <span class="fl">0</span>, xend <span class="op">=</span> <span class="fl">0</span>, yend <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"red"</span>, size <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html">coord_equal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">"beta_1"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"beta_2"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"beta_2"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
 <p><img src="B04-regularization_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -401,11 +405,11 @@ Min_{\beta} \sum_{i=1}^N (y_i - \beta_1 x_1 - \beta_2 x_2)^2 \\
 <p>Without the constraint, here is the combination of <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\beta_2\)</span> that minimizes the objective function of <a href="#eq-constrained-lasso">Equation&nbsp;<span>4.3</span></a>, which is the same as OLS estimates.</p>
 <div class="cell">
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="op">(</span>
-<span class="va">ols_coefs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x_1</span> <span class="op">+</span> <span class="va">x_2</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span><span class="op">$</span><span class="va">coefficient</span>
+<span class="va">ols_coefs_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x_1</span> <span class="op">+</span> <span class="va">x_2</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span><span class="op">$</span><span class="va">coefficient</span>
 <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>(Intercept)         x_1         x_2 
- -0.0772530   2.0055419   0.1838913 </code></pre>
+ 0.01341781  2.05742075  0.17248866 </code></pre>
 </div>
 </div>
 <p>We now calculate the value of the objective functions at different values of <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\beta_2\)</span>. Here is the set of <span class="math inline">\(\{\beta_1, \beta_2\}\)</span> combinations we look at.</p>
@@ -477,7 +481,7 @@ Note
 
 <span class="co">#=== assign the calculated sse values as a variable ===#</span>
 <span class="op">(</span>
-<span class="va">beta_table</span><span class="op">[</span>, <span class="va">sse</span> <span class="op">:=</span> <span class="va">sse_all</span><span class="op">]</span>
+<span class="va">beta_table</span><span class="op">[</span>, <span class="va">sse_1</span> <span class="op">:=</span> <span class="va">sse_all</span><span class="op">]</span>
 <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Here is the contour map of SSE as a function of <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\beta_2\)</span>. The solution to the unconstrained problem (OLS estimates) is represented by the red point. Since Lasso needs to find a point within the red square, the solution would be <span class="math inline">\(\beta_1 = 1\)</span> and <span class="math inline">\(\beta_2 = 0\)</span> (yellow point). Lasso did not give anything to <span class="math inline">\(\beta_2\)</span> as <span class="math inline">\(x_1\)</span> is a much bigger contributor of the two included variables. Lasso tends to give the coefficient of <span class="math inline">\(0\)</span> to some of the variables when the constraint is harsh, effectively eliminating them from the model. For this reason, Lasso is often used as a variable selection method.</p>
@@ -485,11 +489,11 @@ Note
 <details><summary>Code</summary><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_contour.html">stat_contour</a></span><span class="op">(</span>
     data <span class="op">=</span> <span class="va">beta_table</span>, 
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">beta_1</span>, y <span class="op">=</span> <span class="va">beta_2</span>, z <span class="op">=</span> <span class="va">sse</span>, color <span class="op">=</span> <span class="va">..level..</span><span class="op">)</span>,
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">beta_1</span>, y <span class="op">=</span> <span class="va">beta_2</span>, z <span class="op">=</span> <span class="va">sse_1</span>, color <span class="op">=</span> <span class="va">..level..</span><span class="op">)</span>,
     size <span class="op">=</span> <span class="fl">1.2</span>,
     breaks <span class="op">=</span> 
       <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span>
-        <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">beta_table</span><span class="op">$</span><span class="va">sse</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0.05</span><span class="op">)</span><span class="op">)</span>,
+        <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">beta_table</span><span class="op">$</span><span class="va">sse_1</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0.05</span><span class="op">)</span><span class="op">)</span>,
         <span class="fl">0</span>
       <span class="op">)</span>
     <span class="op">)</span> <span class="op">+</span>
@@ -502,7 +506,7 @@ Note
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_segment.html">geom_segment</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, y <span class="op">=</span> <span class="fl">0</span>, xend <span class="op">=</span> <span class="fl">0</span>, yend <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"red"</span>, size <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span> <span class="op">+</span>
   <span class="co">#=== OLS point estimates (solutions without the constraint) ===#</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">ols_coefs</span><span class="op">[</span><span class="st">"x_1"</span><span class="op">]</span>, y <span class="op">=</span> <span class="va">ols_coefs</span><span class="op">[</span><span class="st">"x_2"</span><span class="op">]</span><span class="op">)</span>,
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">ols_coefs_1</span><span class="op">[</span><span class="st">"x_1"</span><span class="op">]</span>, y <span class="op">=</span> <span class="va">ols_coefs_1</span><span class="op">[</span><span class="st">"x_2"</span><span class="op">]</span><span class="op">)</span>,
     color <span class="op">=</span> <span class="st">"red"</span>,
     size <span class="op">=</span> <span class="fl">3</span>
   <span class="op">)</span> <span class="op">+</span>
@@ -511,7 +515,8 @@ Note
     color <span class="op">=</span> <span class="st">"yellow"</span>,
     size <span class="op">=</span> <span class="fl">3</span>
   <span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html">coord_equal</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html">coord_equal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
 <p><img src="B04-regularization_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -531,7 +536,7 @@ Note
     x_2 <span class="op">=</span> <span class="va">x_2</span>
   <span class="op">)</span>
 
-<span class="va">ols_coefs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x_1</span> <span class="op">+</span> <span class="va">x_2</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span><span class="op">$</span><span class="va">coefficient</span>
+<span class="va">ols_coefs_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x_1</span> <span class="op">+</span> <span class="va">x_2</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span><span class="op">$</span><span class="va">coefficient</span>
 
 <span class="co">#=== calculate sse for each row of beta_table ===#</span>
 <span class="va">sse_all</span> <span class="op">&lt;-</span>
@@ -550,17 +555,17 @@ Note
   <span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span><span class="op">)</span>
 
 <span class="co">#=== assign the calculated sse values as a variable ===#</span>
-<span class="va">beta_table</span><span class="op">[</span>, <span class="va">sse</span> <span class="op">:=</span> <span class="va">sse_all</span><span class="op">]</span>
+<span class="va">beta_table</span><span class="op">[</span>, <span class="va">sse_2</span> <span class="op">:=</span> <span class="va">sse_all</span><span class="op">]</span>
 
 <span class="co">#=== visualize ===#</span>
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_contour.html">stat_contour</a></span><span class="op">(</span>
     data <span class="op">=</span> <span class="va">beta_table</span>, 
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">beta_1</span>, y <span class="op">=</span> <span class="va">beta_2</span>, z <span class="op">=</span> <span class="va">sse</span>, color <span class="op">=</span> <span class="va">..level..</span><span class="op">)</span>,
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">beta_1</span>, y <span class="op">=</span> <span class="va">beta_2</span>, z <span class="op">=</span> <span class="va">sse_2</span>, color <span class="op">=</span> <span class="va">..level..</span><span class="op">)</span>,
     size <span class="op">=</span> <span class="fl">1.2</span>,
     breaks <span class="op">=</span> 
       <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span>
-        <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">beta_table</span><span class="op">$</span><span class="va">sse</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0.05</span><span class="op">)</span><span class="op">)</span>,
+        <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">beta_table</span><span class="op">$</span><span class="va">sse_2</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0.05</span><span class="op">)</span><span class="op">)</span>,
         <span class="fl">0</span>
       <span class="op">)</span>
     <span class="op">)</span> <span class="op">+</span>
@@ -573,7 +578,7 @@ Note
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_segment.html">geom_segment</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, y <span class="op">=</span> <span class="fl">0</span>, xend <span class="op">=</span> <span class="fl">0</span>, yend <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"red"</span>, size <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span> <span class="op">+</span>
   <span class="co">#=== OLS point estimates (solutions without the constraint) ===#</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">ols_coefs</span><span class="op">[</span><span class="st">"x_1"</span><span class="op">]</span>, y <span class="op">=</span> <span class="va">ols_coefs</span><span class="op">[</span><span class="st">"x_2"</span><span class="op">]</span><span class="op">)</span>,
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">ols_coefs_2</span><span class="op">[</span><span class="st">"x_1"</span><span class="op">]</span>, y <span class="op">=</span> <span class="va">ols_coefs_2</span><span class="op">[</span><span class="st">"x_2"</span><span class="op">]</span><span class="op">)</span>,
     color <span class="op">=</span> <span class="st">"red"</span>,
     size <span class="op">=</span> <span class="fl">3</span>
   <span class="op">)</span> <span class="op">+</span>
@@ -582,17 +587,143 @@ Note
     color <span class="op">=</span> <span class="st">"yellow"</span>,
     size <span class="op">=</span> <span class="fl">3</span>
   <span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html">coord_equal</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html">coord_equal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
 <p><img src="B04-regularization_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>In this case, the solution would be (very close to) <span class="math inline">\(\{\beta_1 = 0.5, \beta_2 = 0.5\}\)</span>, with neither of them sent to zero. This is because <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span> are equally important in explaining <span class="math inline">\(y\)</span>.</p>
-</section><section id="lasso-implementation-r" class="level2" data-number="4.3"><h2 data-number="4.3" class="anchored" data-anchor-id="lasso-implementation-r">
-<span class="header-section-number">4.3</span> Lasso implementation: R</h2>
-<p>You can use the <code><a href="https://glmnet.stanford.edu/reference/glmnet.html">glmnet()</a></code> from the <code>glmnet</code> package run Lasso. For demonstration, we use the <code>QuickStartExample</code> data.</p>
+</section><section id="ridge-and-elastic-net-regression" class="level2" data-number="4.3"><h2 data-number="4.3" class="anchored" data-anchor-id="ridge-and-elastic-net-regression">
+<span class="header-section-number">4.3</span> Ridge and Elastic Net regression</h2>
+<p>Ridge regression uses L2 norm for regularization and solves the following minimization problem:</p>
+<p><span id="eq-constrained-ridge"><span class="math display">\[
+\begin{aligned}
+Min_{\beta} &amp; \sum_{i=1}^N (y_i - X_i\beta)^2 \\
+\mbox{s.t. } &amp; \sum_{k=1}^K \beta_k^2 &lt; t
+\end{aligned}
+\tag{4.4}\]</span></span></p>
+<p><a href="#fig-ridge-min">Figure&nbsp;<span>4.1</span></a> shows the constraint when <span class="math inline">\(t=1\)</span> (red circle) and the contour of SSE for the first model we considered (<span class="math inline">\(E[y|x] = 2 \times x_1 + 0.2 \times x_2\)</span>). Unlike Lasso, the constraint is a circle (since it is two-dimensional), and you can expect that Ridge coefficient estimates do not generally become 0. Therefore, Ridge regression cannot be used for variable selection.</p>
 <div class="cell">
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== get the data ===#</span>
+<details><summary>Code</summary><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_contour.html">stat_contour</a></span><span class="op">(</span>
+    data <span class="op">=</span> <span class="va">beta_table</span>, 
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">beta_1</span>, y <span class="op">=</span> <span class="va">beta_2</span>, z <span class="op">=</span> <span class="va">sse_1</span>, color <span class="op">=</span> <span class="va">..level..</span><span class="op">)</span>,
+    size <span class="op">=</span> <span class="fl">1.2</span>,
+    breaks <span class="op">=</span> 
+      <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span>
+        <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">beta_table</span><span class="op">$</span><span class="va">sse_1</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0.033</span>, <span class="fl">1</span>, <span class="fl">0.05</span><span class="op">)</span><span class="op">)</span>,
+        <span class="fl">0</span>
+      <span class="op">)</span>
+    <span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html">scale_color_viridis_c</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"SSE"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">ggforce</span><span class="fu">::</span><span class="fu"><a href="https://ggforce.data-imaginist.com/reference/geom_circle.html">geom_circle</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x0 <span class="op">=</span> <span class="fl">0</span>, y0 <span class="op">=</span> <span class="fl">0</span>, r <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="co">#=== OLS point estimates (solutions without the constraint) ===#</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">ols_coefs_1</span><span class="op">[</span><span class="st">"x_1"</span><span class="op">]</span>, y <span class="op">=</span> <span class="va">ols_coefs_1</span><span class="op">[</span><span class="st">"x_2"</span><span class="op">]</span><span class="op">)</span>,
+    color <span class="op">=</span> <span class="st">"red"</span>,
+    size <span class="op">=</span> <span class="fl">3</span>
+  <span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0.99</span>, y <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>,
+    color <span class="op">=</span> <span class="st">"orange"</span>,
+    size <span class="op">=</span> <span class="fl">3</span>
+  <span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html">coord_equal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-ridge-min" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="B04-regularization_files/figure-html/fig-ridge-min-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 4.1: Illustration of Ridge Regression</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Elastic net is at somewhere between Lasso and Ridge with <span class="math inline">\(0 &lt; \alpha &lt; 1\)</span> in <a href="#eq-shrinkage-general">Equation&nbsp;<span>4.1</span></a> and solves the following minimization problem:</p>
+<p><span id="eq-constrained-ridge"><span class="math display">\[
+\begin{aligned}
+Min_{\beta} &amp; \sum_{i=1}^N (y_i - X_i\beta)^2 \\
+\mbox{s.t. } &amp; \frac{1-\alpha}{2}\sqrt{\sum_{k=1}^K \beta_k^2} + \alpha\sum_{k=1}^K |\beta_k| &lt; t
+\end{aligned}
+\tag{4.5}\]</span></span></p>
+<p><a href="#fig-en-min">Figure&nbsp;<span>4.2</span></a> shows the constraint when <span class="math inline">\(t=1\)</span> (red circle) and the contour of SSE for the first model we considered (<span class="math inline">\(E[y|x] = 2 \times x_1 + 0.2 \times x_2\)</span>). Its constraint is a mix of that of Lasso and Ridge regression. It has four pointy points at the points where either one of <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\beta_2\)</span> just like Lasso. But, the curves that connect those points are not straight. Elastic net can eliminate variables (setting coefficients to 0), but not as strongly as Lasso does.</p>
+<div class="cell">
+<details><summary>Code</summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">get_const</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x1</span>, <span class="va">x2</span>, <span class="va">alpha</span><span class="op">)</span><span class="op">{</span>
+  <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">alpha</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="va">x1</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="va">x2</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span> <span class="op">+</span> <span class="va">alpha</span> <span class="op">*</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">x1</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">x2</span><span class="op">)</span><span class="op">)</span>
+<span class="op">}</span>
+
+<span class="va">alpha</span> <span class="op">&lt;-</span> <span class="fl">0.5</span>
+
+<span class="va">en_const_data</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/J.html">CJ</a></span><span class="op">(</span>
+    x1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">2</span>, length <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>,
+    x2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">2</span>, length <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>
+  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="va">.</span><span class="op">[</span>, <span class="va">c</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="fu">get_const</span><span class="op">(</span><span class="va">x1</span>, <span class="va">x2</span>, <span class="va">alpha</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="va">.</span><span class="op">[</span>, <span class="va">x2_sign</span> <span class="op">:=</span> <span class="va">x2</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="va">.</span><span class="op">[</span>, <span class="va">.SD</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html">which.min</a></span><span class="op">(</span><span class="va">c</span><span class="op">)</span>, <span class="op">]</span>, by <span class="op">=</span> <span class="fu">.</span><span class="op">(</span><span class="va">x1</span>, <span class="va">x2_sign</span><span class="op">)</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="va">.</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">x1</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="fl">2</span><span class="op">/</span><span class="op">(</span><span class="fl">1</span><span class="op">+</span><span class="va">alpha</span><span class="op">)</span>, <span class="op">]</span>
+
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_contour.html">stat_contour</a></span><span class="op">(</span>
+    data <span class="op">=</span> <span class="va">beta_table</span>, 
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">beta_1</span>, y <span class="op">=</span> <span class="va">beta_2</span>, z <span class="op">=</span> <span class="va">sse_1</span>, color <span class="op">=</span> <span class="va">..level..</span><span class="op">)</span>,
+    size <span class="op">=</span> <span class="fl">1.2</span>,
+    breaks <span class="op">=</span> 
+      <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span>
+        <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">beta_table</span><span class="op">$</span><span class="va">sse_1</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0.05</span><span class="op">)</span><span class="op">)</span>,
+        <span class="fl">0</span>
+      <span class="op">)</span>
+    <span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html">scale_color_viridis_c</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"SSE"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">+</span>
+  <span class="co">#=== elastic net constraint ===#</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">en_const_data</span><span class="op">[</span><span class="va">x1</span> <span class="op">&gt;</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">x2</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">x1</span>, y <span class="op">=</span> <span class="va">x2</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">en_const_data</span><span class="op">[</span><span class="va">x1</span> <span class="op">&lt;</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">x2</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">x1</span>, y <span class="op">=</span> <span class="va">x2</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">en_const_data</span><span class="op">[</span><span class="va">x1</span> <span class="op">&gt;</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">x2</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">x1</span>, y <span class="op">=</span> <span class="va">x2</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">en_const_data</span><span class="op">[</span><span class="va">x1</span> <span class="op">&lt;</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">x2</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">x1</span>, y <span class="op">=</span> <span class="va">x2</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="co">#=== OLS point estimates (solutions without the constraint) ===#</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">ols_coefs_1</span><span class="op">[</span><span class="st">"x_1"</span><span class="op">]</span>, y <span class="op">=</span> <span class="va">ols_coefs_1</span><span class="op">[</span><span class="st">"x_2"</span><span class="op">]</span><span class="op">)</span>,
+    color <span class="op">=</span> <span class="st">"red"</span>,
+    size <span class="op">=</span> <span class="fl">3</span>
+  <span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1.33</span>, y <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>,
+    color <span class="op">=</span> <span class="st">"orange"</span>,
+    size <span class="op">=</span> <span class="fl">3</span>
+  <span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html">coord_equal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-en-min" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="B04-regularization_files/figure-html/fig-en-min-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 4.2: Illustration of Ridge Regression</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>While Lasso is frequently used. Ridge regression or elastic net is nowhere near as popular.</p>
+</div>
+</div>
+</section><section id="lasso-implementation-r" class="level2" data-number="4.4"><h2 data-number="4.4" class="anchored" data-anchor-id="lasso-implementation-r">
+<span class="header-section-number">4.4</span> Lasso implementation: R</h2>
+<p>You can use the <code><a href="https://glmnet.stanford.edu/reference/glmnet.html">glmnet()</a></code> from the <code>glmnet</code> package to run Lasso. For demonstration, we use the <code>QuickStartExample</code> data.</p>
+<div class="cell">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== get the data ===#</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">QuickStartExample</span><span class="op">)</span>
 
 <span class="co">#=== see the structure ===#</span>
@@ -619,7 +750,7 @@ Note
 </div>
 <p>By default, <code>alpha</code> parameter for <code><a href="https://glmnet.stanford.edu/reference/glmnet.html">glmnet()</a></code> (<span class="math inline">\(\alpha\)</span> in <a href="#eq-shrinkage-general">Equation&nbsp;<span>4.1</span></a>) is set to 1. So, to run Lasso, you can simply do the following:</p>
 <div class="cell">
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== extract X and y ===#</span>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== extract X and y ===#</span>
 <span class="va">X</span> <span class="op">&lt;-</span> <span class="va">QuickStartExample</span><span class="op">$</span><span class="va">x</span>
 <span class="va">y</span> <span class="op">&lt;-</span> <span class="va">QuickStartExample</span><span class="op">$</span><span class="va">y</span>
 
@@ -628,7 +759,7 @@ Note
 </div>
 <p>By looking at the output below, you can see that <code><a href="https://glmnet.stanford.edu/reference/glmnet.html">glmnet()</a></code> tried many different values of <span class="math inline">\(\lambda\)</span>.</p>
 <div class="cell">
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">lasso</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">lasso</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:  glmnet(x = X, y = y) 
@@ -703,9 +834,9 @@ Call:  glmnet(x = X, y = y)
 67 20 91.32 0.00351</code></pre>
 </div>
 </div>
-<p>You can access the coefficients for each value of <span class="math inline">\(lambdata\)</span> by applying <code><a href="https://rdrr.io/r/stats/coef.html">coef()</a></code> method to <code>lasso</code>.</p>
+<p>You can access the coefficients for each value of <code>lambda</code> by applying <code><a href="https://rdrr.io/r/stats/coef.html">coef()</a></code> method to <code>lasso</code>.</p>
 <div class="cell">
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== get coefficient estimates ===#</span>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== get coefficient estimates ===#</span>
 <span class="va">coef_lasso</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">lasso</span><span class="op">)</span>
 
 <span class="co">#=== check the dimension ===#</span>
@@ -713,7 +844,7 @@ Call:  glmnet(x = X, y = y)
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 21 67</code></pre>
 </div>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== take a look at the first and last three ===#</span>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== take a look at the first and last three ===#</span>
 <span class="va">coef_lasso</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="fl">65</span><span class="op">:</span><span class="fl">67</span><span class="op">)</span><span class="op">]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 6 sparse Matrix of class "dgCMatrix"
@@ -765,63 +896,63 @@ V20         -1.144987654</code></pre>
 </div>
 <p>Applying <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> method gets you how the coefficient estimates change as the value of <span class="math inline">\(\lambda\)</span> changes:</p>
 <div class="cell">
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">lasso</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">lasso</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="B04-regularization_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid" width="672"></p>
+<p><img src="B04-regularization_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>A high L1 Norm is associated with a “lower” value of <span class="math inline">\(\lambda\)</span> (weaker shrinkage). You can see that as <span class="math inline">\(\lambda\)</span> increases (L1 Norm decreases), coefficients on more and more variables are set to 0.</p>
 <p>Now, the obvious question is which <span class="math inline">\(\lambda\)</span> should we pick? One way to select a <span class="math inline">\(\lambda\)</span> is K-fold cross-validation (KCV), which we covered in section. We can implement KCV using the <code><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet()</a></code> function. You can set the number of folds using the <code>nfolds</code> option (the default is 10). Here, let’s 5-fold CV.</p>
 <div class="cell">
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">cv_lasso</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span><span class="va">X</span>, <span class="va">y</span>, nfolds <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">cv_lasso</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span><span class="va">X</span>, <span class="va">y</span>, nfolds <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The results of KCV can be readily visualized by applying the <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> method:</p>
 <div class="cell">
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">cv_lasso</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">cv_lasso</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="B04-regularization_files/figure-html/unnamed-chunk-34-1.png" class="img-fluid" width="672"></p>
+<p><img src="B04-regularization_files/figure-html/unnamed-chunk-36-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>There are two vertical dotted lines. The left one indicates the value of <span class="math inline">\(\lambda\)</span> where CV MSE is minimized (called <code>lambda.min</code>). The right one indicates the <span style="color:blue"> highest </span> (most regularized) value of <span class="math inline">\(\lambda\)</span> such that the CV error is within one standard error of the minimum (called <code>lambda.1se</code>).</p>
 <p>You can access the MSE-minimizing <span class="math inline">\(\lambda\)</span> as follows:</p>
 <div class="cell">
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">cv_lasso</span><span class="op">$</span><span class="va">lambda.min</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">cv_lasso</span><span class="op">$</span><span class="va">lambda.min</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.08307327</code></pre>
+<pre><code>[1] 0.06896889</code></pre>
 </div>
 </div>
 <p>You can access the coefficient estimates when <span class="math inline">\(\lambda\)</span> is <code>lambda.min</code> as follows</p>
 <div class="cell">
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">cv_lasso</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">cv_lasso</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
-                     s1
-(Intercept)  0.14936467
-V1           1.32975267
-V2           .         
-V3           0.69096092
-V4           .         
-V5          -0.83122558
-V6           0.53669611
-V7           0.02005438
-V8           0.33193760
-V9           .         
-V10          .         
-V11          0.16239419
-V12          .         
-V13          .         
-V14         -1.07081121
-V15          .         
-V16          .         
-V17          .         
-V18          .         
-V19          .         
-V20         -1.04340741</code></pre>
+                      s1
+(Intercept)  0.147927056
+V1           1.337393911
+V2           .          
+V3           0.704086481
+V4           .          
+V5          -0.842853150
+V6           0.549403480
+V7           0.032703914
+V8           0.342430521
+V9           .          
+V10          0.001206608
+V11          0.178995989
+V12          .          
+V13          .          
+V14         -1.079993473
+V15          .          
+V16          .          
+V17          .          
+V18          .          
+V19          .          
+V20         -1.061382444</code></pre>
 </div>
 </div>
 <p>The following code gives you the coefficient estimates when <span class="math inline">\(\lambda\)</span> is <code>lambda.1se</code></p>
 <div class="cell">
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">cv_lasso</span>, s <span class="op">=</span> <span class="st">"lambda.1se"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">cv_lasso</span>, s <span class="op">=</span> <span class="st">"lambda.1se"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
                      s1
@@ -861,46 +992,46 @@ Note
 <p>glmnet() can be used to much broader class of models (e.g., Logistic regression, Poisson regression, Cox regression, etc). As the name suggests it’s elastic <span style="color:red"> net </span> methods for <span style="color:red"> g</span>eneralized <span style="color:red"> l</span>inear <span style="color:red"> m</span>odel.</p>
 </div>
 </div>
-</section><section id="lasso-implementation-python" class="level2" data-number="4.4"><h2 data-number="4.4" class="anchored" data-anchor-id="lasso-implementation-python">
-<span class="header-section-number">4.4</span> Lasso implementation: Python</h2>
+</section><section id="lasso-implementation-python" class="level2" data-number="4.5"><h2 data-number="4.5" class="anchored" data-anchor-id="lasso-implementation-python">
+<span class="header-section-number">4.5</span> Lasso implementation: Python</h2>
 <p>Coming later.</p>
-</section><section id="scaling" class="level2" data-number="4.5"><h2 data-number="4.5" class="anchored" data-anchor-id="scaling">
-<span class="header-section-number">4.5</span> Scaling</h2>
+</section><section id="scaling" class="level2" data-number="4.6"><h2 data-number="4.6" class="anchored" data-anchor-id="scaling">
+<span class="header-section-number">4.6</span> Scaling</h2>
 <p>Unlike linear model estimation without shrinkage (regularization), shrinkage method is sensitive to the scaling of independent variables. Scaling of a variable has basically no consequence in linear model without regularization. It simply changes the interpretation of the scaled variable and the coefficient estimates on all the other variables remain unaffected. However, scaling of a single variable has a ripple effect to the other variables in shrinkage methods. This is because the penalization term: <span class="math inline">\(\lambda \huge[\normalsize(1-\alpha)||\beta||^2_2/2 + \alpha ||\beta||_1\huge]\)</span>. As you can see, <span class="math inline">\(\lambda\)</span> is applied universally to all the coefficients without any consideration of the scale of the variables.</p>
 <p>Let’s scale the first variable in <code>X</code> (this variable is influential as it survived even when <span class="math inline">\(\lambda\)</span> is very low) by 1/1000 and see what happens. Now, by default, the <code>standardize</code> option is set to <code>TRUE</code>. So, we need to set it to FALSE explicitly to see the effect.</p>
 <p>Here is before scaling:</p>
 <div class="cell">
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span><span class="va">X</span>, <span class="va">y</span>, nfolds <span class="op">=</span> <span class="fl">5</span>, standardize <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span><span class="va">X</span>, <span class="va">y</span>, nfolds <span class="op">=</span> <span class="fl">5</span>, standardize <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span>s <span class="op">=</span> <span class="st">"lambda.min"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
-                       s1
-(Intercept)  0.1372432606
-V1           1.3544304826
-V2           0.0006638838
-V3           0.7176669238
-V4           0.0007633932
-V5          -0.8559811001
-V6           0.5735400940
-V7           0.0578325158
-V8           0.3626237148
-V9           .           
-V10          0.0396980192
-V11          0.2054420304
-V12         -0.0044972325
-V13         -0.0055031396
-V14         -1.1109384079
-V15         -0.0345550545
-V16          .           
-V17          .           
-V18          0.0042134659
-V19          .           
-V20         -1.0879503255</code></pre>
+                      s1
+(Intercept)  0.146685074
+V1           1.344353724
+V2           .          
+V3           0.706109036
+V4           .          
+V5          -0.837919112
+V6           0.556149716
+V7           0.035106848
+V8           0.349162103
+V9           .          
+V10          0.004419849
+V11          0.181086854
+V12          .          
+V13          .          
+V14         -1.088189405
+V15          .          
+V16          .          
+V17          .          
+V18          .          
+V19          .          
+V20         -1.053554743</code></pre>
 </div>
 </div>
 <p>Here is after scaling:</p>
 <div class="cell">
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== scale the first variable ===#</span>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== scale the first variable ===#</span>
 <span class="va">X_scaled</span> <span class="op">&lt;-</span> <span class="va">X</span>
 <span class="va">X_scaled</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">X_scaled</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">/</span> <span class="fl">1000</span>
 
@@ -909,86 +1040,86 @@ V20         -1.0879503255</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
                      s1
-(Intercept)  0.49789782
+(Intercept)  0.48468325
 V1           .         
 V2           .         
-V3           0.60938060
-V4          -0.02028196
-V5          -0.79629764
-V6           0.75033487
-V7           0.05928865
-V8           0.09916745
+V3           0.58495226
+V4           .         
+V5          -0.77303610
+V6           0.72015880
+V7           0.03426215
+V8           0.08734948
 V9           .         
 V10          .         
-V11          0.49890470
+V11          0.46374479
 V12          .         
 V13          .         
-V14         -1.03083531
+V14         -1.02293498
 V15          .         
 V16          .         
 V17          .         
-V18          0.12642122
+V18          0.09113589
 V19          .         
-V20         -1.32068655</code></pre>
+V20         -1.28272851</code></pre>
 </div>
 </div>
 <p>As you can see, the coefficient on the first variable is 0 after scaling. Setting <code>standardize = TRUE</code> (or not doing anything with this option) gives you very similar results whether the data is scaled or not.</p>
 <div class="cell">
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== not scaled ===#</span>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== not scaled ===#</span>
 <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span><span class="va">X</span>, <span class="va">y</span>, nfolds <span class="op">=</span> <span class="fl">5</span>, standardize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span>s <span class="op">=</span> <span class="st">"lambda.min"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
-                     s1
-(Intercept)  0.14867414
-V1           1.33377821
-V2           .         
-V3           0.69787701
-V4           .         
-V5          -0.83726751
-V6           0.54334327
-V7           0.02668633
-V8           0.33741131
-V9           .         
-V10          .         
-V11          0.17105029
-V12          .         
-V13          .         
-V14         -1.07552680
-V15          .         
-V16          .         
-V17          .         
-V18          .         
-V19          .         
-V20         -1.05278699</code></pre>
+                      s1
+(Intercept)  0.140076081
+V1           1.347383065
+V2           .          
+V3           0.712555760
+V4           .          
+V5          -0.855449422
+V6           0.564158207
+V7           0.050401187
+V8           0.354841505
+V9           .          
+V10          0.028831014
+V11          0.199511972
+V12          .          
+V13         -0.001983046
+V14         -1.100192172
+V15         -0.025611555
+V16          .          
+V17          .          
+V18          .          
+V19          .          
+V20         -1.086745008</code></pre>
 </div>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== scaled ===#</span>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== scaled ===#</span>
 <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span><span class="va">X_scaled</span>, <span class="va">y</span>, nfolds <span class="op">=</span> <span class="fl">5</span>, standardize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span>s <span class="op">=</span> <span class="st">"lambda.min"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
                        s1
-(Intercept)  1.479271e-01
-V1           1.337394e+03
+(Intercept)  1.458320e-01
+V1           1.340981e+03
 V2           .           
-V3           7.040865e-01
+V3           7.083471e-01
 V4           .           
-V5          -8.428531e-01
-V6           5.494035e-01
-V7           3.270391e-02
-V8           3.424305e-01
+V5          -8.480878e-01
+V6           5.548238e-01
+V7           3.851974e-02
+V8           3.472213e-01
 V9           .           
-V10          1.206608e-03
-V11          1.789960e-01
+V10          1.003405e-02
+V11          1.863653e-01
 V12          .           
 V13          .           
-V14         -1.079993e+00
-V15          .           
+V14         -1.086007e+00
+V15         -4.444319e-03
 V16          .           
 V17          .           
 V18          .           
 V19          .           
-V20         -1.061382e+00</code></pre>
+V20         -1.069943e+00</code></pre>
 </div>
 </div>
 <p>While you do not have to worry about scaling issues as long as you are using <code><a href="https://glmnet.stanford.edu/reference/glmnet.html">glmnet()</a></code>, this is something worth remembering.</p>
@@ -996,7 +1127,7 @@ V20         -1.061382e+00</code></pre>
 
 </section><section class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
 <ol>
-<li id="fn1" role="doc-endnote"><p>You can consider <span class="citation" data-cites="lagrangian-lasso">(<a href="#ref-lagrangian-lasso" role="doc-biblioref"><strong>lagrangian-lasso?</strong></a>)</span> the Lagrangian formulation of <a href="#eq-constrained-lasso">Equation&nbsp;<span>4.3</span></a>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1" role="doc-endnote"><p>You can consider <a href="#eq-lagrangian-lasso">Equation&nbsp;<span>4.2</span></a> the Lagrangian formulation of <a href="#eq-constrained-lasso">Equation&nbsp;<span>4.3</span></a>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const icon = "";

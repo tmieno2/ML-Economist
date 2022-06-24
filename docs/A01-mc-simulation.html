@@ -84,7 +84,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./causal-ml.html" rel="prev">
+<link href="./E01-spatial-cv.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -237,12 +237,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
-        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">Appendices</a>
+        <a href="./extensions.html" class="sidebar-item-text sidebar-link">Extensions</a>
       <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
     </div>
     <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./E01-spatial-cv.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></a>
+  </div>
+</li>
+    </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">Appendices</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./A01-mc-simulation.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Monte Carlo (MC) Simulation</span></a>
@@ -277,7 +292,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header><p>Monte Carlo (MC) simulation is an important tool to test econometric hypothesis <span style="color:blue"> numerically</span> and it is highly desirable that you can conduct your own MC simulations that fit your need. Suppose you are interested in learning whether the OSL estimator of a simple linear-in-parameter model is unbiased when the error term is correlated with one of the explanatory variables. Well, it has been theoretically proven that the OLS estimator is biased under such a data generating process. So, we do not really have to show this numerically. But, what if you are facing with a more complex econometric task for which the answer is not clear for you? For example, what is the impact of over-fitting the first stage estimations in a double machine learning approach to the bias and efficiency of the estimation of treatment effect in the second stage? We can partially answer to this question (though not generalizable unlike theoretical expositions) using MC simulations. Indeed, this book uses MC simulations often to get insights into econometric problems for which the answers are not clear or to just confirm if econometric theories are correct.</p>
 <p>It is important to first recognize that it is <span style="color:blue"> impossible </span> to test econometric theory using real-wold data. That is simply because you never know the underlying data generating process of real-world data. In MC simulations, we generate data according to the data generating process we specify. This allows us to check if the econometric outcome is consistent with the data generating process or not. This is the reason every journal article with newly developed statistical procedures published in an econometric journal has MC simulations to check the new econometric theories are indeed correct (e.g., whether the new estimator is unbiased or not).</p>
-<p>Here, we learn how to program MC simulations using a very simple econometric example. Specifically, suppose you are interested in checking what happens to OLS estimators if <span class="math inline">\(E[u|x]=0\)</span> (the error term and <span class="math inline">\(x\)</span> are not correlated) is violated in estimating <span class="math inline">\(y = \alpha + \beta x + u\)</span>.</p>
+<p>Here, we learn how to program MC simulations using very simple econometric examples.</p>
 <section id="random-number-generator" class="level2" data-number="A.1"><h2 data-number="A.1" class="anchored" data-anchor-id="random-number-generator">
 <span class="header-section-number">A.1</span> Random number generator</h2>
 <p>To create a dateset, we use pseudo random number generators. In most cases, <code><a href="https://rdrr.io/r/stats/Uniform.html">runif()</a></code> and <code><a href="https://rdrr.io/r/stats/Normal.html">rnorm()</a></code> are sufficient.</p>
@@ -287,7 +302,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">x_u</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.9895705 0.2616882 0.4820482 0.4717605 0.2187678 0.3033657</code></pre>
+<pre><code>[1] 0.13368862 0.43516162 0.28589416 0.27607808 0.00893164 0.72480650</code></pre>
 </div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="va">x_u</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -300,7 +315,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">x_n</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -1.4110767  1.7861188  0.3793838 -0.5785720  2.3734290 -0.3745383</code></pre>
+<pre><code>[1] -0.5109263  0.3251855 -0.4226469 -1.1534196 -0.4322612 -0.1832443</code></pre>
 </div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="va">x_n</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -312,9 +327,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== Bernouli (0.7) ===#</span>
 <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0.3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE FALSE FALSE  TRUE
-[13] FALSE  TRUE  TRUE  TRUE FALSE  TRUE FALSE  TRUE FALSE FALSE  TRUE FALSE
-[25]  TRUE  TRUE  TRUE FALSE  TRUE  TRUE</code></pre>
+<pre><code> [1]  TRUE  TRUE  TRUE  TRUE FALSE  TRUE FALSE FALSE  TRUE  TRUE FALSE FALSE
+[13]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+[25]  TRUE  TRUE FALSE  TRUE  TRUE  TRUE</code></pre>
 </div>
 </div>
 <p>They are called <span style="color:red"> pseudo </span> random number generators because they are not truly random. What sequence of numbers you get is determined by <span style="color:blue"> seed </span>. In R, you can use <code><a href="https://rdrr.io/r/base/Random.html">set.seed()</a></code> to set seed.</p>
@@ -335,12 +350,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Step 3: Repeat Steps 1 and 2 many times (e.g., 1000)</li>
 <li>Step 4: Compare your estimates with the true parameter specified in Step 1</li>
 </ul>
-<p>Going though Steps 1 and 2 only once is not going to give you an idea of how the estimator of interest performs. So, you repeat Steps 1 and 2 many times to what you can expect form the estimator on average.</p>
+<p>Going though Steps 1 and 2 only once is not going to give you an idea of how the estimator of interest performs. So, you repeat Steps 1 and 2 many times to see what you can expect form the estimator on average.</p>
 <p>Let’s use a very simple example to better understand the MC steps. The statistical question of interest here is whether sample mean is an unbiased estimator of the expected value: <span class="math inline">\(E[\frac{1}{n}\sum_{i=1}^n x_i] = E[x]\)</span>, where <span class="math inline">\(x_i\)</span> is an independent random draw from the same distribution.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p>Of course, <span class="math inline">\(x_i\)</span> does not have to be independent. But, just making things as simple as possible.</p>
-</div></div><p>Here is Steps 1.</p>
+</div></div><p>Here is Step 1.</p>
 <div class="cell">
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span> </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -527,8 +542,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-      <a href="./causal-ml.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Causal Machine Learning (CML) Methods</span>
+      <a href="./E01-spatial-cv.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

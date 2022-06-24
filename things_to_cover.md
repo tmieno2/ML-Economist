@@ -19,18 +19,18 @@
 https://www.r-bloggers.com/2020/04/how-to-run-pythons-scikit-learn-in-r-in-5-minutes/
 
 ## prediction-oriented ML methods
-+ Linear Regression
-+ LASSO 
-+ RIDGE 
-+ Bagging
-+ Tree
-+ Boosted Regression Forest 
-+ Neural Networks 
-+ Deep Learning
++ [x] LASSO 
++ [x] RIDGE 
++ [x] Bagging
++ [x] Tree
++ [x] Boosted Regression Forest 
++ Neural Networks (NA)
++ Deep Learning (NA)
 
 ## Cross-validation for tuning and model selection
 
 (scikitlearn)[https://scikit-learn.org/stable/modules/cross_validation.html]
+
 ## Causal inference with Machine Learning
 
 + R-learner 

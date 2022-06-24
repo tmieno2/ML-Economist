@@ -173,7 +173,7 @@ hist(mse_indiv)
 We now get the average MSE.
 
 ```{r}
-mse_average <- mean(mse_indiv)
+mean(mse_indiv)
 ```
 
 ### Selecting the best GAM specification: Illustration
@@ -394,7 +394,7 @@ mse_all[, mean(mse)]
 
 ### Selecting the best GAM specification: Illustration
 
-Just like we found the best gam specification (choice of penalization parameter), we do the same now using KCV.
+Just like we found the best gam specification (choice of penalization parameter) using LOOCV, we do the same now using KCV.
 
 ```{r}
 
@@ -455,12 +455,13 @@ best_sp <- mean_mse_data[mean_mse == min(mean_mse), ] %>% .[, sp]
 
 So, according to the KCV, we should pick `sp` $= `r best_sp`$ as the penalty parameter. 
 
-By the way, here is what MSE values look like for each fold based on the value of `sp`.
+By the way, here is what MSE values look like for each fold based on the value of `sp` by fold.
 
 ```{r}
 ggplot(data = mse_results) +
   geom_line(aes(y = mse, x = sp, color = factor(k))) +
-  scale_color_discrete(name = "")
+  scale_color_discrete(name = "Fold") +
+  theme_bw()
 ```
 
 :::{.callout-note}
