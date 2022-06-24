@@ -112,7 +112,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit"
   }
-}</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+}</script><link href="style.css" rel="stylesheet" type="text/css">
+<!-- Global site tag (gtag.js) - Google Analytics --><script async="" src="https://www.googletagmanager.com/gtag/js?id=3792736425"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', '3792736425');
+</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 </head>
 <body class="nav-sidebar floating slimcontent">
 
@@ -238,12 +245,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
-        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">Appendices</a>
+        <a href="./extensions.html" class="sidebar-item-text sidebar-link">Extensions</a>
       <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
     </div>
     <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./E01-spatial-cv.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></a>
+  </div>
+</li>
+    </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">Appendices</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./A01-mc-simulation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Monte Carlo (MC) Simulation</span></a>
@@ -448,13 +470,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <p>We now get the average MSE.</p>
 <div class="cell">
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">mse_average</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">mse_indiv</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">mse_indiv</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 12.46016</code></pre>
+</div>
 </div>
 </section><section id="selecting-the-best-gam-specification-illustration" class="level3" data-number="3.2.2"><h3 data-number="3.2.2" class="anchored" data-anchor-id="selecting-the-best-gam-specification-illustration">
 <span class="header-section-number">3.2.2</span> Selecting the best GAM specification: Illustration</h3>
 <p>Now, let’s try to find the best (among the ones we try) GAM specification using LOOCV. We will try ten different GAM specifications which vary in penalization parameter. Penalization parameter can be set using the <code>sp</code> option for <code><a href="https://rdrr.io/pkg/mgcv/man/gam.html">mgcv::gam()</a></code>. A greater value of <code>sp</code> leads to a more smooth fitted curve.</p>
 <div class="cell">
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">specify_gam</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">sp</span><span class="op">)</span> <span class="op">{</span>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">specify_gam</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">sp</span><span class="op">)</span> <span class="op">{</span>
   <span class="kw">function</span><span class="op">(</span><span class="va">train_data</span><span class="op">)</span> <span class="op">{</span>
     <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/gam.html">gam</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/s.html">s</a></span><span class="op">(</span><span class="va">x</span>, k <span class="op">=</span> <span class="fl">30</span><span class="op">)</span>, sp <span class="op">=</span> <span class="va">sp</span>, data <span class="op">=</span> <span class="va">train_data</span><span class="op">)</span>
   <span class="op">}</span>
@@ -485,7 +510,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <p>For example, the following code gets you the average MSE for <code>sp</code> <span class="math inline">\(= 3\)</span>.</p>
 <div class="cell">
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu">get_mse_by_sp</span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu">get_mse_by_sp</span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        mse sp
 1: 11.56747  3</code></pre>
@@ -493,7 +518,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <p>Now, let’s loop over ten values of <code>sp</code>: 0, 0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2.</p>
 <div class="cell" data-hash="B03-cross-validation_cache/html/unnamed-chunk-28_e99ff50638662b941cf0206a34c15c6a">
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="op">(</span>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="op">(</span>
 <span class="va">mse_data</span> <span class="op">&lt;-</span> 
   <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span>
     <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, by <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span>,
@@ -522,20 +547,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>So, according to the LOOCV, we should pick <code>sp</code> <span class="math inline">\(= 0.2\)</span> as the penalty parameter.</p>
 <p>Now, that we know <code>sp</code> <span class="math inline">\(= 0.2\)</span> produces the lowest LOOCV MSE, we rerun <code><a href="https://rdrr.io/pkg/mgcv/man/gam.html">gam()</a></code> using the entire dataset (not leaving out any of the observations) and make it our final trained model.</p>
 <div class="cell">
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">final_gam_spec</span> <span class="op">&lt;-</span> <span class="fu">specify_gam</span><span class="op">(</span>sp <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">final_gam_spec</span> <span class="op">&lt;-</span> <span class="fu">specify_gam</span><span class="op">(</span>sp <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
 
 <span class="va">fit_gam</span> <span class="op">&lt;-</span> <span class="fu">final_gam_spec</span><span class="op">(</span><span class="va">train_data</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Here is what the fitted curve looks like:</p>
 <div class="cell">
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">fit_gam</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">fit_gam</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="B03-cross-validation_files/figure-html/unnamed-chunk-34-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Looks good. By the way, here are the fitted curves for some other <code>sp</code> values.</p>
 <div>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">fitted_curves</span> <span class="op">&lt;-</span> 
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">fitted_curves</span> <span class="op">&lt;-</span> 
   <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span>
     <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.6</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,
     <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
@@ -618,12 +643,12 @@ Warning
 <p>KCV is a type of cross-validation that overcomes the LOOCV’s drawback of being computationally too intensive when the dataset is large. KCV first splits the entire dataset intro <span class="math inline">\(K\)</span> folds (K groups) randomly. It then leaves out a chunk of observations that belongs to a fold (group), trains the model using the rest of the observations in the other folds, evaluate the trained model using the left-out group. It repeats this process for all the groups and average the MSEs obtained for each group.</p>
 <p>Let’s demonstrate this process using R.</p>
 <div class="cell">
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">89534</span><span class="op">)</span>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">89534</span><span class="op">)</span>
 <span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">gen_data</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">500</span><span class="op">)</span> <span class="op">*</span> <span class="fl">5</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>You can use <code><a href="https://rsample.tidymodels.org/reference/vfold_cv.html">rsample::vfold_cv()</a></code> to split the data into groups.</p>
 <div class="cell">
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== split into 5 groups ===#</span>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== split into 5 groups ===#</span>
 <span class="op">(</span>
 <span class="va">data_folds</span> <span class="op">&lt;-</span> <span class="fu">rsample</span><span class="fu">::</span><span class="fu"><a href="https://rsample.tidymodels.org/reference/vfold_cv.html">vfold_cv</a></span><span class="op">(</span><span class="va">data</span>, v <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
 <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -642,12 +667,12 @@ Warning
 <p>As you can see, <code><a href="https://rsample.tidymodels.org/reference/vfold_cv.html">rsample::vfold_cv()</a></code> creates <span class="math inline">\(v\)</span> (<span class="math inline">\(=5\)</span> here) splits. And each split has both train and test datasets. <code>&lt;split [400/100]&gt;</code> means that <span class="math inline">\(400\)</span> and <span class="math inline">\(100\)</span> observations for the train and test datasets, respectively. Note that, the <span class="math inline">\(100\)</span> observations in the first split (called <code>Fold 1</code>) are in the train datasets of the rest of the splits (<code>Fold 2</code> through <code>Fold 5</code>).</p>
 <p>You can extract the train and test datasets like below using the <code><a href="https://rsample.tidymodels.org/reference/initial_split.html">training()</a></code> and <code><a href="https://rsample.tidymodels.org/reference/initial_split.html">testing()</a></code> functions.</p>
 <div class="cell">
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">train_data</span> <span class="op">&lt;-</span> <span class="va">data_folds</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span><span class="op">$</span><span class="va">splits</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rsample.tidymodels.org/reference/initial_split.html">training</a></span><span class="op">(</span><span class="op">)</span>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">train_data</span> <span class="op">&lt;-</span> <span class="va">data_folds</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span><span class="op">$</span><span class="va">splits</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rsample.tidymodels.org/reference/initial_split.html">training</a></span><span class="op">(</span><span class="op">)</span>
 <span class="va">test_data</span> <span class="op">&lt;-</span> <span class="va">data_folds</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span><span class="op">$</span><span class="va">splits</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rsample.tidymodels.org/reference/initial_split.html">testing</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now, let’s get MSE for the first fold.</p>
 <div class="cell">
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== train the model ===#</span>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== train the model ===#</span>
 <span class="va">fitted_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/gam.html">gam</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/s.html">s</a></span><span class="op">(</span><span class="va">x</span>, k <span class="op">=</span> <span class="fl">30</span><span class="op">)</span>, sp <span class="op">=</span> <span class="fl">0</span>, data <span class="op">=</span> <span class="va">train_data</span><span class="op">)</span>
 
 <span class="co">#=== predict y for the test data ===#</span>
@@ -661,7 +686,7 @@ Warning
 </div>
 <p>Now that we know how to get MSE for a single fold, let’s loop over folds and get MSE for each of the folds. We first create a function that gets us MSE for a single fold.</p>
 <div class="cell">
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">get_mse_by_fold</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">fold</span>, <span class="va">model</span><span class="op">)</span>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">get_mse_by_fold</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">fold</span>, <span class="va">model</span><span class="op">)</span>
 <span class="op">{</span>
 
   <span class="va">test_data</span> <span class="op">&lt;-</span> <span class="va">data_folds</span><span class="op">[</span><span class="va">fold</span>, <span class="op">]</span><span class="op">$</span><span class="va">splits</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rsample.tidymodels.org/reference/initial_split.html">testing</a></span><span class="op">(</span><span class="op">)</span>
@@ -687,7 +712,7 @@ Warning
 </div>
 <p>This will get you MSE for the third fold.</p>
 <div class="cell">
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu">get_mse_by_fold</span><span class="op">(</span><span class="va">data</span>, <span class="fl">3</span>, <span class="va">gam_k_10</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu">get_mse_by_fold</span><span class="op">(</span><span class="va">data</span>, <span class="fl">3</span>, <span class="va">gam_k_10</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   k      mse
 1: 3 10.65129</code></pre>
@@ -695,7 +720,7 @@ Warning
 </div>
 <p>Now, let’s loop over the row number of <code>data_folds</code> (loop over <code>splits</code>).</p>
 <div class="cell">
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="op">(</span>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="op">(</span>
 <span class="va">mse_all</span> <span class="op">&lt;-</span>
   <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span>
     <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">data_folds</span><span class="op">)</span><span class="op">)</span>,
@@ -714,16 +739,16 @@ Warning
 </div>
 <p>By averaging MSE values, we get</p>
 <div class="cell">
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">mse_all</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">mse</span><span class="op">)</span><span class="op">]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">mse_all</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">mse</span><span class="op">)</span><span class="op">]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 10.68863</code></pre>
 </div>
 </div>
 <section id="selecting-the-best-gam-specification-illustration-1" class="level3" data-number="3.3.1"><h3 data-number="3.3.1" class="anchored" data-anchor-id="selecting-the-best-gam-specification-illustration-1">
 <span class="header-section-number">3.3.1</span> Selecting the best GAM specification: Illustration</h3>
-<p>Just like we found the best gam specification (choice of penalization parameter), we do the same now using KCV.</p>
+<p>Just like we found the best gam specification (choice of penalization parameter) using LOOCV, we do the same now using KCV.</p>
 <div class="cell">
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">get_mse_by_sp_kcv</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">sp</span><span class="op">)</span>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">get_mse_by_sp_kcv</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">sp</span><span class="op">)</span>
 <span class="op">{</span>
 
   <span class="va">temp_gam</span> <span class="op">&lt;-</span> <span class="fu">specify_gam</span><span class="op">(</span><span class="va">sp</span><span class="op">)</span>
@@ -744,7 +769,7 @@ Warning
 </div>
 <p>For example, the following code gets you the MSE for all the folds for <code>sp</code> <span class="math inline">\(= 3\)</span>.</p>
 <div class="cell">
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu">get_mse_by_sp_kcv</span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu">get_mse_by_sp_kcv</span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   k      mse sp
 1: 1 13.56925  3
@@ -756,7 +781,7 @@ Warning
 </div>
 <p>Now, let’s loop over ten values of <code>sp</code>: 0, 0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2.</p>
 <div class="cell" data-hash="B03-cross-validation_cache/html/unnamed-chunk-57_70ab04e2771c610248ff4385b8768a93">
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="op">(</span>
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="op">(</span>
 <span class="va">mse_results</span> <span class="op">&lt;-</span> 
   <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span>
     <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, by <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span>,
@@ -826,7 +851,7 @@ Warning
 </div>
 <p>Let’s now get the average MSE by sp:</p>
 <div class="cell">
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="op">(</span>
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="op">(</span>
 <span class="va">mean_mse_data</span> <span class="op">&lt;-</span> <span class="va">mse_results</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span>mean_mse <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">mse</span><span class="op">)</span><span class="op">)</span>, by <span class="op">=</span> <span class="va">sp</span><span class="op">]</span>
 <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -848,11 +873,12 @@ Warning
 
 </div>
 <p>So, according to the KCV, we should pick <code>sp</code> <span class="math inline">\(= 0.2\)</span> as the penalty parameter.</p>
-<p>By the way, here is what MSE values look like for each fold based on the value of <code>sp</code>.</p>
+<p>By the way, here is what MSE values look like for each fold based on the value of <code>sp</code> by fold.</p>
 <div class="cell">
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mse_results</span><span class="op">)</span> <span class="op">+</span>
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mse_results</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">mse</span>, x <span class="op">=</span> <span class="va">sp</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">k</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_colour_discrete.html">scale_color_discrete</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">""</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_colour_discrete.html">scale_color_discrete</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Fold"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="B03-cross-validation_files/figure-html/unnamed-chunk-63-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -875,7 +901,7 @@ Note
 <p>As its name suggest, repeated KCV repeats the process of KCV multiple times. Each KCV iteration splits the original data into k-fold in a different way. A single KCV may not be reliable as the original data was split into such a way that favors one parameter set of or model class over the others. However, if we repeat KCV multiple times, then we can safe-guard against this randomness in a KCV procedure. Repeated KCV is preferred over a single KCV.</p>
 <p>You can use <code><a href="https://rsample.tidymodels.org/reference/vfold_cv.html">rsample::vfold_cv()</a></code> to create repeated k-fold datasets by using the <code>repeats</code> argument.</p>
 <div class="cell">
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== split into 5 groups ===#</span>
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== split into 5 groups ===#</span>
 <span class="op">(</span>
 <span class="va">data_folds</span> <span class="op">&lt;-</span> <span class="fu">rsample</span><span class="fu">::</span><span class="fu"><a href="https://rsample.tidymodels.org/reference/vfold_cv.html">vfold_cv</a></span><span class="op">(</span><span class="va">data</span>, v <span class="op">=</span> <span class="fl">5</span>, repeats <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
 <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -899,7 +925,7 @@ Note
 </div>
 <p>The output has 5 (number of folds) times 5 (number of repeats) splits. It also has an additional column that indicates which repeat each row is in (<code>id</code>). You can apply <code>get_mse_by_fold()</code> (this function is defined above and calculate MSE) to each row (split) one by one and calculate MSE just like we did above.</p>
 <div class="cell">
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="op">(</span>
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="op">(</span>
 <span class="va">mean_mse</span> <span class="op">&lt;-</span>
   <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span>
     <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">data_folds</span><span class="op">)</span><span class="op">)</span>,
@@ -922,7 +948,7 @@ Note
 <p>This measure removes the influence of the error term that appears in the test MSE. Your objective is to minimize this measure. Of course, you cannot do this in practice because you do not observe <span class="math inline">\(E[y|x]\)</span>. Let’s call this “pure” MSE.</p>
 <p>First, we define a function that gets you MSE from KCV and MSE using the test data as a function of <code>sp</code>.</p>
 <div class="cell">
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">get_mse_by_sp</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">sp</span><span class="op">)</span>
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">get_mse_by_sp</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">sp</span><span class="op">)</span>
 <span class="op">{</span>
 
   <span class="co">#=== generate train data and test data ===#</span>
@@ -991,7 +1017,7 @@ Warning
 </div>
 <p>For example, this will give you MSE from KCV and MSE using the test data for <code>sp</code> <span class="math inline">\(= 2\)</span>.</p>
 <div class="cell">
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu">get_mse_by_sp</span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu">get_mse_by_sp</span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>          mse sp type
 1: 11.0072347  2  KCV
@@ -1000,7 +1026,7 @@ Warning
 </div>
 <p>Now, we define a function that loops over all the <code>sp</code> values we test.</p>
 <div class="cell">
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">sp_seq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, by <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span>
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">sp_seq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, by <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span>
 
 <span class="va">get_mse</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span>
 <span class="op">{</span> 
@@ -1015,7 +1041,7 @@ Warning
 </div>
 <p>For example, the following gives you MSE values for all the <code>sp</code> values for a single iteration.</p>
 <div class="cell">
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu">get_mse</span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu">get_mse</span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 1</code></pre>
 </div>
@@ -1048,7 +1074,7 @@ Warning
 </div>
 <p>Finally, we run <code>get_mse()</code> 500 times.</p>
 <div class="cell" data-hash="B03-cross-validation_cache/html/unnamed-chunk-77_ecc43b1f707ecafff4ffa32b9e664dcf">
-<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">mse_results</span> <span class="op">&lt;-</span>
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">mse_results</span> <span class="op">&lt;-</span>
   <span class="fu"><a href="https://rdrr.io/r/parallel/mclapply.html">mclapply</a></span><span class="op">(</span>
     <span class="fl">1</span><span class="op">:</span><span class="fl">500</span>,
     <span class="va">get_mse</span>,
@@ -1065,7 +1091,7 @@ Warning
 </div>
 <p>For each simulation round, let’s find the best <code>sp</code> using KCV and pure MSE.</p>
 <div class="cell">
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="op">(</span>
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="op">(</span>
 <span class="va">which_sp_optimal</span> <span class="op">&lt;-</span>
   <span class="va">mse_results</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
   <span class="va">.</span><span class="op">[</span>, <span class="va">.SD</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html">which.min</a></span><span class="op">(</span><span class="va">mse</span><span class="op">)</span>, <span class="op">]</span>, by <span class="op">=</span> <span class="fu">.</span><span class="op">(</span><span class="va">type</span>, <span class="va">sim_id</span><span class="op">)</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
@@ -1078,7 +1104,7 @@ Warning
 <p>For example, for the first simulation, <code>sp</code> that would have minimized pure MSE (least error relative to the true <span class="math inline">\(E[y|x]\)</span> across varying values of <span class="math inline">\(x\)</span>) was 0.2. On the other hand, if you relied on KCV, you would have chosen 0.2.</p>
 <p>The following figure shows the relationship between KCV-based and pure MSE-based <code>sp</code> values.</p>
 <div class="cell">
-<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== plot the frequency of sp chosen by KCV ===#</span>
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== plot the frequency of sp chosen by KCV ===#</span>
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">which_sp_optimal</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">Pure</span>, x <span class="op">=</span> <span class="va">KCV</span>, size <span class="op">=</span> <span class="va">num_comb</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="va">sp_seq</span><span class="op">)</span> <span class="op">+</span>

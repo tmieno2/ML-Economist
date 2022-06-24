@@ -112,7 +112,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit"
   }
-}</script><script src="site_libs/htmlwidgets-1.5.4/htmlwidgets.js"></script><script src="site_libs/viz-1.8.2/viz.js"></script><link href="site_libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet">
+}</script><link href="style.css" rel="stylesheet" type="text/css">
+<!-- Global site tag (gtag.js) - Google Analytics --><script async="" src="https://www.googletagmanager.com/gtag/js?id=3792736425"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', '3792736425');
+</script><script src="site_libs/htmlwidgets-1.5.4/htmlwidgets.js"></script><script src="site_libs/viz-1.8.2/viz.js"></script><link href="site_libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet">
 <script src="site_libs/grViz-binding-1.0.9/grViz.js"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 </head>
 <body class="nav-sidebar floating slimcontent">
@@ -241,12 +248,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
-        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">Appendices</a>
+        <a href="./extensions.html" class="sidebar-item-text sidebar-link">Extensions</a>
       <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
     </div>
     <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./E01-spatial-cv.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></a>
+  </div>
+</li>
+    </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">Appendices</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./A01-mc-simulation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Monte Carlo (MC) Simulation</span></a>
@@ -443,7 +465,7 @@ Q_j = \frac{(\sum_{i\in I_j}r_{i,b})^2}{N_j + \lambda}
 
 <span class="co">#=== get quality score ===#</span>
 <span class="op">(</span>
-<span class="va">q_0</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">resid</span><span class="op">)</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">/</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span>
+<span class="va">q_0</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">resid</span><span class="op">)</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">/</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">+</span> <span class="va">lambda</span><span class="op">)</span>
 <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0</code></pre>
@@ -461,13 +483,13 @@ Q_j = \frac{(\sum_{i\in I_j}r_{i,b})^2}{N_j + \lambda}
 <section id="split-x-2" class="level4 page-columns page-full" data-number="8.3.0.1"><h4 data-number="8.3.0.1" class="anchored" data-anchor-id="split-x-2">
 <span class="header-section-number">8.3.0.1</span> <span style="color:blue"> Split: {<code>x</code>, 2} </span>
 </h4>
-<p>Here are graphical representations of the split:</p>
+<p>Here is the graphical representations of the split:</p>
 <div class="cell">
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">g_0</span> <span class="op">+</span>
+<details><summary>Code</summary><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">g_0</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html">annotate</a></span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">1.25</span>, y <span class="op">=</span> <span class="fl">6</span>, label <span class="op">=</span> <span class="st">"leaf L"</span>, color <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html">annotate</a></span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">5</span>, y <span class="op">=</span> <span class="fl">6</span>, label <span class="op">=</span> <span class="st">"leaf R"</span>, color <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
+</details><div class="cell-output-display">
 <p><img src="P03-xgb_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
@@ -490,8 +512,8 @@ digraph {
 "</span>
 <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<div id="htmlwidget-f0d26b5be2acbbdb1a63" style="width:100%;height:464px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-f0d26b5be2acbbdb1a63">{"x":{"diagram":"\ndigraph {\n  graph [ranksep = 0.2]\n  node [shape = box]\n    T1R [label = \"L: -9\"]\n    T1L [label = \"R: 1 , 2 , 6\"]\n    T0 [label = \"-9, 1 , 2 , 6\"]\n  edge [minlen = 2]\n    T0->T1L\n    T0->T1R\n  { rank = same; T1R; T1L}\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-52d1e44e19691c63718f" style="width:100%;height:464px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-52d1e44e19691c63718f">{"x":{"diagram":"\ndigraph {\n  graph [ranksep = 0.2]\n  node [shape = box]\n    T1R [label = \"L: -9\"]\n    T1L [label = \"R: 1 , 2 , 6\"]\n    T0 [label = \"-9, 1 , 2 , 6\"]\n  edge [minlen = 2]\n    T0->T1L\n    T0->T1R\n  { rank = same; T1R; T1L}\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </div></div><p>Let’s split the data.</p>
@@ -559,8 +581,8 @@ w_R^* &amp; = 1 + 2 + 6 / (3 + 1) = 2.25
 
 <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<div id="htmlwidget-319174940b48ccbf263a" style="width:100%;height:464px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-319174940b48ccbf263a">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box]\n      T1R [label = \"L: -9 \n Q score = 40.5\"]\n      T1L [label = \"R: 1 , 2 , 6 \n Q score = 20.25\"]\n      T0 [label = \"-9, 1 , 2 , 6\"]\n    edge [minlen = 2]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-684456994b243aafe524" style="width:100%;height:464px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-684456994b243aafe524">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box]\n      T1R [label = \"L: -9 \n Q score = 40.5\"]\n      T1L [label = \"R: 1 , 2 , 6 \n Q score = 20.25\"]\n      T0 [label = \"-9, 1 , 2 , 6\"]\n    edge [minlen = 2]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </div></div><p><span class="math display">\[
@@ -616,11 +638,11 @@ G_1 = \frac{40.5 + 20.25 - 0}{2} - 10 = 20.375
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">measures_2</span> <span class="op">&lt;-</span> <span class="fu">get_info</span><span class="op">(</span><span class="va">data</span>, <span class="fl">5</span>, <span class="va">lambda</span>, <span class="va">gamma</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">g_0</span> <span class="op">+</span>
+<details><summary>Code</summary><div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">g_0</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">5</span>, color <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html">annotate</a></span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">3</span>, y <span class="op">=</span> <span class="fl">6</span>, label <span class="op">=</span> <span class="st">"leaf L"</span>, color <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html">annotate</a></span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">7</span>, y <span class="op">=</span> <span class="fl">6</span>, label <span class="op">=</span> <span class="st">"leaf R"</span>, color <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
+</details><div class="cell-output-display">
 <p><img src="P03-xgb_files/figure-html/unnamed-chunk-34-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
@@ -645,8 +667,8 @@ G_1 = \frac{40.5 + 20.25 - 0}{2} - 10 = 20.375
   <span class="op">)</span>
 <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<div id="htmlwidget-c70ecee16c8a8a0f4351" style="width:100%;height:464px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-c70ecee16c8a8a0f4351">{"x":{"diagram":"\n    digraph {\n      graph [ranksep = 0.2]\n      node [shape = box]\n        T1R [label = \"L: -9, 1 \n Q score = 21.33\"]\n        T1L [label = \"R: 2 , 6 \n Q score = 21.33\"]\n        T0 [label = \"-9, 1 , 2 , 6\"]\n      edge [minlen = 2]\n        T0->T1L\n        T0->T1R\n      { rank = same; T1R; T1L}\n    }\n    ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-536db65a0e84ddf59aa0" style="width:100%;height:464px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-536db65a0e84ddf59aa0">{"x":{"diagram":"\n    digraph {\n      graph [ranksep = 0.2]\n      node [shape = box]\n        T1R [label = \"L: -9, 1 \n Q score = 21.33\"]\n        T1L [label = \"R: 2 , 6 \n Q score = 21.33\"]\n        T0 [label = \"-9, 1 , 2 , 6\"]\n      edge [minlen = 2]\n        T0->T1L\n        T0->T1R\n      { rank = same; T1R; T1L}\n    }\n    ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </div></div><p><span class="math display">\[
@@ -665,11 +687,11 @@ G_2 = \frac{21.33 + 21.33 - 0}{2} - 10 = 11.3333333
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">measures_3</span> <span class="op">&lt;-</span> <span class="fu">get_info</span><span class="op">(</span><span class="va">data</span>, <span class="fl">7</span>, <span class="va">lambda</span>, <span class="va">gamma</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">g_0</span> <span class="op">+</span>
+<details><summary>Code</summary><div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">g_0</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">7</span>, color <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html">annotate</a></span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">4</span>, y <span class="op">=</span> <span class="fl">6</span>, label <span class="op">=</span> <span class="st">"leaf L"</span>, color <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html">annotate</a></span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">8</span>, y <span class="op">=</span> <span class="fl">6</span>, label <span class="op">=</span> <span class="st">"leaf R"</span>, color <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
+</details><div class="cell-output-display">
 <p><img src="P03-xgb_files/figure-html/unnamed-chunk-40-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
@@ -694,8 +716,8 @@ G_2 = \frac{21.33 + 21.33 - 0}{2} - 10 = 11.3333333
   <span class="op">)</span>
 <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<div id="htmlwidget-9062ee4910dbe9144c47" style="width:100%;height:464px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-9062ee4910dbe9144c47">{"x":{"diagram":"\n    digraph {\n      graph [ranksep = 0.2]\n      node [shape = box]\n        T1R [label = \"L: -9, 1, 2 \n Q score = 9\"]\n        T1L [label = \"R: 6 \n Q score = 18\"]\n        T0 [label = \"-9, 1 , 2 , 6\"]\n      edge [minlen = 2]\n        T0->T1L\n        T0->T1R\n      { rank = same; T1R; T1L}\n    }\n    ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-f7d30d192bbf6734577c" style="width:100%;height:464px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-f7d30d192bbf6734577c">{"x":{"diagram":"\n    digraph {\n      graph [ranksep = 0.2]\n      node [shape = box]\n        T1R [label = \"L: -9, 1, 2 \n Q score = 9\"]\n        T1L [label = \"R: 6 \n Q score = 18\"]\n        T0 [label = \"-9, 1 , 2 , 6\"]\n      edge [minlen = 2]\n        T0->T1L\n        T0->T1R\n      { rank = same; T1R; T1L}\n    }\n    ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </div></div><p><span class="math display">\[
@@ -767,8 +789,8 @@ Note
 
 <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<div id="htmlwidget-cbd2e2020799fb83f379" style="width:100%;height:325px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-cbd2e2020799fb83f379">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box, width = 0.3, height = 0.15, fontsize = 3, fixedsize = TRUE, penwidth = 0.2]\n      T1R [label = \"L: -9 \n w* = -4.5\"]\n      T1L [label = \"R: 1 , 2 , 6 \n w* = 2.25\"]\n      T0 [label = \"-9, 1 , 2 , 6\"]\n    edge [penwidth = 0.2, arrowsize = 0.3, len = 0.3]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-cf415256c20125993ba0" style="width:100%;height:325px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-cf415256c20125993ba0">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box, width = 0.3, height = 0.15, fontsize = 3, fixedsize = TRUE, penwidth = 0.2]\n      T1R [label = \"L: -9 \n w* = -4.5\"]\n      T1L [label = \"R: 1 , 2 , 6 \n w* = 2.25\"]\n      T0 [label = \"-9, 1 , 2 , 6\"]\n    edge [penwidth = 0.2, arrowsize = 0.3, len = 0.3]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>We now use <span class="math inline">\(w^*\)</span> from this tree to update our prediction according to <a href="#eq-update">Equation&nbsp;<span>8.7</span></a>.</p>
@@ -893,8 +915,8 @@ f_{i = 4,b = 1} = 6 + 0.3 \times 2.25 = 6.68
 
 <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="htmlwidget-48859140b75a875f3fcd" style="width:100%;height:464px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-48859140b75a875f3fcd">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box, width = 0.4, height = 0.15, fontsize = 3, fixedsize = TRUE, penwidth = 0.2]\n      T1R [label = \"L: -8.18 \n w* = -3.83\"]\n      T1L [label = \"R: 0.71 , 1.71 , 5.71 \n w* = 1.74\"]\n      T0 [label = \"-8.18, 0.71 , 1.71 , 5.71\"]\n    edge [penwidth = 0.2, arrowsize = 0.3, len = 0.3]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-6e0925fd6350afb8bdef" style="width:100%;height:464px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-6e0925fd6350afb8bdef">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box, width = 0.4, height = 0.15, fontsize = 3, fixedsize = TRUE, penwidth = 0.2]\n      T1R [label = \"L: -8.18 \n w* = -3.83\"]\n      T1L [label = \"R: 0.71 , 1.71 , 5.71 \n w* = 1.74\"]\n      T0 [label = \"-8.18, 0.71 , 1.71 , 5.71\"]\n    edge [penwidth = 0.2, arrowsize = 0.3, len = 0.3]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>Let’s now update our predictions.</p>

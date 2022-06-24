@@ -112,7 +112,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit"
   }
-}</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+}</script><link href="style.css" rel="stylesheet" type="text/css">
+<!-- Global site tag (gtag.js) - Google Analytics --><script async="" src="https://www.googletagmanager.com/gtag/js?id=3792736425"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', '3792736425');
+</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 </head>
 <body class="nav-sidebar floating slimcontent">
 
@@ -240,12 +247,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
-        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">Appendices</a>
+        <a href="./extensions.html" class="sidebar-item-text sidebar-link">Extensions</a>
       <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
     </div>
     <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./E01-spatial-cv.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></a>
+  </div>
+</li>
+    </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">Appendices</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./A01-mc-simulation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Monte Carlo (MC) Simulation</span></a>
@@ -409,7 +431,7 @@ Min_{\beta} &amp; \sum_{i=1}^N (y_i - \beta_1 x_1 - \beta_2 x_2)^2 \\
 <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>(Intercept)         x_1         x_2 
- 0.01341781  2.05742075  0.17248866 </code></pre>
+ 0.05929188  2.03711492  0.22759274 </code></pre>
 </div>
 </div>
 <p>We now calculate the value of the objective functions at different values of <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\beta_2\)</span>. Here is the set of <span class="math inline">\(\{\beta_1, \beta_2\}\)</span> combinations we look at.</p>
@@ -918,7 +940,7 @@ V20         -1.144987654</code></pre>
 <div class="cell">
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">cv_lasso</span><span class="op">$</span><span class="va">lambda.min</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.06896889</code></pre>
+<pre><code>[1] 0.08307327</code></pre>
 </div>
 </div>
 <p>You can access the coefficient estimates when <span class="math inline">\(\lambda\)</span> is <code>lambda.min</code> as follows</p>
@@ -926,28 +948,28 @@ V20         -1.144987654</code></pre>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">cv_lasso</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
-                      s1
-(Intercept)  0.147927056
-V1           1.337393911
-V2           .          
-V3           0.704086481
-V4           .          
-V5          -0.842853150
-V6           0.549403480
-V7           0.032703914
-V8           0.342430521
-V9           .          
-V10          0.001206608
-V11          0.178995989
-V12          .          
-V13          .          
-V14         -1.079993473
-V15          .          
-V16          .          
-V17          .          
-V18          .          
-V19          .          
-V20         -1.061382444</code></pre>
+                     s1
+(Intercept)  0.14936467
+V1           1.32975267
+V2           .         
+V3           0.69096092
+V4           .         
+V5          -0.83122558
+V6           0.53669611
+V7           0.02005438
+V8           0.33193760
+V9           .         
+V10          .         
+V11          0.16239419
+V12          .         
+V13          .         
+V14         -1.07081121
+V15          .         
+V16          .         
+V17          .         
+V18          .         
+V19          .         
+V20         -1.04340741</code></pre>
 </div>
 </div>
 <p>The following code gives you the coefficient estimates when <span class="math inline">\(\lambda\)</span> is <code>lambda.1se</code></p>
@@ -1005,28 +1027,28 @@ Note
   <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span>s <span class="op">=</span> <span class="st">"lambda.min"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
-                      s1
-(Intercept)  0.146685074
-V1           1.344353724
-V2           .          
-V3           0.706109036
-V4           .          
-V5          -0.837919112
-V6           0.556149716
-V7           0.035106848
-V8           0.349162103
-V9           .          
-V10          0.004419849
-V11          0.181086854
-V12          .          
-V13          .          
-V14         -1.088189405
-V15          .          
-V16          .          
-V17          .          
-V18          .          
-V19          .          
-V20         -1.053554743</code></pre>
+                     s1
+(Intercept)  0.14894850
+V1           1.33450311
+V2           .         
+V3           0.68637683
+V4           .         
+V5          -0.81775106
+V6           0.53834467
+V7           0.01605235
+V8           0.33462300
+V9           .         
+V10          .         
+V11          0.15558443
+V12          .         
+V13          .         
+V14         -1.07590955
+V15          .         
+V16          .         
+V17          .         
+V18          .         
+V19          .         
+V20         -1.02266841</code></pre>
 </div>
 </div>
 <p>Here is after scaling:</p>
@@ -1039,28 +1061,28 @@ V20         -1.053554743</code></pre>
   <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span>s <span class="op">=</span> <span class="st">"lambda.min"</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
-                     s1
-(Intercept)  0.48468325
-V1           .         
-V2           .         
-V3           0.58495226
-V4           .         
-V5          -0.77303610
-V6           0.72015880
-V7           0.03426215
-V8           0.08734948
-V9           .         
-V10          .         
-V11          0.46374479
-V12          .         
-V13          .         
-V14         -1.02293498
-V15          .         
-V16          .         
-V17          .         
-V18          0.09113589
-V19          .         
-V20         -1.28272851</code></pre>
+                      s1
+(Intercept)  0.490904543
+V1           .          
+V2           .          
+V3           0.598387687
+V4          -0.007149295
+V5          -0.784860502
+V6           0.735536678
+V7           0.047407166
+V8           0.093717145
+V9           .          
+V10          .          
+V11          0.481905661
+V12          .          
+V13          .          
+V14         -1.027583967
+V15          .          
+V16          .          
+V17          .          
+V18          0.109041875
+V19          .          
+V20         -1.302806861</code></pre>
 </div>
 </div>
 <p>As you can see, the coefficient on the first variable is 0 after scaling. Setting <code>standardize = TRUE</code> (or not doing anything with this option) gives you very similar results whether the data is scaled or not.</p>
@@ -1071,27 +1093,27 @@ V20         -1.28272851</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
                       s1
-(Intercept)  0.140076081
-V1           1.347383065
+(Intercept)  0.147927056
+V1           1.337393911
 V2           .          
-V3           0.712555760
+V3           0.704086481
 V4           .          
-V5          -0.855449422
-V6           0.564158207
-V7           0.050401187
-V8           0.354841505
+V5          -0.842853150
+V6           0.549403480
+V7           0.032703914
+V8           0.342430521
 V9           .          
-V10          0.028831014
-V11          0.199511972
+V10          0.001206608
+V11          0.178995989
 V12          .          
-V13         -0.001983046
-V14         -1.100192172
-V15         -0.025611555
+V13          .          
+V14         -1.079993473
+V15          .          
 V16          .          
 V17          .          
 V18          .          
 V19          .          
-V20         -1.086745008</code></pre>
+V20         -1.061382444</code></pre>
 </div>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== scaled ===#</span>
 <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span><span class="va">X_scaled</span>, <span class="va">y</span>, nfolds <span class="op">=</span> <span class="fl">5</span>, standardize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
@@ -1099,27 +1121,27 @@ V20         -1.086745008</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
                        s1
-(Intercept)  1.458320e-01
-V1           1.340981e+03
-V2           .           
-V3           7.083471e-01
-V4           .           
-V5          -8.480878e-01
-V6           5.548238e-01
-V7           3.851974e-02
-V8           3.472213e-01
-V9           .           
-V10          1.003405e-02
-V11          1.863653e-01
-V12          .           
-V13          .           
-V14         -1.086007e+00
-V15         -4.444319e-03
-V16          .           
-V17          .           
-V18          .           
-V19          .           
-V20         -1.069943e+00</code></pre>
+(Intercept)    0.14867414
+V1          1333.77821030
+V2             .         
+V3             0.69787701
+V4             .         
+V5            -0.83726751
+V6             0.54334327
+V7             0.02668633
+V8             0.33741131
+V9             .         
+V10            .         
+V11            0.17105029
+V12            .         
+V13            .         
+V14           -1.07552680
+V15            .         
+V16            .         
+V17            .         
+V18            .         
+V19            .         
+V20           -1.05278699</code></pre>
 </div>
 </div>
 <p>While you do not have to worry about scaling issues as long as you are using <code><a href="https://glmnet.stanford.edu/reference/glmnet.html">glmnet()</a></code>, this is something worth remembering.</p>

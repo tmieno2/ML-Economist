@@ -112,7 +112,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit"
   }
-}</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+}</script><link href="style.css" rel="stylesheet" type="text/css">
+<!-- Global site tag (gtag.js) - Google Analytics --><script async="" src="https://www.googletagmanager.com/gtag/js?id=3792736425"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', '3792736425');
+</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 </head>
 <body class="nav-sidebar floating slimcontent">
 
@@ -669,7 +676,7 @@ Please use `cols = c(mse_data)`</code></pre>
   <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/rbindlist.html">rbindlist</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Panel (a) of <a href="#fig-mse-tune">Figure&nbsp;<span>9.4</span></a> plots MSE against the value of <code>sp</code> for KCV and SKCV. As you can see both of the suggested 0.2 as the MSE-minimizing value of <code>sp</code>. Panel (b) of <a href="#fig-mse-tune">Figure&nbsp;<span>9.4</span></a> shows the squared deviations from <span class="math inline">\(E[y|x]\)</span> as a function of <code>sp</code>, which tells us what value of <code>sp</code> would result in the curve that is the closest to <span class="math inline">\(E[y|x]\)</span>, the quantity of interest. Both KCV and SKCV suggest that <code>sp</code> value of 0.2 is the best. This means that both KCV and SKCV based on train data successfully identified the optimal value of <code>sp</code>. Remember that we do not really care about prediction accuracy. That is not our ultimate goal. Using KCV instead of SKCV is likely to result in a more optimistic view of how good the model actually is as we saw earlier. However, the purpose of cross-validation is tuning, but not trying to measure the accuracy of our trained model (at least for those who do not care about prediction itself).</p>
+<p>Panel (a) of <a href="#fig-mse-tune">Figure&nbsp;<span>9.4</span></a> plots MSE against the value of <code>sp</code> for KCV and SKCV. As you can see both of the suggested 0.2 as the MSE-minimizing value of <code>sp</code>. Panel (b) of <a href="#fig-mse-tune">Figure&nbsp;<span>9.4</span></a> shows the squared deviations from <span class="math inline">\(E[y|x]\)</span> as a function of <code>sp</code>, which tells us what value of <code>sp</code> would result in the curve that is the closest to <span class="math inline">\(E[y|x]\)</span>, the quantity of interest. Both KCV and SKCV suggest that <code>sp</code> value of 0.2 is the best. This means that both KCV and SKCV based on train data successfully identified the optimal value of <code>sp</code>. Remember that we do not really care about prediction accuracy. That is not our ultimate goal. Using KCV instead of SKCV is likely to result in a more optimistic view of how good the model actually is as we saw earlier. However, the purpose of cross-validation is tuning, but not trying to measure the accuracy of our trained model (at least for those who do not care about prediction itself). Moreover, any type of CV tends to heavily underestimate the true test ME anyway.</p>
 <div>
 <details><summary>Code</summary><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">cv_plot_data</span> <span class="op">&lt;-</span> 
   <span class="va">cv_results</span><span class="op">[</span>
