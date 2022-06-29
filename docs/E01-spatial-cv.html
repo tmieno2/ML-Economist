@@ -336,7 +336,7 @@ Note
 <p>For this section, we will consider the following data generating process.</p>
 <p><span class="math display">\[
 \begin{aligned}
-y = \alpha + \beta_1 x - 0.5 \beta_2 x^2 + u
+y = \alpha + \beta_1 x + \beta_2 x^2 + u
 \end{aligned}
 \]</span></p>
 <p>where <span class="math inline">\(x\)</span> and <span class="math inline">\(u\)</span> are spatially correlated (which makes <span class="math inline">\(y\)</span> spatially correlated).</p>
@@ -354,7 +354,7 @@ y = \alpha + \beta_1 x - 0.5 \beta_2 x^2 + u
     progress_bar <span class="op">=</span> <span class="cn">FALSE</span>
   <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_make_grid.html">st_make_grid</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_make_grid.html">st_make_grid</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">30</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="va">id</span> <span class="op">:=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>geometry <span class="op">=</span> <span class="va">x</span><span class="op">)</span>
@@ -367,8 +367,8 @@ y = \alpha + \beta_1 x - 0.5 \beta_2 x^2 + u
     beta <span class="op">=</span> <span class="fl">0</span>,
     dummy <span class="op">=</span> <span class="cn">T</span>,
     model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/gstat/man/vgm.html">vgm</a></span><span class="op">(</span>
-      psill <span class="op">=</span> <span class="fl">12</span>,
-      range <span class="op">=</span> <span class="fl">10</span>,
+      psill <span class="op">=</span> <span class="fl">20</span>,
+      range <span class="op">=</span> <span class="fl">100</span>,
       nugget <span class="op">=</span> <span class="fl">0</span>,
       model <span class="op">=</span> <span class="st">"Sph"</span> 
     <span class="op">)</span>,
@@ -380,47 +380,60 @@ y = \alpha + \beta_1 x - 0.5 \beta_2 x^2 + u
   <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_coordinates.html">st_coordinates</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_centroid</a></span><span class="op">(</span><span class="va">grids_il</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/data.table.html">data.table</a></span><span class="op">(</span><span class="op">)</span>
 
-<span class="co">#=== generate error and x ===#</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">24034</span><span class="op">)</span>
-<span class="va">error</span> <span class="op">&lt;-</span> 
-  <span class="fu"><a href="https://rdrr.io/pkg/gstat/man/predict.gstat.html">predict</a></span><span class="op">(</span><span class="va">g_temp</span>, newdata <span class="op">=</span> <span class="va">xy</span>, nsim <span class="op">=</span> <span class="fl">1</span>, debug.level <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/data.table.html">data.table</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">gen_data</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">seed</span><span class="op">)</span> <span class="op">{</span>
 
-<span class="va">var1</span> <span class="op">&lt;-</span> 
-  <span class="fu"><a href="https://rdrr.io/pkg/gstat/man/predict.gstat.html">predict</a></span><span class="op">(</span><span class="va">g_temp</span>, newdata <span class="op">=</span> <span class="va">xy</span>, nsim <span class="op">=</span> <span class="fl">1</span>, debug.level <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/data.table.html">data.table</a></span><span class="op">(</span><span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="va">seed</span><span class="op">)</span>
 
-<span class="co">#=== assign the generated values to the data ===#</span>
-<span class="va">data</span> <span class="op">&lt;-</span> 
-  <span class="va">grids_il</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>
-    e <span class="op">=</span> <span class="va">error</span><span class="op">[</span>, <span class="va">sim1</span><span class="op">]</span>, 
-    x <span class="op">=</span> <span class="va">var1</span><span class="op">[</span>, <span class="va">sim1</span><span class="op">]</span>,
-    y_det <span class="op">=</span> <span class="va">x</span> <span class="op">-</span> <span class="va">x</span><span class="op">^</span><span class="fl">2</span>,
-    y <span class="op">=</span> <span class="va">y_det</span> <span class="op">+</span> <span class="va">e</span>
-  <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+  <span class="co">#=== generate error ===#</span>
+  <span class="va">error</span> <span class="op">&lt;-</span> 
+    <span class="fu"><a href="https://rdrr.io/pkg/gstat/man/predict.gstat.html">predict</a></span><span class="op">(</span><span class="va">g_temp</span>, newdata <span class="op">=</span> <span class="va">xy</span>, nsim <span class="op">=</span> <span class="fl">1</span>, debug.level <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/data.table.html">data.table</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+    <span class="co">#=== normalize ===#</span>
+    <span class="va">.</span><span class="op">[</span>, <span class="va">sim1</span> <span class="op">:=</span> <span class="op">(</span><span class="va">sim1</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">sim1</span><span class="op">)</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">sim1</span><span class="op">)</span><span class="op">]</span>
+
+  <span class="co">#=== generate x ===#</span>
+  <span class="va">var</span> <span class="op">&lt;-</span> 
+    <span class="fu"><a href="https://rdrr.io/pkg/gstat/man/predict.gstat.html">predict</a></span><span class="op">(</span><span class="va">g_temp</span>, newdata <span class="op">=</span> <span class="va">xy</span>, nsim <span class="op">=</span> <span class="fl">1</span>, debug.level <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/data.table.html">data.table</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+    <span class="co">#=== normalize ===#</span>
+    <span class="va">.</span><span class="op">[</span>, <span class="va">sim1</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">pnorm</a></span><span class="op">(</span><span class="va">sim1</span>, mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">sim1</span><span class="op">)</span>, sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">sim1</span><span class="op">)</span><span class="op">)</span><span class="op">]</span>
+
+  <span class="co">#=== assign the generated values to the data ===#</span>
+  <span class="va">data</span> <span class="op">&lt;-</span> 
+    <span class="va">grids_il</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>
+      e <span class="op">=</span> <span class="va">error</span><span class="op">[</span>, <span class="va">sim1</span><span class="op">]</span> <span class="op">*</span> <span class="fl">20</span>, <span class="co"># N(0, 100)</span>
+      x <span class="op">=</span> <span class="va">var</span><span class="op">[</span>, <span class="va">sim1</span><span class="op">]</span> <span class="op">*</span> <span class="fl">10</span>, <span class="co"># ranges from 0 to 10</span>
+      y_det <span class="op">=</span> <span class="fl">10</span> <span class="op">+</span> <span class="fl">48</span> <span class="op">*</span> <span class="va">x</span> <span class="op">-</span> <span class="fl">4</span> <span class="op">*</span> <span class="va">x</span><span class="op">^</span><span class="fl">2</span>,
+      y <span class="op">=</span> <span class="va">y_det</span> <span class="op">+</span> <span class="va">e</span>
+    <span class="op">)</span>
+
+  <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>
+<span class="op">}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div></div><p>Here is the data we are going to work with (see the side note for the code to generate the data):</p>
+</div></div><p>Here is the data we are going to work with (see the side note for the code to define <code>gen_data</code>, which takes a seed value and generate a spatial dataset):</p>
 <div class="cell">
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="op">(</span>
+<span class="va">data</span>  <span class="op">&lt;-</span> <span class="fu">gen_data</span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">47823</span><span class="op">)</span>
+<span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Simple feature collection with 2500 features and 5 fields
+<pre><code>Simple feature collection with 900 features and 5 fields
 Geometry type: POLYGON
 Dimension:     XY
 Bounding box:  xmin: -91.51308 ymin: 36.9703 xmax: -87.01993 ymax: 42.50848
 Geodetic CRS:  NAD83
 First 10 features:
-   id                       geometry        e          x      y_det        y
-1   1 POLYGON ((-91.51308 36.9703... 7.019440  1.0553782 -0.0584449 6.960995
-2   2 POLYGON ((-91.42322 36.9703... 7.338642  0.3638512  0.2314635 7.570106
-3   3 POLYGON ((-91.33335 36.9703... 6.916762  0.5415847  0.2482707 7.165033
-4   4 POLYGON ((-91.24349 36.9703... 6.616489 -0.2135838 -0.2592019 6.357287
-5   5 POLYGON ((-91.15363 36.9703... 6.545079 -0.2505120 -0.3132682 6.231811
-6   6 POLYGON ((-91.06376 36.9703... 5.694419 -0.4592597 -0.6701791 5.024240
-7   7 POLYGON ((-90.9739 36.9703,... 5.315004 -0.2554948 -0.3207723 4.994232
-8   8 POLYGON ((-90.88404 36.9703... 5.675372  0.4401116  0.2464134 5.921785
-9   9 POLYGON ((-90.79418 36.9703... 5.690427  0.2916046  0.2065713 5.896998
-10 10 POLYGON ((-90.70431 36.9703... 5.728366  0.7202707  0.2014808 5.929847</code></pre>
+   id                       geometry         e        x     y_det        y
+1   1 POLYGON ((-91.51308 36.9703... 21.342903 2.153034  94.80342 116.1463
+2   2 POLYGON ((-91.36331 36.9703... 16.129576 2.239651  97.43909 113.5687
+3   3 POLYGON ((-91.21354 36.9703... 14.114216 3.116050 120.73134 134.8456
+4   4 POLYGON ((-91.06376 36.9703... 24.327183 2.387959 101.81265 126.1398
+5   5 POLYGON ((-90.91399 36.9703... 21.370014 4.147745 140.27661 161.6466
+6   6 POLYGON ((-90.76422 36.9703... 15.171924 5.706360 153.65510 168.8270
+7   7 POLYGON ((-90.61445 36.9703... 17.271595 6.887535 150.84913 168.1207
+8   8 POLYGON ((-90.46468 36.9703...  6.489622 8.724672 124.30466 130.7943
+9   9 POLYGON ((-90.31491 36.9703...  6.431358 9.242517 111.94433 118.3757
+10 10 POLYGON ((-90.16514 36.9703...  4.730669 9.627942 101.35216 106.0828</code></pre>
 </div>
 </div>
 <p>We have three main variables, <code>y</code> (dependent variable), <code>x</code> (explanatory variable), and <code>e</code> (error). <a href="#fig-viz">Figure&nbsp;<span>9.1</span></a> shows how they are spatially distributed. It also shows that all of them are spatially positively correlated.</p>
@@ -453,7 +466,7 @@ First 10 features:
 </div>
 </div>
 <p>We are going to use <code><a href="https://rdrr.io/pkg/mgcv/man/gam.html">gam()</a></code> with <code>k</code> <span class="math inline">\(= 30\)</span> and <code>sp</code> <span class="math inline">\(= 0\)</span> as the model in conducting KCV and spatial KCV. Let’s first create folds for KCV and SKCV. First, here is KCV folds.</p>
-<div class="cell" data-hash="E01-spatial-cv_cache/html/unnamed-chunk-11_93a0a2e9757d078ef90d53ac6a2bcf54">
+<div class="cell">
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">93043</span><span class="op">)</span>
 <span class="op">(</span>
 <span class="va">kcv_folds</span> <span class="op">&lt;-</span> 
@@ -463,14 +476,14 @@ First 10 features:
 <div class="cell-output cell-output-stdout">
 <pre><code>#  6-fold cross-validation 
 # A tibble: 6 × 3
-  splits             id    type 
-  &lt;list&gt;             &lt;chr&gt; &lt;chr&gt;
-1 &lt;split [2083/417]&gt; Fold1 KCV  
-2 &lt;split [2083/417]&gt; Fold2 KCV  
-3 &lt;split [2083/417]&gt; Fold3 KCV  
-4 &lt;split [2083/417]&gt; Fold4 KCV  
-5 &lt;split [2084/416]&gt; Fold5 KCV  
-6 &lt;split [2084/416]&gt; Fold6 KCV  </code></pre>
+  splits            id    type 
+  &lt;list&gt;            &lt;chr&gt; &lt;chr&gt;
+1 &lt;split [750/150]&gt; Fold1 KCV  
+2 &lt;split [750/150]&gt; Fold2 KCV  
+3 &lt;split [750/150]&gt; Fold3 KCV  
+4 &lt;split [750/150]&gt; Fold4 KCV  
+5 &lt;split [750/150]&gt; Fold5 KCV  
+6 &lt;split [750/150]&gt; Fold6 KCV  </code></pre>
 </div>
 </div>
 <p><a href="#fig-kcv">Figure&nbsp;<span>9.2</span></a> is the visualization of the spatial distribution of training and test datasets for each of the five folds for KCV.</p>
@@ -501,24 +514,24 @@ First 10 features:
 </div>
 </div>
 <p>Now, let’s create a five spatially clustered folds using the <code>spatialsample</code> package for SKCV.</p>
-<div class="cell" data-hash="E01-spatial-cv_cache/html/unnamed-chunk-14_81a3bd01e539debdcf1757e81e825fe6">
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">2493</span><span class="op">)</span>
+<div class="cell">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">482943</span><span class="op">)</span>
 <span class="op">(</span>
 <span class="va">skcv_folds</span> <span class="op">&lt;-</span> 
-  <span class="fu"><a href="https://spatialsample.tidymodels.org/reference/spatial_clustering_cv.html">spatial_clustering_cv</a></span><span class="op">(</span><span class="va">data</span>, v <span class="op">=</span> <span class="fl">6</span>, cluster_function <span class="op">=</span> <span class="st">"hclust"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://spatialsample.tidymodels.org/reference/spatial_clustering_cv.html">spatial_clustering_cv</a></span><span class="op">(</span><span class="va">data</span>, v <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="va">type</span> <span class="op">:=</span> <span class="st">"SKCV"</span><span class="op">)</span>
 <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#  6-fold spatial cross-validation 
 # A tibble: 6 × 3
-  splits             id    type 
-  &lt;list&gt;             &lt;chr&gt; &lt;chr&gt;
-1 &lt;split [1861/639]&gt; Fold1 SKCV 
-2 &lt;split [2231/269]&gt; Fold2 SKCV 
-3 &lt;split [1968/532]&gt; Fold3 SKCV 
-4 &lt;split [2206/294]&gt; Fold4 SKCV 
-5 &lt;split [2260/240]&gt; Fold5 SKCV 
-6 &lt;split [1974/526]&gt; Fold6 SKCV </code></pre>
+  splits            id    type 
+  &lt;list&gt;            &lt;chr&gt; &lt;chr&gt;
+1 &lt;split [737/163]&gt; Fold1 SKCV 
+2 &lt;split [742/158]&gt; Fold2 SKCV 
+3 &lt;split [766/134]&gt; Fold3 SKCV 
+4 &lt;split [770/130]&gt; Fold4 SKCV 
+5 &lt;split [745/155]&gt; Fold5 SKCV 
+6 &lt;split [740/160]&gt; Fold6 SKCV </code></pre>
 </div>
 </div>
 <p><a href="#fig-sp-kcv">Figure&nbsp;<span>9.3</span></a> presents the spatial distribution of training and test datasets for each of the five folds for SKCV.</p>
@@ -549,26 +562,35 @@ First 10 features:
 </div>
 </div>
 <p>Let’s now implement KCV and SKCV. Since we observe the true generating process, we can calculate how good the fitted curve is compared to true <span class="math inline">\(E[y|X]\)</span> in addition to observed <span class="math inline">\(y\)</span> for the left-out samples in each fold.</p>
-<div class="cell" data-hash="E01-spatial-cv_cache/html/unnamed-chunk-17_6ac351bae12d045549bb8ce21e36c581">
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="op">(</span>
+<div class="cell">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== conduct CV ===#</span>
 <span class="va">cv_results</span> <span class="op">&lt;-</span>
   <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/rbindlist.html">rbind</a></span><span class="op">(</span><span class="va">kcv_folds</span>, <span class="va">skcv_folds</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
   <span class="co">#=== make it possible to apply function row by row ===#</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rowwise.html">rowwise</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>
+    trainining_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rsample.tidymodels.org/reference/as.data.frame.rsplit.html">analysis</a></span><span class="op">(</span><span class="va">splits</span><span class="op">)</span><span class="op">)</span>,
+    test_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rsample.tidymodels.org/reference/as.data.frame.rsplit.html">assessment</a></span><span class="op">(</span><span class="va">splits</span><span class="op">)</span><span class="op">)</span>
+  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
   <span class="co">#=== train the model ===#</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>gam_fit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
-    <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/gam.html">gam</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/s.html">s</a></span><span class="op">(</span><span class="va">x</span>, k <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>, data <span class="op">=</span> <span class="fu"><a href="https://rsample.tidymodels.org/reference/as.data.frame.rsplit.html">analysis</a></span><span class="op">(</span><span class="va">splits</span><span class="op">)</span><span class="op">)</span>
+    <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/gam.html">gam</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/s.html">s</a></span><span class="op">(</span><span class="va">x</span>, k <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">trainining_data</span><span class="op">)</span>
   <span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
   <span class="co">#=== get mse ===#</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>mse_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
-    <span class="fu"><a href="https://rsample.tidymodels.org/reference/as.data.frame.rsplit.html">assessment</a></span><span class="op">(</span><span class="va">splits</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+    <span class="va">test_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
     <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/data.table.html">data.table</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
     <span class="va">.</span><span class="op">[</span>, <span class="va">y_hat</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/pkg/gstat/man/predict.gstat.html">predict</a></span><span class="op">(</span><span class="va">gam_fit</span>, newdata <span class="op">=</span> <span class="va">.</span><span class="op">)</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
     <span class="va">.</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span>
       mse_obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">y</span> <span class="op">-</span> <span class="va">y_hat</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>, <span class="co"># MSE</span>
       mse_true <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">y_det</span> <span class="op">-</span> <span class="va">y_hat</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="co"># deviation from E[y|x]</span>
     <span class="op">)</span><span class="op">]</span>
-  <span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="op">)</span><span class="op">)</span> 
+
+<span class="co">#=== MSE summary ===#</span>
+<span class="op">(</span>
+<span class="va">mse_summary</span> <span class="op">&lt;-</span> 
+  <span class="va">cv_results</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
   <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">type</span>, <span class="va">mse_data</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/data.table.html">data.table</a></span><span class="op">(</span><span class="op">)</span>
@@ -578,51 +600,119 @@ First 10 features:
 Please use `cols = c(mse_data)`</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>       id type  mse_obs mse_true
- 1: Fold1  KCV 2.625128 6.220206
- 2: Fold2  KCV 2.626409 6.018337
- 3: Fold3  KCV 2.737267 6.048986
- 4: Fold4  KCV 2.165378 6.022577
- 5: Fold5  KCV 2.577193 6.071233
- 6: Fold6  KCV 2.491927 6.163692
- 7: Fold1 SKCV 1.546412 5.124519
- 8: Fold2 SKCV 1.627511 5.086778
- 9: Fold3 SKCV 2.075309 8.094507
-10: Fold4 SKCV 2.564556 6.308404
-11: Fold5 SKCV 8.237099 4.688359
-12: Fold6 SKCV 3.905704 6.441366</code></pre>
+<pre><code>       id type   mse_obs  mse_true
+ 1: Fold1  KCV  341.8739  60.31653
+ 2: Fold2  KCV  335.3960  37.32332
+ 3: Fold3  KCV  311.7044  53.97903
+ 4: Fold4  KCV  333.2085  53.76169
+ 5: Fold5  KCV  401.5541  85.95791
+ 6: Fold6  KCV  383.9555  51.50855
+ 7: Fold1 SKCV  142.5095  33.01538
+ 8: Fold2 SKCV  945.8128  47.43179
+ 9: Fold3 SKCV  289.7528  18.34021
+10: Fold4 SKCV  208.6171  31.37097
+11: Fold5 SKCV 1045.5934  96.52998
+12: Fold6 SKCV  122.2146 211.98847</code></pre>
 </div>
 </div>
 <p>You can see that MSE values (<code>mse_obs</code>) are mostly greater and also more variable for SKCV. By averaging MSE over folds by CV type,</p>
 <div class="cell">
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">cv_results</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span>mse_obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">mse_obs</span><span class="op">)</span><span class="op">)</span>, by <span class="op">=</span> <span class="va">type</span><span class="op">]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">mse_summary</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span>mse_obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">mse_obs</span><span class="op">)</span><span class="op">)</span>, by <span class="op">=</span> <span class="va">type</span><span class="op">]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   type  mse_obs
-1:  KCV 2.537217
-2: SKCV 3.326099</code></pre>
+1:  KCV 351.2821
+2: SKCV 459.0834</code></pre>
 </div>
 </div>
-<p>So, indeed KCV provides lower estimate of test MSE than SKCV. Now, it is important to recognize the fundamental difference in what is measured by KCV and SKCV. KCV measures the accuracy of the trained model applied to the new data points that are located inside the area where the train data covers geographically. SKCV, on the other hand, measures the accuracy of the trained model applied to the new data points that are <span style="color:blue"> outside </span> the area where the train data covers geographically. In other words, it measure the modeling accuracy when the trained model is applied to a new region. So, KCV does overstate the accuracy of the model if your interest is applying the model to a new region.</p>
+<p>So, indeed KCV provides lower estimate of test MSE than SKCV. Now, it is important to recognize the fundamental difference in what is measured by KCV and SKCV. KCV measures the accuracy of the trained model applied to the new data points that are located inside the area where the train data covers geographically. SKCV, on the other hand, measures the accuracy of the trained model applied to the new data points that are <span style="color:blue"> outside </span> the area where the train data covers geographically. In other words, it measures the modeling accuracy when the trained model is applied to a new region. So, KCV does overstate the accuracy of the model if your interest is applying the model to a new region.</p>
+<p>Let’s look into the SKCV results a bit more. Looking at MSE values by fold for KCV and SKCV, you can notice that MSE is much more variable for SKCV. <a href="#fig-tp-curv">Figure&nbsp;<span>9.4</span></a> plots data points in the test data and the curve fitted on the training data by cross-validation type and fold (Note that <code>Fold1</code> for KCV and SKCV have nothing to do with each other). Since KCV uses randomly split data, all the KCV test datasets are scattered all across the area and they look similar to each other. On the other hand, SKCV test datasets look quite different from each other as they are sampled in a spatially clustered manner. If the original data has no spatial correlation, then SKCV and KCV would have resulted in very simple test datasets. However, since the original data is spatially positively correlated, one packet of a field may look very different from another pocket of the field. By looking at <a href="#fig-tp-curv">Figure&nbsp;<span>9.4</span></a>, you can easily see that <code>FOLD2</code> and <code>FOLD5</code> have very high MSE for SKCV. This observation is confirmed with the MSE value by fold presented above.</p>
 <div class="cell">
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">cv_results</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span>mse_true <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">mse_true</span><span class="op">)</span><span class="op">)</span>, by <span class="op">=</span> <span class="va">type</span><span class="op">]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>   type mse_true
-1:  KCV 6.090839
-2: SKCV 5.957322</code></pre>
+<details><summary>Code</summary><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">pred_data</span> <span class="op">&lt;-</span>
+  <span class="va">cv_results</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>eval_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+    <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/data.table.html">data.table</a></span><span class="op">(</span>
+      x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">x</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">x</span><span class="op">)</span>, length <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>
+    <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+    <span class="va">.</span><span class="op">[</span>, <span class="va">y_hat</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/pkg/gstat/man/predict.gstat.html">predict</a></span><span class="op">(</span><span class="va">gam_fit</span>, newdata <span class="op">=</span> <span class="va">.</span><span class="op">)</span><span class="op">]</span>
+  <span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">type</span>, <span class="va">eval_data</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stderr">
+<pre><code>Warning: `cols` is now required when using unnest().
+Please use `cols = c(eval_data)`</code></pre>
+</div>
+<details><summary>Code</summary><div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">raw_test_data</span> <span class="op">&lt;-</span>
+  <span class="va">cv_results</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">type</span>, <span class="va">test_data</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stderr">
+<pre><code>Warning: `cols` is now required when using unnest().
+Please use `cols = c(test_data)`</code></pre>
+</div>
+<details><summary>Code</summary><div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>
+    data <span class="op">=</span> <span class="va">raw_test_data</span>, 
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">y</span>, x <span class="op">=</span> <span class="va">x</span><span class="op">)</span>,
+    color <span class="op">=</span> <span class="st">"darkgrey"</span>,
+    size <span class="op">=</span> <span class="fl">0.7</span>
+  <span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span>
+    data <span class="op">=</span> <span class="va">pred_data</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">y_hat</span>, x <span class="op">=</span> <span class="va">x</span><span class="op">)</span>, 
+    color <span class="op">=</span> <span class="st">"red"</span>
+  <span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html">facet_grid</a></span><span class="op">(</span><span class="va">id</span> <span class="op">~</span> <span class="va">type</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-tp-curv" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="E01-spatial-cv_files/figure-html/fig-tp-curv-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 9.4: Test data points and the curve fitted on the training dataset</figcaption><p></p>
+</figure>
 </div>
 </div>
+</div>
+<p>This is primarily because of the data imbalance between the training and test datasets, in particular the error term in this case. <a href="#fig-dist-y">Figure&nbsp;<span>9.5</span></a> compares the distribution of the error term for the training and test datasets by fold for SKCV. As you can see, their distributions are very different for <code>FOLD2</code> and <code>FOLD5</code>. In <code>FOLD2</code>, the average of the error term for the training data is much higher than that for the test data. The opposite is true for <code>FOLD5</code>. These differences of course result in large differences in the average value of the dependent variable. This, then, further results in consistent under or over-estimation of the level of the dependent variable. Since squared error is defined as <span class="math inline">\([y_i -\hat{f}(x_i)]^2\)</span>, the consistent bias (you can consider this as bias in intercept in the linear-in-parameter modeling setting) will naturally lead to a higher MSE. That is exactly what is observed for <code>FOLD2</code> and <code>FOLD5</code>.</p>
+<div class="cell">
+<details><summary>Code</summary><div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">plot_data_split</span> <span class="op">&lt;-</span>
+  <span class="va">cv_results</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">type</span> <span class="op">==</span> <span class="st">"SKCV"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">trainining_data</span>, <span class="va">test_data</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/data.table.html">data.table</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/melt.data.table.html">melt</a></span><span class="op">(</span>id.var <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="op">)</span> </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stderr">
+<pre><code>Warning: `cols` is now required when using unnest().
+Please use `cols = c(value)`</code></pre>
+</div>
+<details><summary>Code</summary><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density.html">geom_density</a></span><span class="op">(</span>
+    data <span class="op">=</span> <span class="va">plot_data_split</span>, 
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">e</span>, fill <span class="op">=</span> <span class="va">variable</span><span class="op">)</span>,
+    alpha <span class="op">=</span> <span class="fl">0.4</span>
+  <span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="va">id</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-dist-y" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="E01-spatial-cv_files/figure-html/fig-dist-y-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 9.5: Distribution of the dependent variable for the training and test dataset by fold</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>While MSE values for <code>FOLD2</code> and <code>FOLD5</code> are high in SKCV, notice that their fitted curves are very much similar to the other folds and trace the true <span class="math inline">\(E[y|x]\)</span> quite well. The culprit of their high MSEs is the consistent difference in the average value of <span class="math inline">\(y\)</span> between the training and test datasets. This means that if your interest is in understanding the causal impact of <span class="math inline">\(x\)</span> on <span class="math inline">\(y\)</span>, then the fitted curves for <code>FOLD2</code> and <code>FOLD5</code> are just as good as those for the other folds despite the fact that their MSE values are much higher than the rest. This illustrates well that MSE is not really a good criteria to rely on if you ultimate interest is in estimating the causal impact of a treatment even though it is a good measure if your ultimate interest in prediction (predicting the <span style="color:blue"> level </span> of the dependent variable).</p>
+<p>Finally, whether KCV is over-optimistic in estimating test MSE than SKCV or not is of little importance for those who are interested in causal inference because how well the trained model predicts the <span style="color:blue"> level </span> of the dependent variable (which MSE measures) is irrelevant. Rather, more critical question is whether the use of KCV leads us to choose sub-optimal hyper parameter values compared to SKCV. This could have a real consequence when we select a morel and its hyper-parameter values for the first-stage ML applications in Double Machine Learning methods.</p>
 <section id="hyper-parameter-tuning" class="level2" data-number="9.1"><h2 data-number="9.1" class="anchored" data-anchor-id="hyper-parameter-tuning">
 <span class="header-section-number">9.1</span> Hyper-parameter tuning</h2>
 <p>Now, let’s see whether KCV and SKCV lead to different tuning results using <code><a href="https://rdrr.io/pkg/mgcv/man/gam.html">gam()</a></code>. Here, we fix <code>k</code> at <span class="math inline">\(30\)</span> and vary <code>sp</code> to find the best <code>sp</code> value. The following function takes an <code>sp</code> value and return MSE values from both KCV and SKCV.</p>
 <div class="cell">
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">get_mse</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">sp</span><span class="op">)</span> <span class="op">{</span>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">get_mse</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">sp</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">cv_results</span> <span class="op">&lt;-</span>
     <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/rbindlist.html">rbind</a></span><span class="op">(</span><span class="va">kcv_folds</span>, <span class="va">skcv_folds</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
     <span class="co">#=== make it possible to apply function row by row ===#</span>
     <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rowwise.html">rowwise</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
     <span class="co">#=== train the model ===#</span>
     <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>gam_fit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
-      <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/gam.html">gam</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/s.html">s</a></span><span class="op">(</span><span class="va">x</span>, k <span class="op">=</span> <span class="fl">30</span>, sp <span class="op">=</span> <span class="va">sp</span><span class="op">)</span>, data <span class="op">=</span> <span class="fu"><a href="https://rsample.tidymodels.org/reference/as.data.frame.rsplit.html">analysis</a></span><span class="op">(</span><span class="va">splits</span><span class="op">)</span><span class="op">)</span>
+      <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/gam.html">gam</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/s.html">s</a></span><span class="op">(</span><span class="va">x</span>, k <span class="op">=</span> <span class="fl">20</span>, sp <span class="op">=</span> <span class="va">sp</span><span class="op">)</span>, data <span class="op">=</span> <span class="fu"><a href="https://rsample.tidymodels.org/reference/as.data.frame.rsplit.html">analysis</a></span><span class="op">(</span><span class="va">splits</span><span class="op">)</span><span class="op">)</span>
     <span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
     <span class="co">#=== get mse ===#</span>
     <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>mse_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
@@ -630,8 +720,7 @@ Please use `cols = c(mse_data)`</code></pre>
       <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/data.table.html">data.table</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
       <span class="va">.</span><span class="op">[</span>, <span class="va">y_hat</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/pkg/gstat/man/predict.gstat.html">predict</a></span><span class="op">(</span><span class="va">gam_fit</span>, newdata <span class="op">=</span> <span class="va">.</span><span class="op">)</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
       <span class="va">.</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span>
-        mse_obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">y</span> <span class="op">-</span> <span class="va">y_hat</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>, <span class="co"># MSE</span>
-        mse_true <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">y_det</span> <span class="op">-</span> <span class="va">y_hat</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="co"># deviation from E[y|x]</span>
+        mse_obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">y</span> <span class="op">-</span> <span class="va">y_hat</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
       <span class="op">)</span><span class="op">]</span>
     <span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
     <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">type</span>, <span class="va">mse_data</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
@@ -645,40 +734,62 @@ Please use `cols = c(mse_data)`</code></pre>
 </div>
 <p>Here is an example at <code>sp</code> <span class="math inline">\(= 0.5\)</span>.</p>
 <div class="cell">
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu">get_mse</span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span><span class="op">[</span><span class="op">]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu">get_mse</span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span><span class="op">[</span><span class="op">]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: `cols` is now required when using unnest().
 Please use `cols = c(mse_data)`</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>       id type   mse_obs  mse_true sp_v
- 1: Fold1  KCV 2.6107678  6.213120  0.5
- 2: Fold2  KCV 2.6116715  6.039916  0.5
- 3: Fold3  KCV 2.7443189  6.084217  0.5
- 4: Fold4  KCV 2.1724188  6.040122  0.5
- 5: Fold5  KCV 2.6088837  6.074788  0.5
- 6: Fold6  KCV 2.4559528  6.147874  0.5
- 7: Fold1 SKCV 4.2759947  6.045903  0.5
- 8: Fold2 SKCV 1.4296273  7.991988  0.5
- 9: Fold3 SKCV 1.6658406  8.524963  0.5
-10: Fold4 SKCV 0.9765504  7.309499  0.5
-11: Fold5 SKCV 1.7216495 11.168836  0.5
-12: Fold6 SKCV 1.1060965  8.363119  0.5</code></pre>
+<pre><code>       id type   mse_obs sp_v
+ 1: Fold1  KCV  341.9625  0.5
+ 2: Fold2  KCV  336.0414  0.5
+ 3: Fold3  KCV  311.5498  0.5
+ 4: Fold4  KCV  333.3312  0.5
+ 5: Fold5  KCV  401.8780  0.5
+ 6: Fold6  KCV  384.2941  0.5
+ 7: Fold1 SKCV  142.9038  0.5
+ 8: Fold2 SKCV  948.0940  0.5
+ 9: Fold3 SKCV  291.8069  0.5
+10: Fold4 SKCV  207.7703  0.5
+11: Fold5 SKCV 1046.3253  0.5
+12: Fold6 SKCV  121.6611  0.5</code></pre>
 </div>
 </div>
-<p>Let’s try <code>sp</code> = 0, 0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2.</p>
+<p>Let’s try <code>sp</code> values ranging from 0 to 1.</p>
 <div class="cell">
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">cv_results</span> <span class="op">&lt;-</span>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">cv_results</span> <span class="op">&lt;-</span>
   <span class="fu"><a href="https://rdrr.io/r/parallel/mclapply.html">mclapply</a></span><span class="op">(</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, length <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,
+    <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length <span class="op">=</span> <span class="fl">21</span><span class="op">)</span>,
     <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">get_mse</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>,
     mc.cores <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html">detectCores</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">2</span>
   <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/rbindlist.html">rbindlist</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Panel (a) of <a href="#fig-mse-tune">Figure&nbsp;<span>9.4</span></a> plots MSE against the value of <code>sp</code> for KCV and SKCV. As you can see both of the suggested 0.2 as the MSE-minimizing value of <code>sp</code>. Panel (b) of <a href="#fig-mse-tune">Figure&nbsp;<span>9.4</span></a> shows the squared deviations from <span class="math inline">\(E[y|x]\)</span> as a function of <code>sp</code>, which tells us what value of <code>sp</code> would result in the curve that is the closest to <span class="math inline">\(E[y|x]\)</span>, the quantity of interest. Both KCV and SKCV suggest that <code>sp</code> value of 0.2 is the best. This means that both KCV and SKCV based on train data successfully identified the optimal value of <code>sp</code>. Remember that we do not really care about prediction accuracy. That is not our ultimate goal. Using KCV instead of SKCV is likely to result in a more optimistic view of how good the model actually is as we saw earlier. However, the purpose of cross-validation is tuning, but not trying to measure the accuracy of our trained model (at least for those who do not care about prediction itself). Moreover, any type of CV tends to heavily underestimate the true test ME anyway.</p>
+<p>Now, let’s see what value of <code>sp</code> would have been the best to estimate <span class="math inline">\(E[y|x]\)</span> (this is what we really want to know, but can’t in practice because you do not observe the true data generating process unlike the simulation we are running here). For this purpose, we will create a test dataset that follows exactly the same data generating process (but randomness in the process makes a different dataset).</p>
+<div class="cell">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== generate the test data ===#</span>
+<span class="va">test_data</span>  <span class="op">&lt;-</span> <span class="fu">gen_data</span><span class="op">(</span>seed <span class="op">=</span> <span class="fl">9843</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We will fit <code><a href="https://rdrr.io/pkg/mgcv/man/gam.html">gam()</a></code> at the same sequence of <code>sp</code> values used just above using the entire test dataset and check what <code>sp</code> value minimizes the prediction error from true <span class="math inline">\(E[y|x]\)</span>.</p>
+<div class="cell">
+<details><summary>Code</summary><div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">test_mse</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/data.table.html">data.table</a></span><span class="op">(</span>
+    sp_v <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, length <span class="op">=</span> <span class="fl">21</span><span class="op">)</span>
+  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rowwise.html">rowwise</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>gam_fit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+    <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/gam.html">gam</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/s.html">s</a></span><span class="op">(</span><span class="va">x</span>, k <span class="op">=</span> <span class="fl">40</span><span class="op">)</span>, sp <span class="op">=</span> <span class="va">sp_v</span>, data <span class="op">=</span> <span class="va">test_data</span><span class="op">)</span>
+  <span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>mse <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">test_data</span><span class="op">$</span><span class="va">y_det</span> <span class="op">-</span> <span class="va">gam_fit</span><span class="op">$</span><span class="va">fitted.value</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>  
+
+<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">test_mse</span><span class="op">$</span><span class="va">gam_fit</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<p><img src="E01-spatial-cv_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Panel (a) of <a href="#fig-mse-tune">Figure&nbsp;<span>9.6</span></a> plots MSE against the value of <code>sp</code> for KCV and SKCV. As you can see both of the suggested 0.2 as the MSE-minimizing value of <code>sp</code>. Panel (b) of <a href="#fig-mse-tune">Figure&nbsp;<span>9.6</span></a> shows the squared deviations from <span class="math inline">\(E[y|x]\)</span> as a function of <code>sp</code>, which tells us what value of <code>sp</code> would result in the curve that is the closest to <span class="math inline">\(E[y|x]\)</span>, the quantity of interest. Both KCV and SKCV suggest that <code>sp</code> value of 0.2 is the best. This means that both KCV and SKCV based on train data successfully identified the optimal value of <code>sp</code>. Remember that we do not really care about prediction accuracy. That is not our ultimate goal. Using KCV instead of SKCV is likely to result in a more optimistic view of how good the model actually is as we saw earlier. However, the purpose of cross-validation is tuning, but not trying to measure the accuracy of our trained model (at least for those who do not care about prediction itself). Moreover, any type of CV tends to heavily underestimate the true test ME anyway.</p>
 <div>
-<details><summary>Code</summary><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">cv_plot_data</span> <span class="op">&lt;-</span> 
+<details><summary>Code</summary><div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">cv_plot_data</span> <span class="op">&lt;-</span> 
   <span class="va">cv_results</span><span class="op">[</span>
     , 
     <span class="fu">.</span><span class="op">(</span>mse_obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">mse_obs</span><span class="op">)</span>, mse_true <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">mse_true</span><span class="op">)</span><span class="op">)</span>, 
@@ -701,25 +812,7 @@ Please use `cols = c(mse_data)`</code></pre>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">"sp"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div id="fig-mse-tune" class="cell quarto-layout-panel">
-<figure class="figure"><div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 100.0%;justify-content: center;">
-<div id="fig-mse-tune-1" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure"><p><img src="E01-spatial-cv_files/figure-html/fig-mse-tune-1.png" class="img-fluid figure-img" data-ref-parent="fig-mse-tune" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">(a) MSE</figcaption><p></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 100.0%;justify-content: center;">
-<div id="fig-mse-tune-2" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure"><p><img src="E01-spatial-cv_files/figure-html/fig-mse-tune-2.png" class="img-fluid figure-img" data-ref-parent="fig-mse-tune" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">(b) Square Deviation from E[y|x]</figcaption><p></p>
-</figure>
-</div>
-</div>
-</div>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 9.4: MSE and squared deviation from E[y|x] by KCV and SKCV</figcaption><p></p>
+<figure class="figure"><p></p><figcaption aria-hidden="true" class="figure-caption">Figure 9.6: MSE and squared deviation from E[y|x] by KCV and SKCV</figcaption><p></p>
 </figure>
 </div>
 </div>
