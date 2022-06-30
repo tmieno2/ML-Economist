@@ -118,7 +118,7 @@ gen_data <- function(seed) {
   data <- 
     grids_il %>% 
     mutate(
-      e = error[, sim1] * 20, # N(0, 100)
+      e = error[, sim1] * 30, # N(0, 400)
       x = var[, sim1] * 10, # ranges from 0 to 10
       y_det = 10 + 48 * x - 4 * x^2,
       y = y_det + e
@@ -136,7 +136,7 @@ Here is the data we are going to work with (see the side note for the code to de
 
 ```{r}
 (
-data  <- gen_data(seed = 47823)
+train_data  <- gen_data(seed = 47823)
 )
 ```
 
@@ -145,20 +145,22 @@ We have three main variables, `y` (dependent variable), `x` (explanatory variabl
 ```{r}
 #| fig-cap: Visualization of the data
 #| label: fig-viz 
+#| code-fold: true
+
 g_error <-
-  ggplot(data = data) +
+  ggplot(data = train_data) +
   geom_sf(aes(fill = e), color = NA) +
   scale_fill_viridis_c() +
   theme_void()
 
 g_x <-
-  ggplot(data = data) +
+  ggplot(data = train_data) +
   geom_sf(aes(fill = x), color = NA) +
   scale_fill_viridis_c() +
   theme_void()
 
 g_y <-
-  ggplot(data = data) +
+  ggplot(data = train_data) +
   geom_sf(aes(fill = y), color = NA) +
   scale_fill_viridis_c() +
   theme_void()
@@ -172,7 +174,7 @@ We are going to use `gam()` with `k` $= 30$ and `sp` $= 0$ as the model in condu
 set.seed(93043)
 (
 kcv_folds <- 
-  rsample::vfold_cv(data, v = 6) %>% 
+  rsample::vfold_cv(train_data, v = 6) %>% 
   mutate(type := "KCV")
 )
 ```
@@ -211,7 +213,7 @@ Now, let's create a five spatially clustered folds using the `spatialsample` pac
 set.seed(482943)
 (
 skcv_folds <- 
-  spatial_clustering_cv(data, v = 6) %>% 
+  spatial_clustering_cv(train_data, v = 6) %>% 
   mutate(type := "SKCV")
 )
 ```
@@ -296,12 +298,13 @@ Let's look into the SKCV results a bit more. Looking at MSE values by fold  for 
 #| fig-cap: Test data points and the curve fitted on the training dataset
 #| label: fig-tp-curv
 #| code-fold: true
+#| warning: false 
 
 pred_data <-
   cv_results %>% 
   mutate(eval_data = list(
     data.table(
-      x = seq(min(data$x), max(data$x), length = 100)
+      x = seq(min(train_data$x), max(train_data$x), length = 100)
     ) %>% 
     .[, y_hat := predict(gam_fit, newdata = .)]
   )) %>% 
@@ -334,6 +337,7 @@ This is primarily because of the data imbalance between the training and test da
 #| fig-cap: Distribution of the dependent variable for the training and test dataset by fold
 #| label: fig-dist-y
 #| code-fold: true
+#| warning: false
 
 plot_data_split <-
   cv_results %>%
@@ -356,28 +360,28 @@ ggplot() +
 
 While MSE values for `FOLD2` and `FOLD5` are high in SKCV, notice that their fitted curves are very much similar to the other folds and trace the true $E[y|x]$ quite well. The culprit of their high MSEs is the consistent difference in the average value of $y$ between the training and test datasets. This means that if your interest is in understanding the causal impact of $x$ on $y$, then the fitted curves for `FOLD2` and `FOLD5` are just as good as those for the other folds despite the fact that their MSE values are much higher than the rest. This illustrates well that MSE is not really a good criteria to rely on if you ultimate interest is in estimating the causal impact of a treatment even though it is a good measure if your ultimate interest in prediction (predicting the <span style="color:blue"> level </span> of the dependent variable). 
 
-Finally, whether KCV is over-optimistic in estimating test MSE than SKCV or not is of little importance for those who are interested in causal inference because how well the trained model predicts the <span style="color:blue"> level </span> of the dependent variable (which MSE measures) is irrelevant. Rather, more critical question is whether the use of KCV leads us to choose sub-optimal hyper parameter values compared to SKCV. This could have a real consequence when we select a morel and its hyper-parameter values for the first-stage ML applications in Double Machine Learning methods. 
+Finally, whether KCV is over-optimistic in estimating test MSE than SKCV or not is of little importance for those who are interested in causal inference because how well the trained model predicts the <span style="color:blue"> level </span> of the dependent variable (which MSE measures) is irrelevant. Rather, more critical question is whether the use of KCV leads us to choose sub-optimal hyper parameter values compared to SKCV. This could have a real consequence when we select a model and its hyper-parameter values for the first-stage ML applications in Double Machine Learning methods. 
 
 
-## Hyper-parameter tuning 
+## Hyper-parameter tuning
 
-Now, let's see whether KCV and SKCV lead to different tuning results using `gam()`. Here, we fix `k` at $30$ and vary `sp` to find the best `sp` value. The following function takes an `sp` value and return MSE values from both KCV and SKCV.
+Now, let's see whether KCV and SKCV lead to different tuning results using `gam()`. Here, we fix `k` at $50$ and vary `sp` to find the best `sp` value. The following function takes an `sp` value and return MSE values from both KCV and SKCV.
 
 ```{r}
-get_mse <- function(sp) {
+get_mse <- function(sp, kcv_folds, skcv_folds) {
   cv_results <-
     rbind(kcv_folds, skcv_folds) %>% 
     #=== make it possible to apply function row by row ===#
     rowwise() %>% 
-    #=== train the model ===#
-    mutate(gam_fit = list(
-      gam(y ~ s(x, k = 50, sp = sp), data = analysis(splits))
-    )) %>% 
     #=== get mse ===#
     mutate(mse_data = list(
       assessment(splits) %>% 
       data.table() %>% 
-      .[, y_hat := predict(gam_fit, newdata = .)] %>% 
+      .[, y_hat := predict( # predict y based on the fitted model
+        #=== train the model ===#
+        gam(y ~ s(x, k = 50, sp = sp), data = analysis(splits)), 
+        newdata = .)
+      ] %>% 
       .[, .(
         mse_obs = mean((y - y_hat)^2)
       )]
@@ -385,7 +389,8 @@ get_mse <- function(sp) {
     dplyr::select(id, type, mse_data) %>% 
     unnest() %>% 
     data.table() %>% 
-    .[, sp_v := sp]
+    .[, sp_v := sp] %>%
+    .[]
 
   return(cv_results)
 
@@ -394,94 +399,211 @@ get_mse <- function(sp) {
 
 Here is an example at `sp` $= 0.5$.
 ```{r}
-get_mse(0.5)[]
+#| warning: false
+
+get_mse(0.5, kcv_folds, skcv_folds)
 ```
 
-Let's try `sp` values ranging from 0 to 1.
+Let's try `sp` values ranging from 0 to 5.
 
 ```{r}
+sp_seq <- c(0.05, seq(0.5, 5, by = 0.25))
+
 cv_results <-
   mclapply(
-    seq(0.05, 5, length = 20),
-    function(x) get_mse(x),
-    mc.cores = detectCores() - 2
+    sp_seq,
+    function(x) get_mse(x, kcv_folds, skcv_folds),
+    mc.cores = detectCores() / 4 * 3
   ) %>% 
-  rbindlist()
-
+  rbindlist() %>% 
+  .[, .(mse = mean(mse_obs)), by = .(type, sp_v)]
 ```
 
-Now, let's see what value of `sp` would have been the best to estimate $E[y|x]$ (this is what we really want to know, but can't in practice because you do not observe the true data generating process unlike the simulation we are running here). For this purpose, we will create a test dataset that follows exactly the same data generating process (but randomness in the process makes a different dataset). 
+Now, let's see what value of `sp` would have been the best to estimate $E[y|x]$ (this is what we really want to know, but can't in practice because you do not observe the true data generating process unlike the simulation we are running here). 
+
+We will fit `gam()` at the same sequence of `sp` values used just above using the entire training dataset and check what `sp` value minimizes the prediction error from true $E[y|x]$.
+
+::: {.column-margin}
+Note that since we are testing against the true $E[y|x]$, we can simply use the training dataset instead of using independent test datasets. Of course, you cannot do this in practice. 
+:::
 
 ```{r}
-#=== generate the test data ===#
-test_data  <- gen_data(seed = 9843)
-```
-
-We will fit `gam()` at the same sequence of `sp` values used just above using the entire test dataset and check what `sp` value minimizes the prediction error from true $E[y|x]$.
-
-```{r}
-#| code-fold: true
-  
-
-ggplot(test_data) +
-  geom_point(aes(y = y, x = x))
-
-test_mse <-
+(
+mse_e <-
   data.table(
-    sp_v = seq(0.05, 10, length = 20)
+    sp_v = sp_seq
   ) %>% 
   rowwise() %>% 
-  mutate(gam_fit = list(
-    gam(y ~ s(x, k = 50), sp = sp_v, data = test_data)
+  mutate(fitted_values = list(
+    gam(y ~ s(x, k = 50), sp = sp_v, data = train_data)$fitted.value
   )) %>% 
-  mutate(mse = mean((test_data$y_det - gam_fit$fitted.value)^2))  
-
-test_mse$mse
-
-
-
-
+  mutate(mse = mean((train_data$y_det - fitted_values)^2)) %>%
+  data.table() %>% 
+  .[, .(sp_v, mse)] %>% 
+  .[, type := "Test"]
+)
 ```
 
-
-
-
-Panel (a) of @fig-mse-tune plots MSE against the value of `sp` for KCV and SKCV. As you can see both of the suggested 0.2 as the MSE-minimizing value of `sp`. Panel (b) of @fig-mse-tune shows the squared deviations from $E[y|x]$ as a function of `sp`, which tells us what value of `sp` would result in the curve that is the closest to $E[y|x]$, the quantity of interest. Both KCV and SKCV suggest that `sp` value of 0.2 is the best. This means that both KCV and SKCV based on train data successfully identified the optimal value of `sp`. Remember that we do not really care about prediction accuracy. That is not our ultimate goal. Using KCV instead of SKCV is likely to result in a more optimistic view of how good the model actually is as we saw earlier. However, the purpose of cross-validation is tuning, but not trying to measure the accuracy of our trained model (at least for those who do not care about prediction itself). Moreover, any type of CV tends to heavily underestimate the true test ME anyway.
+Let's combine all the results and see how they are different. 
 
 ```{r}
-#| fig-cap: MSE and squared deviation from E[y|x] by KCV and SKCV
-#| fig-subcap: 
-#|   - "MSE"
-#|   - "Square Deviation from E[y|x]"
+#| fig-cap: Cross-validation results 
 #| label: fig-mse-tune
-#| layout-ncol: 1 
 #| code-fold: true
-#| eval: false
 
-cv_plot_data <- 
-  cv_results[
-    , 
-    .(mse_obs = mean(mse_obs), mse_true = mean(mse_true)), 
-    by = .(type, sp_v)
-  ]
+all_mse <- rbind(mse_e, cv_results)
 
-ggplot(cv_plot_data) +
-  geom_line(aes(y = mse_obs, x = sp_v)) +
-  geom_point(aes(y = mse_obs, x = sp_v)) +
+ggplot() +
+  geom_line(data = all_mse, aes(y = mse, x = sp_v)) +
+  geom_point(data = all_mse, aes(y = mse, x = sp_v)) +
+  geom_point(
+    data = all_mse[, .SD[which.min(mse), ], by = type], 
+    aes(y = mse, x = sp_v),
+    color = "red",
+    size = 2
+  ) +
   facet_grid(type ~ ., scale = "free_y") +
-  ylab("MSE") +
-  xlab("sp") +
-  theme_bw() 
-
-ggplot(cv_plot_data) +
-  geom_line(aes(y = mse_true, x = sp_v)) +
-  geom_point(aes(y = mse_true, x = sp_v)) +
-  facet_grid(type ~ ., scale = "free_y") +
-  ylab("Square Deviation from E[y|x]") +
-  xlab("sp") +
   theme_bw()
 ```
 
+So, the `sp` value that would produce the fitted curve that is closest to the true $E[y|x]$ is `r mse_e[which.min(mse), sp_v]`. SKCV suggests that `sp` value of `r all_mse[type == "SKCV", ] %>% .[which.min(mse), sp_v]` is optimal. Finally, KCV suggests that `sp` value of `r all_mse[type == "KCV", ] %>% .[which.min(mse), sp_v]` is optimal. But, of course this is just a single instance. Let's run more of the same simulations to see if our guess is correct or not. @fig-sp-compare presents the optimal `sp` values estimated by KCV and SKCV plotted against the actual optimal `sp` value from 100 simulations. Points around the red one-to-one line indicate good predictions by KCV and SKCV.
+
+
+```{r}
+#| fig-cap: Optimal penalization parameter estimated by KCV and SKCV compared against the actual optimal parameter.
+#| label: fig-sp-compare
+#| cache: true
+#| code-fold: true
+
+run_cv_sim <- function(i)
+{
+
+  print(i)
+
+  #=== create the training data ===#
+  training_data  <- gen_data(seed = runif(1) * 1000)
+
+  #--------------------------
+  # prepare data for CV
+  #--------------------------
+  kcv_folds <- 
+    rsample::vfold_cv(training_data, v = 6) %>% 
+    mutate(type := "KCV")
+
+  skcv_folds <- 
+    spatial_clustering_cv(training_data, v = 6) %>% 
+    mutate(type := "SKCV")
+
+  #--------------------------
+  # run KCV and SKCV
+  #--------------------------  
+  cv_results <-
+    lapply(
+      sp_seq,
+      function(x) get_mse(x, kcv_folds, skcv_folds)
+    ) %>% 
+    rbindlist() %>% 
+    .[, .(mse = mean(mse_obs)), by = .(type, sp_v)] %>% 
+    .[, .SD[which.min(mse)], by = .(type)]
+
+  #--------------------------
+  # gam fits on the entire train dataset
+  #--------------------------
+  gam_fits <-
+    data.table(
+      sp_v = sp_seq
+    ) %>% 
+    rowwise() %>% 
+    mutate(gam_fit = list(
+      gam(y ~ s(x, k = 50), sp = sp_v, data = training_data)
+    )) %>% 
+    mutate(mse = mean((training_data$y_det - gam_fit$fitted.value)^2)) 
+
+  #--------------------------
+  #  Level 2 comment out
+  #--------------------------
+  opt_x_data <-
+    left_join(cv_results, gam_fits, by = "sp_v") %>% 
+    rowwise() %>% 
+    mutate(opt_x = 
+      data.table(
+        x = seq(min(training_data$x), max(training_data$x), length = 100)
+      ) %>% 
+      .[, y_hat := predict(gam_fit, newdata = .)] %>% 
+      .[, pi_hat := y_hat - 8 * x] %>% 
+      .[which.max(pi_hat), x]
+    ) %>% 
+    data.table() %>% 
+    .[, .(type, opt_x)]
+
+  #--------------------------
+  # best sp
+  #--------------------------
+  best_sp <-
+    gam_fits %>% 
+    data.table() %>% 
+    .[which.min(mse), sp_v]
+
+  return_results <- 
+    cv_results %>% 
+    .[, sp_best := best_sp] %>% 
+    opt_x_data[., on = "type"]
+
+  return(return_results)
+}
+
+sim_results <-
+  mclapply(
+    1:100,
+    function(x) run_cv_sim(x),
+    mc.cores = detectCores() * 3 / 4
+  ) %>% 
+  rbindlist(idcol = "sim")
+
+ggplot(data = sim_results[, .N, by = .(sp_v, type, sp_best)]) +
+  geom_point(aes(x = sp_v, y = sp_best, size = N)) +
+  geom_abline(slope = 1, color = "red") +
+  facet_grid(type ~ .) +
+  theme_bw()
+
+```
+
+KCV seems to underestimate the optimal value of `sp`. While SKCV seems to be less biased, it is not doing a great job just like KCV. 
+
+This was an interesting experiment. However, how consequential is it in terms of treatment effect estimation? When the actual optimal `sp` value is 5 and KCV is suggesting `sp` value of 0.05 (in many cases), using `sp` = 0 as the final model leads to a model that is terrible at treatment effect estimation? To see this, let's consider a simple economic problem. Suppose $y$ and $x$ are an output and input, respectively. Further suppose that the price of $y$ is 1 and the cost of $x$ is 8. We would like to solve the following profit maximization problem:
+
+$$
+\begin{aligned}
+ & Max_{x} 4 \times y - 2 \times x \\
+\Rightarrow & Max_{x} 1 \times (10 + 48 \times x - 4 \times x^2) - 8 \times x 
+\end{aligned}
+$$
+
+Here, $1 \times (10 + 48 \times x - 4 \times x^2)$ is the revenue and $8 \times x$ is the cost (the difference is the profit). 
+
+Taking the derivative of the objective function with respect $x$, 
+
+$$
+1 \times 48 - 1 \times 4 \times 2 \times x - 8 = 0
+$$ {#eq-foc}
+
+Here, $1 \times 48 - 1 \times 4 \times 2 \times x$ represents the marginal treatment effect of $x$. Now, note that the intercept ($10$) goes away and it plays no role in determining the optimal value of the input ($x$). That is, it is perfectly fine to get the intercept wrong as long as we are estimating the marginal treatment effect of $x$ accurately (as we discussed earlier, MSE is not a good measure for this as it punishes a bias in intercept).  
+
+According to @eq-foc, optimal $x$ is $5$. @fig-opt-x shows the density plot of estimated optimal $x$ by KCV and SKCV. It seems like SKCV is a little more accurate than KCV. 
+
+```{r}
+#| fig-cap: Accuracy of estimating optimal value of the input (x) by CV type
+#| label: fig-opt-x
+#| code-fold: true
+
+ggplot(sim_results) +
+  geom_density(aes(x = opt_x, fill = type), alpha = 0.4) +
+  scale_fill_discrete(name = "") +
+  theme_bw()
+
+```
+
+It is important to note that this result clearly does not generalize. We looked at a very simply toy example. This section was not intended to give you a general advise on which KCV or SKCV you should use. It would be interesting to examine the difference between KCV and SKCV under more complex data generating process using other ML methods. 
 
 
 
@@ -489,5 +611,4 @@ ggplot(cv_plot_data) +
 
 
 
- 
 
