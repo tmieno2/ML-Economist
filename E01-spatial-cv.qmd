@@ -589,7 +589,7 @@ $$ {#eq-foc}
 
 Here, $1 \times 48 - 1 \times 4 \times 2 \times x$ represents the marginal treatment effect of $x$. Now, note that the intercept ($10$) goes away and it plays no role in determining the optimal value of the input ($x$). That is, it is perfectly fine to get the intercept wrong as long as we are estimating the marginal treatment effect of $x$ accurately (as we discussed earlier, MSE is not a good measure for this as it punishes a bias in intercept).  
 
-According to @eq-foc, optimal $x$ is $5$. @fig-opt-x shows the density plot of estimated optimal $x$ by KCV and SKCV. It seems like SKCV is a little more accurate than KCV. 
+According to @eq-foc, optimal $x$ is $5$. @fig-opt-x shows the density plot of estimated optimal $x$ by KCV and SKCV. It seems like KCV and SKCV provide similar results and it does not really matter which one to use for `sp` parameter tuning at least in this particular instance. It is important to note that this result clearly does not generalize. We looked at a very simply toy example. This section was not intended to give you a general advise on which KCV or SKCV you should use. It would be interesting to examine the difference between KCV and SKCV under more complex data generating process using other ML methods. 
 
 ```{r}
 #| fig-cap: Accuracy of estimating optimal value of the input (x) by CV type
@@ -603,7 +603,7 @@ ggplot(sim_results) +
 
 ```
 
-It is important to note that this result clearly does not generalize. We looked at a very simply toy example. This section was not intended to give you a general advise on which KCV or SKCV you should use. It would be interesting to examine the difference between KCV and SKCV under more complex data generating process using other ML methods. 
+ 
 
 
 

@@ -27,10 +27,15 @@ quarto::quarto_render(here::here("LectureNotes/B03-cross-validation.qmd"))
 quarto::quarto_render(here::here("LectureNotes/B05-bootstrap.qmd")) # === bootstrap ===#
 
 
-
 # === Tree-based ===#
 quarto::quarto_render(here::here("LectureNotes/P01-random-forest.qmd"))
 quarto::quarto_render(here::here("LectureNotes/P02-boosted-regression-forest.qmd"))
+
+#/*=================================================*/
+#' # Causal ML
+#/*=================================================*/
+# === double-ml ===#
+quarto::quarto_render(here::here("LectureNotes/C01-dml.qmd"))
 
 # === causal-ml ===#
 quarto::quarto_render(here::here("LectureNotes/causal-ml.qmd"))

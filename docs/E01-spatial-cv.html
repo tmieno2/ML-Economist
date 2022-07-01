@@ -462,6 +462,8 @@ First 10 features:
 </div>
 <p>We have three main variables, <code>y</code> (dependent variable), <code>x</code> (explanatory variable), and <code>e</code> (error). <a href="#fig-viz">Figure&nbsp;<span>9.1</span></a> shows how they are spatially distributed. It also shows that all of them are spatially positively correlated.</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>g_error <span class="ot">&lt;-</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">data =</span> train_data) <span class="sc">+</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> e), <span class="at">color =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
@@ -481,6 +483,7 @@ First 10 features:
 <span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()</span>
 <span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>g_y <span class="sc">|</span> g_x <span class="sc">|</span> g_error  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div id="fig-viz" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -846,7 +849,7 @@ Please use `cols = c(mse_data)`</code></pre>
 </div>
 </div>
 <p>So, the <code>sp</code> value that would produce the fitted curve that is closest to the true <span class="math inline">\(E[y|x]\)</span> is 0.5. SKCV suggests that <code>sp</code> value of 2 is optimal. Finally, KCV suggests that <code>sp</code> value of 2.5 is optimal. But, of course this is just a single instance. Let’s run more of the same simulations to see if our guess is correct or not. <a href="#fig-sp-compare">Figure&nbsp;<span>9.7</span></a> presents the optimal <code>sp</code> values estimated by KCV and SKCV plotted against the actual optimal <code>sp</code> value from 100 simulations. Points around the red one-to-one line indicate good predictions by KCV and SKCV.</p>
-<div class="cell">
+<div class="cell" data-hash="E01-spatial-cv_cache/html/fig-sp-compare_2bfeb04be450cc35eaf6ee399994efa1">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>run_cv_sim <span class="ot">&lt;-</span> <span class="cf">function</span>(i)</span>
@@ -963,7 +966,7 @@ Please use `cols = c(mse_data)`</code></pre>
 1 \times 48 - 1 \times 4 \times 2 \times x - 8 = 0
 \tag{9.1}\]</span></span></p>
 <p>Here, <span class="math inline">\(1 \times 48 - 1 \times 4 \times 2 \times x\)</span> represents the marginal treatment effect of <span class="math inline">\(x\)</span>. Now, note that the intercept (<span class="math inline">\(10\)</span>) goes away and it plays no role in determining the optimal value of the input (<span class="math inline">\(x\)</span>). That is, it is perfectly fine to get the intercept wrong as long as we are estimating the marginal treatment effect of <span class="math inline">\(x\)</span> accurately (as we discussed earlier, MSE is not a good measure for this as it punishes a bias in intercept).</p>
-<p>According to <a href="#eq-foc">Equation&nbsp;<span>9.1</span></a>, optimal <span class="math inline">\(x\)</span> is <span class="math inline">\(5\)</span>. <a href="#fig-opt-x">Figure&nbsp;<span>9.8</span></a> shows the density plot of estimated optimal <span class="math inline">\(x\)</span> by KCV and SKCV. It seems like SKCV is a little more accurate than KCV.</p>
+<p>According to <a href="#eq-foc">Equation&nbsp;<span>9.1</span></a>, optimal <span class="math inline">\(x\)</span> is <span class="math inline">\(5\)</span>. <a href="#fig-opt-x">Figure&nbsp;<span>9.8</span></a> shows the density plot of estimated optimal <span class="math inline">\(x\)</span> by KCV and SKCV. It seems like KCV and SKCV provide similar results and it does not really matter which one to use for <code>sp</code> parameter tuning at least in this particular instance. It is important to note that this result clearly does not generalize. We looked at a very simply toy example. This section was not intended to give you a general advise on which KCV or SKCV you should use. It would be interesting to examine the difference between KCV and SKCV under more complex data generating process using other ML methods.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -981,7 +984,6 @@ Please use `cols = c(mse_data)`</code></pre>
 </div>
 </div>
 </div>
-<p>It is important to note that this result clearly does not generalize. We looked at a very simply toy example. This section was not intended to give you a general advise on which KCV or SKCV you should use. It would be interesting to examine the difference between KCV and SKCV under more complex data generating process using other ML methods.</p>
 
 
 </section>
