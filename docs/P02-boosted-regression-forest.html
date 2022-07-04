@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta charset="utf-8">
-<meta name="generator" content="quarto-0.9.563">
+<meta name="generator" content="quarto-0.9.629">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
 <title>Introduction to Machine Learning for Economists - 7&nbsp; Boosted Regression Forest</title>
 <style>
 code{white-space: pre-wrap;}
@@ -96,6 +99,7 @@ div.csl-indent {
 }
 </style>
 
+
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
@@ -113,7 +117,8 @@ div.csl-indent {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
@@ -131,49 +136,61 @@ div.csl-indent {
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit"
   }
-}</script><link href="style.css" rel="stylesheet" type="text/css">
-<!-- Global site tag (gtag.js) - Google Analytics --><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-45VKT2HZSL"></script><script>
+}</script>
+<link href="style.css" rel="stylesheet" type="text/css">
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-45VKT2HZSL"></script>
+<script>
   window.dataLayer = window.dataLayer || [];
   function gtag() { dataLayer.push(arguments); }
   gtag('js', new Date());
 
   gtag('config', 'G-45VKT2HZSL');
-</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
 </head>
+
 <body class="nav-sidebar floating slimcontent">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }"><div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">
-<span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Boosted Regression Forest</span>
-</h1>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Boosted Regression Forest</span></h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
     </div>
-  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Introduction to Machine Learning for Economists</a> 
         <div class="sidebar-tools-main">
     <a href="https://github.com/tmieno2/ML-Economist" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
     <a href="" title="Share" id="sidebar-tool-dropdown-0" class="sidebar-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-share"></i></a>
     <ul class="dropdown-menu" aria-labelledby="sidebar-tool-dropdown-0">
-<li>
-          <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=%7Curl%7C">
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=|url|">
             <i class="bi bi-bi-twitter pe-1"></i>
           Twitter
           </a>
         </li>
         <li>
-          <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=%7Curl%7C">
+          <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
             <i class="bi bi-bi-facebook pe-1"></i>
           Facebook
           </a>
         </li>
         <li>
-          <a class="dropdown-item sidebar-tools-main-item" href="https://www.linkedin.com/sharing/share-offsite/?url=%7Curl%7C">
+          <a class="dropdown-item sidebar-tools-main-item" href="https://www.linkedin.com/sharing/share-offsite/?url=|url|">
             <i class="bi bi-bi-linkedin pe-1"></i>
           LinkedIn
           </a>
@@ -189,7 +206,7 @@ div.csl-indent {
       </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
-<li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">Welcome</a>
   </div>
@@ -206,8 +223,8 @@ div.csl-indent {
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
     </div>
-    <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
-<li class="sidebar-item">
+    <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./B01-nonlinear.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Non-linear function estimation</span></a>
   </div>
@@ -233,7 +250,7 @@ div.csl-indent {
   </div>
 </li>
     </ul>
-</li>
+  </li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
         <a href="./prediction-ml.html" class="sidebar-item-text sidebar-link">Prediction ML</a>
@@ -241,8 +258,8 @@ div.csl-indent {
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
     </div>
-    <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
-<li class="sidebar-item">
+    <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./P01-random-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Random Forest</span></a>
   </div>
@@ -258,12 +275,22 @@ div.csl-indent {
   </div>
 </li>
     </ul>
-</li>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="./causal-ml.html" class="sidebar-item-text sidebar-link">Causal Machine Learning (CML) Methods</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./causal-ml.html" class="sidebar-item-text sidebar-link">Causal Machine Learning (CML) Methods</a>
+  <a href="./C01-dml.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Double Machine Learning</span></a>
   </div>
 </li>
+    </ul>
+  </li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
         <a href="./extensions.html" class="sidebar-item-text sidebar-link">Extensions</a>
@@ -271,14 +298,14 @@ div.csl-indent {
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
     </div>
-    <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
-<li class="sidebar-item">
+    <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./E01-spatial-cv.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></a>
+  <a href="./E01-spatial-cv.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></a>
   </div>
 </li>
     </ul>
-</li>
+  </li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
         <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">Appendices</a>
@@ -286,29 +313,34 @@ div.csl-indent {
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
     </div>
-    <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
-<li class="sidebar-item">
+    <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./A01-mc-simulation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Monte Carlo (MC) Simulation</span></a>
   </div>
 </li>
     </ul>
-</li>
+  </li>
     </ul>
-</div>
-</nav><!-- margin-sidebar --><div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc"><h2 id="toc-title">Table of contents</h2>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-<li><a href="#gradient-boosting" id="toc-gradient-boosting" class="nav-link active" data-scroll-target="#gradient-boosting"> <span class="header-section-number">7.1</span> Gradient Boosting</a></li>
+  <li><a href="#gradient-boosting" id="toc-gradient-boosting" class="nav-link active" data-scroll-target="#gradient-boosting"> <span class="header-section-number">7.1</span> Gradient Boosting</a></li>
   <li><a href="#implementation" id="toc-implementation" class="nav-link" data-scroll-target="#implementation"> <span class="header-section-number">7.2</span> Implementation</a></li>
-  </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/P02-boosted-regression-forest.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/P02-boosted-regression-forest.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
 <!-- main -->
-<main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
-<h1 class="title d-none d-lg-block">
-<span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Boosted Regression Forest</span>
-</h1>
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Boosted Regression Forest</span></h1>
 </div>
 
 
@@ -320,56 +352,54 @@ div.csl-indent {
   </div>
   
 
-</header><section id="gradient-boosting" class="level2 page-columns page-full" data-number="7.1"><h2 data-number="7.1" class="anchored" data-anchor-id="gradient-boosting">
-<span class="header-section-number">7.1</span> Gradient Boosting</h2>
+</header>
+
+<section id="gradient-boosting" class="level2 page-columns page-full" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="gradient-boosting"><span class="header-section-number">7.1</span> Gradient Boosting</h2>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p><strong>Packages to load for replication</strong></p>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com">data.table</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bethatkinson/rpart">rpart</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rattle.togaware.com/">rattle</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://justinmshea.github.io/wooldridge/">wooldridge</a></span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rattle)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(wooldridge)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><strong>Dataset for replication</strong></p>
 <div class="cell">
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== get data ===#</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">mlb1</span><span class="op">)</span>
-
-<span class="va">mlb1_dt</span> <span class="op">&lt;-</span> 
-  <span class="va">mlb1</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/data.table.html">data.table</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="co"># turn into data.table </span>
-  <span class="va">.</span><span class="op">[</span>, <span class="va">salary</span> <span class="op">:=</span> <span class="cn">NULL</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="co"># remove salary (use lsalary instead)</span>
-  <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/na.omit.data.table.html">na.omit</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># remove observations with NA in any of the variables</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== get data ===#</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(mlb1)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>mlb1_dt <span class="ot">&lt;-</span> </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  mlb1 <span class="sc">%&gt;%</span> </span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="sc">%&gt;%</span> <span class="co"># turn into data.table </span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  .[, salary <span class="sc">:</span><span class="er">=</span> <span class="cn">NULL</span>] <span class="sc">%&gt;%</span> <span class="co"># remove salary (use lsalary instead)</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>() <span class="co"># remove observations with NA in any of the variables</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div></div><p>In training RF that uses the idea of bagging, the original data is used to generate many bootstrapped datasets, a regression tree is trained on each of them <span style="color:blue"> independently </span>, and then they are averaged to reach the final model. Boosting is similar to bagging (bootstrap aggregation) in that it trains many statistical models and then combine them to reach the final model. However, instead of building many trees independently, it builds trees <span style="color:blue"> sequentially </span> in a manner that improves prediction step by step.</p>
 <p>While there are many variants of boosting methods (see Chapter 10 of <span class="citation" data-cites="hastie2009elements">Hastie et al. (<a href="#ref-hastie2009elements" role="doc-biblioref">2009</a>)</span>), we will look at gradient boosting using trees for regression in particular (Algorithm 10.3 in <span class="citation" data-cites="hastie2009elements">Hastie et al. (<a href="#ref-hastie2009elements" role="doc-biblioref">2009</a>)</span> presents the generic gradient tree boosting algorithm), where squared error is used as the loss function.</p>
 <ol type="1">
-<li>Set <span class="math inline">\(f_0(X_i) = \frac{\sum_{i=1}^N y_i}{N}\)</span> for all <span class="math inline">\(i = 1, \dots, N\)</span>
-</li>
+<li>Set <span class="math inline">\(f_0(X_i) = \frac{\sum_{i=1}^N y_i}{N}\)</span> for all <span class="math inline">\(i = 1, \dots, N\)</span></li>
 <li>For b = 1 to B,</li>
 </ol>
 <ol type="i">
 <li>For <span class="math inline">\(i = 1, \dots, N\)</span>, calculate <span class="math display">\[
     r_{i,b} =  (y_i - f_{b-1}(X_i))
-    \]</span>
-</li>
+    \]</span></li>
 <li>Fit a regression tree to <span class="math inline">\(r_{i, b}\)</span>, which generates terminal regions <span class="math inline">\(R_{j,b}\)</span>, <span class="math inline">\(j = 1, \dots, J\)</span>, and denote the predicted value of region <span class="math inline">\(R_{j,b}\)</span> as <span class="math inline">\(\gamma_{j,b}\)</span>.</li>
-<li>Set <span class="math inline">\(f_b(X_i) = f_{b-1}(X_i) + \lambda \cdot \sum_{j=1}^J\gamma_{j, b}\cdot I(X_i \in R_{j,b})\)</span>
-</li>
+<li>Set <span class="math inline">\(f_b(X_i) = f_{b-1}(X_i) + \lambda \cdot \sum_{j=1}^J\gamma_{j, b}\cdot I(X_i \in R_{j,b})\)</span></li>
 </ol>
 <ol start="3" type="1">
-<li>Finally, <span class="math inline">\(\hat{f}(X_i) = f_B(X_i)\)</span>
-</li>
+<li>Finally, <span class="math inline">\(\hat{f}(X_i) = f_B(X_i)\)</span></li>
 </ol>
 <p>Let’s try to go through this algorithm a bit to have it sink in for you.</p>
 <p>Step 1</p>
 <p>Step 1 finds the mean of the dependent variable. This quantity is used as the starting estimate for the dependent variable.</p>
 <div class="cell">
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="op">(</span>
-<span class="va">f_0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">mlb1_dt</span><span class="op">$</span><span class="va">lsalary</span><span class="op">)</span>
-<span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>f_0 <span class="ot">&lt;-</span> <span class="fu">mean</span>(mlb1_dt<span class="sc">$</span>lsalary)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 13.51172</code></pre>
 </div>
@@ -377,20 +407,20 @@ div.csl-indent {
 <p>Step 2: <span class="math inline">\(b = 1\)</span></p>
 <p>Now, we get residuals:</p>
 <div class="cell">
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">mlb1_dt</span><span class="op">[</span>, <span class="va">resid_1</span> <span class="op">:=</span> <span class="va">lsalary</span> <span class="op">-</span> <span class="va">f_0</span><span class="op">]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>mlb1_dt[, resid_1 <span class="sc">:</span><span class="er">=</span> lsalary <span class="sc">-</span> f_0]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The residuals contain information in <code>lsalary</code> that was left unexplained. By training a regression tree using the residuals as the dependent variable, we are finding a tree that can explain the unexplained parts of <code>lsalary</code> using the explanatory variables.</p>
 <div class="cell">
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">tree_fit_b1</span> <span class="op">&lt;-</span> 
-  <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span>
-    <span class="va">resid_1</span> <span class="op">~</span> <span class="va">.</span>, <span class="co"># . means all variables</span>
-    data <span class="op">=</span> <span class="va">mlb1_dt</span> 
-  <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>tree_fit_b1 <span class="ot">&lt;-</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rpart</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    resid_1 <span class="sc">~</span> ., <span class="co"># . means all variables</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> mlb1_dt </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Here is the fitted value of the residuals (<span class="math inline">\(\sum_{j=1}^J\gamma_{j, b}\cdot I(X_i \in R_{j,b})\)</span>)</p>
 <div class="cell">
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">resid_1_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">tree_fit_b1</span>, newdata <span class="op">=</span> <span class="va">mlb1_dt</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">resid_1_hat</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>resid_1_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(tree_fit_b1, <span class="at">newdata =</span> mlb1_dt)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(resid_1_hat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>         1          2          3          4          5          6 
  1.7134881  1.7134881  1.2414996  1.2414996  0.5054178 -0.1851016 </code></pre>
@@ -398,9 +428,9 @@ div.csl-indent {
 </div>
 <p>Now, we update our prediction according to <span class="math inline">\(f_b(X_i) = f_{b-1}(X_i) + \lambda \cdot \sum_{j=1}^J\gamma_{j, b}\cdot I(X_i \in R_{j,b})\)</span>. We set <span class="math inline">\(\lambda\)</span> to be <span class="math inline">\(0.2\)</span> in this illustration.</p>
 <div class="cell">
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="va">lambda</span> <span class="op">&lt;-</span> <span class="fl">0.2</span>
-<span class="va">f_1</span> <span class="op">&lt;-</span> <span class="va">f_0</span> <span class="op">+</span> <span class="va">lambda</span> <span class="op">*</span> <span class="va">resid_1_hat</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">f_1</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>lambda <span class="ot">&lt;-</span> <span class="fl">0.2</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>f_1 <span class="ot">&lt;-</span> f_0 <span class="sc">+</span> lambda <span class="sc">*</span> resid_1_hat</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(f_1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       1        2        3        4        5        6 
 13.85441 13.85441 13.76002 13.76002 13.61280 13.47470 </code></pre>
@@ -408,39 +438,39 @@ div.csl-indent {
 </div>
 <p>Did we actually improve prediction accuracy? Let’s compare <code>f_0</code> and <code>f_1</code>.</p>
 <div class="cell">
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">(</span><span class="va">mlb1_dt</span><span class="op">$</span><span class="va">lsalary</span> <span class="op">-</span> <span class="va">f_0</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>((mlb1_dt<span class="sc">$</span>lsalary <span class="sc">-</span> f_0)<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 445.0615</code></pre>
 </div>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">(</span><span class="va">mlb1_dt</span><span class="op">$</span><span class="va">lsalary</span> <span class="op">-</span> <span class="va">f_1</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>((mlb1_dt<span class="sc">$</span>lsalary <span class="sc">-</span> f_1)<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 288.3205</code></pre>
 </div>
 </div>
 <p>Great. Let’s move on to <span class="math inline">\(b = 2\)</span>.</p>
 <div class="cell">
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== get negative of the residuals ===#</span>
-<span class="va">mlb1_dt</span><span class="op">[</span>, <span class="va">resid_2</span> <span class="op">:=</span> <span class="va">lsalary</span> <span class="op">-</span> <span class="va">f_1</span><span class="op">]</span>
-
-<span class="co">#=== fit a regression tree ===#</span>
-<span class="va">tree_fit_b2</span> <span class="op">&lt;-</span> 
-  <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span>
-    <span class="va">resid_2</span> <span class="op">~</span> <span class="va">.</span>, <span class="co"># . means all variables</span>
-    data <span class="op">=</span> <span class="va">mlb1_dt</span> 
-  <span class="op">)</span>
-
-<span class="co">#=== get predicted values ===#</span>
-<span class="va">resid_2_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">tree_fit_b2</span>, newdata <span class="op">=</span> <span class="va">mlb1_dt</span><span class="op">)</span>
-
-<span class="co">#=== update ===#</span>
-<span class="va">f_2</span> <span class="op">&lt;-</span> <span class="va">f_1</span> <span class="op">+</span> <span class="va">lambda</span> <span class="op">*</span> <span class="va">resid_2_hat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== get negative of the residuals ===#</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>mlb1_dt[, resid_2 <span class="sc">:</span><span class="er">=</span> lsalary <span class="sc">-</span> f_1]</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co">#=== fit a regression tree ===#</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>tree_fit_b2 <span class="ot">&lt;-</span> </span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rpart</span>(</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    resid_2 <span class="sc">~</span> ., <span class="co"># . means all variables</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> mlb1_dt </span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="co">#=== get predicted values ===#</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>resid_2_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(tree_fit_b2, <span class="at">newdata =</span> mlb1_dt)</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="co">#=== update ===#</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>f_2 <span class="ot">&lt;-</span> f_1 <span class="sc">+</span> lambda <span class="sc">*</span> resid_2_hat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">(</span><span class="va">mlb1_dt</span><span class="op">$</span><span class="va">lsalary</span> <span class="op">-</span> <span class="va">f_1</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>((mlb1_dt<span class="sc">$</span>lsalary <span class="sc">-</span> f_1)<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 288.3205</code></pre>
 </div>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">(</span><span class="va">mlb1_dt</span><span class="op">$</span><span class="va">lsalary</span> <span class="op">-</span> <span class="va">f_2</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>((mlb1_dt<span class="sc">$</span>lsalary <span class="sc">-</span> f_2)<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 186.9229</code></pre>
 </div>
@@ -457,76 +487,71 @@ r_{i,b} = - \huge[\normalsize\frac{\partial L(y_i, f(x_i))}{\partial f(x_i)}\hug
 \]</span></p>
 <p>This is why we have <span class="math inline">\(r_{i,b} = (y_i - f_{b-1}(X_i))\)</span> at Step 2.a. And, as you just saw, we are using the gradient of the loss function for model updating, which is why it is called <span style="color:blue"> gradient </span> boosting. Note that it does not really matter whether you have <span class="math inline">\(2\)</span> in front of the residuals or not the fitted residuals is multiplied (scaled) by <span class="math inline">\(\lambda\)</span> to when updating the model. You can always find the same <span class="math inline">\(\lambda\)</span> that would result in the same results as when just non-scaled residuals are used.</p>
 <p>Most R and python packages allow you to use a fraction of the train sample that are randomly selected and/or to use a subset of the included variables in building a tree within Step 2. This generate randomness in the algorithm and they are referred to as <span style="color:blue"> stochastic </span>gradient boosting.</p>
-</section><section id="implementation" class="level2" data-number="7.2"><h2 data-number="7.2" class="anchored" data-anchor-id="implementation">
-<span class="header-section-number">7.2</span> Implementation</h2>
+</section>
+<section id="implementation" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="implementation"><span class="header-section-number">7.2</span> Implementation</h2>
 <p>We can use the <code>gbm</code> package to train a gradient boosting regression. Just like <code>ranger()</code>, <code>gbm</code> takes formula and data like below.</p>
 <div class="cell">
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/gbm-developers/gbm">gbm</a></span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gbm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Loaded gbm 2.1.8</code></pre>
 </div>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== fit a gbm model ===#</span>
-<span class="va">gbm_fit</span> <span class="op">&lt;-</span> 
-  <span class="fu"><a href="https://rdrr.io/pkg/gbm/man/gbm.html">gbm</a></span><span class="op">(</span>
-    <span class="va">lsalary</span> <span class="op">~</span> <span class="va">hruns</span> <span class="op">+</span> <span class="va">years</span> <span class="op">+</span> <span class="va">rbisyr</span> <span class="op">+</span> <span class="va">allstar</span> <span class="op">+</span> <span class="va">runsyr</span> <span class="op">+</span> <span class="va">hits</span> <span class="op">+</span> <span class="va">bavg</span>, 
-    data <span class="op">=</span> <span class="va">mlb1_dt</span> 
-  <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== fit a gbm model ===#</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>gbm_fit <span class="ot">&lt;-</span> </span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gbm</span>(</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    lsalary <span class="sc">~</span> hruns <span class="sc">+</span> years <span class="sc">+</span> rbisyr <span class="sc">+</span> allstar <span class="sc">+</span> runsyr <span class="sc">+</span> hits <span class="sc">+</span> bavg, </span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> mlb1_dt </span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Distribution not specified, assuming gaussian ...</code></pre>
 </div>
 </div>
 <p>Here is the list of some parameters to be aware of:</p>
 <ul>
-<li>
-<code>n.trees</code>: Number of trees (<span class="math inline">\(B\)</span>). Default is <span class="math inline">\(100\)</span>.</li>
-<li>
-<code>interaction.depth</code>: 1 implies an additive model without interactions between included variables<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, 2 implies a model with 2-way interactions. Default is 1.</li>
-<li>
-<code>n.minobsinnode</code>: Minimum number of observations in a terminal node (leaf).</li>
-<li>
-<code>shrinkage</code>: Learning rate (<span class="math inline">\(\lambda\)</span>). Default is 0.1.</li>
-<li>
-<code>bag.fraction</code>: The fraction of the train data observations that are select randomly in building a tree. Default is 0.5.</li>
-<li>
-<code>cv.folds</code>: The number of folds in conducting KCV</li>
+<li><code>n.trees</code>: Number of trees (<span class="math inline">\(B\)</span>). Default is <span class="math inline">\(100\)</span>.</li>
+<li><code>interaction.depth</code>: 1 implies an additive model without interactions between included variables<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, 2 implies a model with 2-way interactions. Default is 1.</li>
+<li><code>n.minobsinnode</code>: Minimum number of observations in a terminal node (leaf).</li>
+<li><code>shrinkage</code>: Learning rate (<span class="math inline">\(\lambda\)</span>). Default is 0.1.</li>
+<li><code>bag.fraction</code>: The fraction of the train data observations that are select randomly in building a tree. Default is 0.5.</li>
+<li><code>cv.folds</code>: The number of folds in conducting KCV</li>
 </ul>
-<p>By specifying <code>cv.folds</code>, <code><a href="https://rdrr.io/pkg/gbm/man/gbm.html">gbm()</a></code> automatically conducts cross-validation for you.</p>
+<p>By specifying <code>cv.folds</code>, <code>gbm()</code> automatically conducts cross-validation for you.</p>
 <div class="cell">
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== gbm fit with CV ===#</span>
-<span class="va">gbm_fit</span> <span class="op">&lt;-</span> 
-  <span class="fu"><a href="https://rdrr.io/pkg/gbm/man/gbm.html">gbm</a></span><span class="op">(</span>
-    <span class="va">lsalary</span> <span class="op">~</span> <span class="va">hruns</span> <span class="op">+</span> <span class="va">years</span> <span class="op">+</span> <span class="va">rbisyr</span> <span class="op">+</span> <span class="va">allstar</span> <span class="op">+</span> <span class="va">runsyr</span> <span class="op">+</span> <span class="va">hits</span> <span class="op">+</span> <span class="va">bavg</span>, <span class="co"># . means all variables</span>
-    data <span class="op">=</span> <span class="va">mlb1_dt</span>,
-    cv.folds <span class="op">=</span> <span class="fl">5</span>,
-  <span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== gbm fit with CV ===#</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>gbm_fit <span class="ot">&lt;-</span> </span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gbm</span>(</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    lsalary <span class="sc">~</span> hruns <span class="sc">+</span> years <span class="sc">+</span> rbisyr <span class="sc">+</span> allstar <span class="sc">+</span> runsyr <span class="sc">+</span> hits <span class="sc">+</span> bavg, <span class="co"># . means all variables</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> mlb1_dt,</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv.folds =</span> <span class="dv">5</span>,</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Distribution not specified, assuming gaussian ...</code></pre>
 </div>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="co">#=== see the MSE history ===#  </span>
-<span class="va">gbm_fit</span><span class="op">$</span><span class="va">cv.error</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== see the MSE history ===#  </span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>gbm_fit<span class="sc">$</span>cv.error</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  [1] 1.2192685 1.1019341 1.0135007 0.9299477 0.8620604 0.8076936 0.7607022
-  [8] 0.7161817 0.6732476 0.6379772 0.6061855 0.5794042 0.5597671 0.5400480
- [15] 0.5235648 0.5037308 0.4887715 0.4759608 0.4630025 0.4501975 0.4384379
- [22] 0.4305112 0.4236263 0.4152798 0.4092745 0.4028396 0.4000152 0.3975382
- [29] 0.3960277 0.3944913 0.3914480 0.3892675 0.3860803 0.3832158 0.3818236
- [36] 0.3792990 0.3774374 0.3753477 0.3729566 0.3720547 0.3732248 0.3717881
- [43] 0.3700012 0.3690969 0.3698981 0.3697320 0.3694576 0.3683745 0.3667434
- [50] 0.3673605 0.3656048 0.3661001 0.3661341 0.3653736 0.3645468 0.3651414
- [57] 0.3639921 0.3638617 0.3635981 0.3640853 0.3614628 0.3619863 0.3614204
- [64] 0.3605797 0.3605722 0.3592594 0.3589600 0.3584162 0.3588906 0.3579578
- [71] 0.3580855 0.3578420 0.3563726 0.3561626 0.3552290 0.3553979 0.3557340
- [78] 0.3549836 0.3545966 0.3540274 0.3541736 0.3543495 0.3542435 0.3549671
- [85] 0.3547083 0.3539301 0.3533350 0.3528380 0.3553390 0.3542254 0.3523205
- [92] 0.3528195 0.3532481 0.3528978 0.3533992 0.3549893 0.3545315 0.3538091
- [99] 0.3525130 0.3521909</code></pre>
+<pre><code>  [1] 1.2128331 1.0970869 1.0082818 0.9359586 0.8649186 0.8035173 0.7529900
+  [8] 0.7088838 0.6676885 0.6312370 0.6022030 0.5772524 0.5538806 0.5344561
+ [15] 0.5190986 0.5017647 0.4872222 0.4739148 0.4646809 0.4552961 0.4469757
+ [22] 0.4381260 0.4315785 0.4252434 0.4209018 0.4159690 0.4109367 0.4060522
+ [29] 0.4043079 0.3999991 0.3968322 0.3932949 0.3911659 0.3891428 0.3870241
+ [36] 0.3841159 0.3813668 0.3804977 0.3804018 0.3806602 0.3792646 0.3791142
+ [43] 0.3785668 0.3763880 0.3756625 0.3760838 0.3747769 0.3741852 0.3720394
+ [50] 0.3702731 0.3688780 0.3679393 0.3669979 0.3651300 0.3657021 0.3658998
+ [57] 0.3659787 0.3649217 0.3647441 0.3641192 0.3638260 0.3623829 0.3614688
+ [64] 0.3610080 0.3614444 0.3613666 0.3610737 0.3611434 0.3602853 0.3604446
+ [71] 0.3600985 0.3604826 0.3603653 0.3586291 0.3572859 0.3574847 0.3578695
+ [78] 0.3589104 0.3588157 0.3593378 0.3593769 0.3598865 0.3596595 0.3594097
+ [85] 0.3580200 0.3574039 0.3577397 0.3580159 0.3588713 0.3580836 0.3585158
+ [92] 0.3577868 0.3582493 0.3577388 0.3582517 0.3582642 0.3576961 0.3581004
+ [99] 0.3575278 0.3571534</code></pre>
 </div>
 </div>
-<p>You can visualize the CV results using <code><a href="https://rdrr.io/pkg/gbm/man/gbm.perf.html">gbm.perf()</a></code>.</p>
+<p>You can visualize the CV results using <code>gbm.perf()</code>.</p>
 <div class="cell">
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/gbm/man/gbm.perf.html">gbm.perf</a></span><span class="op">(</span><span class="va">gbm_fit</span><span class="op">)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gbm.perf</span>(gbm_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="P02-boosted-regression-forest_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid" width="672"></p>
+<p><img src="P02-boosted-regression-forest_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 100</code></pre>
@@ -540,11 +565,17 @@ r_{i,b} = - \huge[\normalsize\frac{\partial L(y_i, f(x_i))}{\partial f(x_i)}\hug
 Hastie, Trevor, Robert Tibshirani, Jerome H Friedman, and Jerome H Friedman. 2009. <em>The Elements of Statistical Learning: Data Mining, Inference, and Prediction</em>. Vol. 2. Springer.
 </div>
 </div>
-</section><section class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
+</section>
+<section class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
 <ol>
 <li id="fn1" role="doc-endnote"><p>Indeed, all the algorithms and models we have talked about can be applied to classification problems with some small changes.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2" role="doc-endnote"><p>You can of course create interactions terms yourself in the data, which would allow simple linear 2-way interactions.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const icon = "";
   const anchorJS = new window.AnchorJS();
@@ -622,7 +653,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     });
   }
 });
-</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
       <a href="./P01-random-forest.html" class="pagination-link">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Random Forest</span></span>
       </a>          

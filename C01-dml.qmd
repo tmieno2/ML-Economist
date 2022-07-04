@@ -12,23 +12,17 @@ We follow the notations of @Chernozhukov2018.
 
 $$
 \begin{aligned}
-y = \theta T + g_0(X) + \mu \\
+y = \theta d + g_0(X) + \mu \\
 T = m_0(X) + \eta
 \end{aligned}
 $$
-Your sole interest is in estimating $\theta$: the impact of the treatment ($T$). $g_0(X)$ is the impact of a collection of variables $X$. $m_0(X)$ expresses how $X$ affects the treatment status, $T$. $T$ may be binary or continuous. The key assumptions here are $E[\mu|X]$ and $E[\eta|X]$....... That is...
+Your sole interest is in estimating $\theta$: the impact of the treatment ($d$). $g_0(X)$ is the impact of a collection of variables $X$. $m_0(X)$ expresses how $X$ affects the treatment status, $d$. $d$ may be binary or continuous. The key assumptions here are $E[\mu|X]$ and $E[\eta|X]$....... That is...
 
-
-:::{.column-margin}
 Note that the treatment effect is assumed to be constant irrespective of the value of $X$. So, the treatment effect is not heterogeneous. We will cover heterogeneous treatment effect estimation later.
-:::
 
 :::{.callout-tip}
-$g_0(X)$ and $m_0(X$ are called nuisance functions or parameters because we are not interested in what they look like. We are only interested in **controlling for** them. 
+$g_0(X)$ and $m_0(X)$ are called nuisance functions because we are not interested in understanding them. We are only interested in **controlling for** them to estimate $\theta$ accurately. 
 :::
-
-
-+ What happens if the first stage regressions are tuned to avoid over-fitting? Do you still need cross-fitting?
 
 
 ## A naive approach and regularization bias
@@ -74,25 +68,22 @@ One way to estimate $\theta$ follows the following steps:
 
 + Step 1: Estimate $g_0(X)$ and then subtract the fitted value of $g_0(X)$ from $y$.
   * Step 1.1: Regress $y$ on $X$ to estimate $E[y|X]$ and call it $\hat{l}_0(x)$ 
-  * Step 1.2: Get an initial estimate of $\theta$ using
+  * Step 1.2: Regress $d$ on $X$ to estimate $E[d|X]$ ($m_0(X)$), call it $\hat{m}_0(x)$, and calculate $\tilde{d} = d - \hat{m}_0(X)$.
+  * Step 1.3: Get an initial estimate of $\theta$ using
   $$
   \begin{aligned}
-    \hat{\theta}_{init} = (\frac{1}{n}\sum_{i=1}^N d_i d_i)^{-1}\frac{1}{n}\sum_{i=1}^N d_i (y_i - \hat{l}_0(X_i))
-  \end{aligned} {#eq-partial-out}
-  $$
-  * Step 1.3: Regress $y_i - \hat{\theta}_{init}$ on $X$ to estimate $g_0(X)$.
+    \hat{\theta}_{init} = (\frac{1}{n}\sum_{i=1}^N \tilde{d}_i \tilde{d}_i)^{-1}\frac{1}{n}\sum_{i=1}^N \tilde{d}_i (y_i - \hat{l}_0(X_i))
+  \end{aligned} 
+  $$ {#eq-partial-out}
+  * Step 1.4: Regress $y_i - \hat{\theta}_{init}d$ on $X$ to estimate $g_0(X)$ and call it $\hat{g}_0(X)$.
 + Step 2: Regress $y - \hat{g}_0(X)$ on $d$. Or equivalently, use the following formula 
   $$
   \begin{aligned}
     \hat{\theta} = (\frac{1}{n}\sum_{i=1}^N d_i d_i)^{-1}\frac{1}{n}\sum_{i=1}^N d_i (y_i - \hat{g}_0(X_i))
   \end{aligned}
-  $$
+  $$ {#eq-theta-partial}
 
-::: {.column-margin}
-The fitted value of $g_0(X)$ is denoted as $\hat{g}_0(X)$.
-:::
-
-As it will turn out, this procedure suffers from the so-called regularization bias [@Chernozhukov2018].
+As it will turn out, this procedure suffers from the so-called regularization and over-fitting bias[@Chernozhukov2018].
 
 To demonstrate the bias problem, we work on the following data generating process used in [the user guide for the DoubleML package](https://docs.doubleml.org/stable/guide/basics.html).
 
@@ -108,6 +99,8 @@ where $\mu_i \sim N(0, 1)$ and $\eta_i \sim N(0, 1)$ (So, no endogeneity problem
 We use the `gen_data()` function (defined on the right), which is a slightly generalized version of the `make_plr_CCDDHNR2018()` function from the `DoubleML` package.
 
 ::: {.column-margin}
+`gen_data()` allows you to specify $g_0(X)$ and $m_0(X)$ unlike `make_plr_CCDDHNR2018()`.
+
 ```{r}
 gen_data <- function(
   g_formula = formula(~ I(exp(x1)/(1+exp(x1))) + I(x3/4)), # formula that defines g(x)
@@ -158,13 +151,15 @@ gen_data <- function(
 
 
 ```{r}
-set.seed(3287423)
+set.seed(2893434)
 
 training_data <- gen_data()
 ```
 
 ```{r}
-set.seed(1234)
+#| include: false
+#| eval: false
+set.seed(19343)
 n_rep = 1000
 n_obs = 500
 n_vars = 20
@@ -185,14 +180,14 @@ str(training_data)
 
 ### Step 1
 
-Let's now work on Step 1. We estimate $g_0(X)$ using random forest (RF). As described above, this is a three-step process.
+Let's now work on Step 1. We estimate $g_0(X)$ using random forest (RF). As described above, this is a four-step process.
 
 
 ::: {.column-margin}
 It does not have to be RF. Indeed, you can use any statistical methods in this step.
 :::
 
-First, we estimate $l_0(X)$ by regressing $y$ on $X$.
+**Step 1.1**: Estimate $l_0(X)$ by regressing $y$ on $X$.
 
 ```{r}
 #--------------------------
@@ -209,13 +204,18 @@ rf_fitted_l0 <-
   )
 
 #=== fitted values ===#
-l0_hat <- rf_fitted_l0$predictions
+l0_hat <- predict(rf_fitted_l0, data = training_data)$predictions
 
 #=== create y - l0_hat ===#
 training_data[, y_less_l := y - l0_hat]
 ```
 
+**Step 1.2**: Estimate $m_0(X)$ by regressing $d$ on $X$.
+
 ```{r}
+#--------------------------
+# Step 1.2
+#--------------------------
 rf_fitted_m0 <-
   ranger(
     d ~ .,
@@ -227,13 +227,26 @@ rf_fitted_m0 <-
   )
 
 #=== fitted values ===#
-m0_hat <- rf_fitted_m0$predictions
+m0_hat <- predict(rf_fitted_m0, data = training_data)$predictions
 
 #=== create y - m0_hat ===#
 training_data[, d_less_m := d - m0_hat]
 ```
 
-We now get an initial estimate of $\theta$ using @eq-partial-out.
+::: {.column-margin}
+Figure of `d` (treatment variable) plotted against `m0_hat` ($\hat{m}_0(X)$).
+
+```{r}
+#| code-fold: true
+
+ggplot(training_data) +
+  geom_point(aes(y = d, x = m0_hat)) +
+  geom_abline(slope = 1, color = "red") +
+  theme_bw()
+```
+:::
+
+**Step 1.3**: Get an initial estimate of $\theta$ using @eq-partial-out.
 
 ```{r}
 #--------------------------
@@ -242,7 +255,7 @@ We now get an initial estimate of $\theta$ using @eq-partial-out.
 theta_init <- training_data[, sum(d_less_m * y_less_l) / sum(d_less_m * d_less_m) ]
 ```
 
-Finally, we regress $y - \theta_{init}d$ on $X$ to fit $g_0(X)$.
+**Step 1.4**: Regress $y - \theta_{init}d$ on $X$ to fit $g_0(X)$.
 
 ```{r}
 #--------------------------
@@ -263,15 +276,28 @@ rf_fitted_g0 <-
   )
 
 #=== fitted values ===#
-g0_hat <- training_data[, rf_fitted_g0$predictions]
+g0_hat <- predict(rf_fitted_g0, data = training_data)$predictions
 
 #=== create y - g0 ===#
 training_data[, y_less_g := y - g0_hat]
 ```
 
+@fig-g0-ghat plots true $g_0(X)$ (`g`) against $\hat{g}_0(X)$ (`g0_hat`). As you can see, $\hat{g}_0(X)$ is a bit biased.
+
+```{r}
+#| fig-cap: ""
+#| label: fig-g0-ghat
+#| code-fold: true
+ggplot(training_data) +
+  geom_point(aes(y = g, x = g0_hat)) +
+  geom_abline(slope = 1, color = "red") +
+  theme_bw() +
+  coord_equal()
+```
+
 ### Step 2
 
-we regress $y - \hat{g})_0(X)$ on $d$.
+Finally, we regress $y - \hat{g})_0(X)$ on $d$ (or equivalently using @eq-theta-partial).
 
 ```{r}
 (
@@ -279,51 +305,63 @@ theta_hat <- lm(y_less_g ~ d, data = training_data)$coefficient["d"]
 )
 ```
 
-So, in this instance, we get an estimate of $\theta$ that is a bit lower than the true value of $\theta$. Let's repeat this process many times to see how this procedure performs on average. @fig-naive shows the histogram of $\hat{\theta}$ from 500 simulations. You can see that this procedure has led to consistent underestimation of the treatment effect. There are two sources of bias in this approach: regularization and over-fitting bias. 
+So, in this instance, we get an estimate of $\theta$ that is a bit lower than the true value of $\theta$. Let's repeat this process many times to see how this procedure performs on average. 
 
 ```{r}
 #| code-fold: true 
 #| fig-cap: Simulation results of the naive procedure
 #| label: fig-naive
+#| warning: false
 
-fit_m0 <- function(training_data) {
+fit_m0 <- function(training_data, mtry = 10) {
 
   rf_fitted_m0 <-
     ranger(
       d ~ .,
       data = dplyr::select(training_data, c("d", starts_with("x"))),
-      mtry = 5,
-      num.trees = 378,
+      # mtry = 5,
+      mtry = mtry,
+      # num.trees = 378,
+      num.trees = 500,
       max.depth = 3,
-      min.node.size = 6
+      # min.node.size = 6
+      min.node.size = 10
     )
 
   return(rf_fitted_m0)
 
 }
 
+fit_l0 <- function(training_data, mtry = 12)
+{
+  rf_fitted_l0 <-
+    ranger(
+      y ~ .,
+      data = dplyr::select(training_data, c("y", starts_with("x"))),
+      mtry = mtry,
+      # num.trees = 132,
+      num.trees = 500,
+      max.depth = 5,
+      # min.node.size = 1
+      min.node.size = 10
+    )
+
+  return(rf_fitted_l0)
+}
 
 #===================================
 # Define a function that will get you g0_hat
 #===================================
 # this function will be used later
 
-fit_g0 <- function(training_data, rf_fitted_m0) {
+fit_g0 <- function(training_data, rf_fitted_m0, mtry_l = 12, mtry_g = 12) {
   #--------------------------
   # Step 1.1
   #--------------------------
-  rf_fitted_l0 <-
-    ranger(
-      y ~ .,
-      data = dplyr::select(training_data, c("y", starts_with("x"))),
-      mtry = 12,
-      num.trees = 132,
-      max.depth = 5,
-      min.node.size = 1
-    )
+  rf_fitted_l0 <- fit_l0(training_data, mtry_l)
 
   #=== fitted values ===#
-  l0_hat <- rf_fitted_l0$predictions
+  l0_hat <- predict(rf_fitted_l0, data = training_data)$predictions
 
   #=== create y - l0_hat ===#
   training_data[, y_less_l := y - l0_hat]
@@ -332,7 +370,7 @@ fit_g0 <- function(training_data, rf_fitted_m0) {
   # Step 1.2
   #--------------------------
   #=== fitted values ===#
-  m0_hat <- rf_fitted_m0$predictions
+  m0_hat <- predict(rf_fitted_m0, data = training_data)$predictions
 
   #=== create y - m0_hat ===#
   training_data[, d_less_m := d - m0_hat]
@@ -340,7 +378,7 @@ fit_g0 <- function(training_data, rf_fitted_m0) {
   #--------------------------
   # Step 1.2
   #--------------------------
-  theta_init <- training_data[, sum(d * y_less_l) / sum(d * d)]
+  theta_init <- training_data[, sum(d_less_m * y_less_l) / sum(d_less_m * d_less_m)]
 
   #--------------------------
   # Step 1.3
@@ -353,10 +391,12 @@ fit_g0 <- function(training_data, rf_fitted_m0) {
     ranger(
       y_less_te ~ .,
       data = dplyr::select(training_data, c("y_less_te", starts_with("x"))),
-      mtry = 12,
-      num.trees = 132,
+      mtry = mtry_g,
+      # num.trees = 132,
+      num.trees = 500,
       max.depth = 5,
-      min.node.size = 1
+      # min.node.size = 1
+      min.node.size = 10
     )
 
   return(rf_fitted_g0)
@@ -368,11 +408,12 @@ fit_g0 <- function(training_data, rf_fitted_m0) {
 #===================================
 run_sim_naive <- function(i){
 
-  training_data <- data[[i]] %>% data.table()
+  # training_data <- data[[i]] %>% data.table()
+  training_data <- gen_data()
 
   rf_fitted_m0 <- fit_m0(training_data)
   rf_fitted_g0 <- fit_g0(training_data, rf_fitted_m0)
-  g0_hat <- rf_fitted_g0$predictions
+  g0_hat <- predict(rf_fitted_g0, data = training_data)$predictions
 
   #=== create y - g0 ===#
   training_data[, y_less_g := y - g0_hat]
@@ -388,7 +429,7 @@ run_sim_naive <- function(i){
 #===================================
 # Repeat MC simulations 500 times
 #===================================
-theta_hats <-
+theta_hats_apr1 <-
   mclapply(
     1:500,
     run_sim_naive,
@@ -400,15 +441,102 @@ theta_hats <-
 #===================================
 # Plot the results
 #===================================
-ggplot(theta_hats) +
+ggplot(theta_hats_apr1) +
   geom_histogram(aes(x = theta), color = "white") +
   theme_bw() + 
-  geom_vline(xintercept = 0.5, color = "red")
+  geom_vline(aes(xintercept = 0.5,color = "True Value")) +
+  geom_vline(aes(xintercept = theta_hats_apr1[, mean(theta)], color = "Mean of the Estimates")) +
+  scale_color_manual(
+    values = c("True Value" = "red", "Mean of the Estimates" = "blue"),
+    name = ""
+  ) +
+  guides(color = guide_legend(nrow = 1, byrow = TRUE)) +
+  theme(legend.position = "bottom")
+```
+
+@fig-naive shows the histogram of $\hat{\theta}$ from 500 simulations. You can see that this procedure has led to consistent underestimation of the treatment effect. There are two sources of bias in this approach: regularization and over-fitting bias. 
+
+:::{.callout-note}
+
++ Regularization bias: the bias coming from bias in estimating $g_0(X)$
++ Over-fitting bias: the bias coming from over-fitting $g_0(X)$ and $m_0(X)$ due to the fact that the same sample is used for $g_0(X)$ and $m_0(X)$ estimation and $\theta$ estimation
+
+:::
+
+Regularization bias is termed so because bias in estimating $g_0(X)$ can occur when some form of regularization is implemented (e.g., lasso). However, its name is slightly misleading because $g_0(X)$ cannot be estimated without bias even without any regularization in general. This is because the estimation of initial $\theta$ (in Step 1.3) is biased, which comes from the fact that $m_0(X)$ is correlated with $g_0(X)$ through $X$. 
+
+::: {.column-margin}
+Another (unofficial) implementation of $g_0(X)$ estimation is to just use $\hat{l}_0(X_i)$ as $\hat{g}_0(X_i)$ ([a blog post](https://www.r-bloggers.com/2017/06/cross-fitting-double-machine-learning-estimator/)) and then use the following formula.
+
+$$
+\begin{aligned}
+  \hat{\theta} = (\frac{1}{n}\sum_{i=1}^N d_i d_i)^{-1}\frac{1}{n}\sum_{i=1}^N d_i (y_i - \hat{l}_0(X_i))
+\end{aligned}
+$$
+
+$\hat{\theta}$ is biased because $\hat{l}_0(X_i)$ is a biased estimator of $\hat{g}_0(X_i)$ when $m_0(X)$ and $g_0(X)$ are correlated. The point here is that, $g_0(X)$ is hard to estimate without bias irrespective of whether any regularization happens or not.
+:::
+
+However, if the treatment is independent, then, $g_0(X)$ can be estimated well and this approach works well except it still suffers from over-fitting bias. @fig-apr1-indep shows that the distribution of $\hat{\theta}$ when $m_0(X)$ is independent of $g_0(X)$ and the RF with the same hyper-parameters are used. While regularization can lead to bias in the estimation of $g_0(X)$, regularization is not the only source of bias. 
+
+```{r}
+#| fig-cap: Performance of approach 1 when the treatment status is independent
+#| label: fig-apr1-indep
+#| code-fold: true
+#| warning: false
+
+run_sim_naive <- function(i){
+
+  training_data <- gen_data(m_formula = "independent")
+
+  rf_fitted_m0 <- fit_m0(training_data)
+  rf_fitted_g0 <- fit_g0(training_data, rf_fitted_m0)
+  # rf_fitted_g0 <- fit_l0(training_data)
+
+  g0_hat <- predict(rf_fitted_g0, data = training_data)$predictions
+
+  #=== create y - g0 ===#
+  training_data[, y_less_g := y - g0_hat]
+
+  theta_hat <- lm(y_less_g ~ d, data = training_data)$coefficient["d"]
+
+  # theta_hat <- training_data[, sum(d * y_less_g) / sum(d * d)]
+
+  return(theta_hat)
+
+}
+
+#===================================
+# Repeat MC simulations 500 times
+#===================================
+theta_hats_apr1_indep <-
+  mclapply(
+    1:500,
+    run_sim_naive,
+    mc.cores = detectCores() / 4 * 3
+  ) %>% 
+  unlist() %>% 
+  data.table(theta = .)
+
+#===================================
+# Plot the results
+#===================================
+ggplot(theta_hats_apr1_indep) +
+  geom_histogram(aes(x = theta), color = "white") +
+  theme_bw() + 
+  geom_vline(aes(xintercept = 0.5,color = "True Value")) +
+  geom_vline(aes(xintercept = theta_hats_apr1_indep[, mean(theta)], color = "Mean of the Estimates")) +
+  scale_color_manual(
+    values = c("True Value" = "red", "Mean of the Estimates" = "blue"),
+    name = ""
+  ) +
+  guides(color = guide_legend(nrow = 1, byrow = TRUE)) +
+  theme(legend.position = "bottom")
 ```
 
 ## Overcoming the regularization bias
 
-Regularization bias can be overcome by double-debiasing. Specifically, 
+Regularization bias can be overcome by double-debiasing (orthogonalizing both $d$ and $y$). Specifically, 
 
 
 + Step 1: Estimate $g_0(X)$ and then subtract the fitted value of $g_0(X)$ from $y$ 
@@ -421,18 +549,20 @@ $$
 \end{aligned}
 $$
 
-We have done Step 1 already in the previous approach. Let's work on Steps 2 and 3.
+The key difference from the previous approach is that this approach uses **IV-like** formula, where $\tilde{d}$ is acting like an instrument. 
+
+::: {.column-margin}
+For $y = X\beta + \mu$ with instruments $Z$, the IV estimator is
+$$
+\begin{aligned}
+\hat{\beta} = (Z'X)^{-1}Z'y
+\end{aligned}
+$$
+::: 
+
+We have done Steps 1 and 2 already in the previous approach. So,
 
 ```{r}
-#--------------------------
-# Step 2
-#--------------------------
-#=== fitted value ===#
-m0_hat <- rf_fitted_m0$predictions
-
-#=== create T - m0_hat ===#
-training_data[, d_less_m := d - m0_hat]
-
 #--------------------------
 # Step 3
 #--------------------------
@@ -441,27 +571,28 @@ theta_hat <- training_data[, sum(d_less_m * y_less_g) / sum(d_less_m * d)]
 )
 ```
 
-Yes, this is just a single instance, but things are looking better. Now, let's repeat this 500 times. @fig-dd shows the distribution of $\hat{\theta}$, which is almost centered at $0.5$. The current approach still suffers from the so-called over-fitting bias[@Chernozhukov2018]. Let's look at how we can overcome this bias next.
+Now, let's repeat this 500 times. 
 
 ```{r}
 #| code-fold: true
 #| fig-cap: Simulation results of double-debiased approach
 #| label: fig-dd
+#| warning: false
 
 run_sim_dereg <- function(i)
 {
-  # training_data <- gen_data()
-  training_data <- data[[i]] %>% data.table
+  training_data <- gen_data()
+  # training_data <- data[[i]] %>% data.table
 
   rf_fitted_m0 <- fit_m0(training_data)
-  m0_hat <- rf_fitted_m0$predictions
+  m0_hat <- predict(rf_fitted_m0, data = training_data)$predictions
 
   #=== create d - m0_hat ===#
   training_data[, d_less_m := d - m0_hat]
 
   #=== get g0_hat ===#
   rf_fitted_g0 <- fit_g0(training_data, rf_fitted_m0)
-  g0_hat <- rf_fitted_g0$predictions
+  g0_hat <- predict(rf_fitted_g0, data = training_data)$predictions
 
   #=== create y - g0 ===#
   training_data[, y_less_g := y - g0_hat]
@@ -471,7 +602,7 @@ run_sim_dereg <- function(i)
   return(theta_hat)
 }
 
-theta_hats <-
+theta_hats_apr2 <-
   mclapply(
     1:500,
     function(x) run_sim_dereg(x),
@@ -480,27 +611,29 @@ theta_hats <-
   unlist() %>% 
   data.table(theta = .)
 
-ggplot(theta_hats) +
+ggplot(theta_hats_apr2) +
   geom_histogram(aes(x = theta), color = "white") +
   theme_bw() + 
-  geom_vline(xintercept = 0.5)
+  geom_vline(aes(xintercept = 0.5,color = "True Value")) +
+  geom_vline(aes(xintercept = theta_hats_apr2[, mean(theta)], color = "Mean of the Estimates")) +
+  scale_color_manual(
+    values = c("True Value" = "red", "Mean of the Estimates" = "blue"),
+    name = ""
+  ) +
+  guides(color = guide_legend(nrow = 1, byrow = TRUE)) +
+  theme(legend.position = "bottom")
 
 ```
 
-## Overcoming the over-fitting bias
+@fig-dd shows the distribution of $\hat{\theta}$, which is centered about $`r round(theta_hats_apr2[, mean(theta)], digits = 2)`$. The current approach still suffers from the so-called over-fitting bias[@Chernozhukov2018]. Let's look at how we can overcome this bias next.
+
+## Overcoming the over-fitting bias {#sec-cf}
 
 Over-fitting bias can be overcome by cross-fitting. First, the training data is split into $K$-folds just like K-fold cross-validation. Let's denote them as $I_1, \dots, I_k$. For example, for $I_1$, the following steps are taken (@fig-cross-fitting provides a visual illustration):
 
 + Step 1: Estimate $\hat{g}_0(x)$ and $\hat{m}_0(x)$ using the data from the other folds ($I_2, \dots, I_K$).
 + Step 2: Estimate $\hat{g}_0(x_i)$ and $\hat{m}_0(x_i)$ for each $i \in I_1$ and calculate $\tilde{y}_i = y_i - \hat{g}_0(x_i)$ and $\tilde{d}_i = d_i - \hat{m}_0(x_i)$.
-
-This process is repeated for all the $K$ folds. 
-
-We then use the following formula to obtain $\hat{\theta}$.
-
-::: {.column-margin}
-This is the same as the Step 3 of the previous approach.
-:::
++ Step 3: Use the following formula to obtain $\hat{\theta}$.
 
 $$
 \begin{aligned}
@@ -508,6 +641,12 @@ $$
 \end{aligned}
 $$ {#eq-iv-score}
 
+This process is repeated for all the $K$ folds, and then the the final estimate of $\hat{\theta}$ is obtained as the average of $\hat{\theta}$s.
+
+
+::: {.column-margin}
+You can implement repeated K-fold cross-fitting using the `DoublML` package, which is not demonstrated here as it is very much similar in concept to repeated K-fold CV explained in @sec-cross-validation.
+:::
 
 ```{r}
 #| code-fold: true
@@ -581,11 +720,15 @@ ggplot() +
   theme_void()
 ```
 
-Let's code the cross-fitting procedure. We first split the data into 4 folds ($K = 4$).
+Let's code the cross-fitting procedure. We first split the data into 2 folds ($K = 2$).
+
+::: {.column-margin}
+$K$ does not have to be 2.
+:::
 
 ```{r}
 (
-data_folds <- rsample::vfold_cv(training_data, v = 4)
+data_folds <- rsample::vfold_cv(training_data, v = 2)
 )
 ```
 
@@ -604,14 +747,15 @@ data_target <- assessment(split_1$splits[[1]])
 First, we fit $\hat{g}_0(x)$ and $\hat{m}_0(x)$ using the data from the other folds.
 
 ```{r}
-#=== g0 ===#
-g_rf_fit <- fit_g0(data_train)
-
+#| warning: false
 #=== m0 ===#
 m_rf_fit <- fit_m0(data_train)
+
+#=== g0 ===#
+g_rf_fit <- fit_g0(data_train, m_rf_fit)
 ```
 
-Next, we estimate $\hat{g}_0(x_i)$ and $\hat{m}_0(x_i)$ for each $i$ and calculate $\tilde{y}_i = y_i - \hat{g}_0(x_i)$ and $\tilde{d}_i = d_i - \hat{m}_0(x_i)$.
+Next, we predict $\hat{g}_0(x_i)$ and $\hat{m}_0(x_i)$ for each $i$ of fold 1 (the target dataset) and calculate $\tilde{y}_i = y_i - \hat{g}_0(x_i)$ and $\tilde{d}_i = d_i - \hat{m}_0(x_i)$.
 
 ```{r}
 #| warning: false
@@ -628,12 +772,20 @@ data_orth <-
   .[, d_tilde := d - m_0_hat]
 ```
 
-We can repeat this for all the folds.
+Then, $\hat{\theta}$ is obtained for this fold using @eq-iv-score.
 
 ```{r}
-#| warning: false
+(
+theta_hat <- data_orth[, sum(d_tilde * y_tilde) / sum(d_tilde * d)]
+)
+```
 
-cross_fit <- function(i, data_folds)
+We can repeat this for all the folds (`cross_fit()` which finds $\hat{\theta}$ for a particular fold is defined on the side).
+
+::: {.column-margin}
+
+```{r}
+cross_fit <- function(i, data_folds, mtry_l = 12, mtry_m = 10, mtry_g = 12)
 {
 
   #--------------------------
@@ -652,10 +804,10 @@ cross_fit <- function(i, data_folds)
   # Fit g0 and m0
   #--------------------------
   #=== m0 ===#
-  m_rf_fit <- fit_m0(data_train)
+  m_rf_fit <- fit_m0(data_train, mtry_m)
 
   #=== g0 ===#
-  g_rf_fit <- fit_g0(data_train, m_rf_fit)
+  g_rf_fit <- fit_g0(data_train, m_rf_fit, mtry_l, mtry_g)
 
   #--------------------------
   # Get y_tilde and d_tilde
@@ -676,47 +828,58 @@ cross_fit <- function(i, data_folds)
 
   return(theta_cf)
 }
+```
+:::
 
-get_cross_fitted_data <- function (data_folds){
 
-  return_data <- 
-    lapply(
-      seq_len(nrow(data_folds)),
-      function(x) cross_fit(x, data_folds)
-    ) %>% 
-    unlist()
-
-  return(return_data)
-}
+```{r}
+#| warning: false
 
 (
-cf_data <-  get_cross_fitted_data(data_folds) %>% mean()
+theta_hat <- 
+  lapply(
+    seq_len(nrow(data_folds)), # loop over folds
+    function(x) cross_fit(x, data_folds) # get theta_hat
+  ) %>% 
+  unlist() %>%
+  mean() # average them
 )
 ```
 
-Now, let's use @eq-iv-score to calculate $\hat{\theta}$.
+Okay, now that we understand the steps of this approach, let's repeat this many times (`get_theta_cf()` that finds $\hat{\theta}$ by cross-fitting is defined on the side). 
 
+::: {.column-margin}
 ```{r}
-theta_hat <- cf_data[, sum(d_tilde * y_tilde)] / cf_data[, sum(d_tilde * d)] 
+get_theta_cf <- function(data_folds, mtry_l = 12, mtry_m = 10, mtry_g = 12){
+
+  theta_hat <- 
+    lapply(
+      seq_len(nrow(data_folds)),
+      function(x) cross_fit(x, data_folds, mtry_l, mtry_m, mtry_g)
+    ) %>% 
+    unlist() %>% 
+    mean()
+
+  return(theta_hat)
+}
 ```
+:::
 
-Okay, now that we understand the steps of this approach, let's repeat this many times.
 
 ```{r}
-#| cache: true 
 #| fig-cap: The distribution of treatment effect estimated by the double-debiased approach with cross-fitting
 #| label: fig-cf-debiased
+#| code-fold: true
+#| warning: false
 
-#=== run MC simulations ===#
 theta_hats_cf <-
   mclapply(
-    1:200,
+    1:500,
     function(x) {
       print(x)
       training_data <- gen_data()
-      data_folds <- rsample::vfold_cv(training_data, v = 4)
-      cf_data <-  get_cross_fitted_data(data_folds)
-      theta_hat <- cf_data[, sum(d_tilde * y_tilde)] / cf_data[, sum(d_tilde * d)] 
+      data_folds <- rsample::vfold_cv(training_data, v = 2)
+      theta_hat <-  get_theta_cf(data_folds)
       return(theta_hat)
     },
     mc.cores = detectCores() * 3 / 4
@@ -727,14 +890,28 @@ theta_hats_cf <-
 ggplot() +
   geom_histogram(aes(x = theta_hats_cf), color = "white") +
   theme_bw() + 
-  geom_vline(xintercept = 0.5)
-
+  geom_vline(aes(xintercept = 0.5,color = "True Value")) +
+  geom_vline(aes(xintercept = mean(theta_hats_cf), color = "Mean of the Estimates")) +
+  scale_color_manual(
+    values = c("True Value" = "red", "Mean of the Estimates" = "blue"),
+    name = ""
+  ) +
+  guides(color = guide_legend(nrow = 1, byrow = TRUE)) +
+  theme(legend.position = "bottom")
 ```
 
+@fig-cf-debiased shows the distribution of $\hat{\theta}$ with double-deabiasing and cross-fitting. It is slightly biased in this instance (mean is `r round(mean(theta_hats_cf), digits = 3)`), but the average $\hat{\theta}$ is very close to the true parameter. 
+
+:::{.callout-important}
+
++ Double-debiasing (double orthogonalization) can help overcome the bias in $\hat{\theta}$ that comes from the bias in estimating $g_0(X)$.
+
++ Cross-fitting can help overcome the bias from estimating all of $g_0(X)$, $m_0(X)$, and $\theta$ using the same data.
+
+:::
 
 
-
-
+## Implementation
 
 
 

@@ -38,7 +38,7 @@ quarto::quarto_render(here::here("LectureNotes/P02-boosted-regression-forest.qmd
 quarto::quarto_render(here::here("LectureNotes/C01-dml.qmd"))
 
 # === causal-ml ===#
-quarto::quarto_render(here::here("LectureNotes/causal-ml.qmd"))
+quarto::quarto_render(here::here("LectureNotes/C02-het-te.qmd"))
 
 # === grf ===#
 quarto::quarto_render(here::here("LectureNotes/grf.qmd"))

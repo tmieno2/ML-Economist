@@ -1,0 +1,158 @@
+## Another approach (S-learner)
+
+Another approach is to just regress $y$ on $d$ and $X$ in a single estimation step instead of the DML approach.
+
+::: {.column-margin}
+```{r}
+expand_grid_df <- function(data_1, data_2) {
+
+  data_1_ex <- 
+    data_1[rep(1:nrow(data_1), each = nrow(data_2)), ] %>% 
+    data.table() %>% 
+    .[, rowid := 1:nrow(.)]
+
+  data_2_ex <- 
+    data_2[rep(1:nrow(data_2), nrow(data_1)), ] %>% 
+    data.table() %>% 
+    .[, rowid := 1:nrow(.)]
+
+  expanded_data <- 
+    data_1_ex[data_2_ex, on = "rowid"] %>% 
+    .[, rowid := NULL]
+
+  if ("tbl" %in% class(data_1)) {
+    expanded_data <- as_tibble(expanded_data)
+  }
+
+  if ("rowwise_df" %in% class(data_1)) {
+    expanded_data <- rowwise(expanded_data)
+  } 
+
+  return(expanded_data)
+
+}
+```
+:::
+
+
+```{r}
+run_s_learner <- function(i)
+{
+
+  print(i)
+
+  training_data <- gen_data()
+
+  rf_fitted <-
+    ranger(
+      y ~ .,
+      data = dplyr::select(training_data, c("y", "d", starts_with("x"))),
+      mtry = 15,
+      num.trees = 500,
+      max.depth = 5,
+      min.node.size = 5
+    )
+
+  d_data <- 
+    data.table(
+      d = seq(-2, 2, length = 101)
+    )
+
+  theta_mean <-
+    copy(training_data) %>% 
+    .[, d := NULL] %>% 
+    expand_grid_df(., d_data) %>% 
+    .[, y_hat := predict(rf_fitted, data = .)$predictions] %>% 
+    .[, .(d, y_hat)] %>% 
+    .[, .(y_hat = mean(y_hat)), by = d]
+
+  return(theta_mean)
+
+}
+
+theta_hats <-
+  mclapply(
+    1:200,
+    function(x) run_s_learner(x),
+    mc.cores = 16
+  ) %>% 
+  rbindlist() %>% 
+  .[, .(y_hat = mean(y_hat)), by = d]
+
+ggplot(data = theta_hats) +
+  geom_point(aes(y = y_hat, x = d)) +
+  geom_abline(intercept = theta_hats[d == 0, y_hat], slope = 0.5, color = "red") +
+  coord_equal() +
+  theme_bw()
+
+```
+
+## So, why DML?
+
+DML approach to identify causal impact of a treatment is useful when you expect the underlying relationships between variables ($g_0(X)$ and $m_0(X)$) are too complex (e.g., non-linear interactive impacts of more than one variables) to model with parametric models. That is, DML is robust to model mis-specification as long as non-parametric models are used in the estimation of nuisance functions. However, as with any non-parametric method, its robustness to mis-specification comes at a cost in efficiency. If the data generating process is not very complicated and the model is correctly specified, then the parametric approach is generally more efficient than the non-parametric approach. This makes sense intuitively. With parametric models, you are giving a clear direction to the estimation process of how the functional relationships look like. On the other hand, non-parametric approach needs to start from the dark without any guidance. So, if the direction given is correct (model is correctly specified), parametric model has a head start, making it more efficient than the non-parametric approach. 
+
+Consider the following simple data generating process and the task of estimating $\theta$:
+
+$$
+\begin{aligned}
+y & = \theta x d + log(1 + x_1 + x_2) + v_i \\
+d & = \mu_i
+\end{aligned}
+$$
+
+where $v_i \sim N(0, 1)$ and $\mu_i \sim N(0, 1)$.
+
+We consider two estimation methods. First one is a parametric approach that simply runs OLS using the correctly specified model. The second approach is the DML approach (double-debiased with cross-fitting).
+
+```{r}
+N <- 1000
+
+get_thetas <- function(i)
+{
+
+  print(i)
+
+  data <-
+    data.table(
+      x_1 = 2 * runif(N),
+      x_2 = 2 * runif(N)
+    ) %>% 
+    .[, d := x_1 + x_2 + 2 * rnorm(N)] %>% 
+    .[, y := 0.5 * d + log(1 + x_1^2 + sqrt(x_2)) + 2 * rnorm(N)]
+
+  #=== OLS ===# 
+  theta_hat_ols <- lm(y ~ d + I(log(1 + x_1^2 + sqrt(x_2))), data = data)$coef["d"]
+
+  #=== DML with cross-fitting ===#
+  data_folds <- rsample::vfold_cv(data, v = 2)
+  theta_hat_dml <-  get_theta_cf(data_folds, mtry_l = 2, mtry_m = 2, mtry_g = 2)
+
+  return_data <-
+    data.table(
+      theta_hat = c(theta_hat_ols, theta_hat_dml),
+      type = c("OLS", "DML")
+    )
+
+  return(return_data)
+
+}
+
+results <-
+  mclapply(
+    1:500,
+    function(x) get_thetas(x),
+    mc.cores = detectCores() / 4 * 3
+  ) %>% 
+  rbindlist()
+
+ggplot(data = results) +
+  geom_density(aes(x = theta_hat, fill = type), alpha = 0.4)
+
+
+
+```
+
+
+
+
+

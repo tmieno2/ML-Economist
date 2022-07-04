@@ -1,7 +1,12 @@
+
 ```{r}
 #| eval: false 
 library(DoubleML)
-set.seed(1234)
+library(tidyverse)
+library(data.table)
+library(parallel)
+library(mlr3)
+set.seed(45456)
 n_rep <- 1000
 n_obs <- 500
 n_vars <- 20
@@ -38,14 +43,12 @@ non_orth_score <- function(y, d, l_hat, m_hat, g_hat, smpls)
 lgr::get_logger("mlr3")$set_threshold("warn")
 options(repr.plot.width = 5, repr.plot.height = 4)
 
-set.seed(1111)
-
 ml_l <- 
   lrn(
     "regr.ranger", 
     num.trees = 132, 
     max.depth = 5, 
-    mtry = 5, 
+    mtry = 12, 
     min.node.size = 1
   )
 
@@ -54,7 +57,7 @@ ml_m <-
     "regr.ranger",
     num.trees = 378,
     max.depth = 3,
-    mtry = 5,
+    mtry = 20,
     min.node.size = 6
   )
 
@@ -150,7 +153,7 @@ g_nonorth <-
   ylab("") + 
   theme_minimal()
 )
-``` 
+```
 
 
 ## Double Orthogonalization without cross-fitting
@@ -288,6 +291,7 @@ results_OrthSplit <-
 ```
 
 ```{r}
+
 (
 g_orthsplit <- 
   results_OrthSplit %>% 
@@ -335,14 +339,14 @@ run_Slearner_rf <- function(i) {
   print(i)
 
   #=== get the data to work on ===#
-  df <- data[[i]]
+  df <- data[[i]] %>% data.table()
 
   rf_trained <-
     ranger(
       y ~ .,
       data = df,
       num.trees = 500,
-      mtry = 4
+      mtry = 15
     )
 
   y_hat_ctrl <- copy(df)[, d := 0] %>% predict(rf_trained, data = .) %>% .$predictions %>% mean()
@@ -351,6 +355,8 @@ run_Slearner_rf <- function(i) {
 
   return(te)
 }
+
+run_Slearner_rf(1)
 
 results_Slearner_rf <-
   mclapply(
