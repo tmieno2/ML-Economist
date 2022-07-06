@@ -1,4 +1,6 @@
-# Heterogeneous Treatment Effect Estimation {#sec-het-dml}
+# R-learner {#sec-het-dml}
+
+## Heterogeneous treatment effect estimation
 
 In @sec-dml, the basic idea of double machine learning (DML) methods was introduced when the treatment effect is homogeneous. We now turn our focus to the task of estimating heterogeneous treatment effects: the impact of a treatment varies based on observed attributes of the subjects. Heterogeneous treatment effect is also referred to as <span style="color:blue"> conditional </span> average treatment effect (CATE).
 
@@ -24,7 +26,7 @@ If we come to know that fertilizer is more effective in increasing corn yield in
 In this example, the heterogeneity driver is soil type.
 :::
 
-As you can see in these examples, knowledge on the heterogeneity of the treatment effects and its causes can help decision makers smart-target the treatment. 
+As you can see in these examples, knowledge on the heterogeneity of the treatment effect and its drivers can help decision makers smart-target treatments. 
 
 
 ```{r }
@@ -37,7 +39,6 @@ library(officer)
 library(dplyr)
 library(ggplot2)
 library(reticulate)
-use_python("/usr/local/bin/python3")
 library(DoubleML)
 ```
 
@@ -129,7 +130,7 @@ Then the quality of fit (explaining the heterogeneity in the impact of treatment
 
 $$
 \begin{aligned}
-\sum_{i=1}^N [\hat{f}(X_i,W_i)^{I_{-i}} - \theta(X)\cdot \hat{g}(X_i,W_i)^{I_{-i}}]^2
+\sum_{i=1}^N [Y_i - \hat{f}(X_i,W_i)^{I_{-i}} - \theta(X)\cdot (T_i - \hat{g}(X_i,W_i)^{I_{-i}})]^2
 \end{aligned}
 $$
 
@@ -139,21 +140,21 @@ The final stage of the R-learner is to estimate $\theta(X)$ by minimizing the R-
 
 $$
 \begin{aligned}
-\hat{\theta}(X) = argmin_{\theta(X)}\;\;\sum_{i=1}^N [\hat{f}(X_i,W_i)^{I_{-i}} - \theta(X)\cdot \hat{g}(X_i,W_i)^{I_{-i}}]^2 + \Lambda(\theta(X))
+\hat{\theta}(X) = argmin_{\theta(X)}\;\;\sum_{i=1}^N [Y_i - \hat{f}(X_i,W_i)^{I_{-i}} - \theta(X)\cdot (T_i - \hat{g}(X_i,W_i)^{I_{-i}})]^2 + \Lambda(\theta(X))
 \end{aligned}
 $$
 
 where $\Lambda(\theta(X))$ is the penalty on the complexity of $\theta(X)$. For example, if you choose to use lasso, then $\Lambda(\theta(X))$ is the L1 norm. You have lots of freedom as to what model you use in the final stage. The `econml` package offers several off-the-shelf choices of R-learner (DML) approaches that differ in the model used at the final stage, including causal forest, lasso, etc.
 
 
-## Implementation
+## Implementation Example 
 
 We use the python `econml` pacakge, which offers one of the most comprehensive sets of off-the-shelf R-leaner (DML) methods [@econml]. 
 
 Let's first take a look at the `DML` class, which implements DML where the final stage has to be a linear model. That is,
 
 ::: {.column-margin}
-`DML` is a child class of `_Rlearner`, which is a private class.
+`DML` is a child class of `_Rlearner`, which is a private class. The `DML` class has several child classes: `LinearDML`, `SpatseLinearDML`, `NonParamDML`, and `CausalForestDML`. 
 :::
 
 $$
@@ -267,13 +268,48 @@ X_test = np.array(list(product(np.arange(0, 1, 0.01), repeat=n_x)))
 
 We can use the `fit()` method to train the `DML` model we set up above.
 
+```{python}
+est.fit(Y_train, T_train, X=X_train, W=W_train)
+```
+
+Once the model is trained, you can use the trained model to predict $\theta(X)$ with the `effect()` method to which you supply the value of $X$ at which $\hat{\theta}(X)$ is calculated.
+
+```{python}
+#=== calculate theta_hat(X) ===#
+te_pred = est.effect(X_test)
+
+#=== take a look inside ===#
+te_pred
+```
+
+@fig-mar-effect-linear plots $\hat{\theta}(X)$ and true $\theta(X)$.
+
+```{python}
+#| fig-cap: Visualization of the marginal effect of the treatment
+#| label: fig-mar-effect-linear
+plt.figure(figsize=(10,6))
+plt.plot(X_test, te_pred, label='DML default')
+expected_te = np.array([exp_te(x_i) for x_i in X_test])
+plt.plot(X_test, expected_te, 'b--', label='True effect')
+plt.ylabel('Treatment Effect')
+plt.xlabel('x')
+plt.legend()
+plt.show()
+```
+
+
+You can use the `const_marginal_effect_interval()` method to find the confidence interval (CI) of $\hat{\theta}(X)$ at values of $X$ (here, $x_1$) specified by the user. The following code finds the 99% CI.
+
+```{python}
+est.const_marginal_effect_interval(X_test, alpha = 0.01)
+```
+
+
+:::{.callout-tip}
+I recommend going through examples presented [here](https://github.com/microsoft/EconML/blob/main/notebooks/Double%20Machine%20Learning%20Examples.ipynb) for `DML`
+:::
 
 
 
 
 
-
-
-
-
- 

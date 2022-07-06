@@ -17,6 +17,7 @@ library(mgcv)
 library(caret)
 library(parallel)
 library(fixest)
+library(tidymodels)
 library(ranger)
 ```
 
@@ -28,6 +29,7 @@ library(mgcv)
 library(caret)
 library(parallel)
 library(fixest)
+library(tidymodels)
 library(ranger)
 ```
 :::
@@ -183,9 +185,9 @@ sd(beta_store)
 
 This is just a single simulation. So, we cannot say bootstrap works better when the number of sample size is larger only from these experiments. But, it is generally true that bootstrap indeed works better when the number of sample size is larger.
 
-## More complicated example
+## A more complicated example {#sec-boot-comp}
 
-Consider a simple production function (yield response functions for agronomists):
+Consider a simple production function (e.g., yield response functions for agronomists):
 
 $$
 y = \beta_1 x + \beta_2 x^2 + \mu
@@ -227,7 +229,7 @@ data <-
   )
 ```
 
-Under the data generating process, here is the production function looks like:
+Under the data generating process, here is what the production function looks like:
 
 ```{r}
 ggplot(data = data) +
@@ -294,7 +296,7 @@ quantile(x_stars, prob = c(0.025, 0.975))
 
 We now demonstrate how we can use bootstrap to get an estimate of the SE of $\hat{x}^*$ when we use random forest (RF) as our regression method instead of OLS. When RF is used, we do not have any coefficients like the OLS case above. Even then, bootstrap allows us to estimate the SE of $\hat{x}^*$.
 
-The procedure is exactly the same except that we use RF to estiamte the production function and also that we need to conduct numerical optimization as no analytical formula is available unlike the case above. 
+The procedure is exactly the same except that we use RF to estimate the production function and also that we need to conduct numerical optimization as no analytical formula is available unlike the case above. 
 
 We first implement a single iteration. 
 
@@ -405,8 +407,198 @@ As you can see, the estimation of $x^*$ is much more inaccurate than the previou
 This conclude the illustration of the power of using bootstrap to estimate the uncertainty of the statistics of interest ($x^*$ here) when the analytical formula of the statistics is non-linear or not even known. 
 
 
+## Bag of Little Bootstraps
+
+Bag of little bootstraps (BLB) is a variant of bootstrap that has similar desirable statistical properties as bootstrap, but is more (computer) memory friendly [@kleiner_scalable_2014].
+
+When the sample size is large (say 1GB) bootstrap is computationally costly both in terms of time and memory because the data of the same size is bootstrapped for many times (say, 1000 times). BLB overcomes this problem.
+
+Suppose you are interested in $\eta$ (e.g., standard error, confidence interval) of the estimator $\hat{\theta}$. Further, let $N$ denoted the sample size of the training data.
+
+BLB works as follows: 
+
+1. Split the dataset into $S$ sets of subsamples of size $B$ so that $s \times B = N$ <span style="color:blue"> without replacement</span>.
+2. For each of the subsample, bootstrap $N$ (<span style="color:red"> not $B$ </span>) samples <span style="color:blue"> with replacement </span> $M$ times, and find $\eta$ (call it $\eta_s$) for each of the subsample sets.
+3. Average $\hat{\eta}_s$ to get $\hat{eta}$.
 
 
+### Demonstrations 
+
+Let's go back to the example discussed in @sec-boot-comp, where the goal is to identify the confidence interval ($\eta$) of the economically optimal input rate ($\theta$).
+
+**<span style="color:blue"> Step 1: </span>**
+
+::: {.column-margin}
+Step 1: Split the dataset into $S$ sets of subsamples of size $B$ so that $s \times B = N$ <span style="color:blue"> without replacement</span>
+:::
+
+Here, we set $S$ at 5, so $B = `r nrow(data)/5`$. 
+
+```{r}
+N <- nrow(data)
+S <- 5
+
+(
+subsamples <-
+  data[sample(seq_len(N), N), ] %>%
+  .[, subgroup := rep(1:S, each = N/S)] %>% 
+  split(.$subgroup)
+)
+```
+
+::: {.column-margin}
+You could alternatively do this:
+
+```{r}
+fold_data <- vfold_cv(data, v = 5)
+
+subsamples <-
+  lapply(
+    1:5,
+    function(x) fold_data[x, ]$splits[[1]] %>% assessment()
+  )
+```
+:::
+
+**<span style="color:blue"> Steps 2: </span>**
+
+::: {.column-margin}
++ Step 2: For each of the subsample, bootstrap $N$ (<span style="color:red"> not $B$ </span>) samples <span style="color:blue"> with replacement </span> $M$ times, and find $\eta$ (call it $\eta_s$) for each of the subsample sets.
+:::
+
+Instead of creating bootstrapped samples $M$ times, only one bootstrapped sample from the first subsample is created for now, and then the estimate of $x^*$ is obtained. 
+
+```{r}
+(
+boot_data <-
+  sample(
+    seq_len(nrow(subsamples[[1]])),
+    N,
+    replace = TRUE
+  ) %>% 
+  subsamples[[1]][., ]
+)
+```
+
+We can now train a linear model using the bootstrapped data and calculate $\hat{x}^*$ based on it.
+
+```{r}
+reg <- lm(y ~ x + I(x^2), data = boot_data)
+
+(
+x_star <- (2 - 5 * reg$coef["x"])/ (10 * reg$coef["I(x^2)"])
+)
+```
+
+We can loop this process over all the $100$ ($M = 100$) bootstrapped data from the fist subsample set. Before that, let's define a function that conducts a single implementation of bootstrapping and estimating $x^*$ from a single subsample set.
+
+
+```{r}
+get_xstar_boot <- function(subsample)
+{
+  boot_data <-
+    sample(
+      seq_len(nrow(subsample)),
+      N,
+      replace = TRUE
+    ) %>% 
+    subsample[., ]
+  reg <- lm(y ~ x + I(x^2), data = boot_data)
+
+  x_star <- (2 - 5 * reg$coef["x"])/ (10 * reg$coef["I(x^2)"])
+
+  return(x_star)
+}
+```
+
+This is a single iteration.
+
+```{r}
+get_xstar_boot(subsamples[[1]])
+```
+
+Now, let's repeat this 100 ($M = 100$) times.
+
+```{r}
+M <- 100
+
+xstar_hats <-
+  lapply(
+    1:M,
+    function(x) get_xstar_boot(subsamples[[1]])
+  ) %>% 
+  unlist()
+```
+
+We can now get the 95% confidence interval of $\hat{x}^*$.
+
+```{r}
+cf_lower <- quantile(xstar_hats, prob = 0.025) 
+cf_upper <- quantile(xstar_hats, prob = 0.975) 
+```
+
+
+So, [`r paste0(cf_lower, ",", cf_upper)`] is the 95% confidence interval estimate from the first subsample set. We repeat this for the other subsample sets and average the 95% CI from them (`get_CI()` defined on the side).
+
+::: {.column-margin}
+This function find the 95% confidence interval ($\eta$) from a single subsample set.
+
+```{r}
+get_CI <- function(subsample){
+  xstar_hats <-
+    lapply(
+      1:M,
+      function(x) get_xstar_boot(subsamples[[1]])
+    ) %>% 
+    unlist() 
+
+  cf_lower <- quantile(xstar_hats, prob = 0.025) 
+  cf_upper <- quantile(xstar_hats, prob = 0.975) 
+
+  return_data <-
+    data.table(
+      cf_lower = cf_lower,
+      cf_upper = cf_upper
+    )
+
+  return(return_data)
+}
+```
+:::
+
+
+```{r}
+(
+ci_data <-
+  lapply(
+    subsamples,
+    function(x) get_CI(x)
+  ) %>% 
+  rbindlist()
+)
+```
+
+**<span style="color:blue"> Steps 3: </span>**
+
+By averaging the lower and upper bounds, we get our estimate of the lower and upper bound of the 95% CI of $\hat{x}^*$.
+
+```{r}
+ci_data[, .(mean(cf_lower), mean(cf_upper))]
+```
+
+:::{.callout-tip}
+
++ Bag of little bootstraps (BLB) is a variant of bootstrap that has similar desirable statistical properties as bootstrap, but is more computation and memory friendly.
+
++ For example, the `grf` package uses BLB to estimate the standard error of the treatment effect in Causal Forest estimation.
+
+:::
+
+
+
+## References {.unnumbered}
+
+<div id="refs"></div>
 
 
 

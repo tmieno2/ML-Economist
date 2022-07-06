@@ -1,0 +1,60 @@
+# Forest-based Estimators
+
+## Causal Forest
+
+Causal Forest (CF) (as implemented by the R `grf` package or python `econml` package) is a special type of R-learner (also a DML) and also a special case of generalized random forest (GRF). 
+
+:::{.callout-tip}
+**When useful?**
+
+Causal Forest is useful in estimating heterogeneous treatment effects when they are complex and/or non-linear functions of attributes (heterogeneity drivers) and it is hard to represent them using linear models at the final stage.
+:::
+
+### Mechanics
+
+Let $\hat{f}(X_i,W_i)$ and $\hat{g}(X_i,W_i)$ denote the cross-fitted estimation of $E[Y|X,W]$ and $E[T|X,W]$, respectively. Further, let $\hat{\tilde{Y_i}}$ and $\hat{\tilde{T_i}}$ denote $Y_i - \hat{f}(X_i,W_i)$ and $T_i - \hat{g}(X_i,W_i)$, respectively.
+
+::: {.column-margin}
+CF can be implemented using the R `grf` package or python `econml` package. Both of them implements CF as an R-learner. However, the original causal forest proposed in @wager_estimation_2018 does not follow an R-leaner procedure.
+:::
+
+::: {.column-margin}
+See @sec-cf for how cross-fitting works.
+:::
+
+Then, CF estimates $\theta(X)$ at $X = x$ by solving the following equation:
+
+$$
+\begin{aligned}
+\hat{\theta}(X) = argmin_{\theta}\;\;\sum_{i=1}^N K_x(X_i)[\hat{\tilde{Y_i}} - \theta\cdot \hat{\tilde{T_i}}]^2
+\end{aligned}
+$$
+
+where $K_x(X_i)$ is the weight given to each $i$. $K_x(X_i)$ is found using random forest based on a causal criterion. 
+
+Unlike the DML approached we saw in @sec-het-dml, where the final model is a linear model, CF does not assume any functional form for how $X$ affects $\theta$ as you can see from the above minimization problem. 
+
+$\Psi(\theta(X), v(X)) = \hat{\tilde{Y_i}} - \theta\hat{\tilde{T_i}}$
+
+### Implementation 
+
+We can use the `causal_forest()` function from the R `grf` package to train a CF model. 
+
+### Application 
+
+
+## Orthogonal Random Forest
+
+
+
+
+
+
+
+
+
+
+
+
+
+

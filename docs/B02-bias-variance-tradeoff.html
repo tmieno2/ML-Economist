@@ -278,7 +278,7 @@ div.csl-indent {
   </li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
-        <a href="./causal-ml.html" class="sidebar-item-text sidebar-link">Causal Machine Learning (CML) Methods</a>
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">causal-ml.qmd</a>
       <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
@@ -331,7 +331,7 @@ div.csl-indent {
    
   <ul>
   <li><a href="#general-mc-application-steps" id="toc-general-mc-application-steps" class="nav-link active" data-scroll-target="#general-mc-application-steps"> <span class="header-section-number">2.1</span> General MC application steps</a></li>
-  <li><a href="#variance-bias-trade-off" id="toc-variance-bias-trade-off" class="nav-link" data-scroll-target="#variance-bias-trade-off"> <span class="header-section-number">2.2</span> Variance-bias trade-off</a></li>
+  <li><a href="#bias-variance-trade-off" id="toc-bias-variance-trade-off" class="nav-link" data-scroll-target="#bias-variance-trade-off"> <span class="header-section-number">2.2</span> Bias-variance trade-off</a></li>
   <li><a href="#additional-example-k-nearest-neighbor-regression" id="toc-additional-example-k-nearest-neighbor-regression" class="nav-link" data-scroll-target="#additional-example-k-nearest-neighbor-regression"> <span class="header-section-number">2.3</span> Additional Example (K-nearest neighbor regression)</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
@@ -517,8 +517,8 @@ y  = (x - 2.5)^3 + \mu
 </div>
 <p>If we were to trust train MSE in picking the model, we would pick the model with <code>k</code> <span class="math inline">\(= 50\)</span> in this particular instance. This clearly tells us that we should <span style="color:blue"> NOT </span> use training MSE to pick the best model.</p>
 </section>
-<section id="variance-bias-trade-off" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="variance-bias-trade-off"><span class="header-section-number">2.2</span> Variance-bias trade-off</h2>
+<section id="bias-variance-trade-off" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="bias-variance-trade-off"><span class="header-section-number">2.2</span> Bias-variance trade-off</h2>
 <p>Expected test MSE at <span class="math inline">\(x = x_0\)</span> can be written in general (no matter what the trained model is) as follows:</p>
 <p><span class="math display">\[
 E[(y_0 - \hat{f}(x_0))^2] = Var(\hat{f}(x_0)) + E[y - \hat{f}(x_0)]^2 + Var(\mu)

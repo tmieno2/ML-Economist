@@ -78,6 +78,25 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 
@@ -259,7 +278,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
-        <a href="./causal-ml.html" class="sidebar-item-text sidebar-link">Causal Machine Learning (CML) Methods</a>
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">causal-ml.qmd</a>
       <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
@@ -313,8 +332,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <ul>
   <li><a href="#what-is-it-for" id="toc-what-is-it-for" class="nav-link active" data-scroll-target="#what-is-it-for"> <span class="header-section-number">5.1</span> What is it for?</a></li>
   <li><a href="#how-it-works" id="toc-how-it-works" class="nav-link" data-scroll-target="#how-it-works"> <span class="header-section-number">5.2</span> How it works</a></li>
-  <li><a href="#more-complicated-example" id="toc-more-complicated-example" class="nav-link" data-scroll-target="#more-complicated-example"> <span class="header-section-number">5.3</span> More complicated example</a></li>
+  <li><a href="#sec-boot-comp" id="toc-sec-boot-comp" class="nav-link" data-scroll-target="#sec-boot-comp"> <span class="header-section-number">5.3</span> A more complicated example</a></li>
   <li><a href="#one-more-example-with-a-non-parametric-model" id="toc-one-more-example-with-a-non-parametric-model" class="nav-link" data-scroll-target="#one-more-example-with-a-non-parametric-model"> <span class="header-section-number">5.4</span> One more example with a non-parametric model</a></li>
+  <li><a href="#bag-of-little-bootstraps" id="toc-bag-of-little-bootstraps" class="nav-link" data-scroll-target="#bag-of-little-bootstraps"> <span class="header-section-number">5.5</span> Bag of Little Bootstraps</a>
+  <ul class="collapse">
+  <li><a href="#demonstrations" id="toc-demonstrations" class="nav-link" data-scroll-target="#demonstrations"> <span class="header-section-number">5.5.1</span> Demonstrations</a></li>
+  </ul></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/B05-bootstrap.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
@@ -353,7 +377,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(parallel)</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fixest)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ranger)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ranger)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div></div><p>Here are the general steps of a bootstrap:</p>
 <ul>
@@ -501,9 +526,9 @@ y = \alpha + \beta_x + \mu
 </div>
 <p>This is just a single simulation. So, we cannot say bootstrap works better when the number of sample size is larger only from these experiments. But, it is generally true that bootstrap indeed works better when the number of sample size is larger.</p>
 </section>
-<section id="more-complicated-example" class="level2" data-number="5.3">
-<h2 data-number="5.3" class="anchored" data-anchor-id="more-complicated-example"><span class="header-section-number">5.3</span> More complicated example</h2>
-<p>Consider a simple production function (yield response functions for agronomists):</p>
+<section id="sec-boot-comp" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="sec-boot-comp"><span class="header-section-number">5.3</span> A more complicated example</h2>
+<p>Consider a simple production function (e.g., yield response functions for agronomists):</p>
 <p><span class="math display">\[
 y = \beta_1 x + \beta_2 x^2 + \mu
 \]</span></p>
@@ -538,7 +563,7 @@ Max_x 5(\hat{\beta}_1 x + \hat{\beta}_2 x^2) - 2 x
 <span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">ey =</span> ey</span>
 <span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Under the data generating process, here is the production function looks like:</p>
+<p>Under the data generating process, here is what the production function looks like:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> data) <span class="sc">+</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> ey, <span class="at">x =</span> x))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -606,7 +631,7 @@ Max_x 5(\hat{\beta}_1 x + \hat{\beta}_2 x^2) - 2 x
 <section id="one-more-example-with-a-non-parametric-model" class="level2" data-number="5.4">
 <h2 data-number="5.4" class="anchored" data-anchor-id="one-more-example-with-a-non-parametric-model"><span class="header-section-number">5.4</span> One more example with a non-parametric model</h2>
 <p>We now demonstrate how we can use bootstrap to get an estimate of the SE of <span class="math inline">\(\hat{x}^*\)</span> when we use random forest (RF) as our regression method instead of OLS. When RF is used, we do not have any coefficients like the OLS case above. Even then, bootstrap allows us to estimate the SE of <span class="math inline">\(\hat{x}^*\)</span>.</p>
-<p>The procedure is exactly the same except that we use RF to estiamte the production function and also that we need to conduct numerical optimization as no analytical formula is available unlike the case above.</p>
+<p>The procedure is exactly the same except that we use RF to estimate the production function and also that we need to conduct numerical optimization as no analytical formula is available unlike the case above.</p>
 <p>We first implement a single iteration.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== get bootstrapped data ===#</span></span>
@@ -718,6 +743,283 @@ Max_x 5(\hat{\beta}_1 x + \hat{\beta}_2 x^2) - 2 x
 </div>
 <p>As you can see, the estimation of <span class="math inline">\(x^*\)</span> is much more inaccurate than the previous OLS approach. This is likely due to the fact that we are not doing a good job of tuning the hyper-parameters of RF (but, again, more on this later).</p>
 <p>This conclude the illustration of the power of using bootstrap to estimate the uncertainty of the statistics of interest (<span class="math inline">\(x^*\)</span> here) when the analytical formula of the statistics is non-linear or not even known.</p>
+</section>
+<section id="bag-of-little-bootstraps" class="level2 page-columns page-full" data-number="5.5">
+<h2 data-number="5.5" class="anchored" data-anchor-id="bag-of-little-bootstraps"><span class="header-section-number">5.5</span> Bag of Little Bootstraps</h2>
+<p>Bag of little bootstraps (BLB) is a variant of bootstrap that has similar desirable statistical properties as bootstrap, but is more (computer) memory friendly <span class="citation" data-cites="kleiner_scalable_2014">(<a href="#ref-kleiner_scalable_2014" role="doc-biblioref">Kleiner et al. 2014</a>)</span>.</p>
+<p>When the sample size is large (say 1GB) bootstrap is computationally costly both in terms of time and memory because the data of the same size is bootstrapped for many times (say, 1000 times). BLB overcomes this problem.</p>
+<p>Suppose you are interested in <span class="math inline">\(\eta\)</span> (e.g., standard error, confidence interval) of the estimator <span class="math inline">\(\hat{\theta}\)</span>. Further, let <span class="math inline">\(N\)</span> denoted the sample size of the training data.</p>
+<p>BLB works as follows:</p>
+<ol type="1">
+<li>Split the dataset into <span class="math inline">\(S\)</span> sets of subsamples of size <span class="math inline">\(B\)</span> so that <span class="math inline">\(s \times B = N\)</span> <span style="color:blue"> without replacement</span>.</li>
+<li>For each of the subsample, bootstrap <span class="math inline">\(N\)</span> (<span style="color:red"> not <span class="math inline">\(B\)</span> </span>) samples <span style="color:blue"> with replacement </span> <span class="math inline">\(M\)</span> times, and find <span class="math inline">\(\eta\)</span> (call it <span class="math inline">\(\eta_s\)</span>) for each of the subsample sets.</li>
+<li>Average <span class="math inline">\(\hat{\eta}_s\)</span> to get <span class="math inline">\(\hat{eta}\)</span>.</li>
+</ol>
+<section id="demonstrations" class="level3 page-columns page-full" data-number="5.5.1">
+<h3 data-number="5.5.1" class="anchored" data-anchor-id="demonstrations"><span class="header-section-number">5.5.1</span> Demonstrations</h3>
+<p>Let’s go back to the example discussed in <a href="#sec-boot-comp"><span>Section&nbsp;5.3</span></a>, where the goal is to identify the confidence interval (<span class="math inline">\(\eta\)</span>) of the economically optimal input rate (<span class="math inline">\(\theta\)</span>).</p>
+<p><strong><span style="color:blue"> Step 1: </span></strong></p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>Step 1: Split the dataset into <span class="math inline">\(S\)</span> sets of subsamples of size <span class="math inline">\(B\)</span> so that <span class="math inline">\(s \times B = N\)</span> <span style="color:blue"> without replacement</span></p>
+</div></div><p>Here, we set <span class="math inline">\(S\)</span> at 5, so <span class="math inline">\(B = 200\)</span>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="fu">nrow</span>(data)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>S <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>subsamples <span class="ot">&lt;-</span></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>  data[<span class="fu">sample</span>(<span class="fu">seq_len</span>(N), N), ] <span class="sc">%&gt;%</span></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>  .[, <span class="at">subgroup :=</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>S, <span class="at">each =</span> N<span class="sc">/</span>S)] <span class="sc">%&gt;%</span> </span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">split</span>(.<span class="sc">$</span>subgroup)</span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$`1`
+             x           y       ey subgroup
+  1: 2.3733159  5.30861102 2.974639        1
+  2: 1.6275776  3.09436504 4.467448        1
+  3: 0.2254504 -0.00443899 1.251047        1
+  4: 1.9988901  3.51795123 4.002217        1
+  5: 2.6819931  2.65018050 1.705785        1
+ ---                                        
+196: 0.6356858  1.70404729 3.005922        1
+197: 0.5894847  5.41369203 2.841924        1
+198: 1.1667444  5.82214614 4.277881        1
+199: 0.9570687  4.01145812 3.910451        1
+200: 2.6627629  5.73397413 1.795965        1
+
+$`2`
+             x           y        ey subgroup
+  1: 1.8809192  4.57934497 4.2098011        2
+  2: 0.1314569 -0.61561180 0.7541794        2
+  3: 2.5253701  1.49742398 2.3972324        2
+  4: 0.8415726  5.29003218 3.6329468        2
+  5: 0.4067221  3.22079460 2.1094867        2
+ ---                                         
+196: 0.3281349  5.33737092 1.7534644        2
+197: 0.1399768  3.43767708 0.8006737        2
+198: 2.6292985 -0.06800098 1.9493698        2
+199: 2.3410270  3.73951071 3.0853472        2
+200: 2.8142845 -2.75691735 1.0453126        2
+
+$`3`
+             x          y          ey subgroup
+  1: 1.2296299  5.0020342 4.353800036        3
+  2: 0.8974602  5.2290199 3.773891666        3
+  3: 1.0734530  1.0161772 4.136115258        3
+  4: 2.8013991  2.7505559 1.112720709        3
+  5: 1.5841919  4.9322236 4.485823441        3
+ ---                                          
+196: 0.1508607  1.6273472 0.859646069        3
+197: 0.6124024  1.8253166 2.924341101        3
+198: 2.9990628 -0.4053550 0.005621654        3
+199: 2.8691630 -0.9073811 0.750785549        3
+200: 1.0579288  6.2074265 4.109146183        3
+
+$`4`
+             x          y       ey subgroup
+  1: 2.3998924 -0.8807641 2.880388        4
+  2: 1.0257974  6.6735166 4.050264        4
+  3: 1.1611026  3.5404186 4.270297        4
+  4: 1.0894566  2.5421898 4.162908        4
+  5: 0.1975354  0.3857778 1.107172        4
+ ---                                       
+196: 0.7921199  7.0038608 3.497812        4
+197: 2.6279086  1.9564617 1.955645        4
+198: 1.4766912  2.8731862 4.498913        4
+199: 0.6217361  2.1170408 2.957305        4
+200: 2.0381772  1.8095725 3.920731        4
+
+$`5`
+             x          y          ey subgroup
+  1: 0.5453160 10.3885051 2.677156938        5
+  2: 1.2077153  1.2218954 4.329139357        5
+  3: 1.1022868  1.8370493 4.183648383        5
+  4: 2.9998229 -0.5902619 0.001062293        5
+  5: 1.8845175  0.8490326 4.204292516        5
+ ---                                          
+196: 1.5471997  4.8499174 4.495544367        5
+197: 0.5813285  3.7268747 2.812085354        5
+198: 1.5839438  7.7635746 4.485906861        5
+199: 0.2343757  1.8121762 1.296390509        5
+200: 1.9727159  1.9638589 4.053079371        5</code></pre>
+</div>
+</div>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>You could alternatively do this:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>fold_data <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(data, <span class="at">v =</span> <span class="dv">5</span>)</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>subsamples <span class="ot">&lt;-</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) fold_data[x, ]<span class="sc">$</span>splits[[<span class="dv">1</span>]] <span class="sc">%&gt;%</span> <span class="fu">assessment</span>()</span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div></div><p><strong><span style="color:blue"> Steps 2: </span></strong></p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<ul>
+<li>Step 2: For each of the subsample, bootstrap <span class="math inline">\(N\)</span> (<span style="color:red"> not <span class="math inline">\(B\)</span> </span>) samples <span style="color:blue"> with replacement </span> <span class="math inline">\(M\)</span> times, and find <span class="math inline">\(\eta\)</span> (call it <span class="math inline">\(\eta_s\)</span>) for each of the subsample sets.</li>
+</ul>
+</div></div><p>Instead of creating bootstrapped samples <span class="math inline">\(M\)</span> times, only one bootstrapped sample from the first subsample is created for now, and then the estimate of <span class="math inline">\(x^*\)</span> is obtained.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>boot_data <span class="ot">&lt;-</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sample</span>(</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">seq_len</span>(<span class="fu">nrow</span>(subsamples[[<span class="dv">1</span>]])),</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>    N,</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">replace =</span> <span class="cn">TRUE</span></span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>  subsamples[[<span class="dv">1</span>]][., ]</span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>               x          y          ey
+   1: 2.99982294 -0.5902619 0.001062293
+   2: 0.36841088  0.6414166 1.939012145
+   3: 0.36841088  0.6414166 1.939012145
+   4: 1.52659488  4.1079431 4.498585425
+   5: 2.68124652  1.4721212 1.709313320
+  ---                                  
+ 996: 2.20473789  2.7760518 3.506689002
+ 997: 0.67635816  6.1153578 3.143228227
+ 998: 1.89649565  6.3148116 4.185582404
+ 999: 0.03379467 -0.2925077 0.200483835
+1000: 2.51539783  1.7992266 2.437934475</code></pre>
+</div>
+</div>
+<p>We can now train a linear model using the bootstrapped data and calculate <span class="math inline">\(\hat{x}^*\)</span> based on it.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>reg <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x <span class="sc">+</span> <span class="fu">I</span>(x<span class="sc">^</span><span class="dv">2</span>), <span class="at">data =</span> boot_data)</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>x_star <span class="ot">&lt;-</span> (<span class="dv">2</span> <span class="sc">-</span> <span class="dv">5</span> <span class="sc">*</span> reg<span class="sc">$</span>coef[<span class="st">"x"</span>])<span class="sc">/</span> (<span class="dv">10</span> <span class="sc">*</span> reg<span class="sc">$</span>coef[<span class="st">"I(x^2)"</span>])</span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       x 
+1.367197 </code></pre>
+</div>
+</div>
+<p>We can loop this process over all the <span class="math inline">\(100\)</span> (<span class="math inline">\(M = 100\)</span>) bootstrapped data from the fist subsample set. Before that, let’s define a function that conducts a single implementation of bootstrapping and estimating <span class="math inline">\(x^*\)</span> from a single subsample set.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>get_xstar_boot <span class="ot">&lt;-</span> <span class="cf">function</span>(subsample)</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  boot_data <span class="ot">&lt;-</span></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sample</span>(</span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">seq_len</span>(<span class="fu">nrow</span>(subsample)),</span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>      N,</span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">replace =</span> <span class="cn">TRUE</span></span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>    subsample[., ]</span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a>  reg <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x <span class="sc">+</span> <span class="fu">I</span>(x<span class="sc">^</span><span class="dv">2</span>), <span class="at">data =</span> boot_data)</span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a>  x_star <span class="ot">&lt;-</span> (<span class="dv">2</span> <span class="sc">-</span> <span class="dv">5</span> <span class="sc">*</span> reg<span class="sc">$</span>coef[<span class="st">"x"</span>])<span class="sc">/</span> (<span class="dv">10</span> <span class="sc">*</span> reg<span class="sc">$</span>coef[<span class="st">"I(x^2)"</span>])</span>
+<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(x_star)</span>
+<span id="cb50-15"><a href="#cb50-15" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This is a single iteration.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_xstar_boot</span>(subsamples[[<span class="dv">1</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       x 
+1.400198 </code></pre>
+</div>
+</div>
+<p>Now, let’s repeat this 100 (<span class="math inline">\(M = 100\)</span>) times.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>M <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>xstar_hats <span class="ot">&lt;-</span></span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span><span class="sc">:</span>M,</span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) <span class="fu">get_xstar_boot</span>(subsamples[[<span class="dv">1</span>]])</span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unlist</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can now get the 95% confidence interval of <span class="math inline">\(\hat{x}^*\)</span>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>cf_lower <span class="ot">&lt;-</span> <span class="fu">quantile</span>(xstar_hats, <span class="at">prob =</span> <span class="fl">0.025</span>) </span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>cf_upper <span class="ot">&lt;-</span> <span class="fu">quantile</span>(xstar_hats, <span class="at">prob =</span> <span class="fl">0.975</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>So, [1.36848876286897,1.44320748221065] is the 95% confidence interval estimate from the first subsample set. We repeat this for the other subsample sets and average the 95% CI from them (<code>get_CI()</code> defined on the side).</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>This function find the 95% confidence interval (<span class="math inline">\(\eta\)</span>) from a single subsample set.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>get_CI <span class="ot">&lt;-</span> <span class="cf">function</span>(subsample){</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>  xstar_hats <span class="ot">&lt;-</span></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lapply</span>(</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>      <span class="dv">1</span><span class="sc">:</span>M,</span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>      <span class="cf">function</span>(x) <span class="fu">get_xstar_boot</span>(subsamples[[<span class="dv">1</span>]])</span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unlist</span>() </span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a>  cf_lower <span class="ot">&lt;-</span> <span class="fu">quantile</span>(xstar_hats, <span class="at">prob =</span> <span class="fl">0.025</span>) </span>
+<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a>  cf_upper <span class="ot">&lt;-</span> <span class="fu">quantile</span>(xstar_hats, <span class="at">prob =</span> <span class="fl">0.975</span>) </span>
+<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-12"><a href="#cb55-12" aria-hidden="true" tabindex="-1"></a>  return_data <span class="ot">&lt;-</span></span>
+<span id="cb55-13"><a href="#cb55-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.table</span>(</span>
+<span id="cb55-14"><a href="#cb55-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">cf_lower =</span> cf_lower,</span>
+<span id="cb55-15"><a href="#cb55-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">cf_upper =</span> cf_upper</span>
+<span id="cb55-16"><a href="#cb55-16" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb55-17"><a href="#cb55-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-18"><a href="#cb55-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(return_data)</span>
+<span id="cb55-19"><a href="#cb55-19" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div></div><div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>ci_data <span class="ot">&lt;-</span></span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>    subsamples,</span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) <span class="fu">get_CI</span>(x)</span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbindlist</span>()</span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   cf_lower cf_upper
+1: 1.374328 1.443085
+2: 1.368850 1.443649
+3: 1.365456 1.444492
+4: 1.368362 1.440309
+5: 1.362626 1.445573</code></pre>
+</div>
+</div>
+<p><strong><span style="color:blue"> Steps 3: </span></strong></p>
+<p>By averaging the lower and upper bounds, we get our estimate of the lower and upper bound of the 95% CI of <span class="math inline">\(\hat{x}^*\)</span>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>ci_data[, .(<span class="fu">mean</span>(cf_lower), <span class="fu">mean</span>(cf_upper))]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         V1       V2
+1: 1.367924 1.443422</code></pre>
+</div>
+</div>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p>Bag of little bootstraps (BLB) is a variant of bootstrap that has similar desirable statistical properties as bootstrap, but is more computation and memory friendly.</p></li>
+<li><p>For example, the <code>grf</code> package uses BLB to estimate the standard error of the treatment effect in Causal Forest estimation.</p></li>
+</ul>
+</div>
+</div>
+</section>
+</section>
+<section id="references" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-kleiner_scalable_2014" class="csl-entry" role="doc-biblioentry">
+Kleiner, Ariel, Ameet Talwalkar, Purnamrita Sarkar, and Michael I. Jordan. 2014. <span>“A Scalable Bootstrap for Massive Data.”</span> <em>Journal of the Royal Statistical Society: Series B (Statistical Methodology)</em> 76 (4): 795–816. <a href="https://doi.org/10.1111/rssb.12050">https://doi.org/10.1111/rssb.12050</a>.
+</div>
+</div>
 
 
 </section>

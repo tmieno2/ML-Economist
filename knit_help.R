@@ -44,7 +44,7 @@ quarto::quarto_render(here::here("LectureNotes/C02-het-te.qmd"))
 quarto::quarto_render(here::here("LectureNotes/grf.qmd"))
 
 # === cf ===#
-quarto::quarto_render(here::here("LectureNotes/cf.qmd"))
+quarto::quarto_render(here::here("LectureNotes/C03-cf-orf.qmd"))
 
 # === scikitlearn ===#
 quarto::quarto_render(here::here("LectureNotes/scikitlearn.qmd"))

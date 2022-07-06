@@ -118,7 +118,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p>In this example, the heterogeneity driver is age.</p>
-</div></div><p><span style="color:blue"> Example 2: </span> If we come to know fertilizer is more effective in increasing corn yield in soil type A than B, then farmers can apply more fertilizer on the parts of the field where soil type is A but less on where soil type is B.</p>
+</div></div><p><span style="color:blue"> Example 2: </span> If we come to know that fertilizer is more effective in increasing corn yield in soil type A than B, then farmers can apply more fertilizer on the parts of the field where soil type is A but less on where soil type is B.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p>In this example, the heterogeneity driver is soil type.</p>
@@ -201,41 +201,173 @@ Y - E[Y|X, W] &amp; = \theta(X)\cdot (T - E[T|X,W]) + \varepsilon
 \end{aligned}
 \]</span></p>
 <p>This is called <span style="color:blue"> R-score</span>, and it can be used for causal model selection, which is covered later.</p>
-<p><span class="math inline">\(\theta(X)\)</span> is estimated by minimizing R-score plus the regularization term.</p>
+<p>The final stage of the R-learner is to estimate <span class="math inline">\(\theta(X)\)</span> by minimizing the R-score plus the regularization term (if desirable).</p>
 <p><span class="math display">\[
 \begin{aligned}
-\hat{\theta}_(X) = argmin_{\theta(X)}\;\;\sum_{i=1}^N [\hat{f}(X_i,W_i)^{I_{-i}} - \theta(X)\cdot \hat{g}(X_i,W_i)^{I_{-i}}]^2
+\hat{\theta}(X) = argmin_{\theta(X)}\;\;\sum_{i=1}^N [\hat{f}(X_i,W_i)^{I_{-i}} - \theta(X)\cdot \hat{g}(X_i,W_i)^{I_{-i}}]^2 + \Lambda(\theta(X))
 \end{aligned}
 \]</span></p>
-<p>Finally, you regress <span class="math inline">\(\hat{\tilde{Y}}\)</span> on <span class="math inline">\(\hat{\tilde{T}}\)</span> and <span class="math inline">\(X\)</span> to estimate <span class="math inline">\(\theta(X)\)</span>. You also have lots of freedom as to what model you use in the final stage. The <code>econml</code> package offers several off-the-shelf choices of R-learner (DML) approaches that differ in the model used at the final stage, including causal forest, lasso, etc.</p>
+<p>where <span class="math inline">\(\Lambda(\theta(X))\)</span> is the penalty on the complexity of <span class="math inline">\(\theta(X)\)</span>. For example, if you choose to use lasso, then <span class="math inline">\(\Lambda(\theta(X))\)</span> is the L1 norm. You have lots of freedom as to what model you use in the final stage. The <code>econml</code> package offers several off-the-shelf choices of R-learner (DML) approaches that differ in the model used at the final stage, including causal forest, lasso, etc.</p>
 </section>
 </section>
-<section id="implementation" class="level2">
+<section id="implementation" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="implementation">Implementation</h2>
-<p>The python <code>econml</code> package offers is one of the most comprehensive packages that implements R-leaner methods (DML methods).</p>
-<p>.content-box-green[<strong>Set up estimation</strong>]</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> econml.dml <span class="im">import</span> DML</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LassoCV</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> GradientBoostingRegressor</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>est <span class="op">=</span> DML(model_y<span class="op">=</span>GradientBoostingRegressor(),</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>          model_t<span class="op">=</span>GradientBoostingRegressor(),</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>          model_final<span class="op">=</span>LassoCV(fit_intercept<span class="op">=</span><span class="va">False</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>The python object <code>est</code> holds a set of rules that it would follow once data is provide for estimation.</p>
+<p>We use the python <code>econml</code> pacakge, which offers one of the most comprehensive sets of off-the-shelf R-leaner (DML) methods <span class="citation" data-cites="econml">[@econml]</span>.</p>
+<p>Let’s first take a look at the <code>DML</code> class, which implements DML where the final stage has to be a linear model. That is,</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><code>DML</code> is a child class of <code>_Rlearner</code>, which is a private class.</p>
+</div></div><p><span class="math display">\[
+\begin{aligned}
+\theta(x) = \beta_1 + x_1 + \dots + \beta_k + x_k
+\end{aligned}
+\]</span></p>
+<p>As we saw above, we need to specify three models.</p>
 <ul>
-<li><code>model_y</code>: how to estimate <span class="math inline">\(f(X, W)\)</span> <span class="math inline">\((E[Y| X, W])\)</span> (Step 1)</li>
-<li><code>model_t</code>: how to estimate <span class="math inline">\(g(X, W)\)</span> <span class="math inline">\((E[T| X, W])\)</span> (Step 1)</li>
-<li><code>model_final</code>: how to estimate the final model: <span class="math inline">\(\tilde{Y} = \theta(X)\cdot \tilde{T} + \varepsilon\)</span> (Step 3)</li>
+<li><code>model_y</code>: model for estimating <span class="math inline">\(E[Y|X,W]\)</span></li>
+<li><code>model_t</code>: model for estimating <span class="math inline">\(E[T|X,W]\)</span></li>
+<li><code>model_final</code>: model for estimating <span class="math inline">\(\theta(X)\)</span></li>
 </ul>
-</section>
-<section id="lineardml" class="level2">
-<h2 class="anchored" data-anchor-id="lineardml">LinearDML</h2>
+<p>In this example, let’s use gradient boosting regression for both <code>model_y</code> and <code>model_t</code> and use lasso with cross-validation for <code>model_final</code>.</p>
+<p>First import all the functions we will need.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>est <span class="op">=</span> LinearDML()</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>est.fit(y, T, X<span class="op">=</span>X, W<span class="op">=</span>W)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>point <span class="op">=</span> est.effect(X, T0<span class="op">=</span>T0, T1<span class="op">=</span>T1)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>lb, ub <span class="op">=</span> est.effect_interval(X, T0<span class="op">=</span>T0, T1<span class="op">=</span>T1, alpha<span class="op">=</span><span class="fl">0.05</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> econml.dml <span class="im">import</span> DML</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>IPython could not be loaded!</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LassoCV</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> GradientBoostingRegressor</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> itertools <span class="im">import</span> product</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We now set up a DML estimation procedure.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>est <span class="op">=</span> DML(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  model_y<span class="op">=</span>GradientBoostingRegressor(),</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  model_t<span class="op">=</span>GradientBoostingRegressor(),</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  model_final<span class="op">=</span>LassoCV(fit_intercept<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Note that no fitting has occurred yet. We just have provided python with the recipe. We use the following data generating process from <a href="https://arxiv.org/abs/1806.03467">here</a>:</p>
+<p><span class="math display">\[
+\begin{align}
+T = &amp; W\beta + \eta, &amp; \;\eta \sim \text{Uniform}(-1, 1)\\
+Y = &amp; T\cdot \exp(2\cdot x_1) + W\gamma + \epsilon, &amp;\; \epsilon \sim \text{Uniform}(-1, 1)\\
+W \sim&amp; \text{Normal}(0,\, I_{n_w})\\
+X \sim&amp; \text{Uniform}(0,1)^{n_x}
+\end{align}
+\]</span></p>
+<p>where <span class="math inline">\(n_w\)</span> and <span class="math inline">\(n_x\)</span> are the number of variables in <span class="math inline">\(W\)</span> and <span class="math inline">\(X\)</span>, respectively. In this example, the heterogeneity of treatment effect is driven by <span class="math inline">\(x_1\)</span> in the following form:</p>
+<p><span class="math display">\[
+\begin{align}
+\theta(x) = \exp(2\cdot x_1).
+\end{align}
+\]</span></p>
+<p>Let’s now generate a dataset according to the data generating process.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> exp_te(x):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.exp(<span class="dv">2</span><span class="op">*</span>x[<span class="dv">0</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">123</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="dv">2000</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>n_w <span class="op">=</span> <span class="dv">30</span> </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>support_size <span class="op">=</span> <span class="dv">5</span> <span class="co"># number of W variables to be part of the DGP</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>n_x <span class="op">=</span> <span class="dv">1</span> <span class="co"># number of te heterogeneity drivers</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#-------------------------</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Y equation</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">#-------------------------</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co"># determine which of the 30 variables to be part of the DGP</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>support_Y <span class="op">=</span> np.random.choice(np.arange(n_w), size<span class="op">=</span>support_size, replace<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co"># generate coefficients (\beta) on W in Y equation</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>coefs_Y <span class="op">=</span> np.random.uniform(<span class="dv">0</span>, <span class="dv">1</span>, size<span class="op">=</span>support_size) </span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co"># error term in Y equation</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>epsilon_sample <span class="op">=</span> <span class="kw">lambda</span> n: np.random.uniform(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, size<span class="op">=</span>n)</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co">#-------------------------</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co"># T equation</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co">#-------------------------</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>support_T <span class="op">=</span> support_Y</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="co"># generate coefficients (\gamma) on W in T equation</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>coefs_T <span class="op">=</span> np.random.uniform(<span class="dv">0</span>, <span class="dv">1</span>, size<span class="op">=</span>support_size)</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="co"># error term in T equation</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>eta_sample <span class="op">=</span> <span class="kw">lambda</span> n: np.random.uniform(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, size<span class="op">=</span>n)</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="co">#-------------------------</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate controls, covariates, treatments and outcomes</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="co">#-------------------------</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>W <span class="op">=</span> np.random.normal(<span class="dv">0</span>, <span class="dv">1</span>, size<span class="op">=</span>(n, n_w))</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.random.uniform(<span class="dv">0</span>, <span class="dv">1</span>, size<span class="op">=</span>(n, n_x))</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Heterogeneous treatment effects</span></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>TE <span class="op">=</span> np.array([exp_te(x_i) <span class="cf">for</span> x_i <span class="kw">in</span> X])</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>T <span class="op">=</span> np.dot(W[:, support_T], coefs_T) <span class="op">+</span> eta_sample(n)</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>Y <span class="op">=</span> TE <span class="op">*</span> T <span class="op">+</span> np.dot(W[:, support_Y], coefs_Y) <span class="op">+</span> epsilon_sample(n)</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a><span class="co">#-------------------------</span></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Sample splitting</span></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a><span class="co">#-------------------------</span></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>Y_train, Y_val, T_train, T_val, X_train, X_val, W_train, W_val <span class="op">=</span> train_test_split(Y, T, X, W, test_size<span class="op">=</span><span class="fl">.2</span>)</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate test data </span></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>X_test <span class="op">=</span> np.array(<span class="bu">list</span>(product(np.arange(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.01</span>), repeat<span class="op">=</span>n_x)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can use the <code>fit()</code> method to train the <code>DML</code> model we set up above.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>est.fit(Y_train, T_train, X<span class="op">=</span>X_train, W<span class="op">=</span>W_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;econml.dml.dml.DML object at 0x29a12ab80&gt;</code></pre>
+</div>
+</div>
+<p>Once the model is trained, you can use the trained model to predict <span class="math inline">\(\theta(X)\)</span> with the <code>effect()</code> method to which you supply the value of <span class="math inline">\(X\)</span> at which <span class="math inline">\(\hat{\theta}(X)\)</span> is calculated.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== calculate theta_hat(X) ===#</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>te_pred <span class="op">=</span> est.effect(X_test)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#=== take a look inside ===#</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>te_pred</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[0.         0.06408296 0.12816593 0.19224889 0.25633185 0.32041481
+ 0.38449778 0.44858074 0.5126637  0.57674667 0.64082963 0.70491259
+ 0.76899556 0.83307852 0.89716148 0.96124444 1.02532741 1.08941037
+ 1.15349333 1.2175763  1.28165926 1.34574222 1.40982519 1.47390815
+ 1.53799111 1.60207407 1.66615704 1.73024    1.79432296 1.85840593
+ 1.92248889 1.98657185 2.05065482 2.11473778 2.17882074 2.2429037 
+ 2.30698667 2.37106963 2.43515259 2.49923556 2.56331852 2.62740148
+ 2.69148445 2.75556741 2.81965037 2.88373333 2.9478163  3.01189926
+ 3.07598222 3.14006519 3.20414815 3.26823111 3.33231407 3.39639704
+ 3.46048    3.52456296 3.58864593 3.65272889 3.71681185 3.78089482
+ 3.84497778 3.90906074 3.9731437  4.03722667 4.10130963 4.16539259
+ 4.22947556 4.29355852 4.35764148 4.42172445 4.48580741 4.54989037
+ 4.61397333 4.6780563  4.74213926 4.80622222 4.87030519 4.93438815
+ 4.99847111 5.06255408 5.12663704 5.19072    5.25480296 5.31888593
+ 5.38296889 5.44705185 5.51113482 5.57521778 5.63930074 5.70338371
+ 5.76746667 5.83154963 5.89563259 5.95971556 6.02379852 6.08788148
+           6.15196445 6.21604741 6.28013037 6.34421334]           </code></pre>
+</div>
+</div>
+<p><a href="#fig-mar-effect-linear">Figure&nbsp;1</a> plots <span class="math inline">\(\hat{\theta}(X)\)</span> and true <span class="math inline">\(\theta(X)\)</span>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>,<span class="dv">6</span>))</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>plt.plot(X_test, te_pred, label<span class="op">=</span><span class="st">'DML default'</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>expected_te <span class="op">=</span> np.array([exp_te(x_i) <span class="cf">for</span> x_i <span class="kw">in</span> X_test])</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>plt.plot(X_test, expected_te, <span class="st">'b--'</span>, label<span class="op">=</span><span class="st">'True effect'</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Treatment Effect'</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'x'</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-mar-effect-linear" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="C02-het-te_files/figure-html/fig-mar-effect-linear-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 1: Visualization of the marginal effect of the treatment</figcaption><p></p>
+</figure>
+</div>
+</div>
 </div>
 </section>
 </section>
