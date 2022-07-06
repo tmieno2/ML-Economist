@@ -586,6 +586,8 @@ By averaging the lower and upper bounds, we get our estimate of the lower and up
 ci_data[, .(mean(cf_lower), mean(cf_upper))]
 ```
 
+Note the estimated CI is very much similar to that from a regular bootstrap obtained in @sec-boot-comp.
+
 :::{.callout-tip}
 
 + Bag of little bootstraps (BLB) is a variant of bootstrap that has similar desirable statistical properties as bootstrap, but is more computation and memory friendly.
