@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Introduction to Machine Learning for Economists - Basics</title>
+<title>Introduction to Machine Learning for Economists - Causal Machine Learning (CML) Methods</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -25,8 +25,8 @@ ul.task-list{list-style: none;}
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./B01-nonlinear.html" rel="next">
-<link href="./preface.html" rel="prev">
+<link href="./C01-dml.html" rel="next">
+<link href="./P03-xgb.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -67,16 +67,17 @@ ul.task-list{list-style: none;}
   gtag('config', 'G-45VKT2HZSL');
 </script>
 
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
 
-<body class="nav-sidebar floating">
+<body class="nav-sidebar floating slimcontent">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">Basics</h1>
+      <h1 class="quarto-secondary-nav-title">Causal Machine Learning (CML) Methods</h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -135,7 +136,7 @@ ul.task-list{list-style: none;}
 </li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
-        <a href="./basics.html" class="sidebar-item-text sidebar-link active">Basics</a>
+        <a href="./basics.html" class="sidebar-item-text sidebar-link">Basics</a>
       <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
@@ -195,7 +196,7 @@ ul.task-list{list-style: none;}
   </li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
-        <a href="./C00-causal-ml.html" class="sidebar-item-text sidebar-link">Causal Machine Learning (CML) Methods</a>
+        <a href="./C00-causal-ml.html" class="sidebar-item-text sidebar-link active">Causal Machine Learning (CML) Methods</a>
       <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
@@ -246,11 +247,11 @@ ul.task-list{list-style: none;}
         
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">Basics</h1>
+<h1 class="title d-none d-lg-block">Causal Machine Learning (CML) Methods</h1>
 </div>
 
 
@@ -264,6 +265,53 @@ ul.task-list{list-style: none;}
 
 </header>
 
+<div class="callout-important callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>the use of causal machine learning model does not guarantee you the estimate you got is indeed a causal effect (model itself does not have any ability)</li>
+<li>it always comes with an assumption</li>
+<li>CML is not a panacea at all. How can it be better than the traditional approaches?
+<ul>
+<li>may be able to capture complex non-linear interactions of variables without specifying how they interact</li>
+<li>robust to specification errors</li>
+<li>(can be less efficient)</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<p>Unlike prediction-oriented machine learning (POML) methods, the focus of causal machine learning (CML) methods is to identify the heterogenous treatment effects of a treatment (or small number of distinct treatments).</p>
+<p><span class="math display">\[
+TE(X) = \theta(X)\cdot T
+\]</span></p>
+<p><span class="math inline">\(\theta(X)\)</span> is the impact of the treatment when <span class="math inline">\(T\)</span> is binary and marginal impact of the treatment when <span class="math inline">\(T\)</span> is continuous. <span class="math inline">\(\theta(X)\)</span> is a function of attributes (<span class="math inline">\(X\)</span>), meaning that the impact of the treatment varies (heterogeneous) based on the value of the attributes.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><span class="math inline">\(T\)</span> is 0 if not treated, 1 if treated.</p>
+</div></div><p>CML considers the following model (following <a href="https://econml.azurewebsites.net/spec/estimation/dml.html">the documentation of the <code>econml</code> Python package</a>)</p>
+<p><span class="math display">\[
+\begin{aligned}
+Y &amp; = \theta(X)\cdot T + g(X, W) + \varepsilon \\
+T &amp; = f(X, W) + \eta
+\end{aligned}
+\]</span></p>
+<p><span class="math inline">\(W\)</span> are the collection of attributes that affect <span class="math inline">\(Y\)</span> along with <span class="math inline">\(X\)</span> (represented by <span class="math inline">\(g(X, W)\)</span>), but not as drivers of the heterogeneity in the impact of the treatment. <span class="math inline">\(X\)</span> not just affects <span class="math inline">\(Y\)</span> as drivers of the heterogeneity in the impact of the treatment (<span class="math inline">\(\theta(X)\cdot T\)</span>), but also directly along with <span class="math inline">\(W\)</span>.</p>
+<p>Both <span class="math inline">\(X\)</span> and <span class="math inline">\(W\)</span> are potential confounders. While we do control for them (eliminating their influence) by partialing out <span class="math inline">\(f(X, W)\)</span> and <span class="math inline">\(g(X, W)\)</span>, the sole focus is on the estimation of <span class="math inline">\(\theta(X)\)</span>. This is in stark contrast to the focus of the ML methods we have seen in earlier sections, which primarily focuses on the accurate prediction of the <span style="color:blue"> level</span> of the dependent variable, rather than how the level of the dependent variable <span style="color:blue"> changes </span> when treated like CML methods.</p>
+<p><span style="color:blue"> guidance on how this chapeter looks </span></p>
+<ul>
+<li>first DML with <span class="math inline">\(\theta(X)\)</span> is just <span class="math inline">\(\theta\)</span></li>
+<li>R-leaner heterogeneous</li>
+<li>Doubly-robust</li>
+<li>Causal forest</li>
+<li>orthogonal forest</li>
+</ul>
 
 
 
@@ -349,13 +397,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./preface.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Preface: Prediction v.s. Causal Inference</span>
+      <a href="./P03-xgb.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Extreme Gradient Boosting</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./B01-nonlinear.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Non-linear function estimation</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./C01-dml.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Double Machine Learning</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

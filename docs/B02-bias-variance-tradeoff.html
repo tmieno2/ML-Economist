@@ -278,7 +278,7 @@ div.csl-indent {
   </li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
-        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">causal-ml.qmd</a>
+        <a href="./C00-causal-ml.html" class="sidebar-item-text sidebar-link">Causal Machine Learning (CML) Methods</a>
       <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
@@ -524,7 +524,7 @@ y  = (x - 2.5)^3 + \mu
 E[(y_0 - \hat{f}(x_0))^2] = Var(\hat{f}(x_0)) + E[y - \hat{f}(x_0)]^2 + Var(\mu)
 \]</span></p>
 <p>The first term is the variance of predicted value at <span class="math inline">\(x_0\)</span>, the second term is the squared bias of <span class="math inline">\(\hat{f}(x_0)\)</span> (how much <span class="math inline">\(\hat{f}(x_0)\)</span> differs from <span class="math inline">\(E[y_0]\)</span> on average), and <span class="math inline">\(Var(\mu)\)</span> is the variance of the error term.</p>
-<p>To illustrate this trade-off, we will run Monte Carlo simulations. We repeat the folowing steps 500 times.</p>
+<p>To illustrate this trade-off, we will run Monte Carlo simulations. We repeat the following steps 500 times.</p>
 <ul>
 <li>step 1: generate train and test datasets</li>
 <li>step 2: train gam with different values of <span class="math inline">\(k\)</span> <span class="math inline">\((1, 5, 15, 25, 50)\)</span> using the train dataset</li>

@@ -278,7 +278,7 @@ div.csl-indent {
   </li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
-        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">causal-ml.qmd</a>
+        <a href="./C00-causal-ml.html" class="sidebar-item-text sidebar-link">Causal Machine Learning (CML) Methods</a>
       <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
@@ -530,21 +530,21 @@ r_{i,b} = - \huge[\normalsize\frac{\partial L(y_i, f(x_i))}{\partial f(x_i)}\hug
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== see the MSE history ===#  </span></span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>gbm_fit<span class="sc">$</span>cv.error</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  [1] 1.2169641 1.1097123 1.0171057 0.9446030 0.8771299 0.8233987 0.7727987
-  [8] 0.7268842 0.6857001 0.6496579 0.6235610 0.5989951 0.5721641 0.5486155
- [15] 0.5276334 0.5132062 0.4963725 0.4871332 0.4722245 0.4629787 0.4546816
- [22] 0.4471823 0.4401372 0.4342279 0.4288946 0.4253129 0.4181967 0.4146835
- [29] 0.4103160 0.4069312 0.4051285 0.4022843 0.4007589 0.3972149 0.3935911
- [36] 0.3919515 0.3900423 0.3889179 0.3872763 0.3862746 0.3858538 0.3836018
- [43] 0.3812828 0.3806432 0.3797636 0.3775039 0.3771906 0.3764794 0.3755692
- [50] 0.3744427 0.3743144 0.3719185 0.3698682 0.3700895 0.3705452 0.3713707
- [57] 0.3716531 0.3705307 0.3694773 0.3693330 0.3682149 0.3678065 0.3666992
- [64] 0.3661083 0.3660471 0.3663097 0.3667614 0.3666969 0.3668283 0.3659182
- [71] 0.3649881 0.3642775 0.3630557 0.3631997 0.3640407 0.3639473 0.3628639
- [78] 0.3626142 0.3631610 0.3629375 0.3636266 0.3643033 0.3648257 0.3652084
- [85] 0.3642060 0.3642358 0.3641906 0.3642510 0.3643716 0.3645966 0.3643914
- [92] 0.3645035 0.3643356 0.3638169 0.3642649 0.3643319 0.3643761 0.3634345
- [99] 0.3621399 0.3625940</code></pre>
+<pre><code>  [1] 1.2332998 1.1120912 1.0267631 0.9469470 0.8713084 0.8172151 0.7672870
+  [8] 0.7272919 0.6881676 0.6518405 0.6201453 0.5843402 0.5610487 0.5397635
+ [15] 0.5183403 0.4968683 0.4849401 0.4695164 0.4559565 0.4481530 0.4395700
+ [22] 0.4323075 0.4246582 0.4176203 0.4135516 0.4091193 0.4035479 0.4003937
+ [29] 0.3971380 0.3947926 0.3930990 0.3901356 0.3885128 0.3882567 0.3848277
+ [36] 0.3836432 0.3831439 0.3816196 0.3808491 0.3794791 0.3778989 0.3773115
+ [43] 0.3753524 0.3742783 0.3728674 0.3717349 0.3713080 0.3716155 0.3706096
+ [50] 0.3704714 0.3699966 0.3689441 0.3666131 0.3665665 0.3676076 0.3664186
+ [57] 0.3657395 0.3637252 0.3636621 0.3636858 0.3633524 0.3625170 0.3626659
+ [64] 0.3626188 0.3617330 0.3618706 0.3621539 0.3614418 0.3615886 0.3615374
+ [71] 0.3627227 0.3636748 0.3643454 0.3639208 0.3623954 0.3612466 0.3610486
+ [78] 0.3610242 0.3603635 0.3601420 0.3599510 0.3607863 0.3611615 0.3619677
+ [85] 0.3619464 0.3612737 0.3600954 0.3578578 0.3574435 0.3584957 0.3584396
+ [92] 0.3585008 0.3577728 0.3583732 0.3594789 0.3592214 0.3578365 0.3566443
+ [99] 0.3550754 0.3550310</code></pre>
 </div>
 </div>
 <p>You can visualize the CV results using <code>gbm.perf()</code>.</p>
@@ -554,7 +554,7 @@ r_{i,b} = - \huge[\normalsize\frac{\partial L(y_i, f(x_i))}{\partial f(x_i)}\hug
 <p><img src="P02-boosted-regression-forest_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 99</code></pre>
+<pre><code>[1] 100</code></pre>
 </div>
 </div>
 <p>Note that it will tell you what the optimal number of trees is <span style="color:blue"> given </span> the values of the other hyper-parameters (here default values). If you want to tune other parameters as well, you need to program it yourself.</p>
