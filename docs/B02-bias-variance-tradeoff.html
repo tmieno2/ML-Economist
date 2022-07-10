@@ -521,8 +521,12 @@ y  = (x - 2.5)^3 + \mu
 <h2 data-number="2.2" class="anchored" data-anchor-id="bias-variance-trade-off"><span class="header-section-number">2.2</span> Bias-variance trade-off</h2>
 <p>Expected test MSE at <span class="math inline">\(x = x_0\)</span> can be written in general (no matter what the trained model is) as follows:</p>
 <p><span class="math display">\[
-E[(y_0 - \hat{f}(x_0))^2] = Var(\hat{f}(x_0)) + E[y - \hat{f}(x_0)]^2 + Var(\mu)
+E[(y_0 - \hat{f}(x_0))^2] = Var(\hat{f}(x_0)) + Bias(\hat{x}_0)^2 + Var(\mu)
 \]</span></p>
+<ul>
+<li><span class="math inline">\(Bias(\hat{x}_0) = E[\hat{f}(x_0)]-y_0\)</span></li>
+<li><span class="math inline">\(Var(\hat{f}(x_0)) = E[(E[\hat{f}(x_0)]-\hat{f}(x_0))^2]\)</span></li>
+</ul>
 <p>The first term is the variance of predicted value at <span class="math inline">\(x_0\)</span>, the second term is the squared bias of <span class="math inline">\(\hat{f}(x_0)\)</span> (how much <span class="math inline">\(\hat{f}(x_0)\)</span> differs from <span class="math inline">\(E[y_0]\)</span> on average), and <span class="math inline">\(Var(\mu)\)</span> is the variance of the error term.</p>
 <p>To illustrate this trade-off, we will run Monte Carlo simulations. We repeat the following steps 500 times.</p>
 <ul>

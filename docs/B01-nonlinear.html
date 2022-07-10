@@ -332,7 +332,10 @@ div.csl-indent {
   <ul>
   <li><a href="#sec-functional-form" id="toc-sec-functional-form" class="nav-link active" data-scroll-target="#sec-functional-form"> <span class="header-section-number">1.1</span> Flexible functional form estimation</a></li>
   <li><a href="#smoothing-splines-semi-parametric" id="toc-smoothing-splines-semi-parametric" class="nav-link" data-scroll-target="#smoothing-splines-semi-parametric"> <span class="header-section-number">1.2</span> Smoothing Splines (semi-parametric)</a></li>
-  <li><a href="#k-nearest-neighbor-non-parametric" id="toc-k-nearest-neighbor-non-parametric" class="nav-link" data-scroll-target="#k-nearest-neighbor-non-parametric"> <span class="header-section-number">1.3</span> K-nearest neighbor (non-parametric)</a></li>
+  <li><a href="#local-regression" id="toc-local-regression" class="nav-link" data-scroll-target="#local-regression"> <span class="header-section-number">1.3</span> Local Regression</a>
+  <ul class="collapse">
+  <li><a href="#k-nearest-neighbor" id="toc-k-nearest-neighbor" class="nav-link" data-scroll-target="#k-nearest-neighbor"> <span class="header-section-number">1.3.1</span> K-nearest neighbor</a></li>
+  </ul></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/B01-nonlinear.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
@@ -670,8 +673,10 @@ Important
 </div>
 <p>You can see that the tuning of <code>sp</code> is successful and has resulted in a much better fitted curve compared to the case where <code>sp</code> was forced to be 0. As you will see, hyper-parameter tuning will be critical for many of the machine learning methods we will look at later.</p>
 </section>
-<section id="k-nearest-neighbor-non-parametric" class="level2" data-number="1.3">
-<h2 data-number="1.3" class="anchored" data-anchor-id="k-nearest-neighbor-non-parametric"><span class="header-section-number">1.3</span> K-nearest neighbor (non-parametric)</h2>
+<section id="local-regression" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="local-regression"><span class="header-section-number">1.3</span> Local Regression</h2>
+<section id="k-nearest-neighbor" class="level3" data-number="1.3.1">
+<h3 data-number="1.3.1" class="anchored" data-anchor-id="k-nearest-neighbor"><span class="header-section-number">1.3.1</span> K-nearest neighbor</h3>
 <p>The idea of K-nearest neighbor (KNN) regression (a special case of kernel regression with a uniform kernel) is very simple. The prediction of <span class="math inline">\(y\)</span> conditional on <span class="math inline">\(x\)</span> is simply the average of <span class="math inline">\(y\)</span> observed for the K closest (in terms of distance to <span class="math inline">\(x\)</span>) observations in the data.</p>
 <p>Let’s illustrate the method using the <code>data</code> generated in <a href="#sec-functional-form"><span>Section&nbsp;1.1</span></a>. Suppose you are interested in estimating <span class="math inline">\(E[y|x = 100]\)</span>. Here is a visualization of the 10 closest data points to <span class="math inline">\(x = 100\)</span>. Blue points are the 10-closest observed data points. The red point is the 10-nearest neighbor estimate of <span class="math inline">\(E[y|x = 100]\)</span>.</p>
 <div class="cell">
@@ -731,6 +736,7 @@ Please use `cols = c(eval_data)`</code></pre>
 </div>
 </div>
 <p>As you can see, at <code>k</code> <span class="math inline">\(= 1\)</span>, the fitted curve fits perfectly with the observed data, and it is highly over-fitted. While increasing <code>k</code> to <span class="math inline">\(5\)</span> alleviates the over-fitting problem, the fitted curve is still very much wiggly. Nobody uses KNN for any practical applications. However, KNN is great to illustrate the importance of the choice of an arbitrary parameter (hyper-parameter). As discussed above, we will later look at cross-validation as a way to tune hyper-parameters.</p>
+</section>
 </section>
 <section id="references" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="references">References</h2>

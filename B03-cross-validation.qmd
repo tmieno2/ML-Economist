@@ -30,6 +30,20 @@ Our goal here is to find the model that would performs the best when applied to 
 
 We saw earlier that training MSE is not appropriate for that purpose as picking the model with the lowest training MSE would very much likely to lead you to the over-fitted model. In this lecture, we consider a better way of selecting a model using only train data.
 
+:::{.callout-important}
+**Why CV?**
+When the amount of data is limited and you cannot afford to split the data into training and test datasets, you can use a CV to estimate test MSE (by validating a trained model as if you have test data within the training data) for the purpose of picking the right model and hyper-parameter values.
+:::
+
+Here is a workflow of identifying the final model and come up with the final trained model.
+
++ Make a list of models (e.g., RF, BRF, NN) with various hyper-parameter values to try for each of of the models (like above)
++ Conduct a CV to see which model-hyper-parameter combination minimizes MSE
++ Train the best model specification to the entire training dataset, which becomes your final trained model
+
+:::{.callout-note}
+Note that you do not use any of the models trained during the CV process. They are ran purely for the purpose of finding the best model and hyper-parameter values. 
+:::
 
 ## Leave-One-Out Cross-Validation (LOOCV)
 

@@ -641,7 +641,7 @@ d_i = \frac{exp(x_{i,1})}{1 + exp(x_{i,1})} + \frac{1}{4}\cdot x_{i,3}+ \eta_i
 </section>
 <section id="step-2" class="level3 page-columns page-full" data-number="9.2.2">
 <h3 data-number="9.2.2" class="anchored" data-anchor-id="step-2"><span class="header-section-number">9.2.2</span> Step 2</h3>
-<p>Finally, we regress <span class="math inline">\(y - \hat{g})_0(X)\)</span> on <span class="math inline">\(d\)</span> (or equivalently using <a href="#eq-theta-partial">Equation&nbsp;<span>9.2</span></a>).</p>
+<p>Finally, we regress <span class="math inline">\(y - \hat{g}_0(X)\)</span> on <span class="math inline">\(d\)</span> (or equivalently using <a href="#eq-theta-partial">Equation&nbsp;<span>9.2</span></a>).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>theta_hat <span class="ot">&lt;-</span> <span class="fu">lm</span>(y_less_g <span class="sc">~</span> d, <span class="at">data =</span> training_data)<span class="sc">$</span>coefficient[<span class="st">"d"</span>]</span>

@@ -41,7 +41,7 @@ quarto::quarto_render(here::here("LectureNotes/C01-dml.qmd"))
 quarto::quarto_render(here::here("LectureNotes/C02-het-te.qmd"))
 
 # === grf ===#
-quarto::quarto_render(here::here("LectureNotes/grf.qmd"))
+quarto::quarto_render(here::here("LectureNotes/C04-grf.qmd"))
 
 # === cf ===#
 quarto::quarto_render(here::here("LectureNotes/C03-cf-orf.qmd"))

@@ -1,2 +1,271 @@
 # Generalized Random Forest
 
+
+@athey2019generalized
+
+
+## GRF in a nutshell
+
+Here, we follow the notations used in @athey2019generalized as much as possible. Let, $O_i$ denote the entire data available.
+
+::: {.column-margin}
+For random forest, $O_i$ is {$Y_i$, $X_i$} where $Y_i$ is the dependent variable and $X_i$ is a collection of independent variables. For causal forest, $O_i$ is {$Y_i$, $W_i$, $X_i$}, where $W_i$ is the treatment variable.
+:::
+
+Let $\theta(X)$ denote the statistics of interest (e.g., CATE for causal forest, conditional quantile for for quantile forest) and $\nu(X)$ denote any nuisance (you are not interested in it) statistics. Generalized random forest (GRF) solves the following problem to find the estimate of $\theta$ conditional on $X_i= x$: 
+
+$$
+\begin{aligned}
+\theta(x),\nu(x) = argmin_{\theta,\nu} \sum_{i=1}^n \alpha_i(x)\Psi_{\theta, \nu}(O_i)^2
+\end{aligned}
+$$ {#eq-opt}
+
+where $\Psi_{\theta, \nu}(O_i)$ is a score function, and $\alpha_i(x)$ is the weight given to $i$th observation. 
+
+:::{.callout-note}
+Why is it called <span style="color:red"> generalized </span> random forest?
+:::
+
+This is because depending on how the score function ($\Psi_{\theta, \nu}(O_i)$) is defined, you can estimate <span style="color:blue"> a wide range of statistics using different approaches </span>under the <span style="color:blue"> same</span> estimation framework. 
+
++ Conditional expectation ($E[Y|X]$)
+  * Regression Forest (Random forest for regression)
+  * Boosted Regression Fores
++ Conditional average treatment effect (CATE)
+  * Causal Forest
+  * Instrumental Forest
++ Conditional quantile $Q_r(X)$^[$r \in [0, 1]$ is a quantile]
+  * Quantile Forest
+
+How can @eq-opt represents so many (very) different statistical approaches? It all boils down to how $\Psi_{\theta, \nu}(O_i)$ is specified. Here are some examples:
+
++ $\Psi_{\theta, \nu}(Y_i, X_i) = Y_i - \theta(X)$: GRF is simply random forest
++ $\Psi_{\theta, \nu}(Y_i, X_i, T_i) = (Y_i - E[Y|X])- \theta(X)(T_i - E[T|X])$: GRF is causal forest
++ $\Psi_{\theta, \nu}(Y_i) = qI\{Y_i > \theta\} - (1-q)I\{Y_i \leq \theta\}$: GRF is causal forest
+
+::: {.column-margin}
+$I\{\}$ is an indicator function that takes 1 if the condition inside the curly brackets and 0 otherwise.
+:::
+
+:::{.callout-note}
+Why is it called generalized <span style="color:red"> random forest</span>?
+:::
+
+GRF uses random forest to find the weights $\alpha_i(x)$. Specifically, it trains a random forest in which the dependent variable is <span style="color:blue"> pseudo outcome ($\rho_i$) </span>derived from the score function that is specific to the type of regression you are running. Based on the trees build, then $\alpha_i(x)$ is calculated as the proportion of the number of times observation $i$ ended up in the same terminal node (leaf) relative to the total number of observations that $X = x$ share leaves with for all the trees. Note that trees are build only once in GRF and it is used repeatedly when predicting $\theta(X)$ at particular values of $X$. So, the forest it builds is applied <span style="color:blue"> globally</span>, but the weights obtained based on the forest are <span style="color:blue"> local </span>to the evaluation point ($X_i = x$).
+
+::: {.column-margin}
+Orthogonal random forest (a forest-based heterogeneous treatment effect estimator like causal forest), on the other hand, build trees every time when predicting treatment effect $\theta(X)$ at particular values of $X$, which is why orthogonal random forest takes a very long time especially when there are many evaluation points.
+:::
+
+You probably have noticed the similarity in idea between GRF and generalized method moments (GMM). Indeed, GRF can also be considered as local GMM (see @sec-local-reg to get a sense of what a local regression is like). 
+
+## Random forest as a GRF
+
+When $\Psi_{\theta, \nu}(Y_i, X_i)$ is set to $Y_i - \theta(X)$, then GRF is RF.
+
+$$
+\begin{aligned}
+\theta(x) = argmin_{\theta} \sum_{i=1}^n \alpha_i(x)[Y_i - \theta(X)]^2
+\end{aligned}
+$$ {#eq-rf}
+
+::: {.column-margin}
+No nuisance parameters ($\nu(X)$) here.
+:::
+
+Now, let's consider building a forest to find $\alpha_i(x)$ in @eq-rf. For a given bootstrapped sample and set of variables randomly selected, GRF starts with solving the unweighted version of @eq-rf. 
+
+$$
+\begin{aligned}
+\theta(x) = argmin_{\theta} \sum_{i=1}^n [Y_i - \theta(X)]^2
+\end{aligned}
+$$ {#eq-rf-initial}
+
+The solution to this problem is simply the mean of $Y$, which will be denoted as $\bar{Y}_P$, where $P$ represents the parent node. Here, the parent node include all the data points as this is the first split.
+
+Then the pseudo outcome ($\rho_i$) that is used in splitting is
+
+$$
+\begin{aligned}
+\rho_i = Y_i - \bar{Y}_P
+\end{aligned}
+$$
+
+::: {.column-margin}
+In general, 
+$$
+\begin{aligned}
+\rho_i = - \xi^T A_P^{-1}\Psi_{\hat{\theta}_P, \hat{\nu}_P}(O_i)
+\end{aligned}
+$$
+
+where $A_P = \frac{1}{N_P} \sum_{i=1}^{N_P} \nabla \Psi_{\hat{\theta}_P, \hat{\nu}_P}(O_i)$ 
+
+Here, 
+
++ $\xi^T = 1$
++ $\Psi_{\hat{\theta}_P, \hat{\nu}_P}(O_i) = Y_i - \theta_P$
+
+Therefore, 
+
+$$
+\begin{aligned}
+A_P = \frac{1}{N_P} \sum_{i=1}^{N_P} \times (-1) = -1
+\end{aligned}
+$$
+
+Thus,
+
+$$
+\begin{aligned}
+\rho_i = -1(-1)(Y_i - \theta_P) = Y_i - \bar{Y}_P
+\end{aligned}
+$$
+
+since $\theta_P = \bar{Y}_P$. 
+:::
+
+
+Now, a standard CART regression split is applied on the pseudo outcomes. 
+That is, the variable-cutpoint combination that maximizes the following criteria is found in a greedy manner (see @sec-rt for how a CART is build):
+
+$$
+\begin{aligned}
+\tilde{\Delta}(C_1, C_2) = \frac{(\sum_{i \in C_1} \rho_i)^2}{N_{C_1}} + \frac{(\sum_{i \in C_2} \rho_i)^2}{N_{C_2}}
+\end{aligned}
+$$
+
+where $C_1$ and $C_2$ represent two child node candidates for a given split. This is exactly the same as how the traditional RF builds trees.
+
+Note that the pseudo outcomes are first summed and then squared in $(\sum_{i \in C_1} \rho_i)^2$. This is a similarity score. If the pseudo outcomes are similar to one another, then they do not cancel each other out, which leads to a higher similarity score. Maximizing the weighted sum of similarity scores from the two child node candidates means that you are trying to find a split so that each of the group have similar pseudo outcomes <span style="color:blue"> within </span>the group (which in turn means larger heterogeneity in pseudo outcomes <span style="color:blue"> between </span>the child nodes). 
+
+Once the best split is identified, each of the new child nodes is split following the exactly the same procedure. Splitting continues until one of the user-specified condition prevent a further splitting. 
+
+Many trees from bootstrapped samples are created (just like the regular random forest) and they form a random forest. 
+
+### Prediction
+
+While $GRF$ with $\Psi_{\theta, \nu}(Y_i, X_i) = Y_i - \theta(X)$ build trees in exactly the same manner as the traditional RF, its prediction of $E[Y|X=x]$ is a bit different. 
+
+Prediction of $\theta$ at $X = x$ follows @eq-opt. Suppose you have built $T$ trees based on the pseudo outcomes. 
+
+::: {.column-margin}
+In this case, pseudo outcomes coincide with the true outcomes of interest.
+:::
+
+Each of the tree has its own splitting rules. For each of the $T$ trees, you can identify which leaf $X=x$ belongs to. Now, let $\eta_{i,t}(X)$ is 1 if observation $i$ belongs to the same leaf as $X=x$ in tree $t$. Then the weight given to observation $i$ is
+
+$$
+\begin{aligned}
+\alpha_i(x) = \frac{\sum_{t=1}^{T}\eta_{i,t}(x)}{\sum_{t=1}^T\sum_{i=1}^N \eta_{i,t}(x)}
+\end{aligned}
+$$
+
++ $\sum_{t=1}^{T}\eta_{i,t}(x)$: the number of trees in which observation $i$ belongs to the same leaf as $X=x$
++ $\sum_{t=1}^T\sum_{i=1}^N \eta_{i,t}(x)$ is the total number of observations that belong to the same leaf as $X=x$ across the $T$ trees.
+
+::: {.column-margin}
+Note that some trees do not even have observation $i$ as bootstrapped samples are used to build trees.
+:::
+
+Solving @eq-rf with the weights,
+
+$$
+\begin{aligned}
+\theta(x) & = \sum_{i=1}^N \alpha_i(x)Y_i\\
+          & = \sum_{i=1}^N\frac{\sum_{t=1}^{T}\eta_{i,t}(x)Y_i}{\sum_{t=1}^T\sum_{i=1}^N \eta_{i,t}(x)}
+\end{aligned}
+$$
+
+Since $\sum_{t=1}^T\sum_{i=1}^N \eta_{i,t}(x)$ is just a constant,
+
+$$
+\begin{aligned}
+\theta(x) & = \frac{\sum_{i=1}^N\sum_{t=1}^{T}\eta_{i,t}(x)Y_i}{\sum_{t=1}^T\sum_{i=1}^N \eta_{i,t}(x)} \\
+          & = \frac{N_1 \bar{Y}_1 + N_2 \bar{Y}_2 + \dots + N_T \bar{Y}_T}{N_1 + N_2 + \dots + N_T}
+\end{aligned}
+$$
+
+So, the RF under the GRF framework uses the weighted (by sample size in the terminal nodes) average of the mean of $Y$ of the terminal nodes that $x$ belong to. This is a little bit different from typical RF implementation where the simple average is taken from the trees like below:
+
+$$
+\begin{aligned}
+\theta(x) = \frac{\bar{Y}_1 + \bar{Y}_2 + \dots + \bar{Y}_T}{T}
+\end{aligned}
+$$
+
+## Causal forest as a GRF
+
+When $\Psi_{\theta, \nu}(Y_i, X_i, T_i) = (Y_i - E[Y|X])- \theta(X)(T_i - E[T|X])$, GRF is causal forest. In practice $E[Y|X]$ and $E[T|X]$ are first estimated using appropriate machine learning methods (e.g., lasso, random forest) in a cross-fitting manner and then the estimation of $Y_i - E[Y|X]$ and $T_i - E[T|X]$ are constructed. Let's denote them by $\hat{\tilde{Y}}_i$ and $\hat{\tilde{T}}_i$. Then the empirical score function is written as
+
+$$
+\begin{aligned}
+\Psi_{\theta} = \hat{\tilde{Y}}_i- \theta(X)\hat{\tilde{T}}_i
+\end{aligned}
+$$ {#eq-cf-score}
+
+Then, the heterogeneous treatment effect ($\theta(X)$) is estimated by solving the following problem:
+
+$$
+\begin{aligned}
+\hat{\theta}(X) = argmin_{\theta}\;\;\sum_{i=1}^N \alpha_i(x)[\hat{\tilde{Y_i}} - \theta\cdot \hat{\tilde{T_i}}]^2
+\end{aligned}
+$$ {#eq-cf-solve}
+
+where $\alpha_i(x)$ is the weight obtained from the trees built using random forest on the pseudo outcomes that are derived from the score function (@eq-cf-score).
+
+In building a tree, CF sets $\theta_P$ as a solution to the unweighted version of @eq-cf-solve.
+
+$$
+\begin{aligned}
+\hat{\theta}_P = \sum_{i=1}^N \hat{\tilde{T_i}}(\hat{\tilde{Y_i}}-\theta \hat{\tilde{T_i}})
+\end{aligned}
+$$
+
+The pseudo outcome for CF is
+
+$$
+\begin{aligned}
+\rho_i = 
+\end{aligned}
+$$
+
+::: {.column-margin}
++ $\xi^T = 1$
++ $\Psi_{\hat{\theta}_P, \hat{\nu}_P}(O_i) = Y_i - \theta_P T$
+
+Therefore, 
+
+$$
+\begin{aligned}
+\nabla \Psi_{\hat{\theta}_P} = -T
+\end{aligned}
+$$
+
+, which leads to 
+
+$$
+\begin{aligned}
+A_P = \frac{1}{N_P} \sum_{i=1}^{N_P} \times (-T) = -T
+\end{aligned}
+$$
+
+Thus,
+
+$$
+\begin{aligned}
+\rho_i = -1\cdot \frac{-1}{T}\cdot(Y_i - \theta_P T) = \frac{Y_i}{T} - \theta_P
+\end{aligned}
+$$
+
+
+:::
+
+## Honest tree
+
+
+
+
+
+
+
