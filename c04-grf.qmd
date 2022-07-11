@@ -1,4 +1,4 @@
-# Generalized Random Forest
+# Generalized Random Forest {#sec-grf}
 
 
 @athey2019generalized
@@ -30,18 +30,18 @@ This is because depending on how the score function ($\Psi_{\theta, \nu}(O_i)$) 
 
 + Conditional expectation ($E[Y|X]$)
   * Regression Forest (Random forest for regression)
-  * Boosted Regression Fores
+  * Boosted Regression Forest
 + Conditional average treatment effect (CATE)
   * Causal Forest
   * Instrumental Forest
-+ Conditional quantile $Q_r(X)$^[$r \in [0, 1]$ is a quantile]
++ Conditional quantile
   * Quantile Forest
 
 How can @eq-opt represents so many (very) different statistical approaches? It all boils down to how $\Psi_{\theta, \nu}(O_i)$ is specified. Here are some examples:
 
-+ $\Psi_{\theta, \nu}(Y_i, X_i) = Y_i - \theta(X)$: GRF is simply random forest
-+ $\Psi_{\theta, \nu}(Y_i, X_i, T_i) = (Y_i - E[Y|X])- \theta(X)(T_i - E[T|X])$: GRF is causal forest
-+ $\Psi_{\theta, \nu}(Y_i) = qI\{Y_i > \theta\} - (1-q)I\{Y_i \leq \theta\}$: GRF is causal forest
++ $\Psi_{\theta, \nu}(Y_i, X_i) = Y_i - \theta(X)$: traditional random forest
++ $\Psi_{\theta, \nu}(Y_i, X_i, T_i) = (Y_i - E[Y|X])- \theta(X)(T_i - E[T|X])$: causal forest
++ $\Psi_{\theta, \nu}(Y_i) = qI\{Y_i > \theta\} - (1-q)I\{Y_i \leq \theta\}$: quantile forest
 
 ::: {.column-margin}
 $I\{\}$ is an indicator function that takes 1 if the condition inside the curly brackets and 0 otherwise.
@@ -51,17 +51,51 @@ $I\{\}$ is an indicator function that takes 1 if the condition inside the curly 
 Why is it called generalized <span style="color:red"> random forest</span>?
 :::
 
-GRF uses random forest to find the weights $\alpha_i(x)$. Specifically, it trains a random forest in which the dependent variable is <span style="color:blue"> pseudo outcome ($\rho_i$) </span>derived from the score function that is specific to the type of regression you are running. Based on the trees build, then $\alpha_i(x)$ is calculated as the proportion of the number of times observation $i$ ended up in the same terminal node (leaf) relative to the total number of observations that $X = x$ share leaves with for all the trees. Note that trees are build only once in GRF and it is used repeatedly when predicting $\theta(X)$ at particular values of $X$. So, the forest it builds is applied <span style="color:blue"> globally</span>, but the weights obtained based on the forest are <span style="color:blue"> local </span>to the evaluation point ($X_i = x$).
+<span style="color:blue"> GRF uses random forest to find the weights $\alpha_i(x)$. </span>Specifically, it trains a random forest in which the dependent variable is <span style="color:blue"> pseudo outcome ($\rho_i$) </span>derived from the score function that is specific to the type of regression you are running. Based on the trees build, then $\alpha_i(x)$ is calculated as the proportion of the number of times observation $i$ ended up in the same terminal node (leaf) relative to the total number of observations that $X = x$ share leaves with for all the trees. 
+
+Suppose you build $T$ trees using RF on the pseudo outcomes. Each of the tree has its own splitting rules, and you can identify which leaf $X=x$ belongs to for each of the $T$ trees. Now, let $\eta_{i,t}(X)$ is 1 if observation $i$ belongs to the same leaf as $X=x$ in tree $t$. Then the weight given to observation $i$ is
+
+$$
+\begin{aligned}
+\alpha_i(x) = \frac{1}{T}\sum_{t=1}^T\frac{\eta_{i,t}(x)}{\sum_{i=1}^N\eta_{i,t}(x)}
+\end{aligned}
+$$ {#eq-weight}
+
++ $\sum_{i=1}^{N}\eta_{i,t}(x)$: the number of observations in the same terminal node as $X=x$ in tree $t$
+
+::: {.column-margin}
+Note that some trees do not even have observation $i$ as bootstrapped samples are used to build trees.
+:::
+
+Note that trees are build only once in GRF and it is used repeatedly when predicting $\theta(X)$ at different values of $X$. So, the trained RF is applied <span style="color:blue"> globally</span>, but the weights obtained based on the forest are <span style="color:blue"> local </span>to the point of evaluation ($X_i = x$). As you can see from @eq-weight, depending on the value of $X$ ($x$), individual weights are adjusted according to how similar the observations are to the point of evaluation ($X=x$). For a given value of $X$, the weights are plugged into @eq-opt and the minimization problem is solve to identify $\theta(x)$.
+
 
 ::: {.column-margin}
 Orthogonal random forest (a forest-based heterogeneous treatment effect estimator like causal forest), on the other hand, build trees every time when predicting treatment effect $\theta(X)$ at particular values of $X$, which is why orthogonal random forest takes a very long time especially when there are many evaluation points.
 :::
 
+
 You probably have noticed the similarity in idea between GRF and generalized method moments (GMM). Indeed, GRF can also be considered as local GMM (see @sec-local-reg to get a sense of what a local regression is like). 
+
+:::{.callout-tip}
+**GRF** procedure
+
++ Step 1: train random forest
+  * Specify the score function that is appropriate for the statistics of interest and the data generating process
+  * Derive pseudo outcome from the score function
+  * Train random forest using the pseudo outcomes as the dependent variable
++ Step 2: estimate (predict) $\theta(x)$
+  * Find the weight for each observation based on the trained random forest according to @eq-weight and then solve the weighted minimization problem (@eq-opt).
+
+:::
 
 ## Random forest as a GRF
 
-When $\Psi_{\theta, \nu}(Y_i, X_i)$ is set to $Y_i - \theta(X)$, then GRF is RF.
+Here, we take a look at RF as a GRF as an illustration to understand the general GRF procedure better.
+
+### Forest building (train an RF on pseudo outcome)
+
+When $\Psi_{\theta, \nu}(Y_i, X_i)$ is set to $Y_i - \theta(X)$, then GRF is simply RF. By plugging $Y_i - \theta(X)$ into @eq-opt, the minimization problem to predict $\theta(x)$ ($E[Y|X=x]$) for this GRF is then,
 
 $$
 \begin{aligned}
@@ -77,7 +111,7 @@ Now, let's consider building a forest to find $\alpha_i(x)$ in @eq-rf. For a giv
 
 $$
 \begin{aligned}
-\theta(x) = argmin_{\theta} \sum_{i=1}^n [Y_i - \theta(X)]^2
+\theta(x) = argmin_{\theta} \sum_{i=1}^n [Y_i - \theta]^2
 \end{aligned}
 $$ {#eq-rf-initial}
 
@@ -145,54 +179,28 @@ Many trees from bootstrapped samples are created (just like the regular random f
 
 ### Prediction
 
-While $GRF$ with $\Psi_{\theta, \nu}(Y_i, X_i) = Y_i - \theta(X)$ build trees in exactly the same manner as the traditional RF, its prediction of $E[Y|X=x]$ is a bit different. 
-
-Prediction of $\theta$ at $X = x$ follows @eq-opt. Suppose you have built $T$ trees based on the pseudo outcomes. 
-
-::: {.column-margin}
-In this case, pseudo outcomes coincide with the true outcomes of interest.
-:::
-
-Each of the tree has its own splitting rules. For each of the $T$ trees, you can identify which leaf $X=x$ belongs to. Now, let $\eta_{i,t}(X)$ is 1 if observation $i$ belongs to the same leaf as $X=x$ in tree $t$. Then the weight given to observation $i$ is
+To predict $E[Y|X=x]$, solve @eq-rf with the weights. The first order condition is then
 
 $$
 \begin{aligned}
-\alpha_i(x) = \frac{\sum_{t=1}^{T}\eta_{i,t}(x)}{\sum_{t=1}^T\sum_{i=1}^N \eta_{i,t}(x)}
+\sum_{i=1}^N \alpha_i(X)(Y_i-\theta) = 0
 \end{aligned}
-$$
+$$  
 
-+ $\sum_{t=1}^{T}\eta_{i,t}(x)$: the number of trees in which observation $i$ belongs to the same leaf as $X=x$
-+ $\sum_{t=1}^T\sum_{i=1}^N \eta_{i,t}(x)$ is the total number of observations that belong to the same leaf as $X=x$ across the $T$ trees.
-
-::: {.column-margin}
-Note that some trees do not even have observation $i$ as bootstrapped samples are used to build trees.
-:::
-
-Solving @eq-rf with the weights,
+So,
 
 $$
 \begin{aligned}
-\theta(x) & = \sum_{i=1}^N \alpha_i(x)Y_i\\
-          & = \sum_{i=1}^N\frac{\sum_{t=1}^{T}\eta_{i,t}(x)Y_i}{\sum_{t=1}^T\sum_{i=1}^N \eta_{i,t}(x)}
+\theta(x) & = \frac{\sum_{i=1}^N \alpha_i(x)Y_i}{\sum_{i=1}^N \alpha_i(x)}\\
+& = \sum_{i=1}^N \alpha_i(x)Y_i \;\; \mbox{(since } \sum_{i=1}^N \alpha_i(x) = 1\mbox{)} \\
+& = \sum_{i=1}^N \huge[\normalsize \frac{1}{T}\cdot\sum_{t=1}^T\frac{\eta_{i,t}(x)}{\sum_{i=1}^N\eta_{i,t}(x)}\cdot y_i\huge] \\
+& = \frac{1}{T}  \cdot\sum_{t=1}^T\sum_{i=1}^N \frac{\eta_{i,t}(x)}{\sum_{i=1}^N\eta_{i,t}(x)}\cdot y_i \;\; \mbox{(changing the order of the summations)} \\
+& = \frac{1}{T} \cdot\sum_{t=1}^T \bar{Y}_t
 \end{aligned}
 $$
 
-Since $\sum_{t=1}^T\sum_{i=1}^N \eta_{i,t}(x)$ is just a constant,
+So, $\theta(x)$ from GRF is the average of tree-specific predictions, which is exactly how RF predicts $E[Y|X=x]$ as well.
 
-$$
-\begin{aligned}
-\theta(x) & = \frac{\sum_{i=1}^N\sum_{t=1}^{T}\eta_{i,t}(x)Y_i}{\sum_{t=1}^T\sum_{i=1}^N \eta_{i,t}(x)} \\
-          & = \frac{N_1 \bar{Y}_1 + N_2 \bar{Y}_2 + \dots + N_T \bar{Y}_T}{N_1 + N_2 + \dots + N_T}
-\end{aligned}
-$$
-
-So, the RF under the GRF framework uses the weighted (by sample size in the terminal nodes) average of the mean of $Y$ of the terminal nodes that $x$ belong to. This is a little bit different from typical RF implementation where the simple average is taken from the trees like below:
-
-$$
-\begin{aligned}
-\theta(x) = \frac{\bar{Y}_1 + \bar{Y}_2 + \dots + \bar{Y}_T}{T}
-\end{aligned}
-$$
 
 ## Causal forest as a GRF
 
@@ -265,6 +273,126 @@ $$
 
 
 
+
+GRF applies <span style="color:blue"> honesty </span>when it trains forests. Specifically, when building a tree, the bootstrapped sample is first split into two groups: subsamples for <span style="color:blue"> splitting</span> and <span style="color:blue">prediction</span>. Then, the a tree is trained on the subsample for splitting and then generate the splitting rules. However, when predicting (say $E[Y|X]$ at $X=x$), the value of $Y$ from the subsamples for splitting are not used. Rather, only the splitting rules are taken from the trained tree and then they are applied to the subsamples for prediction (@fig-honest illustrates this process). 
+
+::: {.column-margin}
+
+**Packages to load for replication**
+
+```{r}
+#| include: false
+
+library(tidyverse)
+library(data.table)
+library(grf)
+library(rpart)
+library(rattle)
+library(wooldridge)
+```
+
+```{r}
+#| eval: false
+
+library(tidyverse)
+library(data.table)
+library(grf)
+library(rpart)
+library(rattle)
+library(wooldridge)
+```
+:::
+
+```{r}
+#| code-fold: true
+#| fig-height: 2
+#| fig-width: 4
+#| fig-cap: Illustration of an honest tree
+#| label: fig-honest
+
+DiagrammeR::grViz(
+"
+digraph {
+  graph [ranksep = 0.2, fontsize = 4]
+  node [shape = box]
+    SS [label = 'Subsamples for splitting']
+    SP [label = 'Subsamples for predicting']
+    BD [label = 'Bootstrapped Data']
+    TT [label = 'Trained tree']
+    PV [label = 'Predicted value']
+  edge [minlen = 2]
+    BD->SP
+    BD->SS
+    SS->TT
+    SP->PV
+    TT->SP [label='apply the splitting rules']
+  { rank = same; SS; SP}
+  { rank = same; TT}
+  { rank = same; PV}
+}
+"
+)
+```
+
+Let's demonstrate this using a very simple regression tree with two terminal nodes using the `mlb` data from the `wooldridge` package.
+
+```{r}
+data(mlb1)
+mlb1_dt <- data.table(mlb1)
+```
+
+We would like to train a RF using this data where the dependent variable is logged salary (`lsalary`). We will illustrate the honesty rule by working on building a single tree within the process of building a forest.
+
+We first bootstrap data.
+
+```{r}
+set.seed(89232)
+num_obs <- nrow(mlb1_dt)
+row_indices <- sample(seq_len(num_obs), num_obs, replace = TRUE)
+boot_mlb1_dt <- mlb1_dt[row_indices, ]
+```
+
+We now split the bootstrapped data into two groups: for splitting and prediction. 
+
+```{r}
+rows_split <- sample(seq_len(num_obs), num_obs / 2, replace = FALSE)
+
+#=== data for splitting ===#
+split_data <- boot_mlb1_dt[rows_split, ]
+
+#=== data for prediction ===#
+eval_data <- boot_mlb1_dt[-rows_split, ]
+```
+
+We then train a tree using the data for splitting (`split_data`):
+
+```{r}
+#| fig-cap: A simple regression tree using the subsamples for splitting
+#| label: fig-tree-sub
+#=== build a simple tree ===#
+tree_trained <-
+  rpart(
+    lsalary ~ hits + runsyr, 
+    data = split_data, 
+    control = rpart.control(minsplit = 120)
+  )
+
+fancyRpartPlot(tree_trained, digits = 4)
+```
+
+So the splitting rule is `hits < 356` as shown in @fig-tree-sub. At the terminal nodes, you see the prediction of `lsalary`: $12.47$ for the left and $14.23$ for the right. These predictions are NOT honest. They are obtained from the observed values of `lsalary` within the node using the splitting data (the data the tree is trained for). Instead of using these prediction values, an honest prediction applied the splitting rules (`hits < 356`) to the data reserved for prediction.s
+
+```{r}
+(
+honest_pred <- eval_data[, mean(lsalary), by = hits < 356]
+)
+```
+
+So, instead of $12.47$ and $14.23$, the predicted values from the honest tree are $`r round(honest_pred[hits == TRUE, V1], digits = 2)`$ and $`r round(honest_pred[hits == FALSE, V1], digits = 2)`$ for the left and right nodes, respectively. 
+
+Trees are built in this manner many times to form a forest.
+
+Honesty is required for the GRF estimator to be consistent and asymptotically normal [@athey2019generalized]. However, the application of honesty can do more damage than help when the sample size is small.
 
 
 

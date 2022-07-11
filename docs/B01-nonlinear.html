@@ -336,6 +336,10 @@ div.csl-indent {
   <ul class="collapse">
   <li><a href="#k-nearest-neighbor" id="toc-k-nearest-neighbor" class="nav-link" data-scroll-target="#k-nearest-neighbor"> <span class="header-section-number">1.3.1</span> K-nearest neighbor</a></li>
   </ul></li>
+  <li><a href="#efficiency-parametric-vs-non-parametric-methods" id="toc-efficiency-parametric-vs-non-parametric-methods" class="nav-link" data-scroll-target="#efficiency-parametric-vs-non-parametric-methods"> <span class="header-section-number">1.4</span> Efficiency: Parametric vs Non-parametric Methods</a>
+  <ul class="collapse">
+  <li><a href="#monte-carlo-simulation-parametric-vs-non-parametric" id="toc-monte-carlo-simulation-parametric-vs-non-parametric" class="nav-link" data-scroll-target="#monte-carlo-simulation-parametric-vs-non-parametric"> <span class="header-section-number">1.4.1</span> Monte Carlo Simulation (parametric vs non-parametric)</a></li>
+  </ul></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/B01-nonlinear.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
@@ -369,7 +373,8 @@ div.csl-indent {
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mgcv)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(parallel)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div></div><p>There is a clear limit to liner (in parameter) parametric models in flexibility to represent quantitative relationships between variables. For example, consider crop yield response to fertilizer. Typically, yield increases at the diminishing rate as fertilizer rate increases. However, at a high enough fertilizer rate, yield stops increasing (fertilizer is not a limiting factor at that point). This relationship is illustrated in the figure below.</p>
 <div class="cell">
@@ -467,11 +472,11 @@ y = \sum_{k=1}^K \beta_k b_k(x)
 </div>
 </div>
 <p>By assigning different values to <span class="math inline">\(b_1(x), \dots, b_K(x)\)</span>, their summation can represent different functional relationships.</p>
-<p>Here is what <span class="math inline">\(\sum_{k=1}^K \beta_k b_k(x)\)</span> looks like when <span class="math inline">\(\beta_1\)</span> through <span class="math inline">\(\beta_10\)</span> are all <span class="math inline">\(200\)</span>.</p>
+<p>Here is what <span class="math inline">\(\sum_{k=1}^K \beta_k b_k(x)\)</span> looks like when <span class="math inline">\(\beta_1\)</span> through <span class="math inline">\(\beta_{10}\)</span> are all <span class="math inline">\(200\)</span>.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p><span class="math display">\[
-y = \sum_{k=1}^10 200 b_k(x)
+y = \sum_{k=1}^{10} 200 b_k(x)
 \]</span></p>
 </div></div><div class="cell">
 <details>
@@ -494,7 +499,7 @@ y = \sum_{k=1}^10 200 b_k(x)
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p><span class="math display">\[
-y = \sum_{k=1}^5 50 b_k(x) + \sum_{k=6}^10 200 b_k(x)
+y = \sum_{k=1}^5 50 b_k(x) + \sum_{k=6}^{10} 200 b_k(x)
 \]</span></p>
 </div></div><div class="cell">
 <details>
@@ -625,8 +630,8 @@ Important
 </div>
 <div class="callout-body-container callout-body">
 <ul>
-<li><span style="color:red"> Hyper-parameter</span>: parameters that one needs to specify <span style="color:red"> before</span> fitting the model and affect the fitting process in ways that change the outcome of the fitting.</li>
-<li><span style="color:red"> Parameter tuning</span>: process that attempts to find the optimal set of hyper-parameters.</li>
+<li><span style="color:red"> Hyper-parameter</span>: parameters that one has freedom to specify before fitting the model and affect the fitting process in ways that change the outcome of the fitting.</li>
+<li><span style="color:red"> Parameter tuning</span>: process that attempts to find the optimal set of hyper-parameter values.</li>
 </ul>
 </div>
 </div>
@@ -650,17 +655,17 @@ Important
 <p><img src="B01-nonlinear_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>Hyper-parameters can significantly influence the outcome. Since the user get to pick any numbers, it can be potentially used to twist the results in a way that favors the outcomes they want to have. Therefore, it is important to pick the values of hyper-parameters wisely. One way of achieving the goal is cross-validation, which is a data-driven way to finding the best value of hyper-parameters. We will discuss cross-validation in <span class="quarto-unresolved-ref">?sec-cv</span> in detail.</p>
+<p>Hyper-parameters can significantly influence the outcome. Since the user get to pick any numbers, it can be potentially used to twist the results in a way that favors the outcomes they want to have. Therefore, it is important to pick the values of hyper-parameters wisely. One way of achieving the goal is cross-validation, which is a data-driven way of finding the best value of hyper-parameters. We will discuss cross-validation in <span class="quarto-unresolved-ref">?sec-cv</span> in detail.</p>
 <p>Here is the fitted curve when the optimal value of <code>sp</code> is picked by <code>gam()</code> automatically given <code>k = 40</code> and <code>bs = "cr"</code> using cross-validation.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
-<p>That is, we are not tuning <code>k</code> and <code>bs</code> here.</p>
+<p>That is, we are not tuning <code>k</code> and <code>bs</code> here. <code>gam()</code> uses generalized cross-validation, which we do not cover in this book.</p>
 </div></div><div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== fit ===#</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>gam_fit_cved <span class="ot">&lt;-</span> <span class="fu">gam</span>(y <span class="sc">~</span> <span class="fu">s</span>(x, <span class="at">k =</span> <span class="dv">40</span>, <span class="at">bs =</span> <span class="st">"cr"</span>), <span class="at">data =</span> data)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>gam_fit_cv <span class="ot">&lt;-</span> <span class="fu">gam</span>(y <span class="sc">~</span> <span class="fu">s</span>(x, <span class="at">k =</span> <span class="dv">40</span>, <span class="at">bs =</span> <span class="st">"cr"</span>), <span class="at">data =</span> data)</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co">#=== assign the fitted values to a variable ===#</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>data[, y_hat <span class="sc">:</span><span class="er">=</span> gam_fit_cved<span class="sc">$</span>fitted.values]</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>data[, y_hat <span class="sc">:</span><span class="er">=</span> gam_fit_cv<span class="sc">$</span>fitted.values]</span>
 <span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co">#=== plot ===#</span></span>
 <span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> data) <span class="sc">+</span></span>
@@ -675,6 +680,19 @@ Important
 </section>
 <section id="local-regression" class="level2" data-number="1.3">
 <h2 data-number="1.3" class="anchored" data-anchor-id="local-regression"><span class="header-section-number">1.3</span> Local Regression</h2>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Understanding what local regression helps you understand how generalized random forest works in <span class="quarto-unresolved-ref">?sec-grf</span>.</p>
+</div>
+</div>
 <section id="k-nearest-neighbor" class="level3" data-number="1.3.1">
 <h3 data-number="1.3.1" class="anchored" data-anchor-id="k-nearest-neighbor"><span class="header-section-number">1.3.1</span> K-nearest neighbor</h3>
 <p>The idea of K-nearest neighbor (KNN) regression (a special case of kernel regression with a uniform kernel) is very simple. The prediction of <span class="math inline">\(y\)</span> conditional on <span class="math inline">\(x\)</span> is simply the average of <span class="math inline">\(y\)</span> observed for the K closest (in terms of distance to <span class="math inline">\(x\)</span>) observations in the data.</p>
@@ -736,6 +754,124 @@ Please use `cols = c(eval_data)`</code></pre>
 </div>
 </div>
 <p>As you can see, at <code>k</code> <span class="math inline">\(= 1\)</span>, the fitted curve fits perfectly with the observed data, and it is highly over-fitted. While increasing <code>k</code> to <span class="math inline">\(5\)</span> alleviates the over-fitting problem, the fitted curve is still very much wiggly. Nobody uses KNN for any practical applications. However, KNN is great to illustrate the importance of the choice of an arbitrary parameter (hyper-parameter). As discussed above, we will later look at cross-validation as a way to tune hyper-parameters.</p>
+</section>
+</section>
+<section id="efficiency-parametric-vs-non-parametric-methods" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="efficiency-parametric-vs-non-parametric-methods"><span class="header-section-number">1.4</span> Efficiency: Parametric vs Non-parametric Methods</h2>
+<p>Semi-parametric and non-parametric approached are more flexible in representing relationships between the dependent and independent variables than linear-in-parameter models. So, why don’t we just use semi-parametric or non-parametric approaches instead for all the econometric tasks? One reason you might prefer linear-in-parameter models has something to do with efficiency.</p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>parametric:
+<ul>
+<li>pro: can be efficient than non-parametric approach when the underlying process is modeled well with parametric models</li>
+<li>cons: not robust to functional form mis-specifications</li>
+</ul></li>
+<li>semi-, non-parametric:
+<ul>
+<li>pro: safe-guard against model mis-specification especially when you are modeling highly complex (non-linear in a way that is hard to capture with parametric models and multi-way interactions of variables)</li>
+<li>cons: possible loss in efficiency compared to parametric approach when the underlying model can be approximated well with parametric models</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<section id="monte-carlo-simulation-parametric-vs-non-parametric" class="level3" data-number="1.4.1">
+<h3 data-number="1.4.1" class="anchored" data-anchor-id="monte-carlo-simulation-parametric-vs-non-parametric"><span class="header-section-number">1.4.1</span> Monte Carlo Simulation (parametric vs non-parametric)</h3>
+<p>Consider the following data generating process:</p>
+<p><span class="math display">\[
+\begin{aligned}
+y = log(x) + v
+\end{aligned}
+\]</span></p>
+<p>Your objective is to understand the impact of treatment (increasing <span class="math inline">\(x = 1\)</span> to <span class="math inline">\(x = 2\)</span>). The true impact of the treatment is <span class="math inline">\(TE[x=1 \rightarrow x=2] = log(2) - log(1) = 0.6931472\)</span>.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>mc_run <span class="ot">&lt;-</span> <span class="cf">function</span>(i)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(i) <span class="co"># progress tracker</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== set the number of observations (not really have to be inside the function..) ===#</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== generate the data ===#</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="dv">3</span> <span class="sc">*</span> <span class="fu">runif</span>(N)</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>  e <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">log</span>(x) <span class="sc">+</span> e</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.table</span>(</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> x,</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> y</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>  eval_data <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== linear model with OLS ===#</span></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>  lm_trained <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="fu">log</span>(x), <span class="at">data =</span> data)</span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>  te_lm <span class="ot">&lt;-</span> lm_trained<span class="sc">$</span>coefficient[<span class="st">"log(x)"</span>] <span class="sc">*</span> <span class="fu">log</span>(<span class="dv">2</span>)</span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== gam ===#</span></span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>  gam_trained <span class="ot">&lt;-</span> <span class="fu">gam</span>(y <span class="sc">~</span> <span class="fu">s</span>(x, <span class="at">k =</span> <span class="dv">5</span>), <span class="at">data =</span> data)</span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a>  y_hat_gam <span class="ot">&lt;-</span> <span class="fu">predict</span>(gam_trained, <span class="at">newdata =</span> eval_data)</span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a>  te_gam <span class="ot">&lt;-</span> y_hat_gam[<span class="dv">2</span>] <span class="sc">-</span> y_hat_gam[<span class="dv">1</span>]</span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== KNN ===#</span></span>
+<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a>  knn_trained <span class="ot">&lt;-</span> <span class="fu">knnreg</span>(y <span class="sc">~</span> x, <span class="at">k =</span> <span class="dv">10</span>, <span class="at">data =</span> data)</span>
+<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a>  y_hat_knn <span class="ot">&lt;-</span> <span class="fu">predict</span>(knn_trained, <span class="at">newdata =</span> eval_data)</span>
+<span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a>  te_knn <span class="ot">&lt;-</span> y_hat_knn[<span class="dv">2</span>] <span class="sc">-</span> y_hat_knn[<span class="dv">1</span>]</span>
+<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== combined the results ===#</span></span>
+<span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a>  return_data <span class="ot">&lt;-</span></span>
+<span id="cb22-37"><a href="#cb22-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.table</span>(</span>
+<span id="cb22-38"><a href="#cb22-38" aria-hidden="true" tabindex="-1"></a>      <span class="at">te =</span> <span class="fu">c</span>(te_lm, te_gam, te_knn),</span>
+<span id="cb22-39"><a href="#cb22-39" aria-hidden="true" tabindex="-1"></a>      <span class="at">type =</span> <span class="fu">c</span>(<span class="st">"lm"</span>, <span class="st">"gam"</span>, <span class="st">"knn"</span>)</span>
+<span id="cb22-40"><a href="#cb22-40" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb22-41"><a href="#cb22-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-42"><a href="#cb22-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(return_data)</span>
+<span id="cb22-43"><a href="#cb22-43" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb22-44"><a href="#cb22-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-45"><a href="#cb22-45" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">5293</span>)</span>
+<span id="cb22-46"><a href="#cb22-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-47"><a href="#cb22-47" aria-hidden="true" tabindex="-1"></a>mc_results <span class="ot">&lt;-</span></span>
+<span id="cb22-48"><a href="#cb22-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mclapply</span>(</span>
+<span id="cb22-49"><a href="#cb22-49" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span><span class="sc">:</span><span class="dv">500</span>,</span>
+<span id="cb22-50"><a href="#cb22-50" aria-hidden="true" tabindex="-1"></a>    mc_run,</span>
+<span id="cb22-51"><a href="#cb22-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">mc.cores =</span> <span class="fu">detectCores</span>() <span class="sc">*</span> <span class="dv">3</span> <span class="sc">/</span> <span class="dv">4</span></span>
+<span id="cb22-52"><a href="#cb22-52" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-53"><a href="#cb22-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbindlist</span>()</span>
+<span id="cb22-54"><a href="#cb22-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-55"><a href="#cb22-55" aria-hidden="true" tabindex="-1"></a><span class="co"># lapply(</span></span>
+<span id="cb22-56"><a href="#cb22-56" aria-hidden="true" tabindex="-1"></a><span class="co">#   1:100,</span></span>
+<span id="cb22-57"><a href="#cb22-57" aria-hidden="true" tabindex="-1"></a><span class="co">#   mc_run</span></span>
+<span id="cb22-58"><a href="#cb22-58" aria-hidden="true" tabindex="-1"></a><span class="co"># )</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><a href="#fig-mc-efficiency">Figure&nbsp;<span>1.1</span></a> presents the density plots of treatment effect estimates by method. As you can see, the (correctly-specified) linear model performs better than the other methods. All the methods are unbiased, however they differ substantially in terms of efficiency. Note that there was no point in applying random forest at all as there is only a single explanatory variable and the none of the strong points of RF over linear model manifest in this simulation. Clearly, this simulation by no means is intended to claim that linear model is the best. It is merely showcasing <span style="color:red"> a </span>scenario where (correctly-specified) linear model performs far better than the non-parametric models. This is also a reminder that no method works the best all the time. There are many cases where parametric models perform better (contextual knowledge is critical so that your parametric model can represent the true data generating process well). There are of course many cases non-parametric modeling work better than parametric modeling.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> mc_results) <span class="sc">+</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="fu">aes</span>(<span class="at">x =</span> te, <span class="at">fill =</span> type), <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">log</span>(<span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-mc-efficiency" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="B01-nonlinear_files/figure-html/fig-mc-efficiency-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 1.1: Results of the MC simulations on the efficiency of various methods</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
 </section>
 <section id="references" class="level2 unnumbered">

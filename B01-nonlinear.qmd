@@ -14,6 +14,7 @@ The purpose of this section is to introduce you to the idea of semi-parametric a
 library(data.table)
 library(tidyverse)
 library(mgcv)
+library(parallel)
 library(caret)
 ```
 
@@ -23,6 +24,7 @@ library(caret)
 library(data.table)
 library(tidyverse)
 library(mgcv)
+library(parallel)
 library(caret)
 ```
 :::
@@ -128,12 +130,12 @@ ggplot(data = basis_data) +
 
 By assigning different values to $b_1(x), \dots, b_K(x)$, their summation can represent different functional relationships.
 
-Here is what $\sum_{k=1}^K \beta_k b_k(x)$ looks like when $\beta_1$ through $\beta_10$ are all $200$.
+Here is what $\sum_{k=1}^K \beta_k b_k(x)$ looks like when $\beta_1$ through $\beta_{10}$ are all $200$.
 
 
 ::: {.column-margin}
 $$
-y = \sum_{k=1}^10 200 b_k(x)
+y = \sum_{k=1}^{10} 200 b_k(x)
 $$ 
 :::
 
@@ -156,7 +158,7 @@ Here is what $\sum_{k=1}^K \beta_k b_k(x)$ looks like when $\beta_1$ through $\b
 
 ::: {.column-margin}
 $$
-y = \sum_{k=1}^5 50 b_k(x) + \sum_{k=6}^10 200 b_k(x)
+y = \sum_{k=1}^5 50 b_k(x) + \sum_{k=6}^{10} 200 b_k(x)
 $$
 :::
 
@@ -269,8 +271,8 @@ ggplot(data = data) +
 We call this phenomenon over-fitting (of the data by the model). An over-fitted model does well in predicting $y$ when applied to the data the model used to train itself. However, it would do a terrible job in prediction on the data it has never seen clearly because it is not predicting $E[y|x]$ well. 
 
 :::{.callout-important}
-+ <span style="color:red"> Hyper-parameter</span>: parameters that one needs to specify <span style="color:red"> before</span> fitting the model and affect the fitting process in ways that change the outcome of the fitting.
-+ <span style="color:red"> Parameter tuning</span>: process that attempts to find the optimal set of hyper-parameters.
++ <span style="color:red"> Hyper-parameter</span>: parameters that one has freedom to specify before fitting the model and affect the fitting process in ways that change the outcome of the fitting.
++ <span style="color:red"> Parameter tuning</span>: process that attempts to find the optimal set of hyper-parameter values.
 :::
 
 In `mgcv::gam()`, the hyper-parameters are the penalty parameter $\lambda$ (specified by. `sp`), the number of knots (specified by `k`)$^1$, the type of splines (specified by `bs`). Coefficient estimates ($\alpha$, $\beta_1, \dots, \beta_K$) change when the value of `sp` is altered. Here is what happens when `k` $= 3$ (less flexible than the `k` $= 39$ case above).
@@ -293,20 +295,20 @@ ggplot(data = data) +
   theme_bw()
 ```
 
-Hyper-parameters can significantly influence the outcome. Since the user get to pick any numbers, it can be potentially used to twist the results in a way that favors the outcomes they want to have. Therefore, it is important to pick the values of hyper-parameters wisely. One way of achieving the goal is cross-validation, which is a data-driven way to finding the best value of hyper-parameters. We will discuss cross-validation in @sec-cv in detail. 
+Hyper-parameters can significantly influence the outcome. Since the user gets to pick any numbers, it can be potentially used to twist the results in a way that favors the outcomes they want to have. Therefore, it is important to pick the values of hyper-parameters wisely. One way of achieving the goal is cross-validation, which is a data-driven way of finding the best value of hyper-parameters. We will discuss cross-validation in @sec-cv in detail. 
 
 Here is the fitted curve when the optimal value of `sp` is picked by `gam()` automatically given `k = 40` and `bs = "cr"` using cross-validation.
 
 ::: {.column-margin}
-That is, we are not tuning `k` and `bs` here.
+That is, we are not tuning `k` and `bs` here. `gam()` uses generalized cross-validation, which we do not cover in this book.
 :::
 
 ```{r}
 #=== fit ===#
-gam_fit_cved <- gam(y ~ s(x, k = 40, bs = "cr"), data = data)
+gam_fit_cv <- gam(y ~ s(x, k = 40, bs = "cr"), data = data)
 
 #=== assign the fitted values to a variable ===#
-data[, y_hat := gam_fit_cved$fitted.values]
+data[, y_hat := gam_fit_cv$fitted.values]
 
 #=== plot ===#
 ggplot(data = data) +
@@ -319,7 +321,9 @@ You can see that the tuning of `sp` is successful and has resulted in a much bet
 
 ## Local Regression
 
-
+:::{.callout-note}
+Understanding what local regression helps you understand how generalized random forest works in @sec-grf.
+:::
 
 ### K-nearest neighbor
 
@@ -381,6 +385,117 @@ ggplot() +
 ```
 
 As you can see, at `k` $= 1$, the fitted curve fits perfectly with the observed data, and it is highly over-fitted. While increasing `k` to $5$ alleviates the over-fitting problem, the fitted curve is still very much wiggly. Nobody uses KNN for any practical applications. However, KNN is great to illustrate the importance of the choice of an arbitrary parameter (hyper-parameter). As discussed above, we will later look at cross-validation as a way to tune hyper-parameters.  
+
+## Efficiency: Parametric vs Non-parametric Methods
+
+Semi-parametric and non-parametric approached are more flexible in representing relationships between the dependent and independent variables than linear-in-parameter models. So, why don't we just use semi-parametric or non-parametric approaches instead for all the econometric tasks? One reason you might prefer linear-in-parameter models has something to do with efficiency. 
+
+:::{.callout-tip}
++ parametric: 
+  - pro: can be efficient than non-parametric approach when the underlying process is modeled well with parametric models
+  * cons: not robust to functional form mis-specifications
++ semi-, non-parametric: 
+  * pro: safe-guard against model mis-specification especially when you are modeling highly complex (non-linear in a way that is hard to capture with parametric models and multi-way interactions of variables) 
+  * cons: possible loss in efficiency compared to parametric approach when the underlying model can be approximated well with parametric models
+
+:::
+
+### Monte Carlo Simulation (parametric vs non-parametric)
+
+Consider the following data generating process:
+
+$$
+\begin{aligned}
+y = log(x) + v
+\end{aligned}
+$$
+
+Your objective is to understand the impact of treatment (increasing $x = 1$ to $x = 2$). The true impact of the treatment is $TE[x=1 \rightarrow x=2] = log(2) - log(1) = `r log(2)`$.
+
+
+```{r}
+#| code-fold: true
+
+mc_run <- function(i)
+{
+  print(i) # progress tracker
+
+  #=== set the number of observations (not really have to be inside the function..) ===#
+  N <- 1000
+
+  #=== generate the data ===#
+  x <- 3 * runif(N)
+  e <- 2 * rnorm(N)
+  y <- log(x) + e
+
+  data <-
+    data.table(
+      x = x,
+      y = y
+    )
+
+  eval_data <- data.table(x = c(1, 2))
+
+  #=== linear model with OLS ===#
+  lm_trained <- lm(y ~ log(x), data = data)
+  te_lm <- lm_trained$coefficient["log(x)"] * log(2)
+
+  #=== gam ===#
+  gam_trained <- gam(y ~ s(x, k = 5), data = data)
+  y_hat_gam <- predict(gam_trained, newdata = eval_data)
+  te_gam <- y_hat_gam[2] - y_hat_gam[1]
+
+  #=== KNN ===#
+  knn_trained <- knnreg(y ~ x, k = 10, data = data)
+  y_hat_knn <- predict(knn_trained, newdata = eval_data)
+  te_knn <- y_hat_knn[2] - y_hat_knn[1]
+  
+  #=== combined the results ===#
+  return_data <-
+    data.table(
+      te = c(te_lm, te_gam, te_knn),
+      type = c("lm", "gam", "knn")
+    )
+
+  return(return_data)
+}
+
+set.seed(5293)
+
+mc_results <-
+  mclapply(
+    1:500,
+    mc_run,
+    mc.cores = detectCores() * 3 / 4
+  ) %>% 
+  rbindlist()
+
+# lapply(
+#   1:100,
+#   mc_run
+# )
+```
+
+@fig-mc-efficiency presents the density plots of treatment effect estimates by method. As you can see, the (correctly-specified) linear model performs better than the other methods. All the methods are unbiased, however they differ substantially in terms of efficiency. Note that there was no point in applying random forest at all as there is only a single explanatory variable and the none of the strong points of RF over linear model manifest in this simulation. Clearly, this simulation by no means is intended to claim that linear model is the best. It is merely showcasing <span style="color:red"> a </span>scenario where (correctly-specified) linear model performs far better than the non-parametric models. This is also a reminder that no method works the best all the time. There are many cases where parametric models perform better (contextual knowledge is critical so that your parametric model can represent the true data generating process well). There are of course many cases non-parametric modeling work better than parametric modeling. 
+
+```{r}
+#| fig-cap: Results of the MC simulations on the efficiency of various methods
+#| label: fig-mc-efficiency
+#| code-fold: true
+
+ggplot(data = mc_results) +
+  geom_density(aes(x = te, fill = type), alpha = 0.4) +
+  geom_vline(xintercept = log(2))
+
+```
+
+
+
+
+
+
+
+
 
 
 ## References {.unnumbered}

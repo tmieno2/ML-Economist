@@ -1,4 +1,4 @@
-# Random Forest
+# Random Forest {#sec-rf}
 
 
 ## Regression tree {#sec-rt}
@@ -556,9 +556,9 @@ boot_data <- mlb1_dt[sample(1:n_obs, n_obs, replace = TRUE), ]
 mlb1_dt[, id %in% unique(boot_data$id)] %>% mean()
 ```
 
-So, only $65\%$ of the rows from the original data (`mlb1_dt`) in this bootstrapped sample (many duplicates of the original observations). The observations that are NOT included in the bootstrapped sample is called out-of-bag observations. This provides a great opportunity to estimate test MSE while training an RF model! For a given regression tree, you can apply it to the out-of-bag samples to calculate MSE. You can repeat this for all the trees and average the MSEs, effectively conducting cross-validation. When the number of trees is large enough, OOB MSE is almost equivalent to MSE from LOOCV [@james2013introduction]. This means that we can tune hyper-parameters by comparing OOB MSEs of different configurations of them.
+So, only $65\%$ of the rows from the original data (`mlb1_dt`) in this bootstrapped sample (many duplicates of the original observations). The observations that are NOT included in the bootstrapped sample is called out-of-bag observations. This provides a great opportunity to estimate test MSE while training an RF model! For a given regression tree, you can apply it to the out-of-bag samples to calculate MSE. You can repeat this for all the trees and average the MSEs, effectively conducting cross-validation. When the number of trees is large enough, OOB MSE is almost equivalent to MSE from LOOCV [@james2013introduction]. This means that we can tune hyper-parameters by comparing OOB MSEs under different sets of hyper-parameter values.
 
-You can use a simple grid-search to find the best hyper-parameters. Grid-search is simply a brute-force optimization methods that goes through all the combinations of hyper-parameters and see which combination comes at the top. The computational intensity of grid-search depends on how many hyper-parameters you want to vary and how many values you would like to look at for each of the hyper-parameters. Here, let's tune `mtry`, `min.node.size`, and `sample.fraction`.
+You can use a simple grid-search to find the best hyper-parameter values. Grid-search is simply a brute-force optimization methods that goes through all the combinations of hyper-parameters and see which combination comes at the top. The computational intensity of grid-search depends on how many hyper-parameters you want to vary and how many values you would like to look at for each of the hyper-parameters. Here, let's tune `mtry`, `min.node.size`, and `sample.fraction`.
 
 ```{r}
 #=== define set of values you want to look at ===#

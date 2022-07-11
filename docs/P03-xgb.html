@@ -379,7 +379,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 &amp; = -\frac{1}{2} \sum_{j=1}^J \huge[\normalsize\frac{(\sum_{i\in I_j}g_i)^2}{\sum_{i\in I_j}h_i + \lambda}\huge]\normalsize + \gamma J
 \end{aligned}
 \tag{8.6}\]</span></span></p>
-<p>For notatinal convenience, we call <span class="math inline">\(\frac{(\sum_{i\in I_j}g_i)^2}{\sum_{i\in I_j}h_i + \lambda}\)</span> quality score and denote it by <span class="math inline">\(Q_j\)</span> (<span style="color:red"> Q</span>uality score for leaf <span class="math inline">\(j\)</span>).</p>
+<p>For rotational convenience, we call <span class="math inline">\(\frac{(\sum_{i\in I_j}g_i)^2}{\sum_{i\in I_j}h_i + \lambda}\)</span> quality score and denote it by <span class="math inline">\(Q_j\)</span> (<span style="color:red"> Q</span>uality score for leaf <span class="math inline">\(j\)</span>).</p>
 <p>We could find the best tree structure by finding <span class="math inline">\(w_j^*(q)\)</span> according to <a href="#eq-obj-taylor-tree">Equation&nbsp;<span>8.4</span></a> and calculate <span class="math inline">\(\tilde{\Psi}_t(q)^*\)</span> according to <a href="#eq-minimized-obj">Equation&nbsp;<span>8.6</span></a> for each of all the possible tree structures, and then pick the tree structure q(x) that has the lowest <span class="math inline">\(\tilde{\Psi}_t(q)^*\)</span>.</p>
 <p>However, it is impossible to consider all possible tree structures practically. So, a greedy (myopic) approach that starts from a single leaf and iteratively splits leaves is used instead.</p>
 <p>Consider splitting an existing leaf <span class="math inline">\(s\)</span> (where in the tree it may be located) into two leaves <span class="math inline">\(L\)</span> and <span class="math inline">\(R\)</span> when there are <span class="math inline">\(J\)</span> existing leaves. Then, we find <span class="math inline">\(w_j^*\)</span> and calculate <span class="math inline">\(\tilde{\Psi}_t(q)^*\)</span> for each leaf, and the resulting minimized objective is</p>
@@ -429,7 +429,7 @@ h_i = \frac{\partial^2 L(y_i, p_i)}{\partial p_i^2} = 1 \\
 \end{aligned}
 \]</span></p>
 <p>So, <span class="math inline">\(g_i\)</span> is simply the negative of the residual for <span class="math inline">\(i\)</span>.</p>
-<p>Now, suppose your are at iteration <span class="math inline">\(b\)</span> and the predicted value for <span class="math inline">\(i\)</span> is denoted as <span class="math inline">\(f_{i,b}(x_i)\)</span>. Further, let <span class="math inline">\(r_{i,b}\)</span> denote the residual (<span class="math inline">\(y_i - f_{i,b}(x_i)\)</span>).</p>
+<p>Now, suppose you are at iteration <span class="math inline">\(b\)</span> and the predicted value for <span class="math inline">\(i\)</span> is denoted as <span class="math inline">\(f_{i,b}(x_i)\)</span>. Further, let <span class="math inline">\(r_{i,b}\)</span> denote the residual (<span class="math inline">\(y_i - f_{i,b}(x_i)\)</span>).</p>
 <p>Plugging these into <a href="#eq-foc-leaf">Equation&nbsp;<span>8.5</span></a>,</p>
 <p><span id="eq-w-reg"><span class="math display">\[
 \begin{aligned}
@@ -437,7 +437,7 @@ w_j^* &amp; = \frac{\sum_{i\in I_j}r_{i,b}}{\sum_{i\in I_j}1 + \lambda} \\
       &amp; = \frac{\sum_{i\in I_j}r_{i,b}}{N_j + \lambda}
 \end{aligned}
 \tag{8.8}\]</span></span></p>
-<p>That is for a given leaf <span class="math inline">\(j\)</span>, the optimal predicted value (<span class="math inline">\(w_j^*\)</span>) is the sum of the residuals of all the observations in leaf <span class="math inline">\(j\)</span> divided by the number of observations in leaf <span class="math inline">\(j\)</span> plus <span class="math inline">\(\lambda\)</span>. When <span class="math inline">\(\lambda = 0\)</span>, the optimal predicted value (<span class="math inline">\(w_j^*\)</span>) is simply the mean of the residuals.</p>
+<p>That is, for a given leaf <span class="math inline">\(j\)</span>, the optimal predicted value (<span class="math inline">\(w_j^*\)</span>) is the sum of the residuals of all the observations in leaf <span class="math inline">\(j\)</span> divided by the number of observations in leaf <span class="math inline">\(j\)</span> plus <span class="math inline">\(\lambda\)</span>. When <span class="math inline">\(\lambda = 0\)</span>, the optimal predicted value (<span class="math inline">\(w_j^*\)</span>) is simply the mean of the residuals.</p>
 <p>The quality score for leaf <span class="math inline">\(j\)</span> is then,</p>
 <p><span id="eq-q-reg"><span class="math display">\[
 Q_j = \frac{(\sum_{i\in I_j}r_{i,b})^2}{N_j + \lambda}
@@ -452,7 +452,7 @@ Q_j = \frac{(\sum_{i\in I_j}r_{i,b})^2}{N_j + \lambda}
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div></div><p>In order to further our understanding of the entire XGB algorithm, let’s take a lookt at a simple regression problem as an illustration. We consider a four-observation data as follows:</p>
+</div></div><p>In order to further our understanding of the entire XGB algorithm, let’s take a look at a simple regression problem as an illustration. We consider a four-observation data as follows:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span></span>
@@ -556,8 +556,8 @@ Q_j = \frac{(\sum_{i\in I_j}r_{i,b})^2}{N_j + \lambda}
 <span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="htmlwidget-dd2cc1172f113f885fe8" style="width:100%;height:464px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-dd2cc1172f113f885fe8">{"x":{"diagram":"\ndigraph {\n  graph [ranksep = 0.2]\n  node [shape = box]\n    T1R [label = \"L: -9\"]\n    T1L [label = \"R: 1 , 2 , 6\"]\n    T0 [label = \"-9, 1 , 2 , 6\"]\n  edge [minlen = 2]\n    T0->T1L\n    T0->T1R\n  { rank = same; T1R; T1L}\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-63a21ab36f28b7bec23f" style="width:100%;height:464px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-63a21ab36f28b7bec23f">{"x":{"diagram":"\ndigraph {\n  graph [ranksep = 0.2]\n  node [shape = box]\n    T1R [label = \"L: -9\"]\n    T1L [label = \"R: 1 , 2 , 6\"]\n    T0 [label = \"-9, 1 , 2 , 6\"]\n  edge [minlen = 2]\n    T0->T1L\n    T0->T1R\n  { rank = same; T1R; T1L}\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </div></div><p>Let’s split the data.</p>
@@ -628,8 +628,8 @@ w_R^* &amp; = 1 + 2 + 6 / (3 + 1) = 2.25
 <span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="htmlwidget-b85fa7b8cbd1baf99348" style="width:100%;height:464px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-b85fa7b8cbd1baf99348">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box]\n      T1R [label = \"L: -9 \n Q score = 40.5\"]\n      T1L [label = \"R: 1 , 2 , 6 \n Q score = 20.25\"]\n      T0 [label = \"-9, 1 , 2 , 6\"]\n    edge [minlen = 2]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-ec61106f4add6f2378a1" style="width:100%;height:464px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-ec61106f4add6f2378a1">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box]\n      T1R [label = \"L: -9 \n Q score = 40.5\"]\n      T1L [label = \"R: 1 , 2 , 6 \n Q score = 20.25\"]\n      T0 [label = \"-9, 1 , 2 , 6\"]\n    edge [minlen = 2]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </div></div><p><span class="math display">\[
@@ -720,8 +720,8 @@ G_1 = \frac{40.5 + 20.25 - 0}{2} - 10 = 20.375
 <span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="htmlwidget-4148ac9ac29cadc8a443" style="width:100%;height:464px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-4148ac9ac29cadc8a443">{"x":{"diagram":"\n    digraph {\n      graph [ranksep = 0.2]\n      node [shape = box]\n        T1R [label = \"L: -9, 1 \n Q score = 21.33\"]\n        T1L [label = \"R: 2 , 6 \n Q score = 21.33\"]\n        T0 [label = \"-9, 1 , 2 , 6\"]\n      edge [minlen = 2]\n        T0->T1L\n        T0->T1R\n      { rank = same; T1R; T1L}\n    }\n    ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-608a2f899662ff48c55d" style="width:100%;height:464px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-608a2f899662ff48c55d">{"x":{"diagram":"\n    digraph {\n      graph [ranksep = 0.2]\n      node [shape = box]\n        T1R [label = \"L: -9, 1 \n Q score = 21.33\"]\n        T1L [label = \"R: 2 , 6 \n Q score = 21.33\"]\n        T0 [label = \"-9, 1 , 2 , 6\"]\n      edge [minlen = 2]\n        T0->T1L\n        T0->T1R\n      { rank = same; T1R; T1L}\n    }\n    ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </div></div><p><span class="math display">\[
@@ -775,8 +775,8 @@ G_2 = \frac{21.33 + 21.33 - 0}{2} - 10 = 11.3333333
 <span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="htmlwidget-d7d3a05c71c9f0e52c16" style="width:100%;height:464px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-d7d3a05c71c9f0e52c16">{"x":{"diagram":"\n    digraph {\n      graph [ranksep = 0.2]\n      node [shape = box]\n        T1R [label = \"L: -9, 1, 2 \n Q score = 9\"]\n        T1L [label = \"R: 6 \n Q score = 18\"]\n        T0 [label = \"-9, 1 , 2 , 6\"]\n      edge [minlen = 2]\n        T0->T1L\n        T0->T1R\n      { rank = same; T1R; T1L}\n    }\n    ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-1f71e1fa813d20d26a45" style="width:100%;height:464px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1f71e1fa813d20d26a45">{"x":{"diagram":"\n    digraph {\n      graph [ranksep = 0.2]\n      node [shape = box]\n        T1R [label = \"L: -9, 1, 2 \n Q score = 9\"]\n        T1L [label = \"R: 6 \n Q score = 18\"]\n        T0 [label = \"-9, 1 , 2 , 6\"]\n      edge [minlen = 2]\n        T0->T1L\n        T0->T1R\n      { rank = same; T1R; T1L}\n    }\n    ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </div></div><p><span class="math display">\[
@@ -851,8 +851,8 @@ Note
 <span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="htmlwidget-15dd3558d8e20c95d9a1" style="width:100%;height:325px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-15dd3558d8e20c95d9a1">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box, width = 0.3, height = 0.15, fontsize = 3, fixedsize = TRUE, penwidth = 0.2]\n      T1R [label = \"L: -9 \n w* = -4.5\"]\n      T1L [label = \"R: 1 , 2 , 6 \n w* = 2.25\"]\n      T0 [label = \"-9, 1 , 2 , 6\"]\n    edge [penwidth = 0.2, arrowsize = 0.3, len = 0.3]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-e6cdb9d7ec20d86b6195" style="width:100%;height:325px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-e6cdb9d7ec20d86b6195">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box, width = 0.3, height = 0.15, fontsize = 3, fixedsize = TRUE, penwidth = 0.2]\n      T1R [label = \"L: -9 \n w* = -4.5\"]\n      T1L [label = \"R: 1 , 2 , 6 \n w* = 2.25\"]\n      T0 [label = \"-9, 1 , 2 , 6\"]\n    edge [penwidth = 0.2, arrowsize = 0.3, len = 0.3]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>We now use <span class="math inline">\(w^*\)</span> from this tree to update our prediction according to <a href="#eq-update">Equation&nbsp;<span>8.7</span></a>.</p>
@@ -980,8 +980,8 @@ f_{i = 4,b = 1} = 6 + 0.3 \times 2.25 = 6.68
 <span id="cb45-23"><a href="#cb45-23" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb45-24"><a href="#cb45-24" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="htmlwidget-7f17429b778e86af6d8c" style="width:100%;height:464px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-7f17429b778e86af6d8c">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box, width = 0.4, height = 0.15, fontsize = 3, fixedsize = TRUE, penwidth = 0.2]\n      T1R [label = \"L: -8.18 \n w* = -3.83\"]\n      T1L [label = \"R: 0.71 , 1.71 , 5.71 \n w* = 1.74\"]\n      T0 [label = \"-8.18, 0.71 , 1.71 , 5.71\"]\n    edge [penwidth = 0.2, arrowsize = 0.3, len = 0.3]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-6fcada3e15f9f3a06f09" style="width:100%;height:464px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-6fcada3e15f9f3a06f09">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box, width = 0.4, height = 0.15, fontsize = 3, fixedsize = TRUE, penwidth = 0.2]\n      T1R [label = \"L: -8.18 \n w* = -3.83\"]\n      T1L [label = \"R: 0.71 , 1.71 , 5.71 \n w* = 1.74\"]\n      T0 [label = \"-8.18, 0.71 , 1.71 , 5.71\"]\n    edge [penwidth = 0.2, arrowsize = 0.3, len = 0.3]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>Let’s now update our predictions.</p>

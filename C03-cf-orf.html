@@ -46,21 +46,7 @@ ul.task-list{list-style: none;}
 <h1>Forest-based Estimators</h1>
 <section id="causal-forest" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="causal-forest">Causal Forest</h2>
-<p>Causal Forest (CF) (as implemented by the R <code>grf</code> package or python <code>econml</code> package) is a special type of R-learner (also a DML) and also a special case of generalized random forest (GRF). Let <span class="math inline">\(\hat{f}(X_i,W_i)\)</span> and <span class="math inline">\(\hat{g}(X_i,W_i)\)</span> denote the cross-fitted estimation of <span class="math inline">\(E[Y|X,W]\)</span> and <span class="math inline">\(E[T|X,W]\)</span>, respectively. Further, let <span class="math inline">\(\hat{\tilde{Y_i}}\)</span> and <span class="math inline">\(\hat{\tilde{T_i}}\)</span> denote <span class="math inline">\(Y_i - \hat{f}(X_i,W_i)\)</span> and <span class="math inline">\(T_i - \hat{g}(X_i,W_i)\)</span>, respectively.</p>
-
-<div class="no-row-height column-margin column-container"><div class="">
-<p>CF can be implemented using the R <code>grf</code> package or python <code>econml</code> package. Both of them implements CF as an R-learner. However, the original causal forest proposed in <span class="citation" data-cites="wager_estimation_2018">@wager_estimation_2018</span> does not follow an R-leaner procedure.</p>
-</div><div class="">
-<p>See <strong>?@sec-cf</strong> for how cross-fitting works.</p>
-</div></div>
-<p>Then, CF estimates <span class="math inline">\(\theta(X)\)</span> at <span class="math inline">\(X = x\)</span> by solving the following equation:</p>
-<p><span class="math display">\[
-\begin{aligned}
-\hat{\theta}(X) = argmin_{\theta}\;\;\sum_{i=1}^N K_x(X_i)[\hat{\tilde{Y_i}} - \theta\cdot \hat{\tilde{T_i}}]^2
-\end{aligned}
-\]</span></p>
-<p>where <span class="math inline">\(K_x(X_i)\)</span> is the weight given to each <span class="math inline">\(i\)</span>. <span class="math inline">\(K_x(X_i)\)</span> is found using random forest based on a causal criterion.</p>
-<p>Unlike the DML approached we saw in <strong>?@sec-het-dml</strong>, where the final model is a linear model. CF does not assume any functional form for how <span class="math inline">\(X\)</span> affects <span class="math inline">\(\theta\)</span> as you can see from the above minimization problem.</p>
+<p>Causal Forest (CF) (as implemented by the R <code>grf</code> package or python <code>econml</code> package) is a special type of R-learner (also a DML) and also a special case of generalized random forest (GRF).</p>
 <div class="callout-tip callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -72,9 +58,35 @@ Tip
 </div>
 <div class="callout-body-container callout-body">
 <p><strong>When useful?</strong></p>
-<p>Causal Forest is useful in estimating heterogeneous treatment effects when they are complex and/or non-linear functions of attributes (heterogeneity drivers) and it is hard to represent them using linear models at the final stage.</p>
+<p>Causal Forest is useful in estimating heterogeneous treatment effects when they are complex and/or non-linear functions of attributes (heterogeneity drivers) and it is hard to represent them using linear models.</p>
 </div>
 </div>
+<section id="mechanics" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="mechanics">Mechanics</h3>
+<p>Let <span class="math inline">\(\hat{f}(X_i,W_i)\)</span> and <span class="math inline">\(\hat{g}(X_i,W_i)\)</span> denote the cross-fitted estimation of <span class="math inline">\(E[Y|X,W]\)</span> and <span class="math inline">\(E[T|X,W]\)</span>, respectively. Further, let <span class="math inline">\(\hat{\tilde{Y_i}}\)</span> and <span class="math inline">\(\hat{\tilde{T_i}}\)</span> denote <span class="math inline">\(Y_i - \hat{f}(X_i,W_i)\)</span> and <span class="math inline">\(T_i - \hat{g}(X_i,W_i)\)</span>, respectively.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>CF can be implemented using the R <code>grf</code> package or python <code>econml</code> package. Both of them implements CF as an R-learner. However, the original causal forest proposed in <span class="citation" data-cites="wager_estimation_2018">@wager_estimation_2018</span> does not follow an R-leaner procedure.</p>
+</div><div class="">
+<p>See <strong>?@sec-cf</strong> for how cross-fitting works.</p>
+</div></div>
+<p>Then, CF estimates <span class="math inline">\(\theta(X)\)</span> at <span class="math inline">\(X = x\)</span> by solving the following equation:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\hat{\theta}(x) = argmin_{\theta}\;\;\sum_{i=1}^N \alpha_i(X_i)[\hat{\tilde{Y_i}} - \theta\cdot \hat{\tilde{T_i}}]^2
+\end{aligned}
+\]</span></p>
+<p>where <span class="math inline">\(\alpha_i(X_i)\)</span> is the weight given to each <span class="math inline">\(i\)</span>. <span class="math inline">\(\alpha_i(X_i)\)</span> is found using random forest based on a causal criterion.</p>
+<p>Unlike the DML approached we saw in <strong>?@sec-het-dml</strong>, where the final model is a linear model, CF does not assume any functional form for how <span class="math inline">\(X\)</span> affects <span class="math inline">\(\theta\)</span> as you can see from the above minimization problem.</p>
+<p><span class="math inline">\(\Psi(\theta(X), v(X)) = \hat{\tilde{Y_i}} - \theta\hat{\tilde{T_i}}\)</span></p>
+</section>
+<section id="implementation" class="level3">
+<h3 class="anchored" data-anchor-id="implementation">Implementation</h3>
+<p>We can use the <code>causal_forest()</code> function from the R <code>grf</code> package to train a CF model.</p>
+</section>
+<section id="application" class="level3">
+<h3 class="anchored" data-anchor-id="application">Application</h3>
+</section>
 </section>
 <section id="orthogonal-random-forest" class="level2">
 <h2 class="anchored" data-anchor-id="orthogonal-random-forest">Orthogonal Random Forest</h2>

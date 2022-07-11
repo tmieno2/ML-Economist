@@ -9,8 +9,8 @@
 # List of things to cover
 
 ## Prediction vs Causal Inference
-+ why we do not care about prediction 99% of the time
-+ why a good prediction does not necessarily lead to a better causal impact identification
++ [x] why we do not care about prediction 99% of the time
++ [x] why a good prediction does not necessarily lead to a better causal impact identification
 
 ## Use python from within R using the reticulate package
 
@@ -34,9 +34,8 @@ https://www.r-bloggers.com/2020/04/how-to-run-pythons-scikit-learn-in-r-in-5-min
 ## Causal inference with Machine Learning
 
 + R-learner 
-+ Double Machine Learning (DML)
++ [x] Double Machine Learning (DML)
 + Doubly-Robust (DR)
-
 + Orthogonal Forest
 + Causal Forest
 
@@ -46,6 +45,8 @@ https://www.r-bloggers.com/2020/04/how-to-run-pythons-scikit-learn-in-r-in-5-min
   + random forest
   + boosted_regression_forest
   + causal_forest
+
+[cross-fit in causal forest?](https://github.com/grf-labs/grf/issues/464)
 
 ## Python packages
 + scikitlearn

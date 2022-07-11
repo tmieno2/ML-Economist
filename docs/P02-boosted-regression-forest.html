@@ -377,7 +377,7 @@ div.csl-indent {
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  .[, salary <span class="sc">:</span><span class="er">=</span> <span class="cn">NULL</span>] <span class="sc">%&gt;%</span> <span class="co"># remove salary (use lsalary instead)</span></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>() <span class="co"># remove observations with NA in any of the variables</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div></div><p>In training RF that uses the idea of bagging, the original data is used to generate many bootstrapped datasets, a regression tree is trained on each of them <span style="color:blue"> independently </span>, and then they are averaged to reach the final model. Boosting is similar to bagging (bootstrap aggregation) in that it trains many statistical models and then combine them to reach the final model. However, instead of building many trees independently, it builds trees <span style="color:blue"> sequentially </span> in a manner that improves prediction step by step.</p>
+</div></div><p>In training RF that uses the idea of bagging, the original data is used to generate many bootstrapped datasets, a regression tree is trained on each of them <span style="color:blue"> independently </span>, and then they are averaged when prediction. Boosting is similar to bagging (bootstrap aggregation) in that it trains many statistical models and then combine them. However, instead of training models independently, it trains models <span style="color:blue"> sequentially </span> in a manner that improves prediction step by step.</p>
 <p>While there are many variants of boosting methods (see Chapter 10 of <span class="citation" data-cites="hastie2009elements">Hastie et al. (<a href="#ref-hastie2009elements" role="doc-biblioref">2009</a>)</span>), we will look at gradient boosting using trees for regression in particular (Algorithm 10.3 in <span class="citation" data-cites="hastie2009elements">Hastie et al. (<a href="#ref-hastie2009elements" role="doc-biblioref">2009</a>)</span> presents the generic gradient tree boosting algorithm), where squared error is used as the loss function.</p>
 <ol type="1">
 <li>Set <span class="math inline">\(f_0(X_i) = \frac{\sum_{i=1}^N y_i}{N}\)</span> for all <span class="math inline">\(i = 1, \dots, N\)</span></li>
@@ -394,7 +394,7 @@ div.csl-indent {
 <li>Finally, <span class="math inline">\(\hat{f}(X_i) = f_B(X_i)\)</span></li>
 </ol>
 <p>Let’s try to go through this algorithm a bit to have it sink in for you.</p>
-<p>Step 1</p>
+<p><span style="color:blue"> <strong>Step 1</strong> </span></p>
 <p>Step 1 finds the mean of the dependent variable. This quantity is used as the starting estimate for the dependent variable.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(</span>
@@ -404,12 +404,13 @@ div.csl-indent {
 <pre><code>[1] 13.51172</code></pre>
 </div>
 </div>
-<p>Step 2: <span class="math inline">\(b = 1\)</span></p>
+<p><span style="color:blue"> <strong>Step 2</strong></span></p>
+<p><strong><span class="math inline">\(b = 1\)</span></strong></p>
 <p>Now, we get residuals:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>mlb1_dt[, resid_1 <span class="sc">:</span><span class="er">=</span> lsalary <span class="sc">-</span> f_0]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The residuals contain information in <code>lsalary</code> that was left unexplained. By training a regression tree using the residuals as the dependent variable, we are finding a tree that can explain the unexplained parts of <code>lsalary</code> using the explanatory variables.</p>
+<p>The residuals contain information in <code>lsalary</code> that was left unexplained by simply using the mean of <code>lsalary</code>. By training a regression tree using the residuals as the dependent variable, we are finding a tree that can explain the unexplained parts of <code>lsalary</code> using the explanatory variables.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>tree_fit_b1 <span class="ot">&lt;-</span> </span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rpart</span>(</span>
@@ -447,7 +448,7 @@ div.csl-indent {
 <pre><code>[1] 288.3205</code></pre>
 </div>
 </div>
-<p>Great. Let’s move on to <span class="math inline">\(b = 2\)</span>.</p>
+<p>Great. Let’s move on to <strong><span class="math inline">\(b = 2\)</span></strong>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== get negative of the residuals ===#</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>mlb1_dt[, resid_2 <span class="sc">:</span><span class="er">=</span> lsalary <span class="sc">-</span> f_1]</span>
@@ -477,7 +478,7 @@ div.csl-indent {
 </div>
 <p>We further improved our predictions. We repeat this process until certain user-specified stopping criteria is met.</p>
 <p>As you probably have noticed, there are several key parameters in the process above that controls the performance of gradient boosting forest. <span class="math inline">\(\lambda\)</span> controls the speed of learning. The lower <span class="math inline">\(\lambda\)</span> is, slower the learning speed is. <span class="math inline">\(B\)</span> (the number of trees) determines how many times we want to make small improvements to the original prediction. When you increase the value of <span class="math inline">\(\lambda\)</span>, you should decrease the value of <span class="math inline">\(B\)</span>. Too high values of <span class="math inline">\(\lambda\)</span> and <span class="math inline">\(B\)</span> can lead to over-fitting.</p>
-<p>You may have been wondering why this algorithm is called <code>Gradient</code> boosting. Gradient boosting is a much more general than the one described here particularly for gradient tree boosting for regression. It can be applied to both regression and classification<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. In general, Step 2.a can be written as follows:</p>
+<p>You may have been wondering why this algorithm is called <code>Gradient</code> boosting. Gradient boosting is much more general than the one described here particularly for gradient tree boosting for regression. It can be applied to both regression and classification<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. In general, Step 2.a can be written as follows:</p>
 <p><span class="math display">\[
 r_{i,b} = - \huge[\normalsize\frac{\partial L(y_i, f(x_i))}{\partial f(x_i)}\huge]\normalsize_{f = f_{b-1}}
 \]</span></p>
@@ -530,21 +531,21 @@ r_{i,b} = - \huge[\normalsize\frac{\partial L(y_i, f(x_i))}{\partial f(x_i)}\hug
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== see the MSE history ===#  </span></span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>gbm_fit<span class="sc">$</span>cv.error</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  [1] 1.2248432 1.1110915 1.0185642 0.9409116 0.8691201 0.8050180 0.7531787
-  [8] 0.7052854 0.6688367 0.6317602 0.6048432 0.5805937 0.5608615 0.5385978
- [15] 0.5225228 0.5066315 0.4910507 0.4760762 0.4643995 0.4512891 0.4431362
- [22] 0.4388643 0.4330429 0.4264782 0.4184674 0.4147589 0.4117545 0.4076413
- [29] 0.4056434 0.4008145 0.3977482 0.3940364 0.3908504 0.3885904 0.3880069
- [36] 0.3871503 0.3848222 0.3828537 0.3817257 0.3804998 0.3793467 0.3790404
- [43] 0.3776668 0.3761675 0.3731693 0.3726035 0.3723562 0.3720837 0.3719975
- [50] 0.3720685 0.3707750 0.3691344 0.3683925 0.3678018 0.3676319 0.3673738
- [57] 0.3664237 0.3656042 0.3661299 0.3653798 0.3644036 0.3646053 0.3634997
- [64] 0.3631219 0.3642913 0.3635497 0.3638425 0.3630797 0.3623021 0.3615823
- [71] 0.3621527 0.3612492 0.3612494 0.3604196 0.3595219 0.3588964 0.3592190
- [78] 0.3583703 0.3579787 0.3571193 0.3584324 0.3574263 0.3578995 0.3576194
- [85] 0.3581297 0.3591698 0.3591624 0.3588560 0.3594141 0.3593811 0.3582118
- [92] 0.3574070 0.3571267 0.3564726 0.3564624 0.3565739 0.3572542 0.3592945
- [99] 0.3584774 0.3600822</code></pre>
+<pre><code>  [1] 1.2133679 1.0982124 1.0009573 0.9264744 0.8625669 0.8049389 0.7567880
+  [8] 0.7170550 0.6700632 0.6359427 0.6058549 0.5773052 0.5508581 0.5339791
+ [15] 0.5132386 0.4986471 0.4867383 0.4733133 0.4643628 0.4538323 0.4487673
+ [22] 0.4415853 0.4336503 0.4255462 0.4213746 0.4167823 0.4119845 0.4083263
+ [29] 0.4054926 0.4005914 0.3963229 0.3949277 0.3928952 0.3918178 0.3892199
+ [36] 0.3878711 0.3851583 0.3841119 0.3817727 0.3818076 0.3807452 0.3790792
+ [43] 0.3801355 0.3780099 0.3792709 0.3760443 0.3762962 0.3748930 0.3761086
+ [50] 0.3749935 0.3760059 0.3757504 0.3752569 0.3769937 0.3746649 0.3754034
+ [57] 0.3738029 0.3729647 0.3726739 0.3703195 0.3716664 0.3708532 0.3716080
+ [64] 0.3714079 0.3706787 0.3699719 0.3713685 0.3714061 0.3700045 0.3703459
+ [71] 0.3710628 0.3714751 0.3730739 0.3719991 0.3732038 0.3739561 0.3733547
+ [78] 0.3714900 0.3712352 0.3698804 0.3699245 0.3699508 0.3701428 0.3688214
+ [85] 0.3685739 0.3685015 0.3672798 0.3654631 0.3654158 0.3649260 0.3634291
+ [92] 0.3644642 0.3652407 0.3654456 0.3659397 0.3658364 0.3661050 0.3655660
+ [99] 0.3638581 0.3616335</code></pre>
 </div>
 </div>
 <p>You can visualize the CV results using <code>gbm.perf()</code>.</p>
@@ -554,7 +555,7 @@ r_{i,b} = - \huge[\normalsize\frac{\partial L(y_i, f(x_i))}{\partial f(x_i)}\hug
 <p><img src="P02-boosted-regression-forest_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 95</code></pre>
+<pre><code>[1] 100</code></pre>
 </div>
 </div>
 <p>Note that it will tell you what the optimal number of trees is <span style="color:blue"> given </span> the values of the other hyper-parameters (here default values). If you want to tune other parameters as well, you need to program it yourself.</p>

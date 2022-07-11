@@ -526,7 +526,7 @@ y = \alpha + \beta_x + \mu
 </div>
 <p>This is just a single simulation. So, we cannot say bootstrap works better when the number of sample size is larger only from these experiments. But, it is generally true that bootstrap indeed works better when the number of sample size is larger.</p>
 </section>
-<section id="sec-boot-comp" class="level2" data-number="5.3">
+<section id="sec-boot-comp" class="level2 page-columns page-full" data-number="5.3">
 <h2 data-number="5.3" class="anchored" data-anchor-id="sec-boot-comp"><span class="header-section-number">5.3</span> A more complicated example</h2>
 <p>Consider a simple production function (e.g., yield response functions for agronomists):</p>
 <p><span class="math display">\[
@@ -545,8 +545,11 @@ Max_x 5(\hat{\beta}_1 x + \hat{\beta}_2 x^2) - 2 x
 <p><span class="math display">\[
 5\hat{\beta}_1 + 10 \hat{\beta}_2 x - 2 = 0
 \]</span></p>
-<p>So, the estimated profit-maximizing input level is <span class="math inline">\(\hat{x}^* = \frac{2-5\hat{\beta}_1}{10\hat{\beta}_2}\)</span>. What we are interested in knowing is the SE of <span class="math inline">\(x^*\)</span>. As you can see, it is a non-linear function of the coefficients, which makes it slightly harder than simply getting the SE of <span class="math inline">\(\hat{\beta_1}\)</span> or <span class="math inline">\(\hat{\beta_2}\)</span>. However, bootstrap can easily get us an estimate of the SE of <span class="math inline">\(\hat{x}^*\)</span><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. The bootstrap process will be very much the same as the first bootstrap example except that we will estimate <span class="math inline">\(x^*\)</span> in each iteration instead of stopping at estimating just coefficients. Let’s work on a single iteration first.</p>
-<p>Here is the data generating process:</p>
+<p>So, the estimated profit-maximizing input level is <span class="math inline">\(\hat{x}^* = \frac{2-5\hat{\beta}_1}{10\hat{\beta}_2}\)</span>. What we are interested in knowing is the SE of <span class="math inline">\(x^*\)</span>. As you can see, it is a non-linear function of the coefficients, which makes it slightly harder than simply getting the SE of <span class="math inline">\(\hat{\beta_1}\)</span> or <span class="math inline">\(\hat{\beta_2}\)</span>. However, bootstrap can easily get us an estimate of the SE of <span class="math inline">\(\hat{x}^*\)</span>. The bootstrap process will be very much the same as the first bootstrap example except that we will estimate <span class="math inline">\(x^*\)</span> in each iteration instead of stopping at estimating just coefficients. Let’s work on a single iteration first.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>Alternatively, you could use the delta method, which lets you find an estimate of the SE of a statistics that is a non-linear function of estimated coefficients.</p>
+</div></div><p>Here is the data generating process:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">894334</span>)</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -566,7 +569,8 @@ Max_x 5(\hat{\beta}_1 x + \hat{\beta}_2 x^2) - 2 x
 <p>Under the data generating process, here is what the production function looks like:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> data) <span class="sc">+</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> ey, <span class="at">x =</span> x))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> ey, <span class="at">x =</span> x)) <span class="sc">+</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="B05-bootstrap_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -628,10 +632,13 @@ Max_x 5(\hat{\beta}_1 x + \hat{\beta}_2 x^2) - 2 x
 </div>
 </div>
 </section>
-<section id="one-more-example-with-a-non-parametric-model" class="level2" data-number="5.4">
+<section id="one-more-example-with-a-non-parametric-model" class="level2 page-columns page-full" data-number="5.4">
 <h2 data-number="5.4" class="anchored" data-anchor-id="one-more-example-with-a-non-parametric-model"><span class="header-section-number">5.4</span> One more example with a non-parametric model</h2>
 <p>We now demonstrate how we can use bootstrap to get an estimate of the SE of <span class="math inline">\(\hat{x}^*\)</span> when we use random forest (RF) as our regression method instead of OLS. When RF is used, we do not have any coefficients like the OLS case above. Even then, bootstrap allows us to estimate the SE of <span class="math inline">\(\hat{x}^*\)</span>.</p>
-<p>The procedure is exactly the same except that we use RF to estimate the production function and also that we need to conduct numerical optimization as no analytical formula is available unlike the case above.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>RF will be covered in <a href="P01-random-forest.html#sec-rf"><span>Section&nbsp;6.2</span></a>. Please take a quick glance at what RF is to confirm this point. No deep understanding of RF is necessary to understand the significance of bootstrap in this example. Please also note that there is no benefit in using RF in this example because we have only one variable and semi-parametric approach like <code>gam()</code> will certainly do better. RF is used here only because it does not give you coefficient estimates (there are no coefficients in the first place for RF) like linear models.</p>
+</div></div><p>The procedure is exactly the same except that we use RF to estimate the production function and also that we need to conduct numerical optimization as no analytical formula is available unlike the case above.</p>
 <p>We first implement a single iteration.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== get bootstrapped data ===#</span></span>
@@ -651,7 +658,8 @@ Max_x 5(\hat{\beta}_1 x + \hat{\beta}_2 x^2) - 2 x
 <span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="co">#=== plot ===#</span></span>
 <span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> eval_data) <span class="sc">+</span></span>
-<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> y_hat, <span class="at">x =</span> x))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> y_hat, <span class="at">x =</span> x)) <span class="sc">+</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="B05-bootstrap_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -673,7 +681,7 @@ Max_x 5(\hat{\beta}_1 x + \hat{\beta}_2 x^2) - 2 x
 6: 0.015015015  1.2466564   6.203252</code></pre>
 </div>
 </div>
-<p>The only thing left for us to do is to find the <span class="math inline">\(x\)</span> value that maximizes profit.</p>
+<p>The only thing left for us to do is find the <span class="math inline">\(x\)</span> value that maximizes profit.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>eval_data[<span class="fu">which.max</span>(profit_hat), ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1007,9 +1015,9 @@ Tip
 </div>
 <div class="callout-body-container callout-body">
 <ul>
-<li><p>Bag of little bootstraps (BLB) is a variant of bootstrap that has similar desirable statistical properties as bootstrap, but is more computation and memory friendly.</p></li>
-<li><p>For example, the <code>grf</code> package uses BLB to estimate the standard error of the treatment effect in Causal Forest estimation.</p></li>
+<li>Bag of little bootstraps (BLB) is a variant of bootstrap that has similar desirable statistical properties as bootstrap, but is more computation and memory friendly.</li>
 </ul>
+<!-- + For example, the `grf` package uses BLB to estimate the standard error of the treatment effect in Causal Forest estimation. -->
 </div>
 </div>
 </section>
@@ -1023,12 +1031,6 @@ Kleiner, Ariel, Ameet Talwalkar, Purnamrita Sarkar, and Michael I. Jordan. 2014.
 </div>
 
 
-</section>
-<section class="footnotes footnotes-end-of-document" role="doc-endnotes">
-<hr>
-<ol>
-<li id="fn1" role="doc-endnote"><p>Alternatively, you could use the delta method to get an estimate of the SE of a statistics that is a non-linear function of estimated parameters.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
 </section>
 
 </main> <!-- /main -->

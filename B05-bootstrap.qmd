@@ -208,7 +208,11 @@ The F.O.C is
 $$
 5\hat{\beta}_1 + 10 \hat{\beta}_2 x - 2 = 0
 $$
-So, the estimated profit-maximizing input level is $\hat{x}^* = \frac{2-5\hat{\beta}_1}{10\hat{\beta}_2}$. What we are interested in knowing is the SE of $x^*$. As you can see, it is a non-linear function of the coefficients, which makes it slightly harder than simply getting the SE of $\hat{\beta_1}$ or $\hat{\beta_2}$. However, bootstrap can easily get us an estimate of the SE of $\hat{x}^*$^[Alternatively, you could use the delta method to get an estimate of the SE of a statistics that is a non-linear function of estimated parameters.]. The bootstrap process will be very much the same as the first bootstrap example except that we will estimate $x^*$ in each iteration instead of stopping at estimating just coefficients. Let's work on a single iteration first.
+So, the estimated profit-maximizing input level is $\hat{x}^* = \frac{2-5\hat{\beta}_1}{10\hat{\beta}_2}$. What we are interested in knowing is the SE of $x^*$. As you can see, it is a non-linear function of the coefficients, which makes it slightly harder than simply getting the SE of $\hat{\beta_1}$ or $\hat{\beta_2}$. However, bootstrap can easily get us an estimate of the SE of $\hat{x}^*$. The bootstrap process will be very much the same as the first bootstrap example except that we will estimate $x^*$ in each iteration instead of stopping at estimating just coefficients. Let's work on a single iteration first.
+
+::: {.column-margin}
+Alternatively, you could use the delta method, which lets you find an estimate of the SE of a statistics that is a non-linear function of estimated coefficients.
+:::
 
 Here is the data generating process:
 
@@ -233,7 +237,8 @@ Under the data generating process, here is what the production function looks li
 
 ```{r}
 ggplot(data = data) +
-  geom_line(aes(y = ey, x = x))
+  geom_line(aes(y = ey, x = x)) +
+  theme_bw()
 ```
 
 
@@ -296,6 +301,10 @@ quantile(x_stars, prob = c(0.025, 0.975))
 
 We now demonstrate how we can use bootstrap to get an estimate of the SE of $\hat{x}^*$ when we use random forest (RF) as our regression method instead of OLS. When RF is used, we do not have any coefficients like the OLS case above. Even then, bootstrap allows us to estimate the SE of $\hat{x}^*$.
 
+::: {.column-margin}
+RF will be covered in @sec-rf. Please take a quick glance at what RF is to confirm this point. No deep understanding of RF is necessary to understand the significance of bootstrap in this example. Please also note that there is no benefit in using RF in this example because we have only one variable and semi-parametric approach like `gam()` will certainly do better. RF is used here only because it does not give you coefficient estimates (there are no coefficients in the first place for RF) like linear models.
+:::
+
 The procedure is exactly the same except that we use RF to estimate the production function and also that we need to conduct numerical optimization as no analytical formula is available unlike the case above. 
 
 We first implement a single iteration. 
@@ -320,7 +329,8 @@ eval_data[, y_hat := predict(reg_rf, eval_data)$predictions]
 
 #=== plot ===#
 ggplot(data = eval_data) +
-  geom_line(aes(y = y_hat, x = x))
+  geom_line(aes(y = y_hat, x = x)) +
+  theme_bw()
 ```
 
 Well, it is very spiky (we need to tune hyper-parameters using KCV. But, more on this later. The quality of RF estimation has nothing to do with the goal of this section). 
@@ -333,12 +343,14 @@ eval_data[, profit_hat := 5 * y_hat - 2 * x]
 
 head(eval_data)
 ```
-The only thing left for us to do is to find the $x$ value that maximizes profit. 
+
+The only thing left for us to do is find the $x$ value that maximizes profit. 
 
 
 ```{r}
 eval_data[which.max(profit_hat), ]
 ```
+
 Okay, so `r eval_data[which.max(profit_hat), x]` is the $\hat{x}^*$ from this iteration.
 
 As you might have guessed already, we can just repeat this step to get an estimate of the SE of $\hat{x}^*_{RF}$.
@@ -592,7 +604,7 @@ Note the estimated CI is very much similar to that from a regular bootstrap obta
 
 + Bag of little bootstraps (BLB) is a variant of bootstrap that has similar desirable statistical properties as bootstrap, but is more computation and memory friendly.
 
-+ For example, the `grf` package uses BLB to estimate the standard error of the treatment effect in Causal Forest estimation.
+<!-- + For example, the `grf` package uses BLB to estimate the standard error of the treatment effect in Causal Forest estimation. -->
 
 :::
 

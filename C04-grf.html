@@ -15,6 +15,69 @@ span.underline{text-decoration: underline;}
 div.column{display: inline-block; vertical-align: top; width: 50%;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -28,6 +91,10 @@ ul.task-list{list-style: none;}
 <script src="C04-grf_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="C04-grf_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="C04-grf_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+<script src="C04-grf_files/libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<script src="C04-grf_files/libs/viz-1.8.2/viz.js"></script>
+<link href="C04-grf_files/libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet">
+<script src="C04-grf_files/libs/grViz-binding-1.0.9/grViz.js"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
@@ -42,7 +109,7 @@ ul.task-list{list-style: none;}
 
 
 
-<section id="generalized-random-forest" class="level1 page-columns page-full">
+<section id="sec-grf" class="level1 page-columns page-full">
 <h1>Generalized Random Forest</h1>
 <p><span class="citation" data-cites="athey2019generalized">@athey2019generalized</span></p>
 <section id="grf-in-a-nutshell" class="level2 page-columns page-full">
@@ -76,23 +143,23 @@ Note
 <li>Conditional expectation (<span class="math inline">\(E[Y|X]\)</span>)
 <ul>
 <li>Regression Forest (Random forest for regression)</li>
-<li>Boosted Regression Fores</li>
+<li>Boosted Regression Forest</li>
 </ul></li>
 <li>Conditional average treatment effect (CATE)
 <ul>
 <li>Causal Forest</li>
 <li>Instrumental Forest</li>
 </ul></li>
-<li>Conditional quantile <span class="math inline">\(Q_r(X)\)</span><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>
+<li>Conditional quantile
 <ul>
 <li>Quantile Forest</li>
 </ul></li>
 </ul>
 <p>How can <a href="#eq-opt">Equation&nbsp;1</a> represents so many (very) different statistical approaches? It all boils down to how <span class="math inline">\(\Psi_{\theta, \nu}(O_i)\)</span> is specified. Here are some examples:</p>
 <ul>
-<li><span class="math inline">\(\Psi_{\theta, \nu}(Y_i, X_i) = Y_i - \theta(X)\)</span>: GRF is simply random forest</li>
-<li><span class="math inline">\(\Psi_{\theta, \nu}(Y_i, X_i, T_i) = (Y_i - E[Y|X])- \theta(X)(T_i - E[T|X])\)</span>: GRF is causal forest</li>
-<li><span class="math inline">\(\Psi_{\theta, \nu}(Y_i) = qI\{Y_i &gt; \theta\} - (1-q)I\{Y_i \leq \theta\}\)</span>: GRF is causal forest</li>
+<li><span class="math inline">\(\Psi_{\theta, \nu}(Y_i, X_i) = Y_i - \theta(X)\)</span>: traditional random forest</li>
+<li><span class="math inline">\(\Psi_{\theta, \nu}(Y_i, X_i, T_i) = (Y_i - E[Y|X])- \theta(X)(T_i - E[T|X])\)</span>: causal forest</li>
+<li><span class="math inline">\(\Psi_{\theta, \nu}(Y_i) = qI\{Y_i &gt; \theta\} - (1-q)I\{Y_i \leq \theta\}\)</span>: quantile forest</li>
 </ul>
 
 <div class="no-row-height column-margin column-container"><div class="">
@@ -110,29 +177,70 @@ Note
 <p>Why is it called generalized <span style="color:red"> random forest</span>?</p>
 </div>
 </div>
-<p>GRF uses random forest to find the weights <span class="math inline">\(\alpha_i(x)\)</span>. Specifically, it trains a random forest in which the dependent variable is <span style="color:blue"> pseudo outcome (<span class="math inline">\(\rho_i\)</span>) </span>derived from the score function that is specific to the type of regression you are running. Based on the trees build, then <span class="math inline">\(\alpha_i(x)\)</span> is calculated as the proportion of the number of times observation <span class="math inline">\(i\)</span> ended up in the same terminal node (leaf) relative to the total number of observations that <span class="math inline">\(X = x\)</span> share leaves with for all the trees. Note that trees are build only once in GRF and it is used repeatedly when predicting <span class="math inline">\(\theta(X)\)</span> at particular values of <span class="math inline">\(X\)</span>. So, the forest it builds is applied <span style="color:blue"> globally</span>, but the weights obtained based on the forest are <span style="color:blue"> local </span>to the evaluation point (<span class="math inline">\(X_i = x\)</span>).</p>
+<p><span style="color:blue"> GRF uses random forest to find the weights <span class="math inline">\(\alpha_i(x)\)</span>. </span>Specifically, it trains a random forest in which the dependent variable is <span style="color:blue"> pseudo outcome (<span class="math inline">\(\rho_i\)</span>) </span>derived from the score function that is specific to the type of regression you are running. Based on the trees build, then <span class="math inline">\(\alpha_i(x)\)</span> is calculated as the proportion of the number of times observation <span class="math inline">\(i\)</span> ended up in the same terminal node (leaf) relative to the total number of observations that <span class="math inline">\(X = x\)</span> share leaves with for all the trees.</p>
+<p>Suppose you build <span class="math inline">\(T\)</span> trees using RF on the pseudo outcomes. Each of the tree has its own splitting rules, and you can identify which leaf <span class="math inline">\(X=x\)</span> belongs to for each of the <span class="math inline">\(T\)</span> trees. Now, let <span class="math inline">\(\eta_{i,t}(X)\)</span> is 1 if observation <span class="math inline">\(i\)</span> belongs to the same leaf as <span class="math inline">\(X=x\)</span> in tree <span class="math inline">\(t\)</span>. Then the weight given to observation <span class="math inline">\(i\)</span> is</p>
+<p><span id="eq-weight"><span class="math display">\[
+\begin{aligned}
+\alpha_i(x) = \frac{1}{T}\sum_{t=1}^T\frac{\eta_{i,t}(x)}{\sum_{i=1}^N\eta_{i,t}(x)}
+\end{aligned}
+\tag{2}\]</span></span></p>
+<ul>
+<li><span class="math inline">\(\sum_{i=1}^{N}\eta_{i,t}(x)\)</span>: the number of observations in the same terminal node as <span class="math inline">\(X=x\)</span> in tree <span class="math inline">\(t\)</span></li>
+</ul>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>Note that some trees do not even have observation <span class="math inline">\(i\)</span> as bootstrapped samples are used to build trees.</p>
+</div></div><p>Note that trees are build only once in GRF and it is used repeatedly when predicting <span class="math inline">\(\theta(X)\)</span> at different values of <span class="math inline">\(X\)</span>. So, the trained RF is applied <span style="color:blue"> globally</span>, but the weights obtained based on the forest are <span style="color:blue"> local </span>to the point of evaluation (<span class="math inline">\(X_i = x\)</span>). As you can see from <a href="#eq-weight">Equation&nbsp;2</a>, depending on the value of <span class="math inline">\(X\)</span> (<span class="math inline">\(x\)</span>), individual weights are adjusted according to how similar the observations are to the point of evaluation (<span class="math inline">\(X=x\)</span>). For a given value of <span class="math inline">\(X\)</span>, the weights are plugged into <a href="#eq-opt">Equation&nbsp;1</a> and the minimization problem is solve to identify <span class="math inline">\(\theta(x)\)</span>.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p>Orthogonal random forest (a forest-based heterogeneous treatment effect estimator like causal forest), on the other hand, build trees every time when predicting treatment effect <span class="math inline">\(\theta(X)\)</span> at particular values of <span class="math inline">\(X\)</span>, which is why orthogonal random forest takes a very long time especially when there are many evaluation points.</p>
 </div></div><p>You probably have noticed the similarity in idea between GRF and generalized method moments (GMM). Indeed, GRF can also be considered as local GMM (see <strong>?@sec-local-reg</strong> to get a sense of what a local regression is like).</p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>GRF</strong> procedure</p>
+<ul>
+<li>Step 1: train random forest
+<ul>
+<li>Specify the score function that is appropriate for the statistics of interest and the data generating process</li>
+<li>Derive pseudo outcome from the score function</li>
+<li>Train random forest using the pseudo outcomes as the dependent variable</li>
+</ul></li>
+<li>Step 2: estimate (predict) <span class="math inline">\(\theta(x)\)</span>
+<ul>
+<li>Find the weight for each observation based on the trained random forest according to <a href="#eq-weight">Equation&nbsp;2</a> and then solve the weighted minimization problem (<a href="#eq-opt">Equation&nbsp;1</a>).</li>
+</ul></li>
+</ul>
+</div>
+</div>
 </section>
 <section id="random-forest-as-a-grf" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="random-forest-as-a-grf">Random forest as a GRF</h2>
-<p>When <span class="math inline">\(\Psi_{\theta, \nu}(Y_i, X_i)\)</span> is set to <span class="math inline">\(Y_i - \theta(X)\)</span>, then GRF is RF.</p>
+<p>Here, we take a look at RF as a GRF as an illustration to understand the general GRF procedure better.</p>
+<section id="forest-building-train-an-rf-on-pseudo-outcome" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="forest-building-train-an-rf-on-pseudo-outcome">Forest building (train an RF on pseudo outcome)</h3>
+<p>When <span class="math inline">\(\Psi_{\theta, \nu}(Y_i, X_i)\)</span> is set to <span class="math inline">\(Y_i - \theta(X)\)</span>, then GRF is simply RF. By plugging <span class="math inline">\(Y_i - \theta(X)\)</span> into <a href="#eq-opt">Equation&nbsp;1</a>, the minimization problem to predict <span class="math inline">\(\theta(x)\)</span> (<span class="math inline">\(E[Y|X=x]\)</span>) for this GRF is then,</p>
 <p><span id="eq-rf"><span class="math display">\[
 \begin{aligned}
 \theta(x) = argmin_{\theta} \sum_{i=1}^n \alpha_i(x)[Y_i - \theta(X)]^2
 \end{aligned}
-\tag{2}\]</span></span></p>
+\tag{3}\]</span></span></p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p>No nuisance parameters (<span class="math inline">\(\nu(X)\)</span>) here.</p>
-</div></div><p>Now, let’s consider building a forest to find <span class="math inline">\(\alpha_i(x)\)</span> in <a href="#eq-rf">Equation&nbsp;2</a>. For a given bootstrapped sample and set of variables randomly selected, GRF starts with solving the unweighted version of <a href="#eq-rf">Equation&nbsp;2</a>.</p>
+</div></div><p>Now, let’s consider building a forest to find <span class="math inline">\(\alpha_i(x)\)</span> in <a href="#eq-rf">Equation&nbsp;3</a>. For a given bootstrapped sample and set of variables randomly selected, GRF starts with solving the unweighted version of <a href="#eq-rf">Equation&nbsp;3</a>.</p>
 <p><span id="eq-rf-initial"><span class="math display">\[
 \begin{aligned}
-\theta(x) = argmin_{\theta} \sum_{i=1}^n [Y_i - \theta(X)]^2
+\theta(x) = argmin_{\theta} \sum_{i=1}^n [Y_i - \theta]^2
 \end{aligned}
-\tag{3}\]</span></span></p>
+\tag{4}\]</span></span></p>
 <p>The solution to this problem is simply the mean of <span class="math inline">\(Y\)</span>, which will be denoted as <span class="math inline">\(\bar{Y}_P\)</span>, where <span class="math inline">\(P\)</span> represents the parent node. Here, the parent node include all the data points as this is the first split.</p>
 <p>Then the pseudo outcome (<span class="math inline">\(\rho_i\)</span>) that is used in splitting is</p>
 <p><span class="math display">\[
@@ -177,46 +285,26 @@ A_P = \frac{1}{N_P} \sum_{i=1}^{N_P} \times (-1) = -1
 <p>Note that the pseudo outcomes are first summed and then squared in <span class="math inline">\((\sum_{i \in C_1} \rho_i)^2\)</span>. This is a similarity score. If the pseudo outcomes are similar to one another, then they do not cancel each other out, which leads to a higher similarity score. Maximizing the weighted sum of similarity scores from the two child node candidates means that you are trying to find a split so that each of the group have similar pseudo outcomes <span style="color:blue"> within </span>the group (which in turn means larger heterogeneity in pseudo outcomes <span style="color:blue"> between </span>the child nodes).</p>
 <p>Once the best split is identified, each of the new child nodes is split following the exactly the same procedure. Splitting continues until one of the user-specified condition prevent a further splitting.</p>
 <p>Many trees from bootstrapped samples are created (just like the regular random forest) and they form a random forest.</p>
-<section id="prediction" class="level3 page-columns page-full">
+</section>
+<section id="prediction" class="level3">
 <h3 class="anchored" data-anchor-id="prediction">Prediction</h3>
-<p>While <span class="math inline">\(GRF\)</span> with <span class="math inline">\(\Psi_{\theta, \nu}(Y_i, X_i) = Y_i - \theta(X)\)</span> build trees in exactly the same manner as the traditional RF, its prediction of <span class="math inline">\(E[Y|X=x]\)</span> is a bit different.</p>
-<p>Prediction of <span class="math inline">\(\theta\)</span> at <span class="math inline">\(X = x\)</span> follows <a href="#eq-opt">Equation&nbsp;1</a>. Suppose you have built <span class="math inline">\(T\)</span> trees based on the pseudo outcomes.</p>
-
-<div class="no-row-height column-margin column-container"><div class="">
-<p>In this case, pseudo outcomes coincide with the true outcomes of interest.</p>
-</div></div><p>Each of the tree has its own splitting rules. For each of the <span class="math inline">\(T\)</span> trees, you can identify which leaf <span class="math inline">\(X=x\)</span> belongs to. Now, let <span class="math inline">\(\eta_{i,t}(X)\)</span> is 1 if observation <span class="math inline">\(i\)</span> belongs to the same leaf as <span class="math inline">\(X=x\)</span> in tree <span class="math inline">\(t\)</span>. Then the weight given to observation <span class="math inline">\(i\)</span> is</p>
+<p>To predict <span class="math inline">\(E[Y|X=x]\)</span>, solve <a href="#eq-rf">Equation&nbsp;3</a> with the weights. The first order condition is then</p>
 <p><span class="math display">\[
 \begin{aligned}
-\alpha_i(x) = \frac{\sum_{t=1}^{T}\eta_{i,t}(x)}{\sum_{t=1}^T\sum_{i=1}^N \eta_{i,t}(x)}
+\sum_{i=1}^N \alpha_i(X)(Y_i-\theta) = 0
 \end{aligned}
 \]</span></p>
-<ul>
-<li><span class="math inline">\(\sum_{t=1}^{T}\eta_{i,t}(x)\)</span>: the number of trees in which observation <span class="math inline">\(i\)</span> belongs to the same leaf as <span class="math inline">\(X=x\)</span></li>
-<li><span class="math inline">\(\sum_{t=1}^T\sum_{i=1}^N \eta_{i,t}(x)\)</span> is the total number of observations that belong to the same leaf as <span class="math inline">\(X=x\)</span> across the <span class="math inline">\(T\)</span> trees.</li>
-</ul>
-
-<div class="no-row-height column-margin column-container"><div class="">
-<p>Note that some trees do not even have observation <span class="math inline">\(i\)</span> as bootstrapped samples are used to build trees.</p>
-</div></div><p>Solving <a href="#eq-rf">Equation&nbsp;2</a> with the weights,</p>
+<p>So,</p>
 <p><span class="math display">\[
 \begin{aligned}
-\theta(x) &amp; = \sum_{i=1}^N \alpha_i(x)Y_i\\
-          &amp; = \sum_{i=1}^N\frac{\sum_{t=1}^{T}\eta_{i,t}(x)Y_i}{\sum_{t=1}^T\sum_{i=1}^N \eta_{i,t}(x)}
+\theta(x) &amp; = \frac{\sum_{i=1}^N \alpha_i(x)Y_i}{\sum_{i=1}^N \alpha_i(x)}\\
+&amp; = \sum_{i=1}^N \alpha_i(x)Y_i \;\; \mbox{(since } \sum_{i=1}^N \alpha_i(x) = 1\mbox{)} \\
+&amp; = \sum_{i=1}^N \huge[\normalsize \frac{1}{T}\cdot\sum_{t=1}^T\frac{\eta_{i,t}(x)}{\sum_{i=1}^N\eta_{i,t}(x)}\cdot y_i\huge] \\
+&amp; = \frac{1}{T}  \cdot\sum_{t=1}^T\sum_{i=1}^N \frac{\eta_{i,t}(x)}{\sum_{i=1}^N\eta_{i,t}(x)}\cdot y_i \;\; \mbox{(changing the order of the summations)} \\
+&amp; = \frac{1}{T} \cdot\sum_{t=1}^T \bar{Y}_t
 \end{aligned}
 \]</span></p>
-<p>Since <span class="math inline">\(\sum_{t=1}^T\sum_{i=1}^N \eta_{i,t}(x)\)</span> is just a constant,</p>
-<p><span class="math display">\[
-\begin{aligned}
-\theta(x) &amp; = \frac{\sum_{i=1}^N\sum_{t=1}^{T}\eta_{i,t}(x)Y_i}{\sum_{t=1}^T\sum_{i=1}^N \eta_{i,t}(x)} \\
-          &amp; = \frac{N_1 \bar{Y}_1 + N_2 \bar{Y}_2 + \dots + N_T \bar{Y}_T}{N_1 + N_2 + \dots + N_T}
-\end{aligned}
-\]</span></p>
-<p>So, the RF under the GRF framework uses the weighted (by sample size in the terminal nodes) average of the mean of <span class="math inline">\(Y\)</span> of the terminal nodes that <span class="math inline">\(x\)</span> belong to. This is a little bit different from typical RF implementation where the simple average is taken from the trees like below:</p>
-<p><span class="math display">\[
-\begin{aligned}
-\theta(x) = \frac{\bar{Y}_1 + \bar{Y}_2 + \dots + \bar{Y}_T}{T}
-\end{aligned}
-\]</span></p>
+<p>So, <span class="math inline">\(\theta(x)\)</span> from GRF is the average of tree-specific predictions, which is exactly how RF predicts <span class="math inline">\(E[Y|X=x]\)</span> as well.</p>
 </section>
 </section>
 <section id="causal-forest-as-a-grf" class="level2 page-columns page-full">
@@ -226,18 +314,18 @@ A_P = \frac{1}{N_P} \sum_{i=1}^{N_P} \times (-1) = -1
 \begin{aligned}
 \Psi_{\theta} = \hat{\tilde{Y}}_i- \theta(X)\hat{\tilde{T}}_i
 \end{aligned}
-\tag{4}\]</span></span></p>
+\tag{5}\]</span></span></p>
 <p>Then, the heterogeneous treatment effect (<span class="math inline">\(\theta(X)\)</span>) is estimated by solving the following problem:</p>
 <p><span id="eq-cf-solve"><span class="math display">\[
 \begin{aligned}
 \hat{\theta}(X) = argmin_{\theta}\;\;\sum_{i=1}^N \alpha_i(x)[\hat{\tilde{Y_i}} - \theta\cdot \hat{\tilde{T_i}}]^2
 \end{aligned}
-\tag{5}\]</span></span></p>
-<p>where <span class="math inline">\(\alpha_i(x)\)</span> is the weight obtained from the trees built using random forest on the pseudo outcomes that are derived from the score function (<a href="#eq-cf-score">Equation&nbsp;4</a>).</p>
-<p>In building a tree, CF sets <span class="math inline">\(\theta_P\)</span> as a solution to the unweighted version of <a href="#eq-cf-solve">Equation&nbsp;5</a>.</p>
+\tag{6}\]</span></span></p>
+<p>where <span class="math inline">\(\alpha_i(x)\)</span> is the weight obtained from the trees built using random forest on the pseudo outcomes that are derived from the score function (<a href="#eq-cf-score">Equation&nbsp;5</a>).</p>
+<p>In building a tree, CF sets <span class="math inline">\(\theta_P\)</span> as a solution to the unweighted version of <a href="#eq-cf-solve">Equation&nbsp;6</a>.</p>
 <p><span class="math display">\[
 \begin{aligned}
-\hat{\theta}(X) = \sum_{i=1}^N \hat{\tilde{T_i}}(\hat{\tilde{Y_i}}-\theta \hat{\tilde{T_i}})
+\hat{\theta}_P = \sum_{i=1}^N \hat{\tilde{T_i}}(\hat{\tilde{Y_i}}-\theta \hat{\tilde{T_i}})
 \end{aligned}
 \]</span></p>
 <p>The pseudo outcome for CF is</p>
@@ -271,18 +359,118 @@ A_P = \frac{1}{N_P} \sum_{i=1}^{N_P} \times (-T) = -T
 \end{aligned}
 \]</span></p>
 </div></div></section>
-<section id="honest-tree" class="level2">
+<section id="honest-tree" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="honest-tree">Honest tree</h2>
+<p>GRF applies <span style="color:blue"> honesty </span>when it trains forests. Specifically, when building a tree, the bootstrapped sample is first split into two groups: subsamples for <span style="color:blue"> splitting</span> and <span style="color:blue">prediction</span>. Then, the a tree is trained on the subsample for splitting and then generate the splitting rules. However, when predicting (say <span class="math inline">\(E[Y|X]\)</span> at <span class="math inline">\(X=x\)</span>), the value of <span class="math inline">\(Y\)</span> from the subsamples for splitting are not used. Rather, only the splitting rules are taken from the trained tree and then they are applied to the subsamples for prediction (<a href="#fig-honest">Figure&nbsp;1</a> illustrates this process).</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><strong>Packages to load for replication</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(grf)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rattle)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(wooldridge)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div></div><div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>DiagrammeR<span class="sc">::</span><span class="fu">grViz</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="st">"</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="st">digraph {</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="st">  graph [ranksep = 0.2, fontsize = 4]</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="st">  node [shape = box]</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="st">    SS [label = 'Subsamples for splitting']</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="st">    SP [label = 'Subsamples for predicting']</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="st">    BD [label = 'Bootstrapped Data']</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="st">    TT [label = 'Trained tree']</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="st">    PV [label = 'Predicted value']</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="st">  edge [minlen = 2]</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="st">    BD-&gt;SP</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="st">    BD-&gt;SS</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="st">    SS-&gt;TT</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="st">    SP-&gt;PV</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="st">    TT-&gt;SP [label='apply the splitting rules']</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="st">  { rank = same; SS; SP}</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="st">  { rank = same; TT}</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="st">  { rank = same; PV}</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="st">"</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div id="fig-honest" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<div id="htmlwidget-ef9d49cc34829dcb49bb" style="width:100%;height:325px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-ef9d49cc34829dcb49bb">{"x":{"diagram":"\ndigraph {\n  graph [ranksep = 0.2, fontsize = 4]\n  node [shape = box]\n    SS [label = \"Subsamples for splitting\"]\n    SP [label = \"Subsamples for predicting\"]\n    BD [label = \"Bootstrapped Data\"]\n    TT [label = \"Trained tree\"]\n    PV [label = \"Predicted value\"]\n  edge [minlen = 2]\n    BD->SP\n    BD->SS\n    SS->TT\n    SP->PV\n    TT->SP [label=\"apply the splitting rules\"]\n  { rank = same; SS; SP}\n  { rank = same; TT}\n  { rank = same; PV}\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 1: Illustration of an honest tree</figcaption><p></p>
+</figure>
+</div>
+</div>
+<p>Let’s demonstrate this using a very simple regression tree with two terminal nodes using the <code>mlb</code> data from the <code>wooldridge</code> package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(mlb1)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>mlb1_dt <span class="ot">&lt;-</span> <span class="fu">data.table</span>(mlb1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We would like to train a RF using this data where the dependent variable is logged salary (<code>lsalary</code>). We will illustrate the honesty rule by working on building a single tree within the process of building a forest.</p>
+<p>We first bootstrap data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">89232</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>num_obs <span class="ot">&lt;-</span> <span class="fu">nrow</span>(mlb1_dt)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>row_indices <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">seq_len</span>(num_obs), num_obs, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>boot_mlb1_dt <span class="ot">&lt;-</span> mlb1_dt[row_indices, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We now split the bootstrapped data into two groups: for splitting and prediction.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>rows_split <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">seq_len</span>(num_obs), num_obs <span class="sc">/</span> <span class="dv">2</span>, <span class="at">replace =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#=== data for splitting ===#</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>split_data <span class="ot">&lt;-</span> boot_mlb1_dt[rows_split, ]</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#=== data for prediction ===#</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>eval_data <span class="ot">&lt;-</span> boot_mlb1_dt[<span class="sc">-</span>rows_split, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We then train a tree using the data for splitting (<code>split_data</code>):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== build a simple tree ===#</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>tree_trained <span class="ot">&lt;-</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rpart</span>(</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    lsalary <span class="sc">~</span> hits <span class="sc">+</span> runsyr, </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> split_data, </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">control =</span> <span class="fu">rpart.control</span>(<span class="at">minsplit =</span> <span class="dv">120</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="fu">fancyRpartPlot</span>(tree_trained, <span class="at">digits =</span> <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-tree-sub" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="C04-grf_files/figure-html/fig-tree-sub-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 2: A simple regression tree using the subsamples for splitting</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>So the splitting rule is <code>hits &lt; 356</code> as shown in <a href="#fig-tree-sub">Figure&nbsp;2</a>. At the terminal nodes, you see the prediction of <code>lsalary</code>: <span class="math inline">\(12.47\)</span> for the left and <span class="math inline">\(14.23\)</span> for the right. These predictions are NOT honest. They are obtained from the observed values of <code>lsalary</code> within the node using the splitting data (the data the tree is trained for). Instead of using these prediction values, an honest prediction applied the splitting rules (<code>hits &lt; 356</code>) to the data reserved for prediction.s</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>honest_pred <span class="ot">&lt;-</span> eval_data[, <span class="fu">mean</span>(lsalary), <span class="at">by =</span> hits <span class="sc">&lt;</span> <span class="dv">356</span>]</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    hits       V1
+1: FALSE 14.43151
+2:  TRUE 12.61746</code></pre>
+</div>
+</div>
+<p>So, instead of <span class="math inline">\(12.47\)</span> and <span class="math inline">\(14.23\)</span>, the predicted values from the honest tree are <span class="math inline">\(12.62\)</span> and <span class="math inline">\(14.43\)</span> for the left and right nodes, respectively.</p>
+<p>Trees are built in this manner many times to form a forest.</p>
+<p>You might have noticed that the idea of honesty resembles cross-fitting (see <strong>?@sec-dml</strong>). Honest forests avoid over-fitting the data and reduces bias. Honesty is required for the GRF estimator to be consistent and asymptotically normal <span class="citation" data-cites="athey2019generalized">[@athey2019generalized]</span>. However, the application of honesty can do more damage than help when the sample size is small.</p>
+</section>
+<section id="cluster-robust-estimation" class="level2">
+<h2 class="anchored" data-anchor-id="cluster-robust-estimation">Cluster-robust estimation</h2>
 </section>
 </section>
 
-
-<div id="quarto-appendix" class="default"><section class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
-
-<ol>
-<li id="fn1" role="doc-endnote"><p><span class="math inline">\(r \in [0, 1]\)</span> is a quantile<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
-</section></div></main>
+</main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
