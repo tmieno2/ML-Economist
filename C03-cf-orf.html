@@ -77,15 +77,17 @@ Tip
 \end{aligned}
 \]</span></p>
 <p>where <span class="math inline">\(\alpha_i(X_i)\)</span> is the weight given to each <span class="math inline">\(i\)</span>. <span class="math inline">\(\alpha_i(X_i)\)</span> is found using random forest based on a causal criterion.</p>
-<p>Unlike the DML approached we saw in <strong>?@sec-het-dml</strong>, where the final model is a linear model, CF does not assume any functional form for how <span class="math inline">\(X\)</span> affects <span class="math inline">\(\theta\)</span> as you can see from the above minimization problem.</p>
-<p><span class="math inline">\(\Psi(\theta(X), v(X)) = \hat{\tilde{Y_i}} - \theta\hat{\tilde{T_i}}\)</span></p>
+<p>Unlike the DML approaches we saw in <strong>?@sec-het-dml</strong> that uses a linear model as the final model, CF does not assume any functional form for how <span class="math inline">\(X\)</span> affects <span class="math inline">\(\theta\)</span> as you can see from the above minimization problem.</p>
+</section>
+<section id="key-assumptions" class="level3">
+<h3 class="anchored" data-anchor-id="key-assumptions">Key assumptions</h3>
 </section>
 <section id="implementation" class="level3">
 <h3 class="anchored" data-anchor-id="implementation">Implementation</h3>
 <p>We can use the <code>causal_forest()</code> function from the R <code>grf</code> package to train a CF model.</p>
 </section>
-<section id="application" class="level3">
-<h3 class="anchored" data-anchor-id="application">Application</h3>
+<section id="empirical-example" class="level3">
+<h3 class="anchored" data-anchor-id="empirical-example">Empirical example</h3>
 </section>
 </section>
 <section id="orthogonal-random-forest" class="level2">

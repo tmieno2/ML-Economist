@@ -308,12 +308,27 @@ div.csl-indent {
   </li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
-        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">Appendices</a>
+        <a href="./PROG-00-programming.html" class="sidebar-item-text sidebar-link">Programming Guide</a>
       <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
     </div>
     <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PROG-01-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">Appendices</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./A01-mc-simulation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Monte Carlo (MC) Simulation</span></a>
@@ -531,21 +546,21 @@ r_{i,b} = - \huge[\normalsize\frac{\partial L(y_i, f(x_i))}{\partial f(x_i)}\hug
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== see the MSE history ===#  </span></span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>gbm_fit<span class="sc">$</span>cv.error</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  [1] 1.2133679 1.0982124 1.0009573 0.9264744 0.8625669 0.8049389 0.7567880
-  [8] 0.7170550 0.6700632 0.6359427 0.6058549 0.5773052 0.5508581 0.5339791
- [15] 0.5132386 0.4986471 0.4867383 0.4733133 0.4643628 0.4538323 0.4487673
- [22] 0.4415853 0.4336503 0.4255462 0.4213746 0.4167823 0.4119845 0.4083263
- [29] 0.4054926 0.4005914 0.3963229 0.3949277 0.3928952 0.3918178 0.3892199
- [36] 0.3878711 0.3851583 0.3841119 0.3817727 0.3818076 0.3807452 0.3790792
- [43] 0.3801355 0.3780099 0.3792709 0.3760443 0.3762962 0.3748930 0.3761086
- [50] 0.3749935 0.3760059 0.3757504 0.3752569 0.3769937 0.3746649 0.3754034
- [57] 0.3738029 0.3729647 0.3726739 0.3703195 0.3716664 0.3708532 0.3716080
- [64] 0.3714079 0.3706787 0.3699719 0.3713685 0.3714061 0.3700045 0.3703459
- [71] 0.3710628 0.3714751 0.3730739 0.3719991 0.3732038 0.3739561 0.3733547
- [78] 0.3714900 0.3712352 0.3698804 0.3699245 0.3699508 0.3701428 0.3688214
- [85] 0.3685739 0.3685015 0.3672798 0.3654631 0.3654158 0.3649260 0.3634291
- [92] 0.3644642 0.3652407 0.3654456 0.3659397 0.3658364 0.3661050 0.3655660
- [99] 0.3638581 0.3616335</code></pre>
+<pre><code>  [1] 1.2167256 1.1125931 1.0168875 0.9354197 0.8677445 0.8106763 0.7625318
+  [8] 0.7206832 0.6833884 0.6484421 0.6172072 0.5912343 0.5714525 0.5488023
+ [15] 0.5271270 0.5110861 0.4976874 0.4842663 0.4694343 0.4594124 0.4483426
+ [22] 0.4424156 0.4357951 0.4287168 0.4236684 0.4203858 0.4166031 0.4125377
+ [29] 0.4072292 0.4041360 0.4013626 0.3992331 0.3958620 0.3920843 0.3910565
+ [36] 0.3884507 0.3867807 0.3854586 0.3837920 0.3811700 0.3799031 0.3796740
+ [43] 0.3782559 0.3784136 0.3769682 0.3759912 0.3748139 0.3729598 0.3727923
+ [50] 0.3727633 0.3704179 0.3691625 0.3678792 0.3664779 0.3659835 0.3660204
+ [57] 0.3652546 0.3644927 0.3639527 0.3642084 0.3638079 0.3634826 0.3625700
+ [64] 0.3623358 0.3622899 0.3619460 0.3612092 0.3595170 0.3590523 0.3593274
+ [71] 0.3592887 0.3600549 0.3596945 0.3596598 0.3587987 0.3584777 0.3601380
+ [78] 0.3599050 0.3601343 0.3599993 0.3592487 0.3586437 0.3580776 0.3574341
+ [85] 0.3580830 0.3565942 0.3555902 0.3564864 0.3570037 0.3586889 0.3580699
+ [92] 0.3578860 0.3574453 0.3575907 0.3570926 0.3561611 0.3558461 0.3568062
+ [99] 0.3569526 0.3559354</code></pre>
 </div>
 </div>
 <p>You can visualize the CV results using <code>gbm.perf()</code>.</p>
@@ -555,7 +570,7 @@ r_{i,b} = - \huge[\normalsize\frac{\partial L(y_i, f(x_i))}{\partial f(x_i)}\hug
 <p><img src="P02-boosted-regression-forest_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 100</code></pre>
+<pre><code>[1] 87</code></pre>
 </div>
 </div>
 <p>Note that it will tell you what the optimal number of trees is <span style="color:blue"> given </span> the values of the other hyper-parameters (here default values). If you want to tune other parameters as well, you need to program it yourself.</p>

@@ -1,0 +1,40 @@
+Load R packages.
+
+```{r}
+library(reticulate)
+library(tidyverse)
+library(ranger)
+library(data.table)
+```
+
+Generate synthetic data using `make_regression` from `sklearn.datasets`.
+
+```{python}
+from sklearn.model_selection import train_test_split
+from sklearn.datasets import make_regression
+from sklearn.ensemble import RandomForestRegressor
+import numpy as np
+
+n_samples, n_features, n_informative, noise = 2000, 20, 15, 2
+rng = np.random.RandomState(8934)
+
+X, y = make_regression(n_samples, n_features, n_informative = n_informative, noise = noise, random_state = rng)
+```
+
+Using `X` and `y` generated on Python, train an RF using `ranger()`.
+
+```{r}
+data_train <-
+  data.table(
+    y = py$y
+  ) %>%
+  cbind(., py$X)
+
+rf_fit <-
+  ranger(
+    y ~ .,
+    data = data_train,
+    num.trees = 2000,
+    mtry = 20
+  )
+```

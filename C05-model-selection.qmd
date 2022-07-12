@@ -1,0 +1,37 @@
+# Model Selection
+
+Model selection can be done via cross-validation suing MSE as the criteria when your goal is prediction. However, when your interest is in finding the best causal ML model, MSE is not an appropriate measure. Instead, R-score can be used. 
+
+R-score is written as follows:
+
+$$
+\begin{aligned}
+\sum_{i=1}^N [Y_i - \hat{f}(X_i,W_i) - \theta(X)\cdot (T_i - \hat{g}(X_i,W_i))]^2
+\end{aligned}
+$$
+
++ $\hat{\tilde{Y}}_i = Y_i - \hat{f}(X_i,W_i)$ 
++ $\hat{\tilde{T}}_i = T_i - \hat{g}(X_i,W_i)$
+
+where $\hat{f}(X_i,W_i)$ and $\hat{f}(X_i,W_i)$ are the predicted values (preferably based on cross-fitting or out-of-bad predictions if RF is used) of $Y_i$ and $T_i$ based on any appropriate machine learning methods in the first stage of DML.
+
+:::{.callout-important}
+Model selection using R-score is <span style="color:red"> NOT</span> capable of identifying the best <span style="color:blue"> entire </span> DML process. Rather, R-score is conditional on the choice of modeling decisions made at the first stage of DML. That is, R-score measures how well the final stage estimation performed <span style="color:blue"> given the first stage estimation</span>. This means that comparing R-score values from DML approaches that use different first stage estimation methods is not meaningful.
+:::
+
+
+## Tuning hyper-parameters
+
+
+
+
+
+
+
+
+
+
+
+
+
+

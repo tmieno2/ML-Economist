@@ -6,50 +6,59 @@
 
 + [Introduction to Statistical Learning]
 
-# List of things to cover
+#/*=================================================*/
+#' # Theory
+#/*=================================================*/
 
 ## Prediction vs Causal Inference
 + [x] why we do not care about prediction 99% of the time
 + [x] why a good prediction does not necessarily lead to a better causal impact identification
 
-## Use python from within R using the reticulate package
-
-### set up python
-### how to use reticulate
-https://www.r-bloggers.com/2020/04/how-to-run-pythons-scikit-learn-in-r-in-5-minutes/
+## Cross-validation
+(scikitlearn)[https://scikit-learn.org/stable/modules/cross_validation.html]
 
 ## prediction-oriented ML methods
 + [x] LASSO 
 + [x] RIDGE 
 + [x] Bagging
 + [x] Tree
++ [x] Random forest
 + [x] Boosted Regression Forest 
 + Neural Networks (NA)
 + Deep Learning (NA)
 
-## Cross-validation for tuning and model selection
-
-(scikitlearn)[https://scikit-learn.org/stable/modules/cross_validation.html]
-
 ## Causal inference with Machine Learning
 
-+ R-learner 
++ [X] R-learner 
 + [x] Double Machine Learning (DML)
 + Doubly-Robust (DR)
 + Orthogonal Forest
 + Causal Forest
 
-## Codes
+#/*=================================================*/
+#' # Implementation
+#/*=================================================*/ 
+
+### Codes
 
 + `grf`
   + random forest
   + boosted_regression_forest
   + causal_forest
+  + instrumental forest
 
 [cross-fit in causal forest?](https://github.com/grf-labs/grf/issues/464)
 
+## Use python from within R using the reticulate package
+
+
 ## Python packages
 + scikitlearn
++ econml
+
+### how to use reticulate
+https://www.r-bloggers.com/2020/04/how-to-run-pythons-scikit-learn-in-r-in-5-minutes/
+
 
 ## Extensions
 
@@ -57,7 +66,9 @@ https://www.r-bloggers.com/2020/04/how-to-run-pythons-scikit-learn-in-r-in-5-min
 + nonlinearity of the impact 
 
 
-## MC experiments
+#/*=================================================*/
+#' # MC experiments
+#/*=================================================*/
 
 + Simple linear regression to introduce Loss function and K-nearest neighbor
 + GAM 
@@ -67,6 +78,10 @@ https://www.r-bloggers.com/2020/04/how-to-run-pythons-scikit-learn-in-r-in-5-min
 + What happens to DML when $\eta$ and $\varepsilon$ are not orthogonal
 + What happen if you over-fit the first stage of DML?
 
-# Resources
+#/*=================================================*/
+#' # Resources
+#/*=================================================*/
 
 + https://daviddalpiaz.github.io/r4sl/
+
+

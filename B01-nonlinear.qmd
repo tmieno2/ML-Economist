@@ -295,7 +295,7 @@ ggplot(data = data) +
   theme_bw()
 ```
 
-Hyper-parameters can significantly influence the outcome. Since the user gets to pick any numbers, it can be potentially used to twist the results in a way that favors the outcomes they want to have. Therefore, it is important to pick the values of hyper-parameters wisely. One way of achieving the goal is cross-validation, which is a data-driven way of finding the best value of hyper-parameters. We will discuss cross-validation in @sec-cv in detail. 
+Hyper-parameters can significantly influence the outcome. Since the user gets to pick any numbers, it can potentially be used to twist the results in a way that favors the outcomes they want to have. Therefore, it is important to pick the values of hyper-parameters wisely. One way of achieving the goal is cross-validation, which is a data-driven way of finding the best value of hyper-parameters. We will discuss cross-validation in @sec-cv in detail. 
 
 Here is the fitted curve when the optimal value of `sp` is picked by `gam()` automatically given `k = 40` and `bs = "cr"` using cross-validation.
 

@@ -46,11 +46,20 @@ quarto::quarto_render(here::here("LectureNotes/C04-grf.qmd"))
 # === cf ===#
 quarto::quarto_render(here::here("LectureNotes/C03-cf-orf.qmd"))
 
+# === model selection ===#
+quarto::quarto_render(here::here("LectureNotes/C05-model-selection.qmd"))
+
 # === scikitlearn ===#
 quarto::quarto_render(here::here("LectureNotes/scikitlearn.qmd"))
 
 # === linear-nonpar ===#
 quarto::quarto_render(here::here("LectureNotes/linear-nonparametric-efficiency.qmd"))
+
+#/*=================================================*/
+#' # Programming
+#/*=================================================*/
+# === reticulate ===#
+quarto::quarto_render(here::here("LectureNotes/reticulate.qmd"))
 
 #/*=================================================*/
 #' # Extensions

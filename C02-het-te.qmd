@@ -10,7 +10,7 @@ In @sec-dml, the basic idea of double machine learning (DML) methods was introdu
 
 ## Motivation
 
-Understanding the how treatment effects vary can be highly valuable in many circumstances. 
+Understanding how treatment effects vary can be highly valuable in many circumstances. 
 
 <span style="color:blue"> Example 1: </span>
 If we come to know a particular drug is effective on elderly people but detrimental to kids, then doctors can make a smart decision of prescribing the drug to elderly people, but not to kids. 
@@ -26,8 +26,7 @@ If we come to know that fertilizer is more effective in increasing corn yield in
 In this example, the heterogeneity driver is soil type.
 :::
 
-As you can see in these examples, knowledge on the heterogeneity of the treatment effect and its drivers can help decision makers smart-target treatments. 
-
+As you can see in these examples, knowledge on the heterogeneity of the treatment effect and its drivers can help decision makers smart-target treatments.
 
 ```{r }
 #| include: false
@@ -63,7 +62,6 @@ Here are the key assumptions:
 + $E[\varepsilon|X, W] = 0$
 + $E[\eta|X, W] = 0$
 + $E[\eta\cdot\varepsilon|X, W] = 0$
-
 
 Our objective is to estimate the <span style = "color: red;"> constant </span> marginal CATE $\theta(X)$. (constant in the sense marginal CATE is the same irrespective of the value of the treatment)
 
@@ -146,7 +144,6 @@ $$
 
 where $\Lambda(\theta(X))$ is the penalty on the complexity of $\theta(X)$. For example, if you choose to use lasso, then $\Lambda(\theta(X))$ is the L1 norm. You have lots of freedom as to what model you use in the final stage. The `econml` package offers several off-the-shelf choices of R-learner (DML) approaches that differ in the model used at the final stage, including causal forest, lasso, etc.
 
-
 ## Implementation Example 
 
 We use the python `econml` pacakge, which offers one of the most comprehensive sets of off-the-shelf R-leaner (DML) methods [@econml]. 
@@ -165,9 +162,9 @@ $$
 
 As we saw above, we need to specify three models.
 
-+ `model_y`: model for estimating $E[Y|X,W]$ 
-+ `model_t`: model for estimating $E[T|X,W]$ 
-+ `model_final`: model for estimating $\theta(X)$ 
++ `model_y`: model for estimating $E[Y|X,W]$
++ `model_t`: model for estimating $E[T|X,W]$
++ `model_final`: model for estimating $\theta(X)$
 
 In this example, let's use gradient boosting regression for both `model_y` and `model_t` and use lasso with cross-validation for `model_final`.
 
@@ -297,13 +294,11 @@ plt.legend()
 plt.show()
 ```
 
-
 You can use the `const_marginal_effect_interval()` method to find the confidence interval (CI) of $\hat{\theta}(X)$ at values of $X$ (here, $x_1$) specified by the user. The following code finds the 99% CI.
 
 ```{python}
 est.const_marginal_effect_interval(X_test, alpha = 0.01)
 ```
-
 
 :::{.callout-tip}
 I recommend going through examples presented [here](https://github.com/microsoft/EconML/blob/main/notebooks/Double%20Machine%20Learning%20Examples.ipynb) for `DML`
