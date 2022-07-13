@@ -1,6 +1,8 @@
 # Running Python from R
 
-In this chapter, we learn how to run Python codes from within R using the `reticulate` package. We will run mainly the following python codes in different ways on R.
+In this chapter, we learn how to run Python codes from within R using the `reticulate` package. Its [package website](https://rstudio.github.io/reticulate/index.html) is very helpful and cover more topics than this chapter does.
+
+We will run mainly the following python codes in different ways on R.
 
 ```{python}
 #| eval: false
@@ -38,6 +40,7 @@ reg_rf.score(X_test, y_test)
 ```
 
 ::: {.column-margin}
+
 **Packages to load for replications**
 
 ```{r}
@@ -55,12 +58,51 @@ library(tidyverse)
 ```
 :::
 
+## Set up a Python virtual environment
+
+It is recommended that you have a python virtual environment (VE) specific for each of your projects. A VE is independent of the rest of the Python environment on your computer and avoid breaking your the codes from your old projects that may depend on the specific versions of Python packages. It also made it easier for others to replicate your work.
+
+Let's first load the `reticulate` package.
 
 ```{r}
 library(reticulate)
 ```
 
-## R and Python REPL simultaneously
+For inexperienced Python users, the `reticulate` package offers an easy way to set up and manage a Python VE. First, you can create a VE using `virtualenv_create()`. The following code for example create a VE called 
+**ml-learning**.
+
+```{r}
+#| eval: false 
+virtualenv_create("ml-learning")
+```
+
+The newly created VE have only minimal packages. Here is the list of packages I have in this new VE.  
+
+```{r}
+#| echo: false
+knitr::include_graphics("figures/pacakges.png")
+```
+
+This is despite all the packages that I have installed in my main Python installation. 
+
+You can install packages to a VE using `virtualenv_install()`. For example, the code below attempts to install the `econml` package to the VE called **ml-learning**.
+
+```{r}
+#| eval: false 
+virtualenv_install("ml-learning", "econml")
+```
+
+In order to use a VE, you use `use_virtualenv()` after you load the `reticulate` package.
+
+```{r}
+#| eval: false 
+use_virtualenv("ml-learning")
+``` 
+
+After this, all your python codes will be run on the VE when you are running them through the `reticulate` package. We will now look at how we actually run Python codes from R.
+
+
+## R and Python REPL simultaneously {#sec-r-python-repl}
 
 ::: {.column-margin}
 RPEL stands for read-evaluate-print-loop.
@@ -107,11 +149,22 @@ Let's now confirm this by accessing `a` on R.
 knitr::include_graphics("figures/r_a.png")
 ```
 
+:::{.callout-tip}
+When you access R objects in Python, you can use `r.` in front of the object name. We first run `b <- 1:10` and then confirm `r.b` can get you the Python equivalent of `b` in R.
+:::
+
+```{r}
+#| echo: false
+knitr::include_graphics("figures/python_b.png")
+```
+
 Great. This seamless integration is really nice especially when you are writing an R-centric program that include pythons codes and are tying to debug.
+
+Whenever R and Python exchange objects, they are automatically converted to their counterparts in the receiving program. For example, a vector with multiple elements in R will be converted to a list in Python, and vice versa. See [here](https://rstudio.github.io/reticulate/) for more examples.
 
 ## Importing Python modules
 
-You can import Python modules and use them as if they are R functions. This way of interacting with Python involves the least direct interactions with Python among all the options that the `reticulate` package provides us with. 
+You can import Python modules and use them as if they are R functions. This way of interacting with Python involves the least direct interactions with Python among all the options that the `reticulate` package provides us with. Unlike the approach above (@sec-r-python-repl), you do not see outcomes of your Python codes on the Python console. Rather, you will see the outcomes translated to R object on R. 
 
 You can import a python module using `import()` like below, which imports the Python `os` package.
 
@@ -326,7 +379,6 @@ train_test_RF(
 )
 ```
 
-
 ## Python in Rmarkdown or Quarto
 
 Using R and Python in an Rmarkdown or Quarto file is extremely easy. You can have both R and Python codes in the same Rmd file. When you write R (python) codes, you use R (python) code chunks indicated by `{R}` (`{python}`) like below.
@@ -345,3 +397,4 @@ If you do not load the `reticulate` package, python code chunks still run, but t
 The second code chunk is a python code chunk and generate synthetic data using `make_regression` from `sklearn.datasets`. 
 
 The third code chunk is an R code chunk. It uses `X` and `y` generated on Python to train an RF using `ranger()`.
+
