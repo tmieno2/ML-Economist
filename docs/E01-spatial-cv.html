@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Introduction to Machine Learning for Economists - 10&nbsp; Spatial Cross-validation</title>
+<title>Introduction to Machine Learning for Economists - 11&nbsp; Spatial Cross-validation</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -140,7 +140,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></h1>
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -270,6 +270,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <a href="./C01-dml.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Double Machine Learning</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./C02-het-te.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">R-learner</span></a>
+  </div>
+</li>
     </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -282,12 +287,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./E01-spatial-cv.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></a>
+  <a href="./E01-spatial-cv.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./E02-grf.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Generalized Random Forest</span></a>
+  <a href="./E02-grf.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Generalized Random Forest</span></a>
   </div>
 </li>
     </ul>
@@ -302,7 +307,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PROG-01-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
+  <a href="./PROG-01-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
   </div>
 </li>
     </ul>
@@ -331,7 +336,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#hyper-parameter-tuning" id="toc-hyper-parameter-tuning" class="nav-link active" data-scroll-target="#hyper-parameter-tuning"> <span class="header-section-number">10.1</span> Hyper-parameter tuning</a></li>
+  <li><a href="#hyper-parameter-tuning" id="toc-hyper-parameter-tuning" class="nav-link active" data-scroll-target="#hyper-parameter-tuning"> <span class="header-section-number">11.1</span> Hyper-parameter tuning</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/E01-spatial-cv.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
@@ -340,7 +345,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></h1>
+<h1 class="title d-none d-lg-block"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></h1>
 </div>
 
 
@@ -490,7 +495,7 @@ First 10 features:
 10 10 POLYGON ((-90.16514 36.9703...  7.096003 9.627942 101.35216 108.4482</code></pre>
 </div>
 </div>
-<p>We have three main variables, <code>y</code> (dependent variable), <code>x</code> (explanatory variable), and <code>e</code> (error). <a href="#fig-viz">Figure&nbsp;<span>10.1</span></a> shows how they are spatially distributed. It also shows that all of them are spatially positively correlated.</p>
+<p>We have three main variables, <code>y</code> (dependent variable), <code>x</code> (explanatory variable), and <code>e</code> (error). <a href="#fig-viz">Figure&nbsp;<span>11.1</span></a> shows how they are spatially distributed. It also shows that all of them are spatially positively correlated.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -518,7 +523,7 @@ First 10 features:
 <div id="fig-viz" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="E01-spatial-cv_files/figure-html/fig-viz-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 10.1: Visualization of the data</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 11.1: Visualization of the data</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -544,7 +549,7 @@ First 10 features:
 6 &lt;split [750/150]&gt; Fold6 KCV  </code></pre>
 </div>
 </div>
-<p><a href="#fig-kcv">Figure&nbsp;<span>10.2</span></a> is the visualization of the spatial distribution of training and test datasets for each of the five folds for KCV.</p>
+<p><a href="#fig-kcv">Figure&nbsp;<span>11.2</span></a> is the visualization of the spatial distribution of training and test datasets for each of the five folds for KCV.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -570,7 +575,7 @@ First 10 features:
 <div id="fig-kcv" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="E01-spatial-cv_files/figure-html/fig-kcv-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 10.2: Spatial distribution of train and test data points by fold</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 11.2: Spatial distribution of train and test data points by fold</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -596,7 +601,7 @@ First 10 features:
 6 &lt;split [740/160]&gt; Fold6 SKCV </code></pre>
 </div>
 </div>
-<p><a href="#fig-sp-kcv">Figure&nbsp;<span>10.3</span></a> presents the spatial distribution of training and test datasets for each of the five folds for SKCV.</p>
+<p><a href="#fig-sp-kcv">Figure&nbsp;<span>11.3</span></a> presents the spatial distribution of training and test datasets for each of the five folds for SKCV.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -622,7 +627,7 @@ First 10 features:
 <div id="fig-sp-kcv" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="E01-spatial-cv_files/figure-html/fig-sp-kcv-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 10.3: Spatial distribution of spatially clustered train and test data points by fold</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 11.3: Spatial distribution of spatially clustered train and test data points by fold</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -691,7 +696,7 @@ Please use `cols = c(mse_data)`</code></pre>
 </div>
 </div>
 <p>So, indeed KCV provides lower estimate of test MSE than SKCV. Now, it is important to recognize the fundamental difference in what is measured by KCV and SKCV. KCV measures the accuracy of the trained model applied to the new data points that are located inside the area where the train data covers geographically. SKCV, on the other hand, measures the accuracy of the trained model applied to the new data points that are <span style="color:blue"> outside </span> the area where the train data covers geographically. In other words, it measures the modeling accuracy when the trained model is applied to a new region. So, KCV does overstate the accuracy of the model if your interest is applying the model to a new region.</p>
-<p>Let’s look into the SKCV results a bit more. Looking at MSE values by fold for KCV and SKCV, you can notice that MSE is much more variable for SKCV. <a href="#fig-tp-curv">Figure&nbsp;<span>10.4</span></a> plots data points in the test data and the curve fitted on the training data by cross-validation type and fold (Note that <code>Fold1</code> for KCV and SKCV have nothing to do with each other). Since KCV uses randomly split data, all the KCV test datasets are scattered all across the area and they look similar to each other. On the other hand, SKCV test datasets look quite different from each other as they are sampled in a spatially clustered manner. If the original data has no spatial correlation, then SKCV and KCV would have resulted in very simple test datasets. However, since the original data is spatially positively correlated, one packet of a field may look very different from another pocket of the field. By looking at <a href="#fig-tp-curv">Figure&nbsp;<span>10.4</span></a>, you can easily see that <code>FOLD2</code> and <code>FOLD5</code> have very high MSE for SKCV. This observation is confirmed with the MSE value by fold presented above.</p>
+<p>Let’s look into the SKCV results a bit more. Looking at MSE values by fold for KCV and SKCV, you can notice that MSE is much more variable for SKCV. <a href="#fig-tp-curv">Figure&nbsp;<span>11.4</span></a> plots data points in the test data and the curve fitted on the training data by cross-validation type and fold (Note that <code>Fold1</code> for KCV and SKCV have nothing to do with each other). Since KCV uses randomly split data, all the KCV test datasets are scattered all across the area and they look similar to each other. On the other hand, SKCV test datasets look quite different from each other as they are sampled in a spatially clustered manner. If the original data has no spatial correlation, then SKCV and KCV would have resulted in very simple test datasets. However, since the original data is spatially positively correlated, one packet of a field may look very different from another pocket of the field. By looking at <a href="#fig-tp-curv">Figure&nbsp;<span>11.4</span></a>, you can easily see that <code>FOLD2</code> and <code>FOLD5</code> have very high MSE for SKCV. This observation is confirmed with the MSE value by fold presented above.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -729,12 +734,12 @@ Please use `cols = c(mse_data)`</code></pre>
 <div id="fig-tp-curv" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="E01-spatial-cv_files/figure-html/fig-tp-curv-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 10.4: Test data points and the curve fitted on the training dataset</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 11.4: Test data points and the curve fitted on the training dataset</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-<p>This is primarily because of the data imbalance between the training and test datasets, in particular the error term in this case. <a href="#fig-dist-y">Figure&nbsp;<span>10.5</span></a> compares the distribution of the error term for the training and test datasets by fold for SKCV. As you can see, their distributions are very different for <code>FOLD2</code> and <code>FOLD5</code>. In <code>FOLD2</code>, the average of the error term for the training data is much higher than that for the test data. The opposite is true for <code>FOLD5</code>. These differences of course result in large differences in the average value of the dependent variable. This, then, further results in consistent under or over-estimation of the level of the dependent variable. Since squared error is defined as <span class="math inline">\([y_i -\hat{f}(x_i)]^2\)</span>, the consistent bias (you can consider this as bias in intercept in the linear-in-parameter modeling setting) will naturally lead to a higher MSE. That is exactly what is observed for <code>FOLD2</code> and <code>FOLD5</code>.</p>
+<p>This is primarily because of the data imbalance between the training and test datasets, in particular the error term in this case. <a href="#fig-dist-y">Figure&nbsp;<span>11.5</span></a> compares the distribution of the error term for the training and test datasets by fold for SKCV. As you can see, their distributions are very different for <code>FOLD2</code> and <code>FOLD5</code>. In <code>FOLD2</code>, the average of the error term for the training data is much higher than that for the test data. The opposite is true for <code>FOLD5</code>. These differences of course result in large differences in the average value of the dependent variable. This, then, further results in consistent under or over-estimation of the level of the dependent variable. Since squared error is defined as <span class="math inline">\([y_i -\hat{f}(x_i)]^2\)</span>, the consistent bias (you can consider this as bias in intercept in the linear-in-parameter modeling setting) will naturally lead to a higher MSE. That is exactly what is observed for <code>FOLD2</code> and <code>FOLD5</code>.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -759,15 +764,15 @@ Please use `cols = c(mse_data)`</code></pre>
 <div id="fig-dist-y" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="E01-spatial-cv_files/figure-html/fig-dist-y-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 10.5: Distribution of the dependent variable for the training and test dataset by fold</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 11.5: Distribution of the dependent variable for the training and test dataset by fold</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
 <p>While MSE values for <code>FOLD2</code> and <code>FOLD5</code> are high in SKCV, notice that their fitted curves are very much similar to the other folds and trace the true <span class="math inline">\(E[y|x]\)</span> quite well. The culprit of their high MSEs is the consistent difference in the average value of <span class="math inline">\(y\)</span> between the training and test datasets. This means that if your interest is in understanding the causal impact of <span class="math inline">\(x\)</span> on <span class="math inline">\(y\)</span>, then the fitted curves for <code>FOLD2</code> and <code>FOLD5</code> are just as good as those for the other folds despite the fact that their MSE values are much higher than the rest. This illustrates well that MSE is not really a good criteria to rely on if you ultimate interest is in estimating the causal impact of a treatment even though it is a good measure if your ultimate interest in prediction (predicting the <span style="color:blue"> level </span> of the dependent variable).</p>
 <p>Finally, whether KCV is over-optimistic in estimating test MSE than SKCV or not is of little importance for those who are interested in causal inference because how well the trained model predicts the <span style="color:blue"> level </span> of the dependent variable (which MSE measures) is irrelevant. Rather, more critical question is whether the use of KCV leads us to choose sub-optimal hyper parameter values compared to SKCV. This could have a real consequence when we select a model and its hyper-parameter values for the first-stage ML applications in Double Machine Learning methods.</p>
-<section id="hyper-parameter-tuning" class="level2 page-columns page-full" data-number="10.1">
-<h2 data-number="10.1" class="anchored" data-anchor-id="hyper-parameter-tuning"><span class="header-section-number">10.1</span> Hyper-parameter tuning</h2>
+<section id="hyper-parameter-tuning" class="level2 page-columns page-full" data-number="11.1">
+<h2 data-number="11.1" class="anchored" data-anchor-id="hyper-parameter-tuning"><span class="header-section-number">11.1</span> Hyper-parameter tuning</h2>
 <p>Now, let’s see whether KCV and SKCV lead to different tuning results using <code>gam()</code>. Here, we fix <code>k</code> at <span class="math inline">\(50\)</span> and vary <code>sp</code> to find the best <code>sp</code> value. The following function takes an <code>sp</code> value and return MSE values from both KCV and SKCV.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>get_mse <span class="ot">&lt;-</span> <span class="cf">function</span>(sp, kcv_folds, skcv_folds) {</span>
@@ -873,12 +878,12 @@ Please use `cols = c(mse_data)`</code></pre>
 <div id="fig-mse-tune" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="E01-spatial-cv_files/figure-html/fig-mse-tune-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 10.6: Cross-validation results</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 11.6: Cross-validation results</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-<p>So, the <code>sp</code> value that would produce the fitted curve that is closest to the true <span class="math inline">\(E[y|x]\)</span> is 0.5. SKCV suggests that <code>sp</code> value of 2 is optimal. Finally, KCV suggests that <code>sp</code> value of 2.5 is optimal. But, of course this is just a single instance. Let’s run more of the same simulations to see if our guess is correct or not. <a href="#fig-sp-compare">Figure&nbsp;<span>10.7</span></a> presents the optimal <code>sp</code> values estimated by KCV and SKCV plotted against the actual optimal <code>sp</code> value from 100 simulations. Points around the red one-to-one line indicate good predictions by KCV and SKCV.</p>
+<p>So, the <code>sp</code> value that would produce the fitted curve that is closest to the true <span class="math inline">\(E[y|x]\)</span> is 0.5. SKCV suggests that <code>sp</code> value of 2 is optimal. Finally, KCV suggests that <code>sp</code> value of 2.5 is optimal. But, of course this is just a single instance. Let’s run more of the same simulations to see if our guess is correct or not. <a href="#fig-sp-compare">Figure&nbsp;<span>11.7</span></a> presents the optimal <code>sp</code> values estimated by KCV and SKCV plotted against the actual optimal <code>sp</code> value from 100 simulations. Points around the red one-to-one line indicate good predictions by KCV and SKCV.</p>
 <div class="cell" data-hash="E01-spatial-cv_cache/html/fig-sp-compare_2bfeb04be450cc35eaf6ee399994efa1">
 <details>
 <summary>Code</summary>
@@ -977,7 +982,7 @@ Please use `cols = c(mse_data)`</code></pre>
 <div id="fig-sp-compare" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="E01-spatial-cv_files/figure-html/fig-sp-compare-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 10.7: Optimal penalization parameter estimated by KCV and SKCV compared against the actual optimal parameter.</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 11.7: Optimal penalization parameter estimated by KCV and SKCV compared against the actual optimal parameter.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -994,9 +999,9 @@ Please use `cols = c(mse_data)`</code></pre>
 <p>Taking the derivative of the objective function with respect <span class="math inline">\(x\)</span>,</p>
 <p><span id="eq-foc"><span class="math display">\[
 1 \times 48 - 1 \times 4 \times 2 \times x - 8 = 0
-\tag{10.1}\]</span></span></p>
+\tag{11.1}\]</span></span></p>
 <p>Here, <span class="math inline">\(1 \times 48 - 1 \times 4 \times 2 \times x\)</span> represents the marginal treatment effect of <span class="math inline">\(x\)</span>. Now, note that the intercept (<span class="math inline">\(10\)</span>) goes away and it plays no role in determining the optimal value of the input (<span class="math inline">\(x\)</span>). That is, it is perfectly fine to get the intercept wrong as long as we are estimating the marginal treatment effect of <span class="math inline">\(x\)</span> accurately (as we discussed earlier, MSE is not a good measure for this as it punishes a bias in intercept).</p>
-<p>According to <a href="#eq-foc">Equation&nbsp;<span>10.1</span></a>, optimal <span class="math inline">\(x\)</span> is <span class="math inline">\(5\)</span>. <a href="#fig-opt-x">Figure&nbsp;<span>10.8</span></a> shows the density plot of estimated optimal <span class="math inline">\(x\)</span> by KCV and SKCV. It seems like KCV and SKCV provide similar results and it does not really matter which one to use for <code>sp</code> parameter tuning at least in this particular instance. It is important to note that this result clearly does not generalize. We looked at a very simply toy example. This section was not intended to give you a general advise on which KCV or SKCV you should use. It would be interesting to examine the difference between KCV and SKCV under more complex data generating process using other ML methods.</p>
+<p>According to <a href="#eq-foc">Equation&nbsp;<span>11.1</span></a>, optimal <span class="math inline">\(x\)</span> is <span class="math inline">\(5\)</span>. <a href="#fig-opt-x">Figure&nbsp;<span>11.8</span></a> shows the density plot of estimated optimal <span class="math inline">\(x\)</span> by KCV and SKCV. It seems like KCV and SKCV provide similar results and it does not really matter which one to use for <code>sp</code> parameter tuning at least in this particular instance. It is important to note that this result clearly does not generalize. We looked at a very simply toy example. This section was not intended to give you a general advise on which KCV or SKCV you should use. It would be interesting to examine the difference between KCV and SKCV under more complex data generating process using other ML methods.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -1009,7 +1014,7 @@ Please use `cols = c(mse_data)`</code></pre>
 <div id="fig-opt-x" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="E01-spatial-cv_files/figure-html/fig-opt-x-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 10.8: Accuracy of estimating optimal value of the input (x) by CV type</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 11.8: Accuracy of estimating optimal value of the input (x) by CV type</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -1106,7 +1111,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
   <div class="nav-page nav-page-next">
       <a href="./E02-grf.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Generalized Random Forest</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Generalized Random Forest</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

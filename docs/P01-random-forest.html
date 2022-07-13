@@ -289,6 +289,11 @@ div.csl-indent {
   <a href="./C01-dml.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Double Machine Learning</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./C02-het-te.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">R-learner</span></a>
+  </div>
+</li>
     </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -301,12 +306,12 @@ div.csl-indent {
     <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./E01-spatial-cv.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></a>
+  <a href="./E01-spatial-cv.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./E02-grf.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Generalized Random Forest</span></a>
+  <a href="./E02-grf.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Generalized Random Forest</span></a>
   </div>
 </li>
     </ul>
@@ -321,7 +326,7 @@ div.csl-indent {
     <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PROG-01-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
+  <a href="./PROG-01-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
   </div>
 </li>
     </ul>
@@ -421,6 +426,19 @@ div.csl-indent {
 </div>
 <p>Here is how you read the figure. At the first node, all the observations belong to it (<span class="math inline">\(n=353\)</span>) and the estimate of <code>lsalary</code> is 13. Now, the whole datasets are split into two based on the criteria of whether <code>hits</code> is less than <code>262</code> or not. If yes, then such observations will be grouped into the node with “2” on top (the leftmost node), and the estimated <code>lsalary</code> for all the observations in that group (<span class="math inline">\(n = 132\)</span>) is 12. If no, then such observations will be grouped into the node with “3” on top, and the estimated <code>lsalary</code> for all the observations in that group (<span class="math inline">\(n = 221\)</span>) is 14. This node is further split into two groups based on whether <code>runsyr</code> is less than 44 or not. For those observations with <code>runsyr</code> <span class="math inline">\(&lt; 44\)</span> (second node a the bottom), estimated <code>lsalary</code> is 14. For those with <code>runsyr</code> <span class="math inline">\(&gt;= 44\)</span> (rightmost node at the bottom), estimated <code>lsalary</code> is 15. The nodes that do not have any further bifurcations below are called terminal nodes or leafs.</p>
 <p>As illustrated in the figure above, a regression tree splits the data into groups based on the value of explanatory variables, and all the observations in the same group will be assigned the same estimate (the sample average of the dependent variable of the group).</p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The estimated value of <span class="math inline">\(Y\)</span> (the dependent variable) for <span class="math inline">\(X = x\)</span> is the average of <span class="math inline">\(Y\)</span> from all the observations that belong to the same tree as <span class="math inline">\(X = x\)</span>.</p>
+</div>
+</div>
 <p>Another way of illustrating this grouping is shown below:</p>
 <div class="cell">
 <details>
@@ -456,16 +474,17 @@ div.csl-indent {
 <p><img src="P01-random-forest_files/figure-html/viz-tree-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>The mechanism called recursive binary splitting is used to split the predictor space like the example above. Suppose you have K explanatory variables (<span class="math inline">\(X_1, \dots, X_k\)</span>). Further, let <span class="math inline">\(c\)</span> denote the cutpoint that splits the sample into two regions: {<span class="math inline">\(X|X_k &lt; c\)</span>} and {<span class="math inline">\(X|X_k \geq c\)</span>}.</p>
+<p>The mechanism called recursive binary splitting is used to split the predictor space like the example above. Suppose you have K explanatory variables (<span class="math inline">\(X_1, \dots, X_k\)</span>). Further, let <span class="math inline">\(c\)</span> denote the threshold that splits the sample into two regions such that {<span class="math inline">\(X|X_k &lt; c\)</span>} and {<span class="math inline">\(X|X_k \geq c\)</span>}.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p>{<span class="math inline">\(X|X_k &lt; c\)</span>} means observations that satisfy the condition stated right to the vertical bar (|). Here, it means all the observations for which its <span class="math inline">\(X_k\)</span> value is less than <span class="math inline">\(c\)</span>.</p>
 </div></div><ul>
-<li>Step 1: For each of the explanatory variables (<span class="math inline">\(X_1\)</span> through <span class="math inline">\(X_K\)</span>), find the cutpoint that leads to the lowest sum of the squared residuals.</li>
-<li>Step 2: Among all the splits (as many as the number of explanatory variables), pick the variable-cutpoint combination that leads to the lowest sum of the squared residuals.</li>
+<li>Step 1: For each of the explanatory variables (<span class="math inline">\(X_1\)</span> through <span class="math inline">\(X_K\)</span>), find all the threshold values that result in unique splits.</li>
+<li>Step 2: For each of the explanatory variables (<span class="math inline">\(X_1\)</span> through <span class="math inline">\(X_K\)</span>), go through all the threshold values and then find the threshold value that leads to the lowest sum of the squared residuals.</li>
+<li>Step 3: Among all the splits (as many as the number of explanatory variables), pick the variable-threshold combination that leads to the lowest sum of the squared residuals.</li>
 </ul>
-<p>The data is then split according to the chosen criteria and then the same process is repeated for each of the branches, ad infinitum until the user-specified stopping criteria is met.</p>
-<p>Let’s try to write (an inefficient version) this process for the first split from the beginning node using the <code>mlb1</code> data as an illustration based on a simple grid search to find the optimal cutpoints (Step 1).</p>
+<p>The data is then split according to the chosen criteria and then the same process is repeated for each of the branches, ad infinitum until the user-specified stopping criteria is met. This way of splitting is called a <strong>greedy</strong> (or I would call it myopic or shortsighted) approach because the split happens to minimize the immediate RSS without considering the implication of the split for the later splits.</p>
+<p>Let’s try to write this process (an inefficient version) for the first split from the beginning node using the <code>mlb1</code> data as an illustration based on a simple grid search to find the optimal thresholds (Step 1).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== get data ===#</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(wooldridge)</span>
@@ -477,42 +496,42 @@ div.csl-indent {
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  .[, salary <span class="sc">:</span><span class="er">=</span> <span class="cn">NULL</span>] <span class="sc">%&gt;%</span> <span class="co"># remove salary (use lsalary instead)</span></span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>() <span class="co"># remove observations with NA in any of the variables</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Let’s work on splitting based on <code>hruns</code>. First, we define a sequence of values of cutpoints for <code>hruns</code>.</p>
+<p>Let’s work on splitting based on <code>hruns</code>. One way to find the all the threshold values is simply find the mean of two consecutive numbers from the ordered unique <code>hruns</code> values.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>value_seq <span class="ot">&lt;-</span> </span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">quantile</span>(</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    mlb1_dt<span class="sc">$</span>hruns, </span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">prob =</span> <span class="fu">seq</span>(<span class="fl">0.001</span>, <span class="fl">0.999</span>, <span class="at">length =</span> <span class="dv">100</span>)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== order hruns values and find the unique values ===#</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  mlb1_dt[<span class="fu">order</span>(hruns), <span class="fu">unique</span>(hruns)] <span class="sc">%&gt;%</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== get the rolling mean ===#</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">frollmean</span>(<span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  .[<span class="sc">-</span><span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>For each value in <code>value_seq</code>, we find the RSS. For example, for the 50th value in <code>value_seq</code>,</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">copy</span>(mlb1_dt) <span class="sc">%&gt;%</span> </span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== find the mean of lsalary by whether hruns is less than the cutpoint or not ===#</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== find the mean of lsalary by whether hruns is less than the threshold or not ===#</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  .[, y_hat <span class="sc">:</span><span class="er">=</span> <span class="fu">mean</span>(lsalary), by <span class="ot">=</span> (hruns <span class="sc">&lt;</span> value_seq[<span class="dv">50</span>])] <span class="sc">%&gt;%</span> </span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== get squared residuals ===#</span></span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  .[, (lsalary <span class="sc">-</span> y_hat)<span class="sc">^</span><span class="dv">2</span>] <span class="sc">%&gt;%</span> </span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== get RSS ===#</span></span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 318.2431</code></pre>
+<pre><code>[1] 291.1279</code></pre>
 </div>
 </div>
 <p>How about 70th value in <code>value_seq</code>?</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">copy</span>(mlb1_dt) <span class="sc">%&gt;%</span> </span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== find the mean of lsalary by whether hruns is less than the cutpoint or not ===#</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== find the mean of lsalary by whether hruns is less than the threshold or not ===#</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  .[, y_hat <span class="sc">:</span><span class="er">=</span> <span class="fu">mean</span>(lsalary), by <span class="ot">=</span> (hruns <span class="sc">&lt;</span> value_seq[<span class="dv">70</span>])] <span class="sc">%&gt;%</span> </span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== get squared residuals ===#</span></span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  .[, (lsalary <span class="sc">-</span> y_hat)<span class="sc">^</span><span class="dv">2</span>] <span class="sc">%&gt;%</span> </span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== get RSS ===#</span></span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 419.1821</code></pre>
+<pre><code>[1] 322.3688</code></pre>
 </div>
 </div>
-<p>This means <code>value_seq[70]</code> (209.0880707) is a better cutpoint than <code>value_seq[50]</code> (71.7563535).</p>
+<p>This means <code>value_seq[70]</code> (79.5) is a better threshold than <code>value_seq[50]</code> (49.5).</p>
 <p>Okay, let’s consider all the candidate values, not just 50th and 70th, and then pick the best.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>get_rss <span class="ot">&lt;-</span> <span class="cf">function</span>(i, var_name, value_seq, data)</span>
@@ -546,58 +565,62 @@ div.csl-indent {
 <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(rss_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        rss var_name var_value
-1: 445.0615    hruns         0
-2: 396.8287    hruns         1
-3: 383.2393    hruns         2
-4: 362.5779    hruns         3
-5: 337.0760    hruns         4
-6: 325.4865    hruns         5</code></pre>
+1: 396.8287    hruns       0.5
+2: 383.2393    hruns       1.5
+3: 362.5779    hruns       2.5
+4: 337.0760    hruns       3.5
+5: 325.4865    hruns       4.5
+6: 309.2780    hruns       5.5</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(rss_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        rss var_name var_value
-1: 419.1821    hruns  209.0881
-2: 419.5111    hruns  231.0000
-3: 428.4163    hruns  242.4425
-4: 434.3318    hruns  258.5674
-5: 441.9307    hruns  333.4414
-6: 443.3740    hruns  426.0780</code></pre>
+1: 437.6865    hruns     279.0
+2: 440.0806    hruns     291.5
+3: 441.9307    hruns     348.0
+4: 437.6143    hruns     398.5
+5: 441.0689    hruns     406.5
+6: 443.3740    hruns     423.0</code></pre>
 </div>
 </div>
-<p>Finding the cutpoint value that minimizes RSS,</p>
+<p>Finding the threshold value that minimizes RSS,</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>rss_value[<span class="fu">which.min</span>(rss), ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        rss var_name var_value
-1: 260.3094    hruns  28.47488</code></pre>
+1: 259.7855    hruns      27.5</code></pre>
 </div>
 </div>
-<p>Okay, so, the best cutpoint for <code>hruns</code> is 28.475</p>
+<p>Okay, so, the best threshold for <code>hruns</code> is 27.5</p>
 <p>Suppose we are considering only five explanatory variables in building a regression tree: <code>hruns</code>, <code>years</code>, <code>rbisyr</code>, <code>allstar</code>, <code>runsyr</code>, <code>hits</code>, and <code>bavg</code>. We do the same operation we did for <code>hruns</code> for all the variables.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>get_rss_by_var <span class="ot">&lt;-</span> <span class="cf">function</span>(var_name, data)</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>{</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  temp_data <span class="ot">&lt;-</span> <span class="fu">copy</span>(data) </span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== define a sequence of values of hruns ===#</span></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  value_seq <span class="ot">&lt;-</span> </span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">quantile</span>(</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>      temp_data[, ..var_name] <span class="sc">%&gt;%</span> <span class="fu">unlist</span>(), </span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">prob =</span> <span class="fu">seq</span>(<span class="fl">0.001</span>, <span class="fl">0.999</span>, <span class="at">length =</span> <span class="dv">100</span>)</span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unique</span>()</span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== get RSS ===#</span></span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>  rss_value <span class="ot">&lt;-</span></span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lapply</span>(</span>
-<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>      <span class="fu">seq_len</span>(<span class="fu">length</span>(value_seq)),</span>
-<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>      <span class="cf">function</span>(x) <span class="fu">get_rss</span>(x, var_name, value_seq, temp_data) </span>
-<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
-<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rbindlist</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>    .[<span class="fu">which.min</span>(rss),]</span>
-<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(rss_value)</span>
-<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  temp_data <span class="ot">&lt;-</span> </span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">copy</span>(data) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">setnames</span>(var_name, <span class="st">"temp_var"</span>)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== define a sequence of values of hruns ===#</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  value_seq <span class="ot">&lt;-</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    temp_data[<span class="fu">order</span>(temp_var), <span class="fu">unique</span>(temp_var)] <span class="sc">%&gt;%</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">#=== get the rolling mean ===#</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">frollmean</span>(<span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    .[<span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setnames</span>(temp_data, <span class="st">"temp_var"</span>, var_name)</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== get RSS ===#</span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>  rss_value <span class="ot">&lt;-</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lapply</span>(</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>      <span class="fu">seq_len</span>(<span class="fu">length</span>(value_seq)),</span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>      <span class="cf">function</span>(x) <span class="fu">get_rss</span>(x, var_name, value_seq, temp_data) </span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rbindlist</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>    .[<span class="fu">which.min</span>(rss),]</span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(rss_value)</span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Looping over the set of variables,</p>
 <div class="cell">
@@ -611,16 +634,16 @@ div.csl-indent {
 <span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        rss var_name  var_value
-1: 260.3094    hruns  28.474879
-2: 249.9090    years   4.000000
-3: 265.1082   rbisyr  32.774949
-4: 279.7165  allstar   8.209356
-5: 251.6343   runsyr  38.079145
-6: 205.1488     hits 354.811444
-7: 375.0281     bavg 252.359257</code></pre>
+1: 259.7855    hruns  27.500000
+2: 249.9090    years   3.500000
+3: 261.1537   rbisyr  31.794642
+4: 277.3388  allstar   7.417582
+5: 249.5106   runsyr  37.666666
+6: 205.1488     hits 356.500000
+7: 375.0281     bavg 252.499992</code></pre>
 </div>
 </div>
-<p>So, the variable-cutpoint combination that minimizes RSS is hits - 354.81. We now have the first split. This tree is developed further by splitting nodes like this.</p>
+<p>So, the variable-threshold combination that minimizes RSS is hits - 356.5. We now have the first split. This tree is developed further by splitting nodes like this.</p>
 </section>
 <section id="training-a-regression-tree-in-r" class="level3" data-number="6.1.2">
 <h3 data-number="6.1.2" class="anchored" data-anchor-id="training-a-regression-tree-in-r"><span class="header-section-number">6.1.2</span> Training a regression tree in R</h3>
@@ -757,7 +780,7 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 <span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(x_1, x_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.01128011</code></pre>
+<pre><code>[1] 0.03983687</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== second case (positively correlated) ===#</span></span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>x_1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
@@ -765,7 +788,7 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 <span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(x_1, x_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.4834651</code></pre>
+<pre><code>[1] 0.5167655</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== third case (negatively correlated) ===#</span></span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>x_1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
@@ -773,7 +796,7 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 <span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(x_1, x_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -0.7879196</code></pre>
+<pre><code>[1] -0.7853651</code></pre>
 </div>
 </div>
 <div class="cell">

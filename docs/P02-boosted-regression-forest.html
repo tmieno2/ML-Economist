@@ -289,6 +289,11 @@ div.csl-indent {
   <a href="./C01-dml.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Double Machine Learning</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./C02-het-te.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">R-learner</span></a>
+  </div>
+</li>
     </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -301,12 +306,12 @@ div.csl-indent {
     <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./E01-spatial-cv.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></a>
+  <a href="./E01-spatial-cv.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./E02-grf.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Generalized Random Forest</span></a>
+  <a href="./E02-grf.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Generalized Random Forest</span></a>
   </div>
 </li>
     </ul>
@@ -321,7 +326,7 @@ div.csl-indent {
     <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PROG-01-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
+  <a href="./PROG-01-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
   </div>
 </li>
     </ul>
@@ -551,21 +556,21 @@ r_{i,b} = - \huge[\normalsize\frac{\partial L(y_i, f(x_i))}{\partial f(x_i)}\hug
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== see the MSE history ===#  </span></span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>gbm_fit<span class="sc">$</span>cv.error</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  [1] 1.2181089 1.1189682 1.0312987 0.9558692 0.8933281 0.8290471 0.7744906
-  [8] 0.7323284 0.6913092 0.6553840 0.6242579 0.5955524 0.5731174 0.5537938
- [15] 0.5357044 0.5190371 0.5026301 0.4904379 0.4813236 0.4689190 0.4605385
- [22] 0.4536711 0.4470874 0.4417334 0.4347792 0.4316955 0.4268752 0.4230085
- [29] 0.4193174 0.4157676 0.4117043 0.4084399 0.4045952 0.4016568 0.3987125
- [36] 0.3972902 0.3954828 0.3944432 0.3930962 0.3904642 0.3897892 0.3880835
- [43] 0.3864999 0.3869940 0.3863935 0.3869310 0.3876324 0.3873275 0.3858897
- [50] 0.3868380 0.3857955 0.3866505 0.3855434 0.3855730 0.3844038 0.3837964
- [57] 0.3840816 0.3832063 0.3831207 0.3820600 0.3823904 0.3828154 0.3828593
- [64] 0.3838733 0.3826930 0.3836527 0.3840220 0.3838899 0.3839089 0.3833202
- [71] 0.3831750 0.3831078 0.3819264 0.3826786 0.3820337 0.3821930 0.3825444
- [78] 0.3817578 0.3806039 0.3794887 0.3794472 0.3803709 0.3808761 0.3817100
- [85] 0.3827667 0.3829903 0.3823898 0.3819457 0.3821682 0.3805571 0.3812964
- [92] 0.3794966 0.3790817 0.3795365 0.3795567 0.3788056 0.3792265 0.3793824
- [99] 0.3784173 0.3776223</code></pre>
+<pre><code>  [1] 1.2189261 1.1054368 1.0134304 0.9317700 0.8650294 0.8115073 0.7635784
+  [8] 0.7216063 0.6796029 0.6404252 0.6052760 0.5813765 0.5600222 0.5372072
+ [15] 0.5184624 0.5057502 0.4911880 0.4797281 0.4677994 0.4573496 0.4472504
+ [22] 0.4423181 0.4330765 0.4277615 0.4202910 0.4148315 0.4089513 0.4058598
+ [29] 0.4012704 0.3983321 0.3963586 0.3936746 0.3903037 0.3889841 0.3879324
+ [36] 0.3885696 0.3873648 0.3856201 0.3857426 0.3839222 0.3819489 0.3812791
+ [43] 0.3799573 0.3783155 0.3767016 0.3769577 0.3753849 0.3759365 0.3755355
+ [50] 0.3764312 0.3761146 0.3764528 0.3748772 0.3746376 0.3745073 0.3734112
+ [57] 0.3723886 0.3733288 0.3725024 0.3723504 0.3728509 0.3729525 0.3717476
+ [64] 0.3721234 0.3727145 0.3732009 0.3722029 0.3717167 0.3719134 0.3710335
+ [71] 0.3709392 0.3707130 0.3691798 0.3699755 0.3681984 0.3685317 0.3677685
+ [78] 0.3669617 0.3670456 0.3676916 0.3660588 0.3666956 0.3655633 0.3645391
+ [85] 0.3640189 0.3636205 0.3626595 0.3642387 0.3637514 0.3632411 0.3630546
+ [92] 0.3622761 0.3634324 0.3637064 0.3628583 0.3637292 0.3645406 0.3639860
+ [99] 0.3634111 0.3643990</code></pre>
 </div>
 </div>
 <p>You can visualize the CV results using <code>gbm.perf()</code>.</p>
@@ -575,7 +580,7 @@ r_{i,b} = - \huge[\normalsize\frac{\partial L(y_i, f(x_i))}{\partial f(x_i)}\hug
 <p><img src="P02-boosted-regression-forest_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 100</code></pre>
+<pre><code>[1] 92</code></pre>
 </div>
 </div>
 <p>Note that it will tell you what the optimal number of trees is <span style="color:blue"> given </span> the values of the other hyper-parameters (here default values). If you want to tune other parameters as well, you need to program it yourself.</p>

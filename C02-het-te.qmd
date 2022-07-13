@@ -28,18 +28,6 @@ In this example, the heterogeneity driver is soil type.
 
 As you can see in these examples, knowledge on the heterogeneity of the treatment effect and its drivers can help decision makers smart-target treatments.
 
-```{r }
-#| include: false
-#| cache: false
-library(data.table)
-library(magick)
-library(fixest)
-library(officer)
-library(dplyr)
-library(ggplot2)
-library(reticulate)
-library(DoubleML)
-```
 
 ## Modeling Framework
 
@@ -146,7 +134,37 @@ where $\Lambda(\theta(X))$ is the penalty on the complexity of $\theta(X)$. For 
 
 ## Implementation Example 
 
-We use the python `econml` pacakge, which offers one of the most comprehensive sets of off-the-shelf R-leaner (DML) methods [@econml]. 
+::: {.column-margin}
+**Packages to load for replication**
+
+```{r }
+#| include: false
+library(data.table)
+library(magick)
+library(fixest)
+library(officer)
+library(dplyr)
+library(ggplot2)
+library(reticulate)
+library(DoubleML)
+library(MASS)
+```
+
+```{r}
+#| eval: false
+library(data.table)
+library(magick)
+library(fixest)
+library(officer)
+library(dplyr)
+library(ggplot2)
+library(reticulate)
+library(DoubleML)
+library(MASS)
+```
+:::
+
+We use the python `econml` pacakge (in conjunction with the R `reticulate` package), which offers one of the most comprehensive sets of off-the-shelf R-leaner (DML) methods [@econml]. 
 
 Let's first take a look at the `DML` class, which implements DML where the final stage has to be a linear model. That is,
 
@@ -170,135 +188,138 @@ In this example, let's use gradient boosting regression for both `model_y` and `
 
 First import all the functions we will need.
 
-```{python}
-from econml.dml import DML
-from sklearn.linear_model import LassoCV
-from sklearn.ensemble import GradientBoostingRegressor
-from itertools import product
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib
-from sklearn.model_selection import train_test_split
+```{r}
+#| eval: false 
+
+library(reticulate)
+use_virtualenv("ml-learning")
+
+#=== econml.dml ===#
+em_dml <- import("econml.dml")
+
+#=== sklearn ===#
+sl <- import("sklearn") 
+gbr <- sl$ensemble$GradientBoostingRegressor
+lassocv <- sl$linear_model$LassoCV
 ```
 
-We now set up a DML estimation procedure.
+Let's generates data according to the following data generating process:
 
-```{python}
-est = DML(
-  model_y=GradientBoostingRegressor(),
-  model_t=GradientBoostingRegressor(),
-  model_final=LassoCV(fit_intercept=False)
+$$
+\begin{aligned}
+y_i = exp(x_{i,1}) d_i + x_{i,1} + \frac{1}{4}\cdot\frac{exp(x_{i,3})}{1 + exp(x_{i,3})} + \mu_i \\
+d_i = \frac{exp(x_{i,1})}{1 + exp(x_{i,1})} + \frac{1}{4}\cdot x_{i,3}+ \eta_i
+\end{aligned}
+$$
+
+```{r}
+#| eval: false 
+
+#=== sample size ===#
+N <- 1000 
+
+#=== generate data ===#
+synth_data <-
+  gen_data(
+    te_formula = formula(~ I(exp(x1)*d)),
+    n_obs = N *2
   )
 ```
 
-Note that no fitting has occurred yet. We just have provided python with the recipe. We use the following data generating process from [here](https://arxiv.org/abs/1806.03467):
+We now split the data into training and test datasets. 
 
-$$
-\begin{align}
-T = & W\beta + \eta, & \;\eta \sim \text{Uniform}(-1, 1)\\
-Y = & T\cdot \exp(2\cdot x_1) + W\gamma + \epsilon, &\; \epsilon \sim \text{Uniform}(-1, 1)\\
-W \sim& \text{Normal}(0,\, I_{n_w})\\
-X \sim& \text{Uniform}(0,1)^{n_x}
-\end{align}
-$$
+```{r}
+#| eval: false 
 
-where $n_w$ and $n_x$ are the number of variables in $W$ and $X$, respectively. In this example, the heterogeneity of treatment effect is driven by $x_1$ in the following form:
+row_indices <- sample(1:(2*N), N, replace = FALSE)
 
-$$
-\begin{align}
-\theta(x) = \exp(2\cdot x_1).
-\end{align}
-$$
+#=== train data ===#
+train_data <- synth_data[row_indices,]
 
-Let's now generate a dataset according to the data generating process.
+X_train <- 
+  dplyr::select(train_data, starts_with("x")) %>% 
+  as.matrix()
+y_train <- train_data[, y]
+d_train <- train_data[, d]
 
-```{python}
-def exp_te(x):
-    return np.exp(2*x[0])
+#=== test data ===#
+test_data <- synth_data[-row_indices,]
+
+X_test <- 
+  dplyr::select(test_data, starts_with("x")) %>% 
+  as.matrix()
+y_test <- test_data[, y]
+d_test <- test_data[, d]
 ```
 
-```{python}
-np.random.seed(123)
-n = 2000
-n_w = 30 
-support_size = 5 # number of W variables to be part of the DGP
-n_x = 1 # number of te heterogeneity drivers
+Before we train a DML model, we first set up a DML estimation framework like below.
 
-#-------------------------
-# Y equation
-#-------------------------
-# determine which of the 30 variables to be part of the DGP
-support_Y = np.random.choice(np.arange(n_w), size=support_size, replace=False)
-# generate coefficients (\beta) on W in Y equation
-coefs_Y = np.random.uniform(0, 1, size=support_size) 
-# error term in Y equation
-epsilon_sample = lambda n: np.random.uniform(-1, 1, size=n)
-
-#-------------------------
-# T equation
-#-------------------------
-support_T = support_Y
-# generate coefficients (\gamma) on W in T equation
-coefs_T = np.random.uniform(0, 1, size=support_size)
-# error term in T equation
-eta_sample = lambda n: np.random.uniform(-1, 1, size=n)
-
-#-------------------------
-# Generate controls, covariates, treatments and outcomes
-#-------------------------
-W = np.random.normal(0, 1, size=(n, n_w))
-X = np.random.uniform(0, 1, size=(n, n_x))
-
-# Heterogeneous treatment effects
-TE = np.array([exp_te(x_i) for x_i in X])
-T = np.dot(W[:, support_T], coefs_T) + eta_sample(n)
-Y = TE * T + np.dot(W[:, support_Y], coefs_Y) + epsilon_sample(n)
-
-#-------------------------
-# Sample splitting
-#-------------------------
-Y_train, Y_val, T_train, T_val, X_train, X_val, W_train, W_val = train_test_split(Y, T, X, W, test_size=.2)
-
-# Generate test data 
-X_test = np.array(list(product(np.arange(0, 1, 0.01), repeat=n_x)))
+```{r}
+#| eval: false 
+#=== set up DML estimation ===#
+est <-
+  em_dml$DML(
+    model_y = gbr(),
+    model_t = gbr(),
+    model_final = lassocv(fit_intercept=FALSE) 
+  )
 ```
 
-We can use the `fit()` method to train the `DML` model we set up above.
+Here, training has not happened yet. We simply created a recipe. Once we provide ingredients (data), we can cook (train) with the `fit()` method. 
 
-```{python}
-est.fit(Y_train, T_train, X=X_train, W=W_train)
+```{r}
+#| eval: false 
+
+est$fit(
+  y_train, 
+  d_train, 
+  X = X_train, 
+  W = X_train
+)
 ```
 
-Once the model is trained, you can use the trained model to predict $\theta(X)$ with the `effect()` method to which you supply the value of $X$ at which $\hat{\theta}(X)$ is calculated.
+Once, the training is done. We can use the `effect()` method to predict $\theta(X)$.
 
-```{python}
+```{r}
+#| eval: false 
+
 #=== calculate theta_hat(X) ===#
-te_pred = est.effect(X_test)
+theta_pred <- est$effect(X_test)
 
-#=== take a look inside ===#
-te_pred
+#=== assign the predicted theta_hat to a variable ===#
+test_data[, theta_hat := theta_pred]
 ```
 
-@fig-mar-effect-linear plots $\hat{\theta}(X)$ and true $\theta(X)$.
+@fig-est-theta-hat presents the estimated and true marginal treatment effect ($\theta(X)$) as a function of `x1`. 
 
-```{python}
-#| fig-cap: Visualization of the marginal effect of the treatment
-#| label: fig-mar-effect-linear
-plt.figure(figsize=(10,6))
-plt.plot(X_test, te_pred, label='DML default')
-expected_te = np.array([exp_te(x_i) for x_i in X_test])
-plt.plot(X_test, expected_te, 'b--', label='True effect')
-plt.ylabel('Treatment Effect')
-plt.xlabel('x')
-plt.legend()
-plt.show()
+```{r}
+#| eval: false 
+ggplot(test_data) +
+  geom_point(aes(y = theta_hat, x = x1)) +
+  geom_line(aes(y = exp(x1), x = x1), color = "blue") +
+  theme_bw()
+
 ```
 
-You can use the `const_marginal_effect_interval()` method to find the confidence interval (CI) of $\hat{\theta}(X)$ at values of $X$ (here, $x_1$) specified by the user. The following code finds the 99% CI.
+```{r}
+#| fig-cap: Estimated and true marginal treatment effects
+#| label: fig-est-theta-hat
 
-```{python}
-est.const_marginal_effect_interval(X_test, alpha = 0.01)
+# g_het_te <-
+#   ggplot(test_data) +
+#     geom_point(aes(y = theta_hat, x = x1)) +
+#     geom_line(aes(y = exp(x1), x = x1), color = "blue") +
+#     theme_bw()
+
+# saveRDS(g_het_te, "LectureNotes/g_hte_te.rds")
+
+g_het_te <- readRDS("g_hte_te.rds")
+g_het_te
 ```
+
+
+Since we forced $\theta(X)$ to be linear in `x1`, it is not surprising that the estimated MTE looks linear in `x1` even though the true MTE is an exponential function of `x1`.
+
 
 :::{.callout-tip}
 I recommend going through examples presented [here](https://github.com/microsoft/EconML/blob/main/notebooks/Double%20Machine%20Learning%20Examples.ipynb) for `DML`

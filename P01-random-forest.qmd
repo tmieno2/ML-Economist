@@ -53,6 +53,10 @@ Here is how you read the figure. At the first node, all the observations belong 
 
 As illustrated in the figure above, a regression tree splits the data into groups based on the value of explanatory variables, and all the observations in the same group will be assigned the same estimate (the sample average of the dependent variable of the group). 
 
+:::{.callout-tip}
+The estimated value of $Y$ (the dependent variable) for $X = x$ is the average of $Y$ from all the observations that belong to the same tree as $X = x$.
+:::
+
 Another way of illustrating this grouping is shown below:
 
 ```{r viz-tree}
@@ -86,18 +90,19 @@ ggplot(mlb1) +
   )
 ```
 
-The mechanism called recursive binary splitting is used to split the predictor space like the example above. Suppose you have K explanatory variables ($X_1, \dots, X_k$). Further, let $c$ denote the cutpoint that splits the sample into two regions: \{$X|X_k < c$\} and \{$X|X_k \geq c$\}.
+The mechanism called recursive binary splitting is used to split the predictor space like the example above. Suppose you have K explanatory variables ($X_1, \dots, X_k$). Further, let $c$ denote the threshold that splits the sample into two regions such that \{$X|X_k < c$\} and \{$X|X_k \geq c$\}.
 
 ::: {.column-margin}
 \{$X|X_k < c$\} means observations that satisfy the condition stated right to the vertical bar (|). Here, it means all the observations for which its $X_k$ value is less than $c$.
 :::
 
-+ Step 1: For each of the explanatory variables ($X_1$ through $X_K$), find the cutpoint that leads to the lowest sum of the squared residuals. 
-+ Step 2: Among all the splits (as many as the number of explanatory variables), pick the variable-cutpoint combination that leads to the lowest sum of the squared residuals.
++ Step 1: For each of the explanatory variables ($X_1$ through $X_K$), find all the threshold values that result in unique splits.
++ Step 2: For each of the explanatory variables ($X_1$ through $X_K$), go through all the threshold values and then find the threshold value that leads to the lowest sum of the squared residuals. 
++ Step 3: Among all the splits (as many as the number of explanatory variables), pick the variable-threshold combination that leads to the lowest sum of the squared residuals.
 
-The data is then split according to the chosen criteria and then the same process is repeated for each of the branches, ad infinitum until the user-specified stopping criteria is met. 
+The data is then split according to the chosen criteria and then the same process is repeated for each of the branches, ad infinitum until the user-specified stopping criteria is met. This way of splitting is called a **greedy** (or I would call it myopic or shortsighted) approach because the split happens to minimize the immediate RSS without considering the implication of the split for the later splits. 
 
-Let's try to write (an inefficient version) this process for the first split from the beginning node using the `mlb1` data as an illustration based on a simple grid search to find the optimal cutpoints (Step 1). 
+Let's try to write this process (an inefficient version) for the first split from the beginning node using the `mlb1` data as an illustration based on a simple grid search to find the optimal thresholds (Step 1). 
 
 ```{r set-up-data}
 #=== get data ===#
@@ -111,22 +116,22 @@ mlb1_dt <-
   na.omit() # remove observations with NA in any of the variables
 ```
 
-Let's work on splitting based on `hruns`. First, we define a sequence of values of cutpoints for `hruns`.
+Let's work on splitting based on `hruns`. One way to find the all the threshold values is simply find the mean of two consecutive numbers from the ordered unique `hruns` values.
 
 ```{r gen-value-seq}
 value_seq <- 
-  quantile(
-    mlb1_dt$hruns, 
-    prob = seq(0.001, 0.999, length = 100)
-  ) %>% 
-  unique()
+  #=== order hruns values and find the unique values ===#
+  mlb1_dt[order(hruns), unique(hruns)] %>%
+  #=== get the rolling mean ===#
+  frollmean(2) %>% 
+  .[-1]
 ```
 
 For each value in `value_seq`, we find the RSS. For example, for the 50th value in `value_seq`,
 
 ```{r}
 copy(mlb1_dt) %>% 
-  #=== find the mean of lsalary by whether hruns is less than the cutpoint or not ===#
+  #=== find the mean of lsalary by whether hruns is less than the threshold or not ===#
   .[, y_hat := mean(lsalary), by = (hruns < value_seq[50])] %>% 
   #=== get squared residuals ===#
   .[, (lsalary - y_hat)^2] %>% 
@@ -138,7 +143,7 @@ How about 70th value in `value_seq`?
 
 ```{r}
 copy(mlb1_dt) %>% 
-  #=== find the mean of lsalary by whether hruns is less than the cutpoint or not ===#
+  #=== find the mean of lsalary by whether hruns is less than the threshold or not ===#
   .[, y_hat := mean(lsalary), by = (hruns < value_seq[70])] %>% 
   #=== get squared residuals ===#
   .[, (lsalary - y_hat)^2] %>% 
@@ -146,7 +151,7 @@ copy(mlb1_dt) %>%
   sum()
 ```
 
-This means `value_seq[70]` (`r value_seq[70]`) is a better cutpoint than `value_seq[50]` (`r value_seq[50]`).
+This means `value_seq[70]` (`r value_seq[70]`) is a better threshold than `value_seq[50]` (`r value_seq[50]`).
 
 Okay, let's consider all the candidate values, not just 50th and 70th, and then pick the best.
 
@@ -185,28 +190,32 @@ head(rss_value)
 tail(rss_value)
 ```
 
-Finding the cutpoint value that minimizes RSS,
+Finding the threshold value that minimizes RSS,
 
 ```{r}
 rss_value[which.min(rss), ]
 ```
 
-Okay, so, the best cutpoint for `hruns` is `r round(rss_value[which.min(rss), var_value], digits = 3)`
+Okay, so, the best threshold for `hruns` is `r round(rss_value[which.min(rss), var_value], digits = 3)`
 
 Suppose we are considering only five explanatory variables in building a regression tree: `hruns`, `years`, `rbisyr`, `allstar`, `runsyr`, `hits`, and `bavg`. We do the same operation we did for `hruns` for all the variables. 
 
 ```{r}
 get_rss_by_var <- function(var_name, data)
 {
-  temp_data <- copy(data) 
+
+  temp_data <- 
+    copy(data) %>% 
+    setnames(var_name, "temp_var")
 
   #=== define a sequence of values of hruns ===#
-  value_seq <- 
-    quantile(
-      temp_data[, ..var_name] %>% unlist(), 
-      prob = seq(0.001, 0.999, length = 100)
-    ) %>% 
-    unique()
+  value_seq <-
+    temp_data[order(temp_var), unique(temp_var)] %>%
+    #=== get the rolling mean ===#
+    frollmean(2) %>% 
+    .[-1]
+
+  setnames(temp_data, "temp_var", var_name)
 
   #=== get RSS ===#
   rss_value <-
@@ -234,7 +243,7 @@ min_rss_by_var <-
 )
 ```
 
-So, the variable-cutpoint combination that minimizes RSS is `r min_rss_by_var[which.min(rss), var_name]` - `r min_rss_by_var[which.min(rss), round(var_value, digits = 2)]`. We now have the first split. This tree is developed further by splitting nodes like this. 
+So, the variable-threshold combination that minimizes RSS is `r min_rss_by_var[which.min(rss), var_name]` - `r min_rss_by_var[which.min(rss), round(var_value, digits = 2)]`. We now have the first split. This tree is developed further by splitting nodes like this. 
 
 
 ### Training a regression tree in R
