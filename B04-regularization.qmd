@@ -79,7 +79,7 @@ Alternatively, we can also write the optimization problem as the constrained min
 $$
 \begin{aligned}
 Min_{\beta} & \sum_{i=1}^N (y_i - X_i\beta)^2 \\
-\mbox{s.t. } & \sum_{k=1}^K |\beta_k| < t
+\mbox{s.t. } & \sum_{k=1}^K |\beta_k| \leq t
 \end{aligned}
 $$ {#eq-constrained-lasso}
 
@@ -320,7 +320,7 @@ Ridge regression uses L2 norm for regularization and solves the following minimi
 $$
 \begin{aligned}
 Min_{\beta} & \sum_{i=1}^N (y_i - X_i\beta)^2 \\
-\mbox{s.t. } & \sum_{k=1}^K \beta_k^2 < t
+\mbox{s.t. } & \sum_{k=1}^K \beta_k^2 \leq t
 \end{aligned}
 $$ {#eq-constrained-ridge}
 

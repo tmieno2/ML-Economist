@@ -362,8 +362,9 @@ div.csl-indent {
   </ul></li>
   <li><a href="#sec-rf" id="toc-sec-rf" class="nav-link" data-scroll-target="#sec-rf"> <span class="header-section-number">6.2</span> Random Forest (RF)</a>
   <ul class="collapse">
-  <li><a href="#bagging-bootstrap-aggregation" id="toc-bagging-bootstrap-aggregation" class="nav-link" data-scroll-target="#bagging-bootstrap-aggregation"> <span class="header-section-number">6.2.1</span> Bagging (Bootstrap aggregation)</a></li>
+  <li><a href="#bagging-bootstrap-averaging" id="toc-bagging-bootstrap-averaging" class="nav-link" data-scroll-target="#bagging-bootstrap-averaging"> <span class="header-section-number">6.2.1</span> Bagging (Bootstrap Averaging)</a></li>
   <li><a href="#random-forest-rf" id="toc-random-forest-rf" class="nav-link" data-scroll-target="#random-forest-rf"> <span class="header-section-number">6.2.2</span> Random Forest (RF)</a></li>
+  <li><a href="#implementation" id="toc-implementation" class="nav-link" data-scroll-target="#implementation"> <span class="header-section-number">6.2.3</span> Implementation</a></li>
   </ul></li>
   <li><a href="#over-fitting" id="toc-over-fitting" class="nav-link" data-scroll-target="#over-fitting"> <span class="header-section-number">6.3</span> Over-fitting</a></li>
   <li><a href="#resources" id="toc-resources" class="nav-link" data-scroll-target="#resources"> <span class="header-section-number">6.4</span> Resources</a></li>
@@ -399,7 +400,8 @@ div.csl-indent {
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rattle)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(wooldridge)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(wooldridge)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gganimate)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div></div><section id="what-is-it" class="level3 page-columns page-full" data-number="6.1.1">
 <h3 data-number="6.1.1" class="anchored" data-anchor-id="what-is-it"><span class="header-section-number">6.1.1</span> What is it?</h3>
@@ -436,7 +438,7 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The estimated value of <span class="math inline">\(Y\)</span> (the dependent variable) for <span class="math inline">\(X = x\)</span> is the average of <span class="math inline">\(Y\)</span> from all the observations that belong to the same tree as <span class="math inline">\(X = x\)</span>.</p>
+<p>The estimated value of <span class="math inline">\(Y\)</span> (the dependent variable) for <span class="math inline">\(X = x\)</span> is the average of <span class="math inline">\(Y\)</span> from all the observations that belong to the same terminal node (leaf) as <span class="math inline">\(X = x\)</span>.</p>
 </div>
 </div>
 <p>Another way of illustrating this grouping is shown below:</p>
@@ -474,7 +476,7 @@ Tip
 <p><img src="P01-random-forest_files/figure-html/viz-tree-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>The mechanism called recursive binary splitting is used to split the predictor space like the example above. Suppose you have K explanatory variables (<span class="math inline">\(X_1, \dots, X_k\)</span>). Further, let <span class="math inline">\(c\)</span> denote the threshold that splits the sample into two regions such that {<span class="math inline">\(X|X_k &lt; c\)</span>} and {<span class="math inline">\(X|X_k \geq c\)</span>}.</p>
+<p>The mechanism called recursive binary splitting is used to split the predictor space like the example above. Suppose you have K explanatory variables (<span class="math inline">\(X_1, \dots, X_K\)</span>). Further, let <span class="math inline">\(c\)</span> denote the threshold that splits the sample into two regions such that {<span class="math inline">\(X|X_k &lt; c\)</span>} and {<span class="math inline">\(X|X_k \geq c\)</span>}.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p>{<span class="math inline">\(X|X_k &lt; c\)</span>} means observations that satisfy the condition stated right to the vertical bar (|). Here, it means all the observations for which its <span class="math inline">\(X_k\)</span> value is less than <span class="math inline">\(c\)</span>.</p>
@@ -505,28 +507,56 @@ Tip
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">frollmean</span>(<span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  .[<span class="sc">-</span><span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>For each value in <code>value_seq</code>, we find the RSS. For example, for the 50th value in <code>value_seq</code>,</p>
+<p><a href="#fig-thre">Figure&nbsp;<span>6.1</span></a> shows all the threshold values (blue lines) stored in <code>value_seq</code> that result in unique splits.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">copy</span>(mlb1_dt) <span class="sc">%&gt;%</span> </span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== find the mean of lsalary by whether hruns is less than the threshold or not ===#</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  .[, y_hat <span class="sc">:</span><span class="er">=</span> <span class="fu">mean</span>(lsalary), by <span class="ot">=</span> (hruns <span class="sc">&lt;</span> value_seq[<span class="dv">50</span>])] <span class="sc">%&gt;%</span> </span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== get squared residuals ===#</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  .[, (lsalary <span class="sc">-</span> y_hat)<span class="sc">^</span><span class="dv">2</span>] <span class="sc">%&gt;%</span> </span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== get RSS ===#</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>threshold_data <span class="ot">&lt;-</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>(<span class="at">thre =</span> value_seq) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  .[, id <span class="sc">:</span><span class="er">=</span> <span class="dv">1</span><span class="sc">:</span>.N]</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(mlb1_dt) <span class="sc">+</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> lsalary, <span class="at">x =</span> hruns)) <span class="sc">+</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> threshold_data, </span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">xintercept =</span> thre), </span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"blue"</span>, </span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.2</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> value_seq[[<span class="dv">50</span>]], <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> value_seq[[<span class="dv">70</span>]], <span class="at">color =</span> <span class="st">"orange"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-thre" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="P01-random-forest_files/figure-html/fig-thre-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 6.1: All the threshold values when splitting based on <code>hruns</code></figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>For each value in <code>value_seq</code>, we find the RSS. For example, for the 50th value in <code>value_seq</code> (the red line in <a href="#fig-thre">Figure&nbsp;<span>6.1</span></a>),</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">copy</span>(mlb1_dt) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== find the mean of lsalary by whether hruns is less than the threshold or not ===#</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  .[, y_hat <span class="sc">:</span><span class="er">=</span> <span class="fu">mean</span>(lsalary), by <span class="ot">=</span> (hruns <span class="sc">&lt;</span> value_seq[<span class="dv">50</span>])] <span class="sc">%&gt;%</span> </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== get squared residuals ===#</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  .[, (lsalary <span class="sc">-</span> y_hat)<span class="sc">^</span><span class="dv">2</span>] <span class="sc">%&gt;%</span> </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== get RSS ===#</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 291.1279</code></pre>
 </div>
 </div>
-<p>How about 70th value in <code>value_seq</code>?</p>
+<p>How about 70th value in <code>value_seq</code> (the orange line in <a href="#fig-thre">Figure&nbsp;<span>6.1</span></a>)?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">copy</span>(mlb1_dt) <span class="sc">%&gt;%</span> </span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== find the mean of lsalary by whether hruns is less than the threshold or not ===#</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  .[, y_hat <span class="sc">:</span><span class="er">=</span> <span class="fu">mean</span>(lsalary), by <span class="ot">=</span> (hruns <span class="sc">&lt;</span> value_seq[<span class="dv">70</span>])] <span class="sc">%&gt;%</span> </span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== get squared residuals ===#</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  .[, (lsalary <span class="sc">-</span> y_hat)<span class="sc">^</span><span class="dv">2</span>] <span class="sc">%&gt;%</span> </span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== get RSS ===#</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">copy</span>(mlb1_dt) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== find the mean of lsalary by whether hruns is less than the threshold or not ===#</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  .[, y_hat <span class="sc">:</span><span class="er">=</span> <span class="fu">mean</span>(lsalary), by <span class="ot">=</span> (hruns <span class="sc">&lt;</span> value_seq[<span class="dv">70</span>])] <span class="sc">%&gt;%</span> </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== get squared residuals ===#</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  .[, (lsalary <span class="sc">-</span> y_hat)<span class="sc">^</span><span class="dv">2</span>] <span class="sc">%&gt;%</span> </span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== get RSS ===#</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 322.3688</code></pre>
 </div>
@@ -534,35 +564,35 @@ Tip
 <p>This means <code>value_seq[70]</code> (79.5) is a better threshold than <code>value_seq[50]</code> (49.5).</p>
 <p>Okay, let’s consider all the candidate values, not just 50th and 70th, and then pick the best.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>get_rss <span class="ot">&lt;-</span> <span class="cf">function</span>(i, var_name, value_seq, data)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>{</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  rss <span class="ot">&lt;-</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">copy</span>(data) <span class="sc">%&gt;%</span> </span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">setnames</span>(var_name, <span class="st">"var"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    .[, y_hat <span class="sc">:</span><span class="er">=</span> <span class="fu">mean</span>(lsalary), by <span class="ot">=</span> (var <span class="sc">&lt;</span> value_seq[i])] <span class="sc">%&gt;%</span> </span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    .[, (lsalary <span class="sc">-</span> y_hat)<span class="sc">^</span><span class="dv">2</span>] <span class="sc">%&gt;%</span> </span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sum</span>()</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  return_data <span class="ot">&lt;-</span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.table</span>(</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">rss =</span> rss,</span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">var_name =</span> var_name,</span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">var_value =</span> value_seq[i]</span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(return_data)</span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>get_rss <span class="ot">&lt;-</span> <span class="cf">function</span>(i, var_name, value_seq, data)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  rss <span class="ot">&lt;-</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">copy</span>(data) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">setnames</span>(var_name, <span class="st">"var"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    .[, y_hat <span class="sc">:</span><span class="er">=</span> <span class="fu">mean</span>(lsalary), by <span class="ot">=</span> (var <span class="sc">&lt;</span> value_seq[i])] <span class="sc">%&gt;%</span> </span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    .[, (lsalary <span class="sc">-</span> y_hat)<span class="sc">^</span><span class="dv">2</span>] <span class="sc">%&gt;%</span> </span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sum</span>()</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  return_data <span class="ot">&lt;-</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.table</span>(</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">rss =</span> rss,</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">var_name =</span> var_name,</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">var_value =</span> value_seq[i]</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(return_data)</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Here are RSS values at every value in <code>value_seq</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>rss_value <span class="ot">&lt;-</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">seq_len</span>(<span class="fu">length</span>(value_seq)),</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) <span class="fu">get_rss</span>(x, <span class="st">"hruns"</span>, value_seq, mlb1_dt) </span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbindlist</span>()</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(rss_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>rss_value <span class="ot">&lt;-</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">seq_len</span>(<span class="fu">length</span>(value_seq)),</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) <span class="fu">get_rss</span>(x, <span class="st">"hruns"</span>, value_seq, mlb1_dt) </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbindlist</span>()</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(rss_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        rss var_name var_value
 1: 396.8287    hruns       0.5
@@ -572,7 +602,7 @@ Tip
 5: 325.4865    hruns       4.5
 6: 309.2780    hruns       5.5</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(rss_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(rss_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        rss var_name var_value
 1: 437.6865    hruns     279.0
@@ -585,7 +615,7 @@ Tip
 </div>
 <p>Finding the threshold value that minimizes RSS,</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>rss_value[<span class="fu">which.min</span>(rss), ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>rss_value[<span class="fu">which.min</span>(rss), ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        rss var_name var_value
 1: 259.7855    hruns      27.5</code></pre>
@@ -594,44 +624,44 @@ Tip
 <p>Okay, so, the best threshold for <code>hruns</code> is 27.5</p>
 <p>Suppose we are considering only five explanatory variables in building a regression tree: <code>hruns</code>, <code>years</code>, <code>rbisyr</code>, <code>allstar</code>, <code>runsyr</code>, <code>hits</code>, and <code>bavg</code>. We do the same operation we did for <code>hruns</code> for all the variables.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>get_rss_by_var <span class="ot">&lt;-</span> <span class="cf">function</span>(var_name, data)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>{</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  temp_data <span class="ot">&lt;-</span> </span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">copy</span>(data) <span class="sc">%&gt;%</span> </span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">setnames</span>(var_name, <span class="st">"temp_var"</span>)</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== define a sequence of values of hruns ===#</span></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  value_seq <span class="ot">&lt;-</span></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    temp_data[<span class="fu">order</span>(temp_var), <span class="fu">unique</span>(temp_var)] <span class="sc">%&gt;%</span></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">#=== get the rolling mean ===#</span></span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">frollmean</span>(<span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    .[<span class="sc">-</span><span class="dv">1</span>]</span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setnames</span>(temp_data, <span class="st">"temp_var"</span>, var_name)</span>
-<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== get RSS ===#</span></span>
-<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>  rss_value <span class="ot">&lt;-</span></span>
-<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lapply</span>(</span>
-<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>      <span class="fu">seq_len</span>(<span class="fu">length</span>(value_seq)),</span>
-<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>      <span class="cf">function</span>(x) <span class="fu">get_rss</span>(x, var_name, value_seq, temp_data) </span>
-<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
-<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rbindlist</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>    .[<span class="fu">which.min</span>(rss),]</span>
-<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(rss_value)</span>
-<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>get_rss_by_var <span class="ot">&lt;-</span> <span class="cf">function</span>(var_name, data)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  temp_data <span class="ot">&lt;-</span> </span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">copy</span>(data) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">setnames</span>(var_name, <span class="st">"temp_var"</span>)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== define a sequence of values of hruns ===#</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  value_seq <span class="ot">&lt;-</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    temp_data[<span class="fu">order</span>(temp_var), <span class="fu">unique</span>(temp_var)] <span class="sc">%&gt;%</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">#=== get the rolling mean ===#</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">frollmean</span>(<span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    .[<span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setnames</span>(temp_data, <span class="st">"temp_var"</span>, var_name)</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== get RSS ===#</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>  rss_value <span class="ot">&lt;-</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lapply</span>(</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>      <span class="fu">seq_len</span>(<span class="fu">length</span>(value_seq)),</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>      <span class="cf">function</span>(x) <span class="fu">get_rss</span>(x, var_name, value_seq, temp_data) </span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rbindlist</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>    .[<span class="fu">which.min</span>(rss),]</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(rss_value)</span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Looping over the set of variables,</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>(</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>min_rss_by_var <span class="ot">&lt;-</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(<span class="st">"hruns"</span>, <span class="st">"years"</span>, <span class="st">"rbisyr"</span>, <span class="st">"allstar"</span>, <span class="st">"runsyr"</span>, <span class="st">"hits"</span>, <span class="st">"bavg"</span>),</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) <span class="fu">get_rss_by_var</span>(x, mlb1_dt)</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbindlist</span>()</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>min_rss_by_var <span class="ot">&lt;-</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(<span class="st">"hruns"</span>, <span class="st">"years"</span>, <span class="st">"rbisyr"</span>, <span class="st">"allstar"</span>, <span class="st">"runsyr"</span>, <span class="st">"hits"</span>, <span class="st">"bavg"</span>),</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) <span class="fu">get_rss_by_var</span>(x, mlb1_dt)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbindlist</span>()</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        rss var_name  var_value
 1: 259.7855    hruns  27.500000
@@ -649,30 +679,30 @@ Tip
 <h3 data-number="6.1.2" class="anchored" data-anchor-id="training-a-regression-tree-in-r"><span class="header-section-number">6.1.2</span> Training a regression tree in R</h3>
 <p>You can fit a regression tree using <code>rpart()</code> from the <code>rpart</code> package. Its syntax is similar to that of <code>lm()</code> for a quick fitting.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rpart</span>(</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  formula,</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  data</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rpart</span>(</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  formula,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  data</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Using <code>mlb1</code>, let’s fit a regression tree where <code>lsalary</code> is the dependent variable and <code>hruns</code>, <code>years</code>, <code>rbisyr</code>, <code>allstar</code>, <code>runsyr</code>, <code>hits</code>, and <code>bavg</code> are the explanatory variables.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== fit a tree ===#</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>fitted_tree <span class="ot">&lt;-</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rpart</span>(</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    lsalary <span class="sc">~</span> hruns <span class="sc">+</span> years <span class="sc">+</span> rbisyr <span class="sc">+</span> allstar <span class="sc">+</span> runsyr <span class="sc">+</span> hits <span class="sc">+</span> bavg, </span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> mlb1_dt</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== fit a tree ===#</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>fitted_tree <span class="ot">&lt;-</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rpart</span>(</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    lsalary <span class="sc">~</span> hruns <span class="sc">+</span> years <span class="sc">+</span> rbisyr <span class="sc">+</span> allstar <span class="sc">+</span> runsyr <span class="sc">+</span> hits <span class="sc">+</span> bavg, </span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> mlb1_dt</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Here is the visualization of the fitted tree using <code>fancyRpartPlot()</code> from the <code>rattle</code> package.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fancyRpartPlot</span>(fitted_tree)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fancyRpartPlot</span>(fitted_tree)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="P01-random-forest_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+<p><img src="P01-random-forest_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Now, you may wonder why <code>rpart()</code> is not building a tree that has as many leaves as the number of observations so that we have a perfect prediction for the train data (<code>mlb1</code>). If we are simply implementing recursive binary splitting, then it should not have stopped where it stopped. This is because <code>rpart()</code> sets parameter values that control the development of a tree by default. Those default parameters can be seen below:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rpart.control</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rpart.control</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$minsplit
 [1] 20
@@ -709,47 +739,47 @@ $xval
 <p>where <span class="math inline">\(R_t\)</span> is the <span class="math inline">\(t\)</span>th region and <span class="math inline">\(\hat{y_{R_t}}\)</span> is the estimate of <span class="math inline">\(y\)</span> for all the observations that reside in <span class="math inline">\(R_t\)</span>. So, the first term is RSS. The objective function has a penalization term (the second term) just like shrinkage methods we saw in <a href="B04-regularization.html#sec-shrinkage"><span>Section&nbsp;4.1</span></a>. A higher value of <code>cp</code> leads to a less complex tree with less leaves.</p>
 <p>If you want to build a much deeper tree that has many leaves, then you can do so using the <code>control</code> option like below.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>full_tree <span class="ot">&lt;-</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rpart</span>(</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    lsalary <span class="sc">~</span> hruns <span class="sc">+</span> years <span class="sc">+</span> rbisyr <span class="sc">+</span> allstar <span class="sc">+</span> runsyr <span class="sc">+</span> hits <span class="sc">+</span> bavg, <span class="co"># formula</span></span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> mlb1_dt, <span class="co"># data</span></span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">control =</span> <span class="co"># control of the hyper parameters</span></span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rpart.control</span>(</span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">minsplit =</span> <span class="dv">2</span>, </span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">cp =</span> <span class="dv">0</span> <span class="co"># complexity parameter</span></span>
-<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>      )</span>
-<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>full_tree <span class="ot">&lt;-</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rpart</span>(</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    lsalary <span class="sc">~</span> hruns <span class="sc">+</span> years <span class="sc">+</span> rbisyr <span class="sc">+</span> allstar <span class="sc">+</span> runsyr <span class="sc">+</span> hits <span class="sc">+</span> bavg, <span class="co"># formula</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> mlb1_dt, <span class="co"># data</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">control =</span> <span class="co"># control of the hyper parameters</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rpart.control</span>(</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">minsplit =</span> <span class="dv">2</span>, </span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">cp =</span> <span class="dv">0</span> <span class="co"># complexity parameter</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Let’s see how amazing this tree is by comparing the observed and fitted <code>lsalary</code> values.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== get fitted values ===#</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>mlb1_dt[, y_hat <span class="sc">:</span><span class="er">=</span> <span class="fu">predict</span>(full_tree, <span class="at">newdata =</span> mlb1_dt)]</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co">#=== visualize the fit ===#</span></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> mlb1_dt) <span class="sc">+</span></span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> lsalary, <span class="at">x =</span> y_hat)) <span class="sc">+</span></span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== get fitted values ===#</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>mlb1_dt[, y_hat <span class="sc">:</span><span class="er">=</span> <span class="fu">predict</span>(full_tree, <span class="at">newdata =</span> mlb1_dt)]</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co">#=== visualize the fit ===#</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> mlb1_dt) <span class="sc">+</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> lsalary, <span class="at">x =</span> y_hat)) <span class="sc">+</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="P01-random-forest_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+<p><img src="P01-random-forest_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Yes, perfect prediction accuracy! At least for the train data anyway. But, we all know we want nothing to do with this kind of model. It is clearly over-fitting the train data.</p>
 <p>In order to find a reasonable model, we can use KCV over <code>cp</code>. Fortunately, when we run <code>rpart()</code>, it automatically builds multiple trees at different values of <code>cp</code> that controls the number of leaves and conduct KCV. You can visualize this using <code>plotcp()</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotcp</span>(fitted_tree)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotcp</span>(fitted_tree)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="P01-random-forest_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+<p><img src="P01-random-forest_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>MSE and <code>cp</code> are presented on the y- and x-axis, respectively. According to the KCV results, <code>cp</code> <span class="math inline">\(= 0.018\)</span> provides the tree with the smallest number of leaves (the most simple) where the MSE value is within one standard deviation from the lowest MSE. You can access the tree built under <code>cp</code> <span class="math inline">\(= 0.018\)</span> like below.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== get the best tree ===#</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>best_tree <span class="ot">&lt;-</span> <span class="fu">prune</span>(full_tree, <span class="at">cp =</span> <span class="fl">0.018</span>)</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="co">#=== visualize it ===#</span></span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="fu">fancyRpartPlot</span>(best_tree)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== get the best tree ===#</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>best_tree <span class="ot">&lt;-</span> <span class="fu">prune</span>(full_tree, <span class="at">cp =</span> <span class="fl">0.018</span>)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="co">#=== visualize it ===#</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="fu">fancyRpartPlot</span>(best_tree)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="P01-random-forest_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+<p><img src="P01-random-forest_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Even though how a regression tree is build in R. In practice, you never use a regression tree itself as the final model for your research as its performance is rather poor and tend to over-fit compared to other competitive methods. But, understanding how building a regression tree is important to understand its derivatives like random forest, boosted regression forest.</p>
@@ -758,93 +788,129 @@ $xval
 <section id="sec-rf" class="level2 page-columns page-full" data-number="6.2">
 <h2 data-number="6.2" class="anchored" data-anchor-id="sec-rf"><span class="header-section-number">6.2</span> Random Forest (RF)</h2>
 <p>Regression tree approach is often not robust and suffers from high variance. Here, we look at the process called <span style="color:blue"> bagging </span> and how it can be used to train RF model, which is much more robust than a regression tree.</p>
-<section id="bagging-bootstrap-aggregation" class="level3" data-number="6.2.1">
-<h3 data-number="6.2.1" class="anchored" data-anchor-id="bagging-bootstrap-aggregation"><span class="header-section-number">6.2.1</span> Bagging (Bootstrap aggregation)</h3>
-<p>Consider two random variables <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span> from the identical distribution, where <span class="math inline">\(E[x_i] = \alpha\)</span> and <span class="math inline">\(Var(x_i) = \sigma^2\)</span>. You are interested in estimating <span class="math inline">\(E[x_i]\)</span>. We all know that the following relationship holds in general:</p>
+<section id="bagging-bootstrap-averaging" class="level3 page-columns page-full" data-number="6.2.1">
+<h3 data-number="6.2.1" class="anchored" data-anchor-id="bagging-bootstrap-averaging"><span class="header-section-number">6.2.1</span> Bagging (Bootstrap Averaging)</h3>
+<p>Before talking about how RF is trained. Let’s first talk about the concept of bagging. Let <span class="math inline">\(\theta(X)\)</span> denote the statistics of interest you would like to estimate from the data. Bagging (Bootstrap averaging) works like this:</p>
+<ol type="1">
+<li>Bootstrap the data many times</li>
+<li>Estimate <span class="math inline">\(\theta(X)\)</span> for each of the bootstrapped datasets (<span class="math inline">\(\hat{\theta}_1, \dots, \hat{\theta}_B\)</span>)</li>
+<li>Average the estimates and use it as the final estimate of <span class="math inline">\(\theta(X)\)</span>.</li>
+</ol>
+<p><span class="math display">\[
+\hat{\theta}(X) = \frac{\hat{\theta}_1(X) + \dots + \hat{\theta}_B(X)}{B}
+\]</span></p>
+<p>To understand the power of bagging, we need to understand the power of averaging and when it is most effective using a very simple example of estimating the expected value of a random variable.</p>
+<p>Consider two random variables <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span> from the identical distribution, where <span class="math inline">\(E[x_i] = \alpha\)</span> and <span class="math inline">\(Var(x_i) = \sigma^2\)</span>. You are interested in estimating <span class="math inline">\(E[x_i]\)</span>. We have two options:</p>
+<ul>
+<li>Option 1: Use <span class="math inline">\(x_1\)</span> as the estimate of <span class="math inline">\(E[x_i]\)</span>.</li>
+<li>Option 2: Use the mean of <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span> as the estimate of <span class="math inline">\(E[x_i]\)</span></li>
+</ul>
+<p>The variance of the first estimator is of course simply the variance of <span class="math inline">\(x_1\)</span>, so <span class="math inline">\(\sigma^2\)</span>.</p>
+<p>For option 2, we know the following relationship holds in general:</p>
 <p><span class="math display">\[
 \begin{aligned}
 Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac{Cov(x_1, x_2)}{2} \\
 &amp; = \frac{\sigma^2}{2} + \frac{Cov(x_1, x_2)}{2}
 \end{aligned}
 \]</span></p>
-<p>So, instead of using a single draw from <span class="math inline">\(x_1\)</span> and using it as an estimate for <span class="math inline">\(E[x_i]\)</span>, it is better to use the values from both <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span> and average them to obtain an estimate for <span class="math inline">\(E[x_i]\)</span> as long as <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span> are not perfectly <span style="color:blue"> positively </span> correlated (in this case <span class="math inline">\(Cov(x_1, x_2) = Var(x_1) = Var(x_1) = \sigma^2\)</span>). The benefit of averaging is greater when the value of <span class="math inline">\(Cov(x_1, x_2)\)</span> is smaller.</p>
+<p>So, how good the mean of <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span> as an estimator depends on <span class="math inline">\(Cov(x_1, x_2)\)</span>. When they are perfectly positively correlated, then <span class="math inline">\(Cov(x_1, x_2) = Var(x_1) = \sigma^2\)</span>. So, <span class="math inline">\(Var(\frac{x_1 + x_2}{2})\)</span> is <span class="math inline">\(\sigma^2\)</span>, which is no better than option 1.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>This makes sense because adding information from one more variable that is perfectly correlated with the other variable does nothing because they are the same values.</p>
+</div></div><p>However, as long as <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span> are not perfectly correlated, option 2 is better. The benefit of averaging is greater when the value of <span class="math inline">\(Cov(x_1, x_2)\)</span> is smaller.</p>
 <p>Let’s do a little experiment to see this. We consider three cases:</p>
+<ul>
+<li>Approach 0: use <span class="math inline">\(x_1\)</span> as the estimator</li>
+<li>Approach 1: use <span class="math inline">\((x_1 + x_2)/2\)</span> as the estimator (<span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span> are independent)</li>
+<li>Approach 2: use <span class="math inline">\((x_1 + x_2)/2\)</span> as the estimator (<span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span> are positively correlated)</li>
+<li>Approach 3: use <span class="math inline">\((x_1 + x_2)/2\)</span> as the estimator (<span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span> are negatively correlated)</li>
+</ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== set the number of observations to 1000 ===#</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== set the number of observations to 1000 ===#</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== first case (no correlation) ===#</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>x_1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>x_2 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(x_1, x_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== first approach (no correlation) ===#</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>x_1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>x_2 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(x_1, x_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.03983687</code></pre>
+<pre><code>[1] -0.001429999</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== second case (positively correlated) ===#</span></span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>x_1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>x_2 <span class="ot">&lt;-</span> <span class="fl">0.5</span> <span class="sc">*</span> x_1 <span class="sc">+</span> <span class="fu">sqrt</span>(<span class="dv">1</span><span class="sc">-</span>(<span class="fl">0.5</span>)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">*</span> <span class="fu">rnorm</span>(N)</span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(x_1, x_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== second approach (positively correlated) ===#</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>x_1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>x_2 <span class="ot">&lt;-</span> <span class="fl">0.5</span> <span class="sc">*</span> x_1 <span class="sc">+</span> <span class="fu">sqrt</span>(<span class="dv">1</span><span class="sc">-</span>(<span class="fl">0.5</span>)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">*</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(x_1, x_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.5167655</code></pre>
+<pre><code>[1] 0.5049434</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== third case (negatively correlated) ===#</span></span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>x_1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>x_2 <span class="ot">&lt;-</span> <span class="sc">-</span> <span class="fl">0.8</span> <span class="sc">*</span> x_1 <span class="sc">-</span> <span class="fu">sqrt</span>(<span class="dv">1</span><span class="sc">-</span>(<span class="fl">0.8</span>)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">*</span> <span class="fu">rnorm</span>(N)</span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(x_1, x_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== third approach (negatively correlated) ===#</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>x_1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>x_2 <span class="ot">&lt;-</span> <span class="sc">-</span> <span class="fl">0.8</span> <span class="sc">*</span> x_1 <span class="sc">-</span> <span class="fu">sqrt</span>(<span class="dv">1</span><span class="sc">-</span>(<span class="fl">0.8</span>)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">*</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(x_1, x_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -0.7853651</code></pre>
+<pre><code>[1] -0.7822314</code></pre>
 </div>
 </div>
+<p>The following function runs a single iteration of estimating <span class="math inline">\(E[x]\)</span> using the four approaches.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>get_alpha <span class="ot">&lt;-</span> <span class="cf">function</span>(i)</span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>{</span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== base case ===#</span></span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  alpha_hat_0 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1</span>)</span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== first case (no correlation) ===#</span></span>
-<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>  x_1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1</span>)</span>
-<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>  x_2 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1</span>)</span>
-<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>  alpha_hat_1 <span class="ot">&lt;-</span> (x_1 <span class="sc">+</span> x_2) <span class="sc">/</span> <span class="dv">2</span></span>
-<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== second case (positively correlated) ===#</span></span>
-<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>  x_1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1</span>)</span>
-<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>  x_2 <span class="ot">&lt;-</span> <span class="fl">0.5</span> <span class="sc">*</span> x_1 <span class="sc">+</span> <span class="fu">sqrt</span>(<span class="dv">1</span><span class="sc">-</span>(<span class="fl">0.5</span>)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">*</span> <span class="fu">rnorm</span>(<span class="dv">1</span>)</span>
-<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a>  alpha_hat_2 <span class="ot">&lt;-</span> (x_1 <span class="sc">+</span> x_2) <span class="sc">/</span> <span class="dv">2</span></span>
-<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== third case (negatively correlated) ===#</span></span>
-<span id="cb36-19"><a href="#cb36-19" aria-hidden="true" tabindex="-1"></a>  x_1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1</span>)</span>
-<span id="cb36-20"><a href="#cb36-20" aria-hidden="true" tabindex="-1"></a>  x_2 <span class="ot">&lt;-</span> <span class="sc">-</span> <span class="fl">0.8</span> <span class="sc">*</span> x_1 <span class="sc">-</span> <span class="fu">sqrt</span>(<span class="dv">1</span><span class="sc">-</span>(<span class="fl">0.8</span>)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">*</span> <span class="fu">rnorm</span>(<span class="dv">1</span>)</span>
-<span id="cb36-21"><a href="#cb36-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-22"><a href="#cb36-22" aria-hidden="true" tabindex="-1"></a>  alpha_hat_3 <span class="ot">&lt;-</span> (x_1 <span class="sc">+</span> x_2) <span class="sc">/</span> <span class="dv">2</span></span>
-<span id="cb36-23"><a href="#cb36-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-24"><a href="#cb36-24" aria-hidden="true" tabindex="-1"></a>  return_data <span class="ot">&lt;-</span></span>
-<span id="cb36-25"><a href="#cb36-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.table</span>(</span>
-<span id="cb36-26"><a href="#cb36-26" aria-hidden="true" tabindex="-1"></a>      <span class="at">alpha_hat_0 =</span> alpha_hat_0,</span>
-<span id="cb36-27"><a href="#cb36-27" aria-hidden="true" tabindex="-1"></a>      <span class="at">alpha_hat_1 =</span> alpha_hat_1,</span>
-<span id="cb36-28"><a href="#cb36-28" aria-hidden="true" tabindex="-1"></a>      <span class="at">alpha_hat_2 =</span> alpha_hat_2,</span>
-<span id="cb36-29"><a href="#cb36-29" aria-hidden="true" tabindex="-1"></a>      <span class="at">alpha_hat_3 =</span> alpha_hat_3</span>
-<span id="cb36-30"><a href="#cb36-30" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb36-31"><a href="#cb36-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-32"><a href="#cb36-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(return_data)</span>
-<span id="cb36-33"><a href="#cb36-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-34"><a href="#cb36-34" aria-hidden="true" tabindex="-1"></a>} </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>get_alpha <span class="ot">&lt;-</span> <span class="cf">function</span>(i)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== approach 0 ===#</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>  alpha_hat_0 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1</span>)</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== approach 1 (no correlation) ===#</span></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>  x_1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1</span>)</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>  x_2 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1</span>)</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>  alpha_hat_1 <span class="ot">&lt;-</span> (x_1 <span class="sc">+</span> x_2) <span class="sc">/</span> <span class="dv">2</span></span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== approach 2 (positively correlated) ===#</span></span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a>  x_1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1</span>)</span>
+<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a>  x_2 <span class="ot">&lt;-</span> <span class="fl">0.5</span> <span class="sc">*</span> x_1 <span class="sc">+</span> <span class="fu">sqrt</span>(<span class="dv">1</span><span class="sc">-</span>(<span class="fl">0.5</span>)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">*</span> <span class="fu">rnorm</span>(<span class="dv">1</span>)</span>
+<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a>  alpha_hat_2 <span class="ot">&lt;-</span> (x_1 <span class="sc">+</span> x_2) <span class="sc">/</span> <span class="dv">2</span></span>
+<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== approach 3 (negatively correlated) ===#</span></span>
+<span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a>  x_1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1</span>)</span>
+<span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a>  x_2 <span class="ot">&lt;-</span> <span class="sc">-</span> <span class="fl">0.8</span> <span class="sc">*</span> x_1 <span class="sc">-</span> <span class="fu">sqrt</span>(<span class="dv">1</span><span class="sc">-</span>(<span class="fl">0.8</span>)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">*</span> <span class="fu">rnorm</span>(<span class="dv">1</span>)</span>
+<span id="cb37-21"><a href="#cb37-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-22"><a href="#cb37-22" aria-hidden="true" tabindex="-1"></a>  alpha_hat_3 <span class="ot">&lt;-</span> (x_1 <span class="sc">+</span> x_2) <span class="sc">/</span> <span class="dv">2</span></span>
+<span id="cb37-23"><a href="#cb37-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-24"><a href="#cb37-24" aria-hidden="true" tabindex="-1"></a>  return_data <span class="ot">&lt;-</span></span>
+<span id="cb37-25"><a href="#cb37-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.table</span>(</span>
+<span id="cb37-26"><a href="#cb37-26" aria-hidden="true" tabindex="-1"></a>      <span class="at">alpha_hat_0 =</span> alpha_hat_0,</span>
+<span id="cb37-27"><a href="#cb37-27" aria-hidden="true" tabindex="-1"></a>      <span class="at">alpha_hat_1 =</span> alpha_hat_1,</span>
+<span id="cb37-28"><a href="#cb37-28" aria-hidden="true" tabindex="-1"></a>      <span class="at">alpha_hat_2 =</span> alpha_hat_2,</span>
+<span id="cb37-29"><a href="#cb37-29" aria-hidden="true" tabindex="-1"></a>      <span class="at">alpha_hat_3 =</span> alpha_hat_3</span>
+<span id="cb37-30"><a href="#cb37-30" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb37-31"><a href="#cb37-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-32"><a href="#cb37-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(return_data)</span>
+<span id="cb37-33"><a href="#cb37-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-34"><a href="#cb37-34" aria-hidden="true" tabindex="-1"></a>} </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>Here is the results of single iteration.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">234934</span>)</span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>sim_results <span class="ot">&lt;-</span></span>
-<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
-<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>,</span>
-<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>    get_alpha</span>
-<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbindlist</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">melt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_alpha</span>(<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   alpha_hat_0 alpha_hat_1 alpha_hat_2 alpha_hat_3
+1:   -1.005648  -0.0580865  0.06391733  -0.5243365</code></pre>
+</div>
+</div>
+<p>Repeating this many times,</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">234934</span>)</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>sim_results <span class="ot">&lt;-</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>,</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>    get_alpha</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbindlist</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">melt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in melt.data.table(.): id.vars and measure.vars are internally
 guessed when both are 'NULL'. All non-numeric/integer/logical type columns are
@@ -852,37 +918,37 @@ considered id.vars, which in this case are columns []. Consider providing at
 least one of 'id' or 'measure' vars in future.</code></pre>
 </div>
 </div>
-<p>As you can see below, they are all pretty much unbiased. However, all the cases that averaged two values (cases 1, 2, and 3) outperformed the base case that relied on a single value each iteration. You can see that when the random variables are negatively correlated, the power of averaging is greater compared to when they are independent or positively correlated. The independent case (case 1) is better than the positive correlation case (case 2).</p>
+<p><a href="#fig-mc-simple">Figure&nbsp;<span>6.2</span></a> shows the density plot of the estimates from the four approaches.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== expected value ===#</span></span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>sim_results[, <span class="fu">mean</span>(value), by <span class="ot">=</span> variable]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>      variable          V1
-1: alpha_hat_0 0.037836191
-2: alpha_hat_1 0.008031971
-3: alpha_hat_2 0.008486035
-4: alpha_hat_3 0.004259832</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== standard error ===#</span></span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>sim_results[, <span class="fu">sd</span>(value), by <span class="ot">=</span> variable]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>      variable        V1
-1: alpha_hat_0 0.9840232
-2: alpha_hat_1 0.6969730
-3: alpha_hat_2 0.8660699
-4: alpha_hat_3 0.3103408</code></pre>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>sim_results <span class="sc">%&gt;%</span> </span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  .[, label <span class="sc">:</span><span class="er">=</span> <span class="fu">gsub</span>(<span class="st">"alpha_hat_"</span>, <span class="st">"Approach "</span>, variable)] <span class="sc">%&gt;%</span> </span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">data =</span> .) <span class="sc">+</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_density</span>(</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">aes</span>(<span class="at">x =</span> value, <span class="at">fill =</span> label), </span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">alpha =</span> <span class="fl">0.5</span></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_discrete</span>(<span class="at">name =</span> <span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-mc-simple" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="P01-random-forest_files/figure-html/fig-mc-simple-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 6.2: Results of simple MC simulations to estimate the expected value of x</figcaption><p></p>
+</figure>
 </div>
 </div>
-<p>Bagging takes advantage of the power of averaging. Specifically, bagging takes the following steps:</p>
+</div>
+<p>As you can see, they are all pretty much unbiased. However, all the cases that averaged two values (cases 1, 2, and 3) outperformed the base case that relied on a single value each iteration. You can see that when the random variables are negatively correlated, the power of averaging is greater compared to when they are independent or positively correlated. The independent case (case 1) is better than the positive correlation case (case 2).</p>
+<p>Now that we understand the power of bagging, let’s apply this to a regression problem using a tree. The statistics of interest is <span class="math inline">\(E[y|X]\)</span>, which is denoted as <span class="math inline">\(f(x)\)</span>.</p>
 <ol type="1">
-<li>Generate many bootstrapped datasets (say <span class="math inline">\(B\)</span> datasets)</li>
-<li>Train a model on each of the bootstrapped datasets (<span class="math inline">\(\hat{f}^1, \dots, \hat{f}^B\)</span>)</li>
-<li>Average the estimates from all the trained models to come up with an estimate</li>
+<li>Bootstrap the data <span class="math inline">\(B\)</span> times</li>
+<li>Train a regression tree to each of the bootstrapped dataset, which results in <span class="math inline">\(B\)</span> distinctive trees</li>
+<li>To predict <span class="math inline">\(E[y|x]\)</span>, average the estimate from all the trees (<span class="math inline">\(\hat{f}_1(x), \dots, \hat{f}_B(x)\)</span>) and use it as the final estimate.</li>
 </ol>
 <p><span class="math display">\[
-\hat{f}(X) = \frac{\hat{f}^1(X) + \dots + \hat{f}^B(X)}{B}
+\hat{f}(x) = \frac{\hat{f}_1(X) + \dots + \hat{f}_B(X)}{B}
 \]</span></p>
-<p>Let’s implement this for <span class="math inline">\(B = 10\)</span> using <code>mlb1_dt</code>. First, define a function (named <code>train_a_tree()</code>) that bootstrap data, fit a regression tree, and then return the fitted values.</p>
+<p>Let’s implement this for <span class="math inline">\(B = 10\)</span> using <code>mlb1_dt</code>. First, define a function that bootstrap data, fit a regression tree, and then return the fitted values (a single iteration).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>train_a_tree <span class="ot">&lt;-</span> <span class="cf">function</span>(i, data)</span>
 <span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>{</span>
@@ -903,10 +969,11 @@ least one of 'id' or 'measure' vars in future.</code></pre>
 <span id="cb43-17"><a href="#cb43-17" aria-hidden="true" tabindex="-1"></a>  return_data <span class="ot">&lt;-</span></span>
 <span id="cb43-18"><a href="#cb43-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">copy</span>(data) <span class="sc">%&gt;%</span> </span>
 <span id="cb43-19"><a href="#cb43-19" aria-hidden="true" tabindex="-1"></a>    .[, y_hat <span class="sc">:</span><span class="er">=</span> <span class="fu">predict</span>(rpart, <span class="at">newdata =</span> data)] <span class="sc">%&gt;%</span> </span>
-<span id="cb43-20"><a href="#cb43-20" aria-hidden="true" tabindex="-1"></a>    .[, .(id, y_hat)]</span>
-<span id="cb43-21"><a href="#cb43-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-22"><a href="#cb43-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(return_data)</span>
-<span id="cb43-23"><a href="#cb43-23" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb43-20"><a href="#cb43-20" aria-hidden="true" tabindex="-1"></a>    .[, .(id, y_hat)] <span class="sc">%&gt;%</span> </span>
+<span id="cb43-21"><a href="#cb43-21" aria-hidden="true" tabindex="-1"></a>    .[, tree <span class="sc">:</span><span class="er">=</span> i] </span>
+<span id="cb43-22"><a href="#cb43-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-23"><a href="#cb43-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(return_data)</span>
+<span id="cb43-24"><a href="#cb43-24" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We now repeat <code>train_a_tree()</code> 10 times.</p>
 <div class="cell">
@@ -919,21 +986,22 @@ least one of 'id' or 'measure' vars in future.</code></pre>
 <span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>,</span>
 <span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) <span class="fu">train_a_tree</span>(x, mlb1_dt) </span>
 <span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbindlist</span>()</span>
-<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbindlist</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a>  .[<span class="fu">order</span>(id),]</span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>       id    y_hat
-   1:   1 15.15792
-   2:   2 14.23816
-   3:   3 15.15792
-   4:   4 14.23816
-   5:   5 14.23816
-  ---             
-3296: 326 13.17676
-3297: 327 12.64863
-3298: 328 12.64863
-3299: 329 13.61157
-3300: 330 12.02302</code></pre>
+<pre><code>       id    y_hat tree
+   1:   1 15.15792    1
+   2:   1 15.04446    2
+   3:   1 15.21238    3
+   4:   1 15.07311    4
+   5:   1 14.92840    5
+  ---                  
+3296: 330 11.98177    6
+3297: 330 12.09743    7
+3298: 330 12.02678    8
+3299: 330 12.02287    9
+3300: 330 12.02302   10</code></pre>
 </div>
 </div>
 <p>By averaging <span class="math inline">\(y\)</span> estimates by <code>id</code>, we can get bagging estimates.</p>
@@ -954,28 +1022,95 @@ least one of 'id' or 'measure' vars in future.</code></pre>
 330: 330 12.02051</code></pre>
 </div>
 </div>
-<p>Now, let’s take a look at the individual estimates of <span class="math inline">\(y\)</span> for the first observation.</p>
+<p>This is bagging of many regression trees.</p>
+</section>
+<section id="random-forest-rf" class="level3" data-number="6.2.2">
+<h3 data-number="6.2.2" class="anchored" data-anchor-id="random-forest-rf"><span class="header-section-number">6.2.2</span> Random Forest (RF)</h3>
+<p>Now, let’s take a look at the individual estimates of <span class="math inline">\(y\)</span> for the first observation from the bagging process we just implemented.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>y_estimates[id <span class="sc">==</span> <span class="dv">1</span>, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>    id    y_hat
- 1:  1 15.15792
- 2:  1 15.04446
- 3:  1 15.21238
- 4:  1 15.07311
- 5:  1 14.92840
- 6:  1 14.98571
- 7:  1 15.12060
- 8:  1 15.14064
- 9:  1 15.05676
-10:  1 15.19375</code></pre>
+<pre><code>    id    y_hat tree
+ 1:  1 15.15792    1
+ 2:  1 15.04446    2
+ 3:  1 15.21238    3
+ 4:  1 15.07311    4
+ 5:  1 14.92840    5
+ 6:  1 14.98571    6
+ 7:  1 15.12060    7
+ 8:  1 15.14064    8
+ 9:  1 15.05676    9
+10:  1 15.19375   10</code></pre>
 </div>
 </div>
-<p>Hmm, the estimates look very similar. Actually, that is the case for all the observations. This is because the trained trees are very similar for many reasons, and the trees are highly “positively” correlated with each other. From our very simple experiment above, we know that the power of bagging is not very high when that is the case. While RF does use bagging, popular R and python packages does it in a much better way than I demonstrated here. We see this next.</p>
+<p>Hmm, the estimates look very similar. Actually, that is not just of the observations with <code>id == 1</code>. This is because the trained trees are very similar for many reasons, and the trees are highly “positively” correlated with each other. From our very simple experiment above, we know that the power of bagging is not very high when that is the case.</p>
+<p>RF introduces additional uncertainty to the process to make trees less correlated with each other (<em>decorrelate</em> trees). Specifically, for any leave of any tree, they consider only a randomly select subset of the explanatory variables when deciding how to split a leave. A typical choice of the number of variables considered at each split is <span class="math inline">\(\sqrt{K}\)</span>, where <span class="math inline">\(K\)</span> is the number of the explanatory variables specified by the user. In the naive example above, all <span class="math inline">\(K\)</span> variables are considered for all the split decisions of all the trees. Some variables are more influential than others and they get to be picked as the splitting variable at similar places, which can result in highly correlated trees. Instead, RF gives other variables a chance, which helps decorrelate the trees. This means that the tree we build in RF is not deterministic. Depending on which variables are selected for consideration in splitting, the tree will be different even if you use the same bootstrapped dataset.</p>
+<p>Let’s code the process of building a tree for RF. We first bootstrap a dataset.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>n_obs <span class="ot">&lt;-</span> <span class="fu">nrow</span>(mlb1_dt)</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>boot_data <span class="ot">&lt;-</span> mlb1_dt[<span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span>n_obs, n_obs, <span class="at">replace =</span> <span class="cn">TRUE</span>), ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s now build a tree using <code>boot_data</code>. We first split the entire dataset into two.</p>
+<p>We can use <code>get_rss_by_var()</code> we wrote earlier, which gets us RSS-minimizing threshold and the minimized RSS value for a single variable. Earlier when we build a regression tree, we looped over all the explanatory variables, which are <code>hruns</code>, <code>years</code>, <code>rbisyr</code>, <code>allstar</code>, <code>runsyr</code>, <code>hits</code>, and <code>bavg</code>. But, when building a tree in RF, you can choose to select just a subset of the variables. Here, let’s randomly select <span class="math inline">\(\sqrt{K}\)</span> variables. So, rounding <span class="math inline">\(\sqrt{7}\)</span>, we have three.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>var_list <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"hruns"</span>, <span class="st">"years"</span>, <span class="st">"rbisyr"</span>, <span class="st">"allstar"</span>, <span class="st">"runsyr"</span>, <span class="st">"hits"</span>, <span class="st">"bavg"</span>)</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>K <span class="ot">&lt;-</span> <span class="fu">length</span>(var_list)</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>K_for_split <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(K) <span class="sc">%&gt;%</span> <span class="fu">round</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We randomly select three variables among the list of variables (<code>var_list</code>).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>vars_for_split <span class="ot">&lt;-</span> <span class="fu">sample</span>(var_list, K_for_split, <span class="at">replace =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "years"   "bavg"    "allstar"</code></pre>
+</div>
+</div>
+<p>You only consider these 3 variables in this splitting process.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>min_rss_by_var <span class="ot">&lt;-</span></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>    vars_for_split,</span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) <span class="fu">get_rss_by_var</span>(x, mlb1_dt)</span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbindlist</span>()</span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        rss var_name  var_value
+1: 249.9090    years   3.500000
+2: 375.0281     bavg 252.499992
+3: 277.3388  allstar   7.417582</code></pre>
+</div>
+</div>
+<p>So, our choice of split criteria is</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>min_rss_by_var[<span class="fu">which.min</span>(rss), ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       rss var_name var_value
+1: 249.909    years       3.5</code></pre>
+</div>
+</div>
+<p>You will repeat this process for any splits you consider until you met the stopping criteria.</p>
+<p>By the way, if we were to use all the variables instead of just these three, then we would have use the following criteria.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>    var_list,</span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) <span class="fu">get_rss_by_var</span>(x, mlb1_dt)</span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbindlist</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a>  .[<span class="fu">which.min</span>(rss), ]</span>
+<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        rss var_name var_value
+1: 205.1488     hits     356.5</code></pre>
+</div>
+</div>
 </section>
-<section id="random-forest-rf" class="level3 page-columns page-full" data-number="6.2.2">
-<h3 data-number="6.2.2" class="anchored" data-anchor-id="random-forest-rf"><span class="header-section-number">6.2.2</span> Random Forest (RF)</h3>
-<p>Unlike a naive bagging approach demonstrated above, RF does it in a clever way to <em>decorrelate</em> trees. Specifically, for any leave of any tree, they consider only a randomly select subset of the explanatory variables when deciding how to split a leave. A typical choice of the number of variables considered at each split is <span class="math inline">\(\sqrt{K}\)</span>, where <span class="math inline">\(K\)</span> is the number of the explanatory variables specified by the user. In the naive example above, all <span class="math inline">\(K\)</span> variables are considered for all the split decisions of all the trees. Some variables are more influential than others and they get to be picked as the splitting variable at similar places, which can result in highly correlated trees. Instead, RF gives other variables a chance, which helps decorrelate the trees.</p>
+<section id="implementation" class="level3 page-columns page-full" data-number="6.2.3">
+<h3 data-number="6.2.3" class="anchored" data-anchor-id="implementation"><span class="header-section-number">6.2.3</span> Implementation</h3>
 <p>We can use <code>ranger()</code> from the <code>ranger</code> package to train an RF model.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
@@ -990,8 +1125,8 @@ least one of 'id' or 'measure' vars in future.</code></pre>
 </ul>
 <p>Let’s try fitting an RF with <code>ranger()</code> with the default parameters.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== load the package ===#</span></span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ranger)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== load the package ===#</span></span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ranger)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
 Attaching package: 'ranger'</code></pre>
@@ -1001,14 +1136,14 @@ Attaching package: 'ranger'</code></pre>
 
     importance</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== fit and RF ===#</span></span>
-<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>(</span>
-<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>rf_fit <span class="ot">&lt;-</span> </span>
-<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ranger</span>(</span>
-<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>    lsalary <span class="sc">~</span> hruns <span class="sc">+</span> years <span class="sc">+</span> rbisyr <span class="sc">+</span> allstar <span class="sc">+</span> runsyr <span class="sc">+</span> hits <span class="sc">+</span> bavg, </span>
-<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> mlb1_dt</span>
-<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== fit and RF ===#</span></span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>rf_fit <span class="ot">&lt;-</span> </span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ranger</span>(</span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>    lsalary <span class="sc">~</span> hruns <span class="sc">+</span> years <span class="sc">+</span> rbisyr <span class="sc">+</span> allstar <span class="sc">+</span> runsyr <span class="sc">+</span> hits <span class="sc">+</span> bavg, </span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> mlb1_dt</span>
+<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb63-8"><a href="#cb63-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Ranger result
 
@@ -1023,43 +1158,41 @@ Mtry:                             2
 Target node size:                 5 
 Variable importance mode:         none 
 Splitrule:                        variance 
-OOB prediction error (MSE):       0.3668547 
-R squared (OOB):                  0.7288123 </code></pre>
+OOB prediction error (MSE):       0.3640505 
+R squared (OOB):                  0.7308852 </code></pre>
 </div>
 </div>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p>Since we have many trees, it is no longer possible to have a nice graphical representation of the trained RF model like we did with a regression tree.</p>
-</div></div><p>In the output, you can see <code>OOB prediction error (MSE)</code>. OOB stands for <span style="color:red"> o</span>ut-<span style="color:red">o</span>f-<span style="color:red">b</span>ag. When bootstrapping (whether you do it with replacement or not), some of the train data will not be used to build a tree.</p>
+</div></div><p>In the output, you can see <code>OOB prediction error (MSE)</code>. OOB stands for <span style="color:red"> o</span>ut-<span style="color:red">o</span>f-<span style="color:red">b</span>ag. When bootstrapping, some of the train data will not be used to build a tree.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>n_obs <span class="ot">&lt;-</span> <span class="fu">nrow</span>(mlb1_dt)</span>
-<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a><span class="co">#=== bootstrapped data ===#</span></span>
-<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>boot_data <span class="ot">&lt;-</span> mlb1_dt[<span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span>n_obs, n_obs, <span class="at">replace =</span> <span class="cn">TRUE</span>), ]</span>
-<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a><span class="co">#=== which rows (observations) from the original datasets are missing? ===#</span></span>
-<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>mlb1_dt[, id <span class="sc">%in%</span> <span class="fu">unique</span>(boot_data<span class="sc">$</span>id)] <span class="sc">%&gt;%</span> <span class="fu">mean</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== bootstrapped data ===#</span></span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>boot_data <span class="ot">&lt;-</span> mlb1_dt[<span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span>n_obs, n_obs, <span class="at">replace =</span> <span class="cn">TRUE</span>), ]</span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a><span class="co">#=== which rows (observations) from the original datasets are missing? ===#</span></span>
+<span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a>mlb1_dt[, id <span class="sc">%in%</span> <span class="fu">unique</span>(boot_data<span class="sc">$</span>id)] <span class="sc">%&gt;%</span> <span class="fu">mean</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.6212121</code></pre>
+<pre><code>[1] 0.630303</code></pre>
 </div>
 </div>
 <p>So, only <span class="math inline">\(65\%\)</span> of the rows from the original data (<code>mlb1_dt</code>) in this bootstrapped sample (many duplicates of the original observations). The observations that are NOT included in the bootstrapped sample is called out-of-bag observations. This provides a great opportunity to estimate test MSE while training an RF model! For a given regression tree, you can apply it to the out-of-bag samples to calculate MSE. You can repeat this for all the trees and average the MSEs, effectively conducting cross-validation. When the number of trees is large enough, OOB MSE is almost equivalent to MSE from LOOCV <span class="citation" data-cites="james2013introduction">(<a href="#ref-james2013introduction" role="doc-biblioref">James et al., n.d.</a>)</span>. This means that we can tune hyper-parameters by comparing OOB MSEs under different sets of hyper-parameter values.</p>
 <p>You can use a simple grid-search to find the best hyper-parameter values. Grid-search is simply a brute-force optimization methods that goes through all the combinations of hyper-parameters and see which combination comes at the top. The computational intensity of grid-search depends on how many hyper-parameters you want to vary and how many values you would like to look at for each of the hyper-parameters. Here, let’s tune <code>mtry</code>, <code>min.node.size</code>, and <code>sample.fraction</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== define set of values you want to look at ===#</span></span>
-<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>mtry_seq <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">7</span>)</span>
-<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>min_node_size_seq <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">5</span>, <span class="dv">10</span>)</span>
-<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>sample_fraction_seq <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="dv">1</span>)</span>
-<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a><span class="co">#=== create a complete combinations of the three parameters ===#</span></span>
-<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>(</span>
-<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a>parameters <span class="ot">&lt;-</span></span>
-<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a>  data.table<span class="sc">::</span><span class="fu">CJ</span>(</span>
-<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">mtry =</span> mtry_seq,</span>
-<span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">min_node_size =</span> min_node_size_seq,</span>
-<span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">sample_fraction =</span> sample_fraction_seq</span>
-<span id="cb57-13"><a href="#cb57-13" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb57-14"><a href="#cb57-14" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== define set of values you want to look at ===#</span></span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>mtry_seq <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">7</span>)</span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a>min_node_size_seq <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">5</span>, <span class="dv">10</span>)</span>
+<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a>sample_fraction_seq <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="dv">1</span>)</span>
+<span id="cb67-5"><a href="#cb67-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-6"><a href="#cb67-6" aria-hidden="true" tabindex="-1"></a><span class="co">#=== create a complete combinations of the three parameters ===#</span></span>
+<span id="cb67-7"><a href="#cb67-7" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb67-8"><a href="#cb67-8" aria-hidden="true" tabindex="-1"></a>parameters <span class="ot">&lt;-</span></span>
+<span id="cb67-9"><a href="#cb67-9" aria-hidden="true" tabindex="-1"></a>  data.table<span class="sc">::</span><span class="fu">CJ</span>(</span>
+<span id="cb67-10"><a href="#cb67-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">mtry =</span> mtry_seq,</span>
+<span id="cb67-11"><a href="#cb67-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">min_node_size =</span> min_node_size_seq,</span>
+<span id="cb67-12"><a href="#cb67-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">sample_fraction =</span> sample_fraction_seq</span>
+<span id="cb67-13"><a href="#cb67-13" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb67-14"><a href="#cb67-14" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    mtry min_node_size sample_fraction
  1:    2             2            0.50
@@ -1094,72 +1227,72 @@ R squared (OOB):                  0.7288123 </code></pre>
 </div>
 <p>In total, we have 27 (<span class="math inline">\(3 \times 3 \times 3\)</span>) cases. You can see how quickly the number of cases increases as you increase the number of parameters to tune and the values of each parameter. We can now loop over the rows of this parameter data (<code>parameters</code>) and get OOB MSE for each of them.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>oob_mse_all <span class="ot">&lt;-</span></span>
-<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
-<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">seq_len</span>(<span class="fu">nrow</span>(parameters)),</span>
-<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) {</span>
-<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>      <span class="co">#=== Fit the mode ===#</span></span>
-<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a>      rf_fit <span class="ot">&lt;-</span> </span>
-<span id="cb59-8"><a href="#cb59-8" aria-hidden="true" tabindex="-1"></a>        <span class="fu">ranger</span>(</span>
-<span id="cb59-9"><a href="#cb59-9" aria-hidden="true" tabindex="-1"></a>          lsalary <span class="sc">~</span> hruns <span class="sc">+</span> years <span class="sc">+</span> rbisyr <span class="sc">+</span> allstar <span class="sc">+</span> runsyr <span class="sc">+</span> hits <span class="sc">+</span> bavg, </span>
-<span id="cb59-10"><a href="#cb59-10" aria-hidden="true" tabindex="-1"></a>          <span class="at">data =</span> mlb1_dt,</span>
-<span id="cb59-11"><a href="#cb59-11" aria-hidden="true" tabindex="-1"></a>          <span class="at">num.trees =</span> <span class="dv">1000</span>,</span>
-<span id="cb59-12"><a href="#cb59-12" aria-hidden="true" tabindex="-1"></a>          <span class="at">mtry =</span> parameters[x, mtry],</span>
-<span id="cb59-13"><a href="#cb59-13" aria-hidden="true" tabindex="-1"></a>          <span class="at">min.node.size =</span> parameters[x, min_node_size],</span>
-<span id="cb59-14"><a href="#cb59-14" aria-hidden="true" tabindex="-1"></a>          <span class="at">sample.fraction =</span> parameters[x, sample_fraction]</span>
-<span id="cb59-15"><a href="#cb59-15" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb59-16"><a href="#cb59-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-17"><a href="#cb59-17" aria-hidden="true" tabindex="-1"></a>      <span class="co">#=== return OOB SME ===#</span></span>
-<span id="cb59-18"><a href="#cb59-18" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(rf_fit<span class="sc">$</span>prediction.error)</span>
-<span id="cb59-19"><a href="#cb59-19" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb59-20"><a href="#cb59-20" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb59-21"><a href="#cb59-21" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb59-22"><a href="#cb59-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unlist</span>()</span>
-<span id="cb59-23"><a href="#cb59-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-24"><a href="#cb59-24" aria-hidden="true" tabindex="-1"></a><span class="co">#=== assign OOB MSE to the parameters data ===#</span></span>
-<span id="cb59-25"><a href="#cb59-25" aria-hidden="true" tabindex="-1"></a>parameters[, oob_mse <span class="sc">:</span><span class="er">=</span> oob_mse_all]</span>
-<span id="cb59-26"><a href="#cb59-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-27"><a href="#cb59-27" aria-hidden="true" tabindex="-1"></a><span class="co">#=== take a look ===#</span></span>
-<span id="cb59-28"><a href="#cb59-28" aria-hidden="true" tabindex="-1"></a>parameters</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>oob_mse_all <span class="ot">&lt;-</span></span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">seq_len</span>(<span class="fu">nrow</span>(parameters)),</span>
+<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) {</span>
+<span id="cb69-5"><a href="#cb69-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-6"><a href="#cb69-6" aria-hidden="true" tabindex="-1"></a>      <span class="co">#=== Fit the mode ===#</span></span>
+<span id="cb69-7"><a href="#cb69-7" aria-hidden="true" tabindex="-1"></a>      rf_fit <span class="ot">&lt;-</span> </span>
+<span id="cb69-8"><a href="#cb69-8" aria-hidden="true" tabindex="-1"></a>        <span class="fu">ranger</span>(</span>
+<span id="cb69-9"><a href="#cb69-9" aria-hidden="true" tabindex="-1"></a>          lsalary <span class="sc">~</span> hruns <span class="sc">+</span> years <span class="sc">+</span> rbisyr <span class="sc">+</span> allstar <span class="sc">+</span> runsyr <span class="sc">+</span> hits <span class="sc">+</span> bavg, </span>
+<span id="cb69-10"><a href="#cb69-10" aria-hidden="true" tabindex="-1"></a>          <span class="at">data =</span> mlb1_dt,</span>
+<span id="cb69-11"><a href="#cb69-11" aria-hidden="true" tabindex="-1"></a>          <span class="at">num.trees =</span> <span class="dv">1000</span>,</span>
+<span id="cb69-12"><a href="#cb69-12" aria-hidden="true" tabindex="-1"></a>          <span class="at">mtry =</span> parameters[x, mtry],</span>
+<span id="cb69-13"><a href="#cb69-13" aria-hidden="true" tabindex="-1"></a>          <span class="at">min.node.size =</span> parameters[x, min_node_size],</span>
+<span id="cb69-14"><a href="#cb69-14" aria-hidden="true" tabindex="-1"></a>          <span class="at">sample.fraction =</span> parameters[x, sample_fraction]</span>
+<span id="cb69-15"><a href="#cb69-15" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb69-16"><a href="#cb69-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-17"><a href="#cb69-17" aria-hidden="true" tabindex="-1"></a>      <span class="co">#=== return OOB SME ===#</span></span>
+<span id="cb69-18"><a href="#cb69-18" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(rf_fit<span class="sc">$</span>prediction.error)</span>
+<span id="cb69-19"><a href="#cb69-19" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb69-20"><a href="#cb69-20" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb69-21"><a href="#cb69-21" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb69-22"><a href="#cb69-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unlist</span>()</span>
+<span id="cb69-23"><a href="#cb69-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-24"><a href="#cb69-24" aria-hidden="true" tabindex="-1"></a><span class="co">#=== assign OOB MSE to the parameters data ===#</span></span>
+<span id="cb69-25"><a href="#cb69-25" aria-hidden="true" tabindex="-1"></a>parameters[, oob_mse <span class="sc">:</span><span class="er">=</span> oob_mse_all]</span>
+<span id="cb69-26"><a href="#cb69-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-27"><a href="#cb69-27" aria-hidden="true" tabindex="-1"></a><span class="co">#=== take a look ===#</span></span>
+<span id="cb69-28"><a href="#cb69-28" aria-hidden="true" tabindex="-1"></a>parameters</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    mtry min_node_size sample_fraction   oob_mse
- 1:    2             2            0.50 0.3634654
- 2:    2             2            0.75 0.3632539
- 3:    2             2            1.00 0.3703735
- 4:    2             5            0.50 0.3609772
- 5:    2             5            0.75 0.3640391
- 6:    2             5            1.00 0.3657121
- 7:    2            10            0.50 0.3632176
- 8:    2            10            0.75 0.3590104
- 9:    2            10            1.00 0.3647577
-10:    4             2            0.50 0.3639452
-11:    4             2            0.75 0.3678789
-12:    4             2            1.00 0.3762502
-13:    4             5            0.50 0.3625460
-14:    4             5            0.75 0.3682806
-15:    4             5            1.00 0.3696961
-16:    4            10            0.50 0.3632466
-17:    4            10            0.75 0.3641201
-18:    4            10            1.00 0.3693227
-19:    7             2            0.50 0.3697563
-20:    7             2            0.75 0.3773171
-21:    7             2            1.00 0.3807321
-22:    7             5            0.50 0.3749875
-23:    7             5            0.75 0.3731546
-24:    7             5            1.00 0.3857696
-25:    7            10            0.50 0.3688267
-26:    7            10            0.75 0.3758684
-27:    7            10            1.00 0.3764331
+ 1:    2             2            0.50 0.3611884
+ 2:    2             2            0.75 0.3622574
+ 3:    2             2            1.00 0.3701546
+ 4:    2             5            0.50 0.3601237
+ 5:    2             5            0.75 0.3634168
+ 6:    2             5            1.00 0.3665383
+ 7:    2            10            0.50 0.3618498
+ 8:    2            10            0.75 0.3621112
+ 9:    2            10            1.00 0.3662482
+10:    4             2            0.50 0.3626452
+11:    4             2            0.75 0.3668244
+12:    4             2            1.00 0.3735296
+13:    4             5            0.50 0.3630609
+14:    4             5            0.75 0.3705019
+15:    4             5            1.00 0.3742656
+16:    4            10            0.50 0.3610209
+17:    4            10            0.75 0.3623941
+18:    4            10            1.00 0.3661138
+19:    7             2            0.50 0.3737602
+20:    7             2            0.75 0.3766916
+21:    7             2            1.00 0.3827657
+22:    7             5            0.50 0.3697100
+23:    7             5            0.75 0.3725411
+24:    7             5            1.00 0.3822502
+25:    7            10            0.50 0.3695385
+26:    7            10            0.75 0.3699830
+27:    7            10            1.00 0.3800858
     mtry min_node_size sample_fraction   oob_mse</code></pre>
 </div>
 </div>
 <p>So, the best choice among the ones tried is:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>parameters[<span class="fu">which.min</span>(oob_mse), ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>parameters[<span class="fu">which.min</span>(oob_mse), ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   mtry min_node_size sample_fraction   oob_mse
-1:    2            10            0.75 0.3590104</code></pre>
+1:    2             5             0.5 0.3601237</code></pre>
 </div>
 </div>
 </section>

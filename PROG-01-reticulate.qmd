@@ -284,7 +284,8 @@ Another way to run Python codes from R is to source a python script to make pyth
 Here is the Python code in the file called `import_modules.py`.
 
 ```{python}
-# | eval: false 
+# | eval: false
+
 from sklearn.model_selection import train_test_split
 from sklearn.datasets import make_regression
 from sklearn.ensemble import RandomForestRegressor
@@ -316,7 +317,7 @@ synth_data <-
 length(synth_data)
 ```
 
-However, a module cannot be used without `py$`. So, you cannot do this. 
+However, a module imported in this manner cannot be used without `py$`. So, you cannot do this. 
 
 ```{r}
 #| error: true

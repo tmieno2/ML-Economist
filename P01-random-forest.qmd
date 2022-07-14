@@ -15,6 +15,7 @@ library(data.table)
 library(rpart)
 library(rattle)
 library(wooldridge)
+library(gganimate)
 ```
 
 ```{r}
@@ -25,6 +26,7 @@ library(data.table)
 library(rpart)
 library(rattle)
 library(wooldridge)
+library(gganimate)
 ```
 :::
 
@@ -54,7 +56,7 @@ Here is how you read the figure. At the first node, all the observations belong 
 As illustrated in the figure above, a regression tree splits the data into groups based on the value of explanatory variables, and all the observations in the same group will be assigned the same estimate (the sample average of the dependent variable of the group). 
 
 :::{.callout-tip}
-The estimated value of $Y$ (the dependent variable) for $X = x$ is the average of $Y$ from all the observations that belong to the same tree as $X = x$.
+The estimated value of $Y$ (the dependent variable) for $X = x$ is the average of $Y$ from all the observations that belong to the same terminal node (leaf) as $X = x$.
 :::
 
 Another way of illustrating this grouping is shown below:
@@ -90,7 +92,7 @@ ggplot(mlb1) +
   )
 ```
 
-The mechanism called recursive binary splitting is used to split the predictor space like the example above. Suppose you have K explanatory variables ($X_1, \dots, X_k$). Further, let $c$ denote the threshold that splits the sample into two regions such that \{$X|X_k < c$\} and \{$X|X_k \geq c$\}.
+The mechanism called recursive binary splitting is used to split the predictor space like the example above. Suppose you have K explanatory variables ($X_1, \dots, X_K$). Further, let $c$ denote the threshold that splits the sample into two regions such that \{$X|X_k < c$\} and \{$X|X_k \geq c$\}.
 
 ::: {.column-margin}
 \{$X|X_k < c$\} means observations that satisfy the condition stated right to the vertical bar (|). Here, it means all the observations for which its $X_k$ value is less than $c$.
@@ -127,7 +129,31 @@ value_seq <-
   .[-1]
 ```
 
-For each value in `value_seq`, we find the RSS. For example, for the 50th value in `value_seq`,
+@fig-thre shows all the threshold values (blue lines) stored in `value_seq` that result in unique splits.
+
+```{r}
+#| code-fold: true
+#| fig-cap: All the threshold values when splitting based on `hruns` 
+#| label: fig-thre
+
+threshold_data <- 
+  data.table(thre = value_seq) %>% 
+  .[, id := 1:.N]
+
+ggplot(mlb1_dt) +
+  geom_point(aes(y = lsalary, x = hruns)) +
+  geom_vline(
+    data = threshold_data, 
+    aes(xintercept = thre), 
+    color = "blue", 
+    size = 0.2
+  ) +
+  geom_vline(xintercept = value_seq[[50]], color = "red") +
+  geom_vline(xintercept = value_seq[[70]], color = "orange")
+
+```
+
+For each value in `value_seq`, we find the RSS. For example, for the 50th value in `value_seq` (the red line in @fig-thre),
 
 ```{r}
 copy(mlb1_dt) %>% 
@@ -139,7 +165,7 @@ copy(mlb1_dt) %>%
   sum()
 ```
 
-How about 70th value in `value_seq`?
+How about 70th value in `value_seq` (the orange line in @fig-thre)?
 
 ```{r}
 copy(mlb1_dt) %>% 
@@ -343,9 +369,27 @@ Even though how a regression tree is build in R. In practice, you never use a re
 
 Regression tree approach is often not robust and suffers from high variance. Here, we look at the process called <span style="color:blue"> bagging </span> and how it can be used to train RF model, which is much more robust than a regression tree. 
 
-### Bagging (Bootstrap aggregation)
+### Bagging (Bootstrap Averaging)
 
-Consider two random variables $x_1$ and $x_2$ from the identical distribution, where $E[x_i] = \alpha$ and $Var(x_i) = \sigma^2$. You are interested in estimating $E[x_i]$. We all know that the following relationship holds in general:
+Before talking about how RF is trained. Let's first talk about the concept of bagging. Let $\theta(X)$ denote the statistics of interest you would like to estimate from the data. Bagging (Bootstrap averaging) works like this:
+
+1. Bootstrap the data many times
+2. Estimate $\theta(X)$ for each of the bootstrapped datasets ($\hat{\theta}_1, \dots, \hat{\theta}_B$)
+3. Average the estimates and use it as the final estimate of $\theta(X)$.
+$$
+\hat{\theta}(X) = \frac{\hat{\theta}_1(X) + \dots + \hat{\theta}_B(X)}{B}
+$$
+
+To understand the power of bagging, we need to understand the power of averaging and when it is most effective using a very simple example of estimating the expected value of a random variable.
+
+Consider two random variables $x_1$ and $x_2$ from the identical distribution, where $E[x_i] = \alpha$ and $Var(x_i) = \sigma^2$. You are interested in estimating $E[x_i]$. We have two options:
+
++ Option 1: Use $x_1$ as the estimate of $E[x_i]$. 
++ Option 2: Use the mean of $x_1$ and $x_2$ as the estimate of $E[x_i]$
+
+The variance of the first estimator is of course simply the variance of $x_1$, so $\sigma^2$.
+
+For option 2, we know the following relationship holds in general:
 
 $$
 \begin{aligned}
@@ -354,9 +398,20 @@ Var(\frac{x_1 + x_2}{2}) & = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac{Cov
 \end{aligned}
 $$
 
-So, instead of using a single draw from $x_1$ and using it as an estimate for $E[x_i]$, it is better to use the values from both $x_1$ and $x_2$ and average them to obtain an estimate for $E[x_i]$ as long as $x_1$ and $x_2$ are not perfectly <span style="color:blue"> positively </span> correlated (in this case $Cov(x_1, x_2) = Var(x_1) = Var(x_1) = \sigma^2$). The benefit of averaging is greater when the value of $Cov(x_1, x_2)$ is smaller. 
+So, how good the mean of $x_1$ and $x_2$ as an estimator depends on $Cov(x_1, x_2)$. When they are perfectly positively correlated, then $Cov(x_1, x_2) = Var(x_1) = \sigma^2$. So, $Var(\frac{x_1 + x_2}{2})$ is $\sigma^2$, which is no better than option 1. 
+
+::: {.column-margin}
+This makes sense because adding information from one more variable that is perfectly correlated with the other variable does nothing because they are the same values.
+:::
+
+However, as long as $x_1$ and $x_2$ are not perfectly correlated, option 2 is better. The benefit of averaging is greater when the value of $Cov(x_1, x_2)$ is smaller.
 
 Let's do a little experiment to see this. We consider three cases:
+
++ Approach 0: use $x_1$ as the estimator
++ Approach 1: use $(x_1 + x_2)/2$ as the estimator ($x_1$ and $x_2$ are independent)
++ Approach 2: use $(x_1 + x_2)/2$ as the estimator ($x_1$ and $x_2$ are positively correlated)
++ Approach 3: use $(x_1 + x_2)/2$ as the estimator ($x_1$ and $x_2$ are negatively correlated)
 
 ```{r}
 #=== set the number of observations to 1000 ===#
@@ -364,44 +419,46 @@ N <- 1000
 ```
 
 ```{r}
-#=== first case (no correlation) ===#
+#=== first approach (no correlation) ===#
 x_1 <- rnorm(N)
 x_2 <- rnorm(N)
 
 cor(x_1, x_2)
 
-#=== second case (positively correlated) ===#
+#=== second approach (positively correlated) ===#
 x_1 <- rnorm(N)
 x_2 <- 0.5 * x_1 + sqrt(1-(0.5)^2) * rnorm(N)
 
 cor(x_1, x_2)
 
-#=== third case (negatively correlated) ===#
+#=== third approach (negatively correlated) ===#
 x_1 <- rnorm(N)
 x_2 <- - 0.8 * x_1 - sqrt(1-(0.8)^2) * rnorm(N)
 
 cor(x_1, x_2)
 ```
 
+The following function runs a single iteration of estimating $E[x]$ using the four approaches.
+
 ```{r}
 get_alpha <- function(i)
 {
-  #=== base case ===#
+  #=== approach 0 ===#
   alpha_hat_0 <- rnorm(1)
 
-  #=== first case (no correlation) ===#
+  #=== approach 1 (no correlation) ===#
   x_1 <- rnorm(1)
   x_2 <- rnorm(1)
 
   alpha_hat_1 <- (x_1 + x_2) / 2
 
-  #=== second case (positively correlated) ===#
+  #=== approach 2 (positively correlated) ===#
   x_1 <- rnorm(1)
   x_2 <- 0.5 * x_1 + sqrt(1-(0.5)^2) * rnorm(1)
 
   alpha_hat_2 <- (x_1 + x_2) / 2
 
-  #=== third case (negatively correlated) ===#
+  #=== approach 3 (negatively correlated) ===#
   x_1 <- rnorm(1)
   x_2 <- - 0.8 * x_1 - sqrt(1-(0.8)^2) * rnorm(1)
 
@@ -420,6 +477,14 @@ get_alpha <- function(i)
 } 
 ```
 
+Here is the results of single iteration.
+
+```{r}
+get_alpha(1)
+```
+
+Repeating this many times,
+
 ```{r}
 set.seed(234934)
 
@@ -430,32 +495,38 @@ sim_results <-
   ) %>% 
   rbindlist() %>% 
   melt()
-
 ```
 
-As you can see below, they are all pretty much unbiased. However, all the cases that averaged two values (cases 1, 2, and 3) outperformed the base case that relied on a single value each iteration. You can see that when the random variables are negatively correlated, the power of averaging is greater compared to when they are independent or positively correlated. The independent case (case 1) is better than the positive correlation case (case 2). 
+@fig-mc-simple shows the density plot of the estimates from the four approaches.
 
 ```{r}
-#=== expected value ===#
-sim_results[, mean(value), by = variable]
-
-#=== standard error ===#
-sim_results[, sd(value), by = variable]
+#| fig-cap: Results of simple MC simulations to estimate the expected value of x
+#| label: fig-mc-simple
+sim_results %>% 
+  .[, label := gsub("alpha_hat_", "Approach ", variable)] %>% 
+  ggplot(data = .) +
+    geom_density(
+      aes(x = value, fill = label), 
+      alpha = 0.5
+    ) +
+  scale_fill_discrete(name = "") +
+  theme_bw()
 ```
 
-Bagging takes advantage of the power of averaging. Specifically, bagging takes the following steps:
+As you can see, they are all pretty much unbiased. However, all the cases that averaged two values (cases 1, 2, and 3) outperformed the base case that relied on a single value each iteration. You can see that when the random variables are negatively correlated, the power of averaging is greater compared to when they are independent or positively correlated. The independent case (case 1) is better than the positive correlation case (case 2). 
 
-1. Generate many bootstrapped datasets (say $B$ datasets)
-2. Train a model on each of the bootstrapped datasets ($\hat{f}^1, \dots, \hat{f}^B$)
-3. Average the estimates from all the trained models to come up with an estimate 
+Now that we understand the power of bagging, let's apply this to a regression problem using a tree. The statistics of interest is $E[y|X]$, which is denoted as $f(x)$.
+
+1. Bootstrap the data $B$ times
+2. Train a regression tree to each of the bootstrapped dataset, which results in $B$ distinctive trees
+3. To predict $E[y|x]$, average the estimate from all the trees ($\hat{f}_1(x), \dots, \hat{f}_B(x)$) and use it as the final estimate.
 $$
-\hat{f}(X) = \frac{\hat{f}^1(X) + \dots + \hat{f}^B(X)}{B}
+\hat{f}(x) = \frac{\hat{f}_1(X) + \dots + \hat{f}_B(X)}{B}
 $$
 
-Let's implement this for $B = 10$ using `mlb1_dt`. First, define a function (named `train_a_tree()`) that bootstrap data, fit a regression tree, and then return the fitted values. 
+Let's implement this for $B = 10$ using `mlb1_dt`. First, define a function that bootstrap data, fit a regression tree, and then return the fitted values (a single iteration). 
 
 ```{r}
-
 train_a_tree <- function(i, data)
 {
   #=== number of observations ===#
@@ -475,7 +546,8 @@ train_a_tree <- function(i, data)
   return_data <-
     copy(data) %>% 
     .[, y_hat := predict(rpart, newdata = data)] %>% 
-    .[, .(id, y_hat)]
+    .[, .(id, y_hat)] %>% 
+    .[, tree := i] 
 
   return(return_data)
 }
@@ -493,9 +565,9 @@ y_estimates <-
     1:10,
     function(x) train_a_tree(x, mlb1_dt) 
   ) %>% 
-  rbindlist()
+  rbindlist() %>% 
+  .[order(id),]
 )
-
 ```
 
 By averaging $y$ estimates by `id`, we can get bagging estimates.
@@ -504,19 +576,81 @@ By averaging $y$ estimates by `id`, we can get bagging estimates.
 y_estimates[, mean(y_hat), by = id]
 ```
 
-Now, let's take a look at the individual estimates of $y$ for the first observation.
+This is bagging of many regression trees.
+
+### Random Forest (RF)
+
+Now, let's take a look at the individual estimates of $y$ for the first observation from the bagging process we just implemented.
 
 ```{r}
 y_estimates[id == 1, ]
 ```
 
-Hmm, the estimates look very similar. Actually, that is the case for all the observations. This is because the trained trees are very similar for many reasons, and the trees are highly "positively" correlated with each other. From our very simple experiment above, we know that the power of bagging is not very high when that is the case. While RF does use bagging, popular R and python packages does it in a much better way than I demonstrated here. We see this next.
+Hmm, the estimates look very similar. Actually, that is not just of the observations with `id == 1`. This is because the trained trees are very similar for many reasons, and the trees are highly "positively" correlated with each other. From our very simple experiment above, we know that the power of bagging is not very high when that is the case. 
 
+RF introduces additional uncertainty to the process to make trees less correlated with each other (*decorrelate* trees). Specifically, for any leave of any tree, they consider only a randomly select subset of the explanatory variables when deciding how to split a leave. A typical choice of the number of variables considered at each split is $\sqrt{K}$, where $K$ is the number of the explanatory variables specified by the user. In the naive example above, all $K$ variables are considered for all the split decisions of all the trees. Some variables are more influential than others and they get to be picked as the splitting variable at similar places, which can result in highly correlated trees. Instead, RF gives other variables a chance, which helps decorrelate the trees. This means that the tree we build in RF is not deterministic. Depending on which variables are selected for consideration in splitting, the tree will be different even if you use the same bootstrapped dataset.
 
-### Random Forest (RF)
+Let's code the process of building a tree for RF. We first bootstrap a dataset. 
 
-Unlike a naive bagging approach demonstrated above, RF does it in a clever way to *decorrelate* trees. Specifically, for any leave of any tree, they consider only a randomly select subset of the explanatory variables when deciding how to split a leave. A typical choice of the number of variables considered at each split is $\sqrt{K}$, where $K$ is the number of the explanatory variables specified by the user. In the naive example above, all $K$ variables are considered for all the split decisions of all the trees. Some variables are more influential than others and they get to be picked as the splitting variable at similar places, which can result in highly correlated trees. Instead, RF gives other variables a chance, which helps decorrelate the trees.
+```{r}
+n_obs <- nrow(mlb1_dt)
 
+boot_data <- mlb1_dt[sample(1:n_obs, n_obs, replace = TRUE), ]
+```
+
+Let's now build a tree using `boot_data`. We first split the entire dataset into two.  
+
+We can use `get_rss_by_var()` we wrote earlier, which gets us RSS-minimizing threshold and the minimized RSS value for a single variable. Earlier when we build a regression tree, we looped over all the explanatory variables, which are `hruns`, `years`, `rbisyr`, `allstar`, `runsyr`, `hits`, and `bavg`. But, when building a tree in RF, you can choose to select just a subset of the variables. Here, let's randomly select $\sqrt{K}$ variables. So, rounding $\sqrt{7}$, we have three. 
+
+```{r}
+var_list <- c("hruns", "years", "rbisyr", "allstar", "runsyr", "hits", "bavg")
+K <- length(var_list)
+K_for_split <- sqrt(K) %>% round()
+```
+
+We randomly select three variables among the list of variables (`var_list`).
+
+```{r}
+(
+vars_for_split <- sample(var_list, K_for_split, replace = FALSE)
+)
+```
+
+You only consider these `r K_for_split` variables in this splitting process.
+
+```{r}
+(
+min_rss_by_var <-
+  lapply(
+    vars_for_split,
+    function(x) get_rss_by_var(x, mlb1_dt)
+  ) %>% 
+  rbindlist()
+)
+```
+
+So, our choice of split criteria is
+
+```{r}
+min_rss_by_var[which.min(rss), ]
+```
+
+You will repeat this process for any splits you consider until you met the stopping criteria. 
+
+By the way, if we were to use all the variables instead of just these three, then we would have use the following criteria.
+
+```{r}
+(
+  lapply(
+    var_list,
+    function(x) get_rss_by_var(x, mlb1_dt)
+  ) %>% 
+  rbindlist() %>% 
+  .[which.min(rss), ]
+)
+```
+
+### Implementation
 
 We can use `ranger()` from the `ranger` package to train an RF model. 
 
@@ -553,11 +687,9 @@ rf_fit <-
 Since we have many trees, it is no longer possible to have a nice graphical representation of the trained RF model like we did with a regression tree.
 :::
 
-In the output, you can see `OOB prediction error (MSE)`. OOB stands for <span style="color:red"> o</span>ut-<span style="color:red">o</span>f-<span style="color:red">b</span>ag. When bootstrapping (whether you do it with replacement or not), some of the train data will not be used to build a tree. 
+In the output, you can see `OOB prediction error (MSE)`. OOB stands for <span style="color:red"> o</span>ut-<span style="color:red">o</span>f-<span style="color:red">b</span>ag. When bootstrapping, some of the train data will not be used to build a tree. 
 
 ```{r}
-n_obs <- nrow(mlb1_dt)
-
 #=== bootstrapped data ===#
 boot_data <- mlb1_dt[sample(1:n_obs, n_obs, replace = TRUE), ]
 
