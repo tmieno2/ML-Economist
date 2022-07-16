@@ -1,8 +1,8 @@
 # Model Selection (Prediction)
 
-When you use a DML approach, the first stage estimations are prediction tasks. In this section, python codes to select the model for the first stage estimations are presented.
+When you use a DML approach, the first stage estimations are prediction tasks. In this section, python codes to select a model for the first stage estimations are presented.
 
-Suppose you are considering multiple class of estimators with various sets of hyper-parameter values for each class. We can use `GridSearchCVList()` from the `econml` pacakge to conduct cross-validation to see which model works the best in predicting $E[Y|X, W]$ and $E[T|X, W]$. `GridSearchCVList()` is an extension of `GridSearchCV()` from the `sklearn` package. While `GridSearchCV()` conducts CV for a <span style="color:blue"> single</span> model class with various sets of hyper-parameter values, `GridSearchCVList()` conducts CV for <span style="color:blue"> multiple</span> classes of models with various sets of hyper-parameter values.
+Suppose you are considering multiple class of estimators with various sets of hyper-parameter values for each model class. We can use `GridSearchCVList()` from the `econml` pacakge to conduct cross-validation to see which model works the best in predicting $E[Y|X, W]$ and $E[T|X, W]$ in terms of CV MSE. `GridSearchCVList()` is an extension of `GridSearchCV()` from the `sklearn` package. While `GridSearchCV()` conducts CV for a <span style="color:blue"> single</span> model class with various sets of hyper-parameter values, `GridSearchCVList()` conducts CV for <span style="color:blue"> multiple</span> classes of models with various sets of hyper-parameter values.
 
 Let's go through an example use of `GridSearchCVList()`. First, we import all the functions we will be using. 
 
@@ -14,7 +14,7 @@ from sklearn.model_selection import RepeatedKFold
 from econml.sklearn_extensions.model_selection import GridSearchCVList
 ```
 
-Let's also generate synthetic dataset using 
+Let's also generate synthetic dataset using `make_regression()`.
 
 ```{python}
 from sklearn.datasets import make_regression
@@ -49,7 +49,7 @@ Let's define them one by one.
 
 ```{python}
 est_list = [
-    Lasso(max_iter=10000), 
+    Lasso(max_iter=1000), 
     GradientBoostingRegressor(),
     RandomForestRegressor(min_samples_leaf = 5)
 ]
@@ -90,36 +90,27 @@ Let's now specify `GridSearchCVList()` using the above parameters.
 first_stage = GridSearchCVList(
     estimator_list = est_list,
     param_grid_list= par_grid_list,
-    cv = rk_cv,
+    cv = rk_cv
 )
 ```
 
-We now conduct CV with the `fit()` method.
+We now conduct CV with the `fit()` method and then access the best estimator by referring to `best_estimator_` attribute.
 
 ```{python}
-first_stage.fit(X, y)
-```
-
-We can access the best model by accessing the `best_estimator_` attribute. 
-
-```{python}
-first_stage.best_estimator_
-```
-
-Assign this to `model_y` for later use in DML estimation.
-
-```{python}
-model_y = first_stage.best_estimator_
+#| cache: true 
+model_y = first_stage.fit(X, y).best_estimator_
+model_y
 ```
 
 We do the same for $T$.
 
 ```{python}
-first_stage.fit(X, T)
-model_t = first_stage.best_estimator_
+#| cache: true 
+model_t = first_stage.fit(X, T).best_estimator_
+model_t
 ```
 
-We can now run DML with the best first stage model.
+We can now run DML with the best first stage models like below.
 
 ```{python}
 #| eval: false 
@@ -132,6 +123,116 @@ est = LinearDML(
 
 #=== train ===#
 est.fit(Y, T, X=X, W=X)
+```
+
+## `reticulate` Implementation
+
+Here is the R codes that does the same thing using the `reticulate` package. 
+
+```{r}
+#| eval: false 
+
+#--------------------------
+# Import modules  
+#--------------------------
+library(reticulate)
+sk_ensemble <- import("sklearn.ensemble") 
+sk_lm <- import("sklearn.linear_model")
+sk_ms <- import("sklearn.model_selection")
+econml_sk_ms <- import("econml.sklearn_extensions.model_selection")
+econml_dml <- import("econml.dml")
+
+sk_data <- import("sklearn.datasets")
+make_regression <- sk_data$make_regression
+np <- import("numpy")
+
+#--------------------------
+# Generate synthetic data
+#--------------------------
+#=== set parameters for data generation ===#
+n_samples <- as.integer(2000)
+n_features <- as.integer(20)
+n_informative <- as.integer(15)
+noise <- as.integer(2)
+rng <- np$random$RandomState(as.integer(8934))
+
+#=== generate synthetic data ===#
+data <-
+  make_regression(
+    n_samples, 
+    n_features, 
+    n_informative = n_informative, 
+    noise = noise, 
+    random_state = rng
+  )
+
+#=== Create data matrices ===#
+XT <- data[[1]]
+T <- XT[, 1]
+X <- XT[, -1]
+Y  <- data[[2]]
+
+#--------------------------
+# Set up GridSearchCVList
+#--------------------------
+#=== list of estimators ===#
+est_list <- 
+  c(
+    sk_lm$Lasso(max_iter=as.integer(1000)), 
+    sk_ensemble$GradientBoostingRegressor(),
+    sk_ensemble$RandomForestRegressor(min_samples_leaf = as.integer(5))
+  ) 
+
+#=== list of parameter values ===#
+par_grid_list <- 
+  list(
+    list(alpha = c(0.001, 0.01, 0.1, 1, 10)),
+    list(
+      max_depth = as.integer(c(3, 5, 10)), 
+      n_estimators = as.integer(c(50, 100, 200))
+    ),
+    list(
+      max_depth = as.integer(c(3, 5, 10)), 
+      max_features = as.integer(c(3, 5, 10, 20))
+    )
+  )
+
+#=== CV specification ===#
+rk_cv <- 
+  sk_ms$RepeatedKFold(
+    n_splits = as.integer(4), 
+    n_repeats = as.integer(2), 
+    random_state = as.integer(123)
+  )
+
+#=== set up a GridSearchCVList ===#
+first_stage <-
+  econml_sk_ms$GridSearchCVList(
+    estimator_list = est_list,
+    param_grid_list= par_grid_list,
+    cv = rk_cv
+  )
+
+#--------------------------
+# Run CV
+#--------------------------
+#=== Y ===#
+model_y <- first_stage$fit(X, y)$best_estimator_
+
+#=== T ===#
+model_t <- first_stage$fit(X, T)$best_estimator_
+
+#--------------------------
+# DML
+#--------------------------
+#=== set up a linear DML ===#
+est = econml_dml$LinearDML(
+    model_y=model_y, 
+    model_t=model_t
+)
+
+#=== train ===#
+est$fit(Y, T, X=X, W=X)
 ```
 
 
