@@ -291,7 +291,7 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./C02-het-te.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">R-learner</span></a>
+  <a href="./C02-r-learner.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">R-learner</span></a>
   </div>
 </li>
     </ul>
@@ -327,6 +327,11 @@ div.csl-indent {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./PROG-01-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PROG-02-model-selection-prediction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Model Selection (Prediction)</span></a>
   </div>
 </li>
     </ul>
@@ -560,7 +565,7 @@ E[(y_0 - \hat{f}(x_0))^2] = Var(\hat{f}(x_0)) + Bias(\hat{x}_0)^2 + Var(\mu)
 <li>step 3: predict <span class="math inline">\(y\)</span> using the test dataset</li>
 </ul>
 <p>Once all the iterations are completed, simulation results are summarized to estimate <span class="math inline">\(Var(\hat{f}(x_0))\)</span> and <span class="math inline">\(E[y - \hat{f}(x_0)]^2\)</span> for all the values of <span class="math inline">\(x_0\)</span> (all the <span class="math inline">\(x\)</span> values observed in the test dataset) by <span class="math inline">\(k\)</span>. We then average them to find the overall <span class="math inline">\(Var(\hat{f}(x_0))\)</span> and <span class="math inline">\(E[y - \hat{f}(x_0)]^2\)</span> by <span class="math inline">\(k\)</span>.</p>
-<div class="cell" data-hash="B02-bias-variance-tradeoff_cache/html/unnamed-chunk-9_50e50b7d0b81a3d99867a4cf14c0974f">
+<div class="cell" data-hash="B02-bias-variance-tradeoff_cache/html/unnamed-chunk-9_af141e319cc44613dc34927c25d3be7a">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>x_train <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">100</span>) <span class="sc">*</span> <span class="dv">5</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># x_test is fixed to make it easier to get average conditonal on a given value of x later  </span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>x_test <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">100</span>) <span class="sc">*</span> <span class="dv">5</span></span>

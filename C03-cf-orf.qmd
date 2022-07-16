@@ -1,8 +1,14 @@
-# Forest-based Estimators
+# Forest-based CATE Estimators {#sec-forest-cate}
+
+In @sec-het-dml, we saw a special case of R-leaner/DML where the final model is a linear-in-parameter model. Here, we learn two methods that estimate CATE non-parametrically: causal forest and orthogonal forest.
 
 ## Causal Forest
 
 Causal Forest (CF) (as implemented by the R `grf` package or python `econml` package) is a special type of R-learner (also a DML) and also a special case of generalized random forest (GRF). 
+
+::: {.column-margin}
+See @sec-grf for a brief description of what GRF is. 
+:::
 
 :::{.callout-tip}
 **When useful?**
@@ -12,15 +18,12 @@ Causal Forest is useful in estimating heterogeneous treatment effects when they 
 
 ### Mechanics
 
-Let $\hat{f}(X_i,W_i)$ and $\hat{g}(X_i,W_i)$ denote the cross-fitted estimation of $E[Y|X,W]$ and $E[T|X,W]$, respectively. Further, let $\hat{\tilde{Y_i}}$ and $\hat{\tilde{T_i}}$ denote $Y_i - \hat{f}(X_i,W_i)$ and $T_i - \hat{g}(X_i,W_i)$, respectively.
+Let $\hat{f}(X_i,W_i)$ and $\hat{g}(X_i,W_i)$ denote the estimation of $E[Y|X,W]$ and $E[T|X,W]$, respectively. Further, let $\hat{\tilde{Y_i}}$ and $\hat{\tilde{T_i}}$ denote $Y_i - \hat{f}(X_i,W_i)$ and $T_i - \hat{g}(X_i,W_i)$, respectively.
 
 ::: {.column-margin}
 CF can be implemented using the R `grf` package or python `econml` package. Both of them implements CF as an R-learner. However, the original causal forest proposed in @wager_estimation_2018 does not follow an R-leaner procedure.
 :::
 
-::: {.column-margin}
-See @sec-cf for how cross-fitting works.
-:::
 
 Then, CF estimates $\theta(X)$ at $X = x$ by solving the following equation:
 
@@ -41,13 +44,19 @@ Unlike the DML approaches we saw in @sec-het-dml that uses a linear model as the
 
 We can use the `causal_forest()` function from the R `grf` package to train a CF model. 
 
+Python [skgrf](https://skgrf.readthedocs.io/en/latest/index.html) package
+
+
 ### Empirical example 
 
 
 
 
 
+
+
 ## Orthogonal Random Forest
+
 
 
 

@@ -291,7 +291,7 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./C02-het-te.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">R-learner</span></a>
+  <a href="./C02-r-learner.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">R-learner</span></a>
   </div>
 </li>
     </ul>
@@ -329,6 +329,11 @@ div.csl-indent {
   <a href="./PROG-01-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PROG-02-model-selection-prediction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Model Selection (Prediction)</span></a>
+  </div>
+</li>
     </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -355,17 +360,16 @@ div.csl-indent {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#heterogeneous-treatment-effect-estimation" id="toc-heterogeneous-treatment-effect-estimation" class="nav-link active" data-scroll-target="#heterogeneous-treatment-effect-estimation"> <span class="header-section-number">10.1</span> Heterogeneous treatment effect estimation</a></li>
-  <li><a href="#motivation" id="toc-motivation" class="nav-link" data-scroll-target="#motivation"> <span class="header-section-number">10.2</span> Motivation</a></li>
-  <li><a href="#modeling-framework" id="toc-modeling-framework" class="nav-link" data-scroll-target="#modeling-framework"> <span class="header-section-number">10.3</span> Modeling Framework</a></li>
-  <li><a href="#r-learner" id="toc-r-learner" class="nav-link" data-scroll-target="#r-learner"> <span class="header-section-number">10.4</span> R-learner</a>
+  <li><a href="#motivation" id="toc-motivation" class="nav-link active" data-scroll-target="#motivation"> <span class="header-section-number">10.1</span> Motivation</a></li>
+  <li><a href="#modeling-framework" id="toc-modeling-framework" class="nav-link" data-scroll-target="#modeling-framework"> <span class="header-section-number">10.2</span> Modeling Framework</a></li>
+  <li><a href="#r-learner" id="toc-r-learner" class="nav-link" data-scroll-target="#r-learner"> <span class="header-section-number">10.3</span> R-learner</a>
   <ul class="collapse">
-  <li><a href="#theoretical-background" id="toc-theoretical-background" class="nav-link" data-scroll-target="#theoretical-background"> <span class="header-section-number">10.4.1</span> Theoretical background</a></li>
-  <li><a href="#estimation-steps" id="toc-estimation-steps" class="nav-link" data-scroll-target="#estimation-steps"> <span class="header-section-number">10.4.2</span> Estimation steps</a></li>
+  <li><a href="#theoretical-background" id="toc-theoretical-background" class="nav-link" data-scroll-target="#theoretical-background"> <span class="header-section-number">10.3.1</span> Theoretical background</a></li>
+  <li><a href="#sec-est-steps" id="toc-sec-est-steps" class="nav-link" data-scroll-target="#sec-est-steps"> <span class="header-section-number">10.3.2</span> Estimation steps</a></li>
   </ul></li>
-  <li><a href="#implementation-example" id="toc-implementation-example" class="nav-link" data-scroll-target="#implementation-example"> <span class="header-section-number">10.5</span> Implementation Example</a></li>
+  <li><a href="#r-leaner-example-linear-dml" id="toc-r-leaner-example-linear-dml" class="nav-link" data-scroll-target="#r-leaner-example-linear-dml"> <span class="header-section-number">10.4</span> R-leaner Example: Linear DML</a></li>
   </ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/C02-het-te.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/C02-r-learner.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content page-columns page-full" id="quarto-document-content">
@@ -386,16 +390,13 @@ div.csl-indent {
 
 </header>
 
-<section id="heterogeneous-treatment-effect-estimation" class="level2 page-columns page-full" data-number="10.1">
-<h2 data-number="10.1" class="anchored" data-anchor-id="heterogeneous-treatment-effect-estimation"><span class="header-section-number">10.1</span> Heterogeneous treatment effect estimation</h2>
+<section id="motivation" class="level2 page-columns page-full" data-number="10.1">
+<h2 data-number="10.1" class="anchored" data-anchor-id="motivation"><span class="header-section-number">10.1</span> Motivation</h2>
 <p>In <a href="C01-dml.html"><span>Chapter&nbsp;9</span></a>, the basic idea of double machine learning (DML) methods was introduced when the treatment effect is homogeneous. We now turn our focus to the task of estimating heterogeneous treatment effects: the impact of a treatment varies based on observed attributes of the subjects. Heterogeneous treatment effect is also referred to as <span style="color:blue"> conditional </span> average treatment effect (CATE).</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p><span style="color:blue"> Conditional </span> on observed attributes.</p>
-</div></div></section>
-<section id="motivation" class="level2 page-columns page-full" data-number="10.2">
-<h2 data-number="10.2" class="anchored" data-anchor-id="motivation"><span class="header-section-number">10.2</span> Motivation</h2>
-<p>Understanding how treatment effects vary can be highly valuable in many circumstances.</p>
+</div></div><p>Understanding how treatment effects vary can be highly valuable in many circumstances.</p>
 <p><span style="color:blue"> Example 1: </span> If we come to know a particular drug is effective on elderly people but detrimental to kids, then doctors can make a smart decision of prescribing the drug to elderly people, but not to kids.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
@@ -404,17 +405,17 @@ div.csl-indent {
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p>In this example, the heterogeneity driver is soil type.</p>
-</div></div><p>As you can see in these examples, knowledge on the heterogeneity of the treatment effect and its drivers can help decision makers smart-target treatments.</p>
+</div></div><p>As you can see in these examples, knowledge on the heterogeneity of the treatment effect and its drivers can help decision makers smart-target treatments and policies.</p>
 </section>
-<section id="modeling-framework" class="level2" data-number="10.3">
-<h2 data-number="10.3" class="anchored" data-anchor-id="modeling-framework"><span class="header-section-number">10.3</span> Modeling Framework</h2>
-<p>The model of interest in a general form here is as follows:</p>
+<section id="modeling-framework" class="level2" data-number="10.2">
+<h2 data-number="10.2" class="anchored" data-anchor-id="modeling-framework"><span class="header-section-number">10.2</span> Modeling Framework</h2>
+<p>The model of interest in a general form is as follows:</p>
 <p><span class="math display">\[
 \begin{aligned}
 Y &amp; = \theta(X)\cdot T + g(X, W) + \varepsilon \\
 T &amp; = f(X, W) + \eta
 \end{aligned}
-\]</span></p>
+\]</span> {#sec-model-framework}</p>
 <ul>
 <li><span class="math inline">\(Y\)</span>: dependent variable</li>
 <li><span class="math inline">\(T\)</span>: treatment variable (can be either binary dummy or continuous)</li>
@@ -429,10 +430,10 @@ T &amp; = f(X, W) + \eta
 </ul>
 <p>Our objective is to estimate the <span style="color: red;"> constant </span> marginal CATE <span class="math inline">\(\theta(X)\)</span>. (constant in the sense marginal CATE is the same irrespective of the value of the treatment)</p>
 </section>
-<section id="r-learner" class="level2 page-columns page-full" data-number="10.4">
-<h2 data-number="10.4" class="anchored" data-anchor-id="r-learner"><span class="header-section-number">10.4</span> R-learner</h2>
-<section id="theoretical-background" class="level3" data-number="10.4.1">
-<h3 data-number="10.4.1" class="anchored" data-anchor-id="theoretical-background"><span class="header-section-number">10.4.1</span> Theoretical background</h3>
+<section id="r-learner" class="level2 page-columns page-full" data-number="10.3">
+<h2 data-number="10.3" class="anchored" data-anchor-id="r-learner"><span class="header-section-number">10.3</span> R-learner</h2>
+<section id="theoretical-background" class="level3" data-number="10.3.1">
+<h3 data-number="10.3.1" class="anchored" data-anchor-id="theoretical-background"><span class="header-section-number">10.3.1</span> Theoretical background</h3>
 <p>Under the assumptions,</p>
 <p><span class="math display">\[
 \begin{aligned}
@@ -470,8 +471,8 @@ Y - E[Y|X, W] &amp; = \theta(X)\cdot (T - E[T|X,W]) + \varepsilon
 \end{aligned}
 \tag{10.1}\]</span></span></p>
 </section>
-<section id="estimation-steps" class="level3 page-columns page-full" data-number="10.4.2">
-<h3 data-number="10.4.2" class="anchored" data-anchor-id="estimation-steps"><span class="header-section-number">10.4.2</span> Estimation steps</h3>
+<section id="sec-est-steps" class="level3 page-columns page-full" data-number="10.3.2">
+<h3 data-number="10.3.2" class="anchored" data-anchor-id="sec-est-steps"><span class="header-section-number">10.3.2</span> Estimation steps</h3>
 <p>In practice, we of course do not observe <span class="math inline">\(E[Y|X, W]\)</span> and <span class="math inline">\(E[T|X, W]\)</span>. So, we first need to estimate them using the data at hand to construct <span class="math inline">\(\hat{\tilde{Y}}\)</span> and <span class="math inline">\(\hat{\tilde{T}}\)</span>. You can use any suitable statistical methods to estimate <span class="math inline">\(E[Y|X, W]\)</span> and <span class="math inline">\(E[T|X, W]\)</span>. Some machine learning methods allow you to estimate them without assuming any functional form or structural assumptions. If you believe they are linear functions of <span class="math inline">\(X\)</span> and <span class="math inline">\(W\)</span>, may could alternatively use lasso or other linear models. It is important to keep in mind that the estimation of <span class="math inline">\(E[Y|X, W]\)</span> and <span class="math inline">\(E[T|X, W]\)</span> is done by cross-fitting (see <a href="C01-dml.html#sec-cf"><span>Section&nbsp;9.4</span></a>) to avoid over-fitting bias. Let, <span class="math inline">\(f(X, W)\)</span> and <span class="math inline">\(g(X,W)\)</span> denote <span class="math inline">\(\tilde{Y}\)</span> and <span class="math inline">\(\tilde{T}\)</span>, respectively. Further, let <span class="math inline">\(I_{-i}\)</span> denote all the observations that belong to the folds that <span class="math inline">\(i\)</span> does <span style="color:blue"> not </span> belong to. Finally, let <span class="math inline">\(\hat{f}(X_i, W_i)^{I_{-i}}\)</span> and <span class="math inline">\(\hat{g}(X_i, W_i)^{I_{-i}}\)</span> denote <span class="math inline">\(\tilde{Y}\)</span> and <span class="math inline">\(\tilde{T}\)</span> estimated using <span class="math inline">\(I_{-i}\)</span>.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
@@ -492,8 +493,15 @@ Y - E[Y|X, W] &amp; = \theta(X)\cdot (T - E[T|X,W]) + \varepsilon
 <p>where <span class="math inline">\(\Lambda(\theta(X))\)</span> is the penalty on the complexity of <span class="math inline">\(\theta(X)\)</span>. For example, if you choose to use lasso, then <span class="math inline">\(\Lambda(\theta(X))\)</span> is the L1 norm. You have lots of freedom as to what model you use in the final stage. The <code>econml</code> package offers several off-the-shelf choices of R-learner (DML) approaches that differ in the model used at the final stage, including causal forest, lasso, etc.</p>
 </section>
 </section>
-<section id="implementation-example" class="level2 page-columns page-full" data-number="10.5">
-<h2 data-number="10.5" class="anchored" data-anchor-id="implementation-example"><span class="header-section-number">10.5</span> Implementation Example</h2>
+<section id="r-leaner-example-linear-dml" class="level2 page-columns page-full" data-number="10.4">
+<h2 data-number="10.4" class="anchored" data-anchor-id="r-leaner-example-linear-dml"><span class="header-section-number">10.4</span> R-leaner Example: Linear DML</h2>
+<p>We saw a general R-learner framework for CATE estimation. We now look at an example of Linear DML, which uses a linear model at the final stage. So, we are assuming <span class="math inline">\(\theta(X)\)</span> can be written as follows in <span class="quarto-unresolved-ref">?sec-model-framework</span>:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\theta(X) = \alpha + \beta_1 x_1 + \beta_2 x_2 + \dots + \beta_k x_k
+\end{aligned}
+\]</span></p>
+<p>where <span class="math inline">\(x_1\)</span> through <span class="math inline">\(x_k\)</span> are the drivers of heterogeneity in treatment effects and <span class="math inline">\(\beta_1\)</span> through <span class="math inline">\(\beta_k\)</span> are their coefficients.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p><strong>Packages to load for replication</strong></p>
@@ -508,43 +516,19 @@ Y - E[Y|X, W] &amp; = \theta(X)\cdot (T - E[T|X,W]) + \varepsilon
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DoubleML)</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div></div><p>We use the python <code>econml</code> pacakge (in conjunction with the R <code>reticulate</code> package), which offers one of the most comprehensive sets of off-the-shelf R-leaner (DML) methods <span class="citation" data-cites="econml">(<a href="#ref-econml" role="doc-biblioref">Keith Battocchi 2019</a>)</span>.</p>
-<p>Let’s first take a look at the <code>DML</code> class, which implements DML where the final stage has to be a linear model. That is,</p>
-
-<div class="no-row-height column-margin column-container"><div class="">
-<p><code>DML</code> is a child class of <code>_Rlearner</code>, which is a private class. The <code>DML</code> class has several child classes: <code>LinearDML</code>, <code>SpatseLinearDML</code>, <code>NonParamDML</code>, and <code>CausalForestDML</code>.</p>
-</div></div><p><span class="math display">\[
-\begin{aligned}
-\theta(x) = \beta_1 + x_1 + \dots + \beta_k + x_k
-\end{aligned}
-\]</span></p>
-<p>As we saw above, we need to specify three models.</p>
-<ul>
-<li><code>model_y</code>: model for estimating <span class="math inline">\(E[Y|X,W]\)</span></li>
-<li><code>model_t</code>: model for estimating <span class="math inline">\(E[T|X,W]\)</span></li>
-<li><code>model_final</code>: model for estimating <span class="math inline">\(\theta(X)\)</span></li>
-</ul>
-<p>In this example, let’s use gradient boosting regression for both <code>model_y</code> and <code>model_t</code> and use lasso with cross-validation for <code>model_final</code>.</p>
-<p>First import all the functions we will need.</p>
+</div></div><p>We use both Python and R for this demonstration. So, let’s set things up for that.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reticulate)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">use_virtualenv</span>(<span class="st">"ml-learning"</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#=== econml.dml ===#</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>em_dml <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"econml.dml"</span>)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#=== sklearn ===#</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>sl <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"sklearn"</span>) </span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>gbr <span class="ot">&lt;-</span> sl<span class="sc">$</span>ensemble<span class="sc">$</span>GradientBoostingRegressor</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>lassocv <span class="ot">&lt;-</span> sl<span class="sc">$</span>linear_model<span class="sc">$</span>LassoCV</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">use_virtualenv</span>(<span class="st">"ml-learning"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Let’s generates data according to the following data generating process:</p>
+<p>For this demonstration, we use synthetic data according to the following data generating process:</p>
 <p><span class="math display">\[
 \begin{aligned}
 y_i = exp(x_{i,1}) d_i + x_{i,1} + \frac{1}{4}\cdot\frac{exp(x_{i,3})}{1 + exp(x_{i,3})} + \mu_i \\
 d_i = \frac{exp(x_{i,1})}{1 + exp(x_{i,1})} + \frac{1}{4}\cdot x_{i,3}+ \eta_i
 \end{aligned}
 \]</span></p>
+<p>Note that this is the same data generating process used in <a href="C01-dml.html"><span>Chapter&nbsp;9</span></a> except that the impact of the treatment (<span class="math inline">\(d\)</span>) now depends on <span class="math inline">\(x_1\)</span>. We can use <code>gen_data()</code> function that is defined in <a href="C01-dml.html#sec-dml-naive"><span>Section&nbsp;9.2</span></a>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== sample size ===#</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span> </span>
@@ -554,85 +538,85 @@ d_i = \frac{exp(x_{i,1})}{1 + exp(x_{i,1})} + \frac{1}{4}\cdot x_{i,3}+ \eta_i
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gen_data</span>(</span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">te_formula =</span> <span class="fu">formula</span>(<span class="sc">~</span> <span class="fu">I</span>(<span class="fu">exp</span>(x1)<span class="sc">*</span>d)),</span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_obs =</span> N <span class="sc">*</span><span class="dv">2</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">select</span>(synth_data, <span class="fu">starts_with</span>(<span class="st">"x"</span>)) <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>()</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> synth_data[, y]</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> synth_data[, d]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We now split the data into training and test datasets.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>row_indices <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span>(<span class="dv">2</span><span class="sc">*</span>N), N, <span class="at">replace =</span> <span class="cn">FALSE</span>)</span>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#=== train data ===#</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>train_data <span class="ot">&lt;-</span> synth_data[row_indices,]</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>X_train <span class="ot">&lt;-</span> </span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(train_data, <span class="fu">starts_with</span>(<span class="st">"x"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>y_train <span class="ot">&lt;-</span> train_data[, y]</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>d_train <span class="ot">&lt;-</span> train_data[, d]</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#=== test data ===#</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>test_data <span class="ot">&lt;-</span> synth_data[<span class="sc">-</span>row_indices,]</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>X_test <span class="ot">&lt;-</span> </span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(test_data, <span class="fu">starts_with</span>(<span class="st">"x"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>y_test <span class="ot">&lt;-</span> test_data[, y]</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>d_test <span class="ot">&lt;-</span> test_data[, d]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test, d_train, d_test<span class="op">=</span> train_test_split(r.X, r.y, r.d,  test_size <span class="op">=</span> <span class="fl">0.5</span>, random_state <span class="op">=</span> <span class="dv">8923</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Before we train a DML model, we first set up a DML estimation framework like below.</p>
+<p>Here, to train a linear DML model, we use the Python <code>econml</code> package, which offers one of the most comprehensive sets of off-the-shelf R-leaner (DML) methods <span class="citation" data-cites="econml">(<a href="#ref-econml" role="doc-biblioref">Keith Battocchi 2019</a>)</span>. We can use the <code>DML</code> class to implement linear DML.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== set up DML estimation ===#</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>est <span class="ot">&lt;-</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  em_dml<span class="sc">$</span><span class="fu">DML</span>(</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">model_y =</span> <span class="fu">gbr</span>(),</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">model_t =</span> <span class="fu">gbr</span>(),</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">model_final =</span> <span class="fu">lassocv</span>(<span class="at">fit_intercept=</span><span class="cn">FALSE</span>) </span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> econml.dml <span class="im">import</span> DML</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Here, training has not happened yet. We simply created a recipe. Once we provide ingredients (data), we can cook (train) with the <code>fit()</code> method.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><code>DML</code> is a child class of <code>_Rlearner</code>, which is a private class. The <code>DML</code> class has several child classes: <code>LinearDML</code>, <code>SpatseLinearDML</code>, <code>NonParamDML</code>, and <code>CausalForestDML</code>.</p>
+</div></div><p>As we saw above in <a href="#sec-est-steps"><span>Section&nbsp;10.3.2</span></a>, we need to specify three models:</p>
+<ul>
+<li><code>model_y</code>: model for estimating <span class="math inline">\(E[Y|X,W]\)</span></li>
+<li><code>model_t</code>: model for estimating <span class="math inline">\(E[T|X,W]\)</span></li>
+<li><code>model_final</code>: model for estimating <span class="math inline">\(\theta(X)\)</span></li>
+</ul>
+<p>In this example, let’s use gradient boosting regression for both <code>model_y</code> and <code>model_t</code> and use lasso with cross-validation for <code>model_final</code>. Let’s import <code>GradientBoostingRegressor()</code> and <code>LassoCV()</code> from the <code>scikitlearn</code> package.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>est<span class="sc">$</span><span class="fu">fit</span>(</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  y_train, </span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  d_train, </span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">X =</span> X_train, </span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">W =</span> X_train</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> GradientBoostingRegressor</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LassoCV</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Once, the training is done. We can use the <code>effect()</code> method to predict <span class="math inline">\(\theta(X)\)</span>.</p>
+<p>We can now set up our DML framework like below:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== calculate theta_hat(X) ===#</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>theta_pred <span class="ot">&lt;-</span> est<span class="sc">$</span><span class="fu">effect</span>(X_test)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#=== assign the predicted theta_hat to a variable ===#</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>test_data[, theta_hat <span class="sc">:</span><span class="er">=</span> theta_pred]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>est <span class="op">=</span> DML(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    model_y <span class="op">=</span> GradientBoostingRegressor(),</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    model_t <span class="op">=</span> GradientBoostingRegressor(),</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    model_final <span class="op">=</span> LassoCV(fit_intercept <span class="op">=</span> <span class="va">False</span>) </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Note that no training has happened yet at this point. We simply created a recipe. Once we provide ingredients (data), we can cook (train) with the <code>fit()</code> method.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>est.fit(y_train, d_train, X <span class="op">=</span> X_train, W <span class="op">=</span> X_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>first argument: dependent variable</li>
+<li>second argument: treatment variable</li>
+<li><code>X</code>: variables that drive treatment effect heterogeneity</li>
+<li><code>W</code>: variables that affect the dependent variable directly</li>
+</ul>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>Here, we set <code>X = W</code>.</p>
+</div></div><p>Once, the training is done. We can use the <code>effect()</code> method to predict <span class="math inline">\(\theta(X)\)</span>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>te_test <span class="op">=</span> est.effect(X_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><a href="#fig-est-theta-hat">Figure&nbsp;<span>10.1</span></a> presents the estimated and true marginal treatment effect (<span class="math inline">\(\theta(X)\)</span>) as a function of <code>x1</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(test_data) <span class="sc">+</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> theta_hat, <span class="at">x =</span> x1)) <span class="sc">+</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">exp</span>(x1), <span class="at">x =</span> x1), <span class="at">color =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>plot_data <span class="ot">&lt;-</span> </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>(</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">x1 =</span> py<span class="sc">$</span>X_test[, <span class="dv">1</span>],</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">te =</span> py<span class="sc">$</span>te_test</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(plot_data) <span class="sc">+</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> te, <span class="at">x =</span> x1)) <span class="sc">+</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">exp</span>(x1), <span class="at">x =</span> x1), <span class="at">color =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># g_het_te &lt;-</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   ggplot(test_data) +</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">#     geom_point(aes(y = theta_hat, x = x1)) +</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#     geom_line(aes(y = exp(x1), x = x1), color = "blue") +</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">#     theme_bw()</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># saveRDS(g_het_te, "LectureNotes/g_hte_te.rds")</span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>g_het_te <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"g_hte_te.rds"</span>)</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>g_het_te</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="fig-est-theta-hat" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="C02-het-te_files/figure-html/fig-est-theta-hat-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="C02-r-learner_files/figure-html/fig-est-theta-hat-1.png" class="img-fluid figure-img" width="672"></p>
 <p></p><figcaption aria-hidden="true" class="figure-caption">Figure 10.1: Estimated and true marginal treatment effects</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-<p>Since we forced <span class="math inline">\(\theta(X)\)</span> to be linear in <code>x1</code>, it is not surprising that the estimated MTE looks linear in <code>x1</code> even though the true MTE is an exponential function of <code>x1</code>.</p>
+<p>Since we forced <span class="math inline">\(\theta(X)\)</span> to be linear in <code>x1</code>, it is not surprising that the estimated MTE looks linear in <code>x1</code> even though the true MTE is an exponential function of <code>x1</code>. In the next chapter (<span class="quarto-unresolved-ref">?sec-forest-cate</span>), we discuss CATE estimators based on forest, which estimates <span class="math inline">\(\theta(X)\)</span> non-parametrically, relaxing the assumption of <span class="math inline">\(\theta(X)\)</span> being linear-in-parameter.</p>
 <div class="callout-tip callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -643,7 +627,7 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>I recommend going through examples presented <a href="https://github.com/microsoft/EconML/blob/main/notebooks/Double%20Machine%20Learning%20Examples.ipynb">here</a> for <code>DML</code></p>
+<p>There are many more variations in DML than the one presented here. For those who are interested, I recommend going through examples presented <a href="https://github.com/microsoft/EconML/blob/main/notebooks/Double%20Machine%20Learning%20Examples.ipynb">here</a> for <code>DML</code></p>
 </div>
 </div>
 

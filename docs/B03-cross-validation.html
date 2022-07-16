@@ -291,7 +291,7 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./C02-het-te.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">R-learner</span></a>
+  <a href="./C02-r-learner.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">R-learner</span></a>
   </div>
 </li>
     </ul>
@@ -327,6 +327,11 @@ div.csl-indent {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./PROG-01-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PROG-02-model-selection-prediction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Model Selection (Prediction)</span></a>
   </div>
 </li>
     </ul>
@@ -558,7 +563,7 @@ Note
 </div>
 </div>
 <p>Let’s now loop over <span class="math inline">\(i = 1:100\)</span>.</p>
-<div class="cell" data-hash="B03-cross-validation_cache/html/unnamed-chunk-9_b81b16d30f6cb853df93808112f672b6">
+<div class="cell" data-hash="B03-cross-validation_cache/html/unnamed-chunk-9_53a6f67f08a94673e1e98dcddd4ae774">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>mse_indiv <span class="ot">&lt;-</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>,</span>
@@ -624,7 +629,7 @@ Note
 </div>
 </div>
 <p>Now, let’s loop over ten values of <code>sp</code>: 0, 0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2.</p>
-<div class="cell" data-hash="B03-cross-validation_cache/html/unnamed-chunk-14_8d647570eb279ee223678ce3f3b330e2">
+<div class="cell" data-hash="B03-cross-validation_cache/html/unnamed-chunk-14_edb7c81c24452713ed020b9b23ed278e">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>mse_data <span class="ot">&lt;-</span> </span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
@@ -895,7 +900,7 @@ Warning
 </div>
 </div>
 <p>Now, let’s loop over ten values of <code>sp</code>: 0, 0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2.</p>
-<div class="cell" data-hash="B03-cross-validation_cache/html/unnamed-chunk-29_30fc8ad77501d03e8a9e203d1b0f9ffa">
+<div class="cell" data-hash="B03-cross-validation_cache/html/unnamed-chunk-29_2239790bf0fd7d74b8ecce1aa3d6f182">
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>mse_results <span class="ot">&lt;-</span> </span>
 <span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
@@ -1191,7 +1196,7 @@ Warning
 </div>
 </div>
 <p>Finally, we run <code>get_mse()</code> 500 times.</p>
-<div class="cell" data-hash="B03-cross-validation_cache/html/unnamed-chunk-39_67f86b65f4ea57122d7a9686563e3415">
+<div class="cell" data-hash="B03-cross-validation_cache/html/unnamed-chunk-39_e958c085d9ddaf34a105556e7644281a">
 <div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>mse_results <span class="ot">&lt;-</span></span>
 <span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mclapply</span>(</span>
 <span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span><span class="sc">:</span><span class="dv">500</span>,</span>
@@ -1219,7 +1224,7 @@ Warning
 <span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>  .[, <span class="at">num_comb :=</span> .N, <span class="at">by =</span> .(KCV, Pure)]</span>
 <span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>For example, for the first simulation, <code>sp</code> that would have minimized pure MSE (least error relative to the true <span class="math inline">\(E[y|x]\)</span> across varying values of <span class="math inline">\(x\)</span>) was 0.2. On the other hand, if you relied on KCV, you would have chosen 0.2.</p>
+<p>For example, for the first simulation, <code>sp</code> that would have minimized pure MSE (least error relative to the true <span class="math inline">\(E[y|x]\)</span> across varying values of <span class="math inline">\(x\)</span>) was 0.8. On the other hand, if you relied on KCV, you would have chosen 0.2.</p>
 <p>The following figure shows the relationship between KCV-based and pure MSE-based <code>sp</code> values.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== plot the frequency of sp chosen by KCV ===#</span></span>

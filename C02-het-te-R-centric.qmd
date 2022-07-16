@@ -1,14 +1,12 @@
-# R-learner {#sec-het-dml}
+# Heterogeneous treatment effect {#sec-het-dml}
 
-## Heterogeneous treatment effect estimation
+## Motivation
 
 In @sec-dml, the basic idea of double machine learning (DML) methods was introduced when the treatment effect is homogeneous. We now turn our focus to the task of estimating heterogeneous treatment effects: the impact of a treatment varies based on observed attributes of the subjects. Heterogeneous treatment effect is also referred to as <span style="color:blue"> conditional </span> average treatment effect (CATE).
 
 ::: {.column-margin}
 <span style="color:blue"> Conditional </span> on observed attributes.
 :::
-
-## Motivation
 
 Understanding how treatment effects vary can be highly valuable in many circumstances. 
 
@@ -26,19 +24,18 @@ If we come to know that fertilizer is more effective in increasing corn yield in
 In this example, the heterogeneity driver is soil type.
 :::
 
-As you can see in these examples, knowledge on the heterogeneity of the treatment effect and its drivers can help decision makers smart-target treatments.
-
+As you can see in these examples, knowledge on the heterogeneity of the treatment effect and its drivers can help decision makers smart-target treatments and policies. 
 
 ## Modeling Framework
 
-The model of interest in a general form here is as follows:
+The model of interest in a general form is as follows:
 
 $$
 \begin{aligned}
 Y & = \theta(X)\cdot T + g(X, W) + \varepsilon \\
 T & = f(X, W) + \eta 
 \end{aligned}
-$$
+$$ {#sec-model-framework}
 
 + $Y$: dependent variable
 + $T$: treatment variable (can be either binary dummy or continuous)
@@ -104,7 +101,7 @@ $$
 \end{aligned}
 $$ {#eq-est-equation}
 
-### Estimation steps
+### Estimation steps {#sec-est-steps}
 
 In practice, we of course do not observe $E[Y|X, W]$ and $E[T|X, W]$. So, we first need to estimate them using the data at hand to construct $\hat{\tilde{Y}}$ and $\hat{\tilde{T}}$. You can use any suitable statistical methods to estimate $E[Y|X, W]$ and $E[T|X, W]$. Some machine learning methods allow you to estimate them without assuming any functional form or structural assumptions. If you believe they are linear functions of $X$ and $W$, may could alternatively use lasso or other linear models. It is important to keep in mind that the estimation of $E[Y|X, W]$ and $E[T|X, W]$ is done by cross-fitting (see @sec-cf) to avoid over-fitting bias. Let, $f(X, W)$ and $g(X,W)$ denote $\tilde{Y}$ and $\tilde{T}$, respectively. Further, let $I_{-i}$ denote all the observations that belong to the folds that $i$ does <span style="color:blue"> not </span> belong to. Finally, let $\hat{f}(X_i, W_i)^{I_{-i}}$ and $\hat{g}(X_i, W_i)^{I_{-i}}$ denote $\tilde{Y}$ and $\tilde{T}$ estimated using $I_{-i}$. 
 
@@ -132,7 +129,17 @@ $$
 
 where $\Lambda(\theta(X))$ is the penalty on the complexity of $\theta(X)$. For example, if you choose to use lasso, then $\Lambda(\theta(X))$ is the L1 norm. You have lots of freedom as to what model you use in the final stage. The `econml` package offers several off-the-shelf choices of R-learner (DML) approaches that differ in the model used at the final stage, including causal forest, lasso, etc.
 
-## Implementation Example 
+## Linear DML (R-leaner)
+
+We saw a general R-learner framework for CATE estimation. We now look at an example of Linear DML, which uses a linear model at the final stage. So, we are assuming $\theta(X)$ can be written as follows in @sec-model-framework:
+
+$$
+\begin{aligned}
+\theta(X) = \alpha + \beta_1 x_1 + \beta_2 x_2 + \dots + \beta_k x_k
+\end{aligned}
+$$
+
+where $x_1$ through $x_k$ are the drivers of heterogeneity in treatment effects and $\beta_1$ through $\beta_k$ are their coefficients.
 
 ::: {.column-margin}
 **Packages to load for replication**
@@ -164,46 +171,15 @@ library(MASS)
 ```
 :::
 
-We use the python `econml` pacakge (in conjunction with the R `reticulate` package), which offers one of the most comprehensive sets of off-the-shelf R-leaner (DML) methods [@econml]. 
-
-Let's first take a look at the `DML` class, which implements DML where the final stage has to be a linear model. That is,
-
-::: {.column-margin}
-`DML` is a child class of `_Rlearner`, which is a private class. The `DML` class has several child classes: `LinearDML`, `SpatseLinearDML`, `NonParamDML`, and `CausalForestDML`. 
-:::
-
-$$
-\begin{aligned}
-\theta(x) = \beta_1 + x_1 + \dots + \beta_k + x_k
-\end{aligned}
-$$
-
-As we saw above, we need to specify three models.
-
-+ `model_y`: model for estimating $E[Y|X,W]$
-+ `model_t`: model for estimating $E[T|X,W]$
-+ `model_final`: model for estimating $\theta(X)$
-
-In this example, let's use gradient boosting regression for both `model_y` and `model_t` and use lasso with cross-validation for `model_final`.
-
-First import all the functions we will need.
+We use both Python and R for this demonstration. So, let's set things up for that.
 
 ```{r}
 #| eval: false 
-
 library(reticulate)
 use_virtualenv("ml-learning")
-
-#=== econml.dml ===#
-em_dml <- import("econml.dml")
-
-#=== sklearn ===#
-sl <- import("sklearn") 
-gbr <- sl$ensemble$GradientBoostingRegressor
-lassocv <- sl$linear_model$LassoCV
 ```
 
-Let's generates data according to the following data generating process:
+For this demonstration, we use synthetic data according to the following data generating process:
 
 $$
 \begin{aligned}
@@ -211,6 +187,8 @@ y_i = exp(x_{i,1}) d_i + x_{i,1} + \frac{1}{4}\cdot\frac{exp(x_{i,3})}{1 + exp(x
 d_i = \frac{exp(x_{i,1})}{1 + exp(x_{i,1})} + \frac{1}{4}\cdot x_{i,3}+ \eta_i
 \end{aligned}
 $$
+
+Note that this is the same data generating process used in @sec-dml except that the impact of the treatment ($d$) now depends on $x_1$. We can use `gen_data()` function that is defined in @sec-dml-naive.
 
 ```{r}
 #| eval: false 
@@ -224,6 +202,17 @@ synth_data <-
     te_formula = formula(~ I(exp(x1)*d)),
     n_obs = N *2
   )
+
+X <- dplyr::select(synth_data, starts_with("x")) %>% as.matrix()
+y <- dplyr::select(synth_data, y)
+```
+
+We now split the data into training and test datasets. 
+
+```{python}
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(r.X, r.y, test_size = 0.5, random_state = 8923)
 ```
 
 We now split the data into training and test datasets. 
@@ -251,6 +240,49 @@ X_test <-
 y_test <- test_data[, y]
 d_test <- test_data[, d]
 ```
+
+We use the Python `econml` pacakge (in conjunction with the R `reticulate` package), which offers one of the most comprehensive sets of off-the-shelf R-leaner (DML) methods [@econml]. We can use the `DML` class to implement linear DML.
+
+```{python}
+#| eval: false
+from econml.dml import DML
+```
+
+::: {.column-margin}
+`DML` is a child class of `_Rlearner`, which is a private class. The `DML` class has several child classes: `LinearDML`, `SpatseLinearDML`, `NonParamDML`, and `CausalForestDML`. 
+:::
+
+As we saw above in @sec-est-steps, we need to specify three models:
+
++ `model_y`: model for estimating $E[Y|X,W]$
++ `model_t`: model for estimating $E[T|X,W]$
++ `model_final`: model for estimating $\theta(X)$
+
+In this example, let's use gradient boosting regression for both `model_y` and `model_t` and use lasso with cross-validation for `model_final`. Let's import `GradientBoostingRegressor()` and `LassoCV()` from the `scikitlearn` package.
+
+```{python}
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.linear_model import LassoCV
+```
+
+```{r}
+#=== sklearn ===#
+sl <- import("sklearn") 
+gbr <- sl$ensemble$GradientBoostingRegressor
+lassocv <- sl$linear_model$LassoCV
+```
+
+We can now set up out DML recipe like below:
+
+```{python}
+est = DML(
+    model_y = GradientBoostingRegressor(),
+    model_t = GradientBoostingRegressor(),
+    model_final = LassoCV(fit_intercept = False) 
+  )
+```
+
+
 
 Before we train a DML model, we first set up a DML estimation framework like below.
 
@@ -324,6 +356,63 @@ Since we forced $\theta(X)$ to be linear in `x1`, it is not surprising that the 
 :::{.callout-tip}
 I recommend going through examples presented [here](https://github.com/microsoft/EconML/blob/main/notebooks/Double%20Machine%20Learning%20Examples.ipynb) for `DML`
 :::
+
+<!-- 
+#/*=================================================*/
+#' # Causal Forest
+#/*=================================================*/ 
+-->
+
+## Causal Forest
+
+Causal Forest (CF) (as implemented by the R `grf` package or python `econml` package) is a special type of R-learner (also a DML) and also a special case of generalized random forest (GRF). 
+
+:::{.callout-tip}
+**When useful?**
+
+Causal Forest is useful in estimating heterogeneous treatment effects when they are complex and/or non-linear functions of attributes (heterogeneity drivers) and it is hard to represent them using linear models.
+:::
+
+### Mechanics
+
+Let $\hat{f}(X_i,W_i)$ and $\hat{g}(X_i,W_i)$ denote the cross-fitted estimation of $E[Y|X,W]$ and $E[T|X,W]$, respectively. Further, let $\hat{\tilde{Y_i}}$ and $\hat{\tilde{T_i}}$ denote $Y_i - \hat{f}(X_i,W_i)$ and $T_i - \hat{g}(X_i,W_i)$, respectively.
+
+::: {.column-margin}
+CF can be implemented using the R `grf` package or python `econml` package. Both of them implements CF as an R-learner. However, the original causal forest proposed in @wager_estimation_2018 does not follow an R-leaner procedure.
+:::
+
+::: {.column-margin}
+See @sec-cf for how cross-fitting works.
+:::
+
+Then, CF estimates $\theta(X)$ at $X = x$ by solving the following equation:
+
+$$
+\begin{aligned}
+\hat{\theta}(x) = argmin_{\theta}\;\;\sum_{i=1}^N \alpha_i(X_i)[\hat{\tilde{Y_i}} - \theta\cdot \hat{\tilde{T_i}}]^2
+\end{aligned}
+$$
+
+where $\alpha_i(X_i)$ is the weight given to each $i$. $\alpha_i(X_i)$ is found using random forest based on a causal criterion. 
+
+Unlike the DML approaches we saw in @sec-het-dml that uses a linear model as the final model, CF does not assume any functional form for how $X$ affects $\theta$ as you can see from the above minimization problem. 
+
+### Key assumptions
+
+
+### Implementation 
+
+We can use the `causal_forest()` function from the R `grf` package to train a CF model. 
+
+Python [skgrf](https://skgrf.readthedocs.io/en/latest/index.html) package
+
+
+### Empirical example 
+
+
+
+
+
 
 
 

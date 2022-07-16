@@ -88,7 +88,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./A01-mc-simulation.html" rel="next">
+<link href="./PROG-02-model-selection-prediction.html" rel="next">
 <link href="./PROG-00-programming.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -272,7 +272,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./C02-het-te.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">R-learner</span></a>
+  <a href="./C02-r-learner.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">R-learner</span></a>
   </div>
 </li>
     </ul>
@@ -308,6 +308,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./PROG-01-reticulate.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PROG-02-model-selection-prediction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Model Selection (Prediction)</span></a>
   </div>
 </li>
     </ul>
@@ -363,7 +368,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
-<p>In this chapter, we learn how to run Python codes from within R using the <code>reticulate</code> package. Its <a href="https://rstudio.github.io/reticulate/index.html">package website</a> is very helpful and cover more topics than this chapter does.</p>
+<p>There are many Python packages that implement machine learning methods that are not available in R at the moment. Fortunately for R users, we can easily call Python functions from within R to take advantage of those Python packages. In this chapter, we learn how to do so using the <code>reticulate</code> package. Its <a href="https://rstudio.github.io/reticulate/index.html">package website</a> is very helpful and cover more topics than this chapter does.</p>
 <p>We will run mainly the following python codes in different ways on R.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
@@ -621,7 +626,7 @@ Tip
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== test the fit ===#</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>reg_rf<span class="sc">$</span><span class="fu">score</span>(X_test, y_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>0.6946956103101651</code></pre>
+<pre><code>0.7019507354702833</code></pre>
 </div>
 </div>
 </section>
@@ -671,7 +676,7 @@ Tip
 <div class="cell">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>py<span class="sc">$</span>numpy<span class="sc">$</span>random<span class="sc">$</span><span class="fu">RandomState</span>(<span class="fu">as.integer</span>(<span class="dv">123</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>RandomState(MT19937) at 0x2B42A5940</code></pre>
+<pre><code>RandomState(MT19937) at 0x14C3F5940</code></pre>
 </div>
 </div>
 <p>You can source user-defined functions on Python as well. Here is the python code in the file called <code>make_data.py</code>. <code>train_test_RF()</code> takes some of the arguments for <code>make_regression()</code> as its arguments, split the data, train RF on the train data, evaluate the fit, and then return the test score.</p>
@@ -717,7 +722,7 @@ Tip
 <span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">rng =</span> rng</span>
 <span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>0.6995202942939165</code></pre>
+<pre><code>0.6994116251567957</code></pre>
 </div>
 </div>
 </section>
@@ -836,8 +841,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./A01-mc-simulation.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Monte Carlo (MC) Simulation</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./PROG-02-model-selection-prediction.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Model Selection (Prediction)</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

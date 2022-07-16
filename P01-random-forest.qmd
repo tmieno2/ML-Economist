@@ -177,7 +177,7 @@ copy(mlb1_dt) %>%
   sum()
 ```
 
-This means `value_seq[70]` (`r value_seq[70]`) is a better threshold than `value_seq[50]` (`r value_seq[50]`).
+This means `value_seq[50]` (`r value_seq[50]`) is a better threshold than `value_seq[70]` (`r value_seq[70]`).
 
 Okay, let's consider all the candidate values, not just 50th and 70th, and then pick the best.
 
@@ -406,7 +406,7 @@ This makes sense because adding information from one more variable that is perfe
 
 However, as long as $x_1$ and $x_2$ are not perfectly correlated, option 2 is better. The benefit of averaging is greater when the value of $Cov(x_1, x_2)$ is smaller.
 
-Let's do a little experiment to see this. We consider three cases:
+Let's do a little experiment to see this. We consider four approaches:
 
 + Approach 0: use $x_1$ as the estimator
 + Approach 1: use $(x_1 + x_2)/2$ as the estimator ($x_1$ and $x_2$ are independent)
@@ -486,6 +486,7 @@ get_alpha(1)
 Repeating this many times,
 
 ```{r}
+#| warning: false
 set.seed(234934)
 
 sim_results <-
@@ -513,7 +514,7 @@ sim_results %>%
   theme_bw()
 ```
 
-As you can see, they are all pretty much unbiased. However, all the cases that averaged two values (cases 1, 2, and 3) outperformed the base case that relied on a single value each iteration. You can see that when the random variables are negatively correlated, the power of averaging is greater compared to when they are independent or positively correlated. The independent case (case 1) is better than the positive correlation case (case 2). 
+As you can see, they are all pretty much unbiased. However, all the approaches that average two values (approaches 1, 2, and 3) outperformed the base approach that relied on a single value each iteration. You can see that when the random variables are negatively correlated, the power of averaging is greater compared to when they are independent or positively correlated. The independent approach (approach 1) is better than the positive correlation approach (approach 2). 
 
 Now that we understand the power of bagging, let's apply this to a regression problem using a tree. The statistics of interest is $E[y|X]$, which is denoted as $f(x)$.
 
@@ -650,7 +651,8 @@ By the way, if we were to use all the variables instead of just these three, the
 )
 ```
 
-### Implementation
+
+## Implementation
 
 We can use `ranger()` from the `ranger` package to train an RF model. 
 
@@ -758,12 +760,8 @@ parameters[which.min(oob_mse), ]
 ```
 
 
-## Over-fitting
 
 
 
 
-## Resources
 
-+ [Gradient Boosting with Scikit-Learn, XGBoost, LightGBM, and CatBoost](https://machinelearningmastery.com/gradient-boosting-with-scikit-learn-xgboost-lightgbm-and-catboost/) by Jason Brownlee
-+ [A Gentle Introduction to XGBoost for Applied Machine Learning](https://machinelearningmastery.com/gentle-introduction-xgboost-applied-machine-learning/)

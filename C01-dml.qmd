@@ -1,10 +1,10 @@
 # Double Machine Learning {#sec-dml}
 
-The most important ideas of the recent development of causal machine learning (CML) methods originate from @Chernozhukov2018, which proposed Double/Debiased ML methods. In this section, we go over those key ideas that are the heart of many other important CML methods we will learn later. 
+One of the most important ideas of the recent development of causal machine learning (CML) methods originate from @Chernozhukov2018, which proposed Double/Debiased ML methods. In this section, we go over those key ideas that are the heart of many other important CML methods we will learn later. 
 
 ## Problem Setting
 
-We are interested in the estimating the following econometric model
+We are interested in estimating the following econometric model
 
 :::{.column-margin}
 We follow the notations of @Chernozhukov2018.
@@ -13,7 +13,7 @@ We follow the notations of @Chernozhukov2018.
 $$
 \begin{aligned}
 y = \theta d + g_0(X) + \mu \\
-T = m_0(X) + \eta
+d = m_0(X) + \eta
 \end{aligned}
 $$
 Your sole interest is in estimating $\theta$: the impact of the treatment ($d$). $g_0(X)$ is the impact of a collection of variables $X$. $m_0(X)$ expresses how $X$ affects the treatment status, $d$. $d$ may be binary or continuous. The key assumptions here are $E[\mu|X]$ and $E[\eta|X]$....... That is...
@@ -25,7 +25,7 @@ $g_0(X)$ and $m_0(X)$ are called nuisance functions because we are not intereste
 :::
 
 
-## A naive approach and regularization bias
+## A naive approach and regularization bias {#sec-dml-naive}
 
 ::: {.column-margin}
 **Packages to load for replication**
@@ -83,7 +83,7 @@ One way to estimate $\theta$ follows the following steps:
   \end{aligned}
   $$ {#eq-theta-partial}
 
-As it will turn out, this procedure suffers from the so-called regularization and over-fitting bias[@Chernozhukov2018].
+As it will turn out, this procedure suffers from the so-called regularization and over-fitting bias [@Chernozhukov2018].
 
 To demonstrate the bias problem, we work on the following data generating process used in [the user guide for the DoubleML package](https://docs.doubleml.org/stable/guide/basics.html).
 
@@ -915,6 +915,12 @@ ggplot() +
 
 
 
+## What if the unconfoundedness assumption does not hold
+
+
+## References {.unnumbered}
+
+<div id="refs"></div>
 
 
 

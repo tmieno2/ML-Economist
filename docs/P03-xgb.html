@@ -276,7 +276,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./C02-het-te.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">R-learner</span></a>
+  <a href="./C02-r-learner.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">R-learner</span></a>
   </div>
 </li>
     </ul>
@@ -314,6 +314,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <a href="./PROG-01-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PROG-02-model-selection-prediction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Model Selection (Prediction)</span></a>
+  </div>
+</li>
     </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -344,6 +349,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#tree-updating-in-xgb-regression" id="toc-tree-updating-in-xgb-regression" class="nav-link" data-scroll-target="#tree-updating-in-xgb-regression"> <span class="header-section-number">8.2</span> Tree updating in XGB (regression)</a></li>
   <li><a href="#illustration-of-xgb-for-regression" id="toc-illustration-of-xgb-for-regression" class="nav-link" data-scroll-target="#illustration-of-xgb-for-regression"> <span class="header-section-number">8.3</span> Illustration of XGB for regression</a></li>
   <li><a href="#implementation" id="toc-implementation" class="nav-link" data-scroll-target="#implementation"> <span class="header-section-number">8.4</span> Implementation</a></li>
+  <li><a href="#resources" id="toc-resources" class="nav-link" data-scroll-target="#resources"> <span class="header-section-number">8.5</span> Resources</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/P03-xgb.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
@@ -581,8 +587,8 @@ Q_j = \frac{(\sum_{i\in I_j}r_{i,b})^2}{N_j + \lambda}
 <span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="htmlwidget-c6a89d0f15545c39c4ca" style="width:100%;height:464px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-c6a89d0f15545c39c4ca">{"x":{"diagram":"\ndigraph {\n  graph [ranksep = 0.2]\n  node [shape = box]\n    T1R [label = \"L: -9\"]\n    T1L [label = \"R: 1 , 2 , 6\"]\n    T0 [label = \"-9, 1 , 2 , 6\"]\n  edge [minlen = 2]\n    T0->T1L\n    T0->T1R\n  { rank = same; T1R; T1L}\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-a1de132d5efbbebcebf7" style="width:100%;height:464px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-a1de132d5efbbebcebf7">{"x":{"diagram":"\ndigraph {\n  graph [ranksep = 0.2]\n  node [shape = box]\n    T1R [label = \"L: -9\"]\n    T1L [label = \"R: 1 , 2 , 6\"]\n    T0 [label = \"-9, 1 , 2 , 6\"]\n  edge [minlen = 2]\n    T0->T1L\n    T0->T1R\n  { rank = same; T1R; T1L}\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </div></div><p>Let’s split the data.</p>
@@ -653,8 +659,8 @@ w_R^* &amp; = 1 + 2 + 6 / (3 + 1) = 2.25
 <span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="htmlwidget-460f208b2ba0da9b8ecc" style="width:100%;height:464px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-460f208b2ba0da9b8ecc">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box]\n      T1R [label = \"L: -9 \n Q score = 40.5\"]\n      T1L [label = \"R: 1 , 2 , 6 \n Q score = 20.25\"]\n      T0 [label = \"-9, 1 , 2 , 6\"]\n    edge [minlen = 2]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-db6f1d4ed0add167c970" style="width:100%;height:464px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-db6f1d4ed0add167c970">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box]\n      T1R [label = \"L: -9 \n Q score = 40.5\"]\n      T1L [label = \"R: 1 , 2 , 6 \n Q score = 20.25\"]\n      T0 [label = \"-9, 1 , 2 , 6\"]\n    edge [minlen = 2]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </div></div><p><span class="math display">\[
@@ -745,8 +751,8 @@ G_1 = \frac{40.5 + 20.25 - 0}{2} - 10 = 20.375
 <span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="htmlwidget-5e783b14d2fe65052a73" style="width:100%;height:464px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-5e783b14d2fe65052a73">{"x":{"diagram":"\n    digraph {\n      graph [ranksep = 0.2]\n      node [shape = box]\n        T1R [label = \"L: -9, 1 \n Q score = 21.33\"]\n        T1L [label = \"R: 2 , 6 \n Q score = 21.33\"]\n        T0 [label = \"-9, 1 , 2 , 6\"]\n      edge [minlen = 2]\n        T0->T1L\n        T0->T1R\n      { rank = same; T1R; T1L}\n    }\n    ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-a1cca638da3e095553f5" style="width:100%;height:464px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-a1cca638da3e095553f5">{"x":{"diagram":"\n    digraph {\n      graph [ranksep = 0.2]\n      node [shape = box]\n        T1R [label = \"L: -9, 1 \n Q score = 21.33\"]\n        T1L [label = \"R: 2 , 6 \n Q score = 21.33\"]\n        T0 [label = \"-9, 1 , 2 , 6\"]\n      edge [minlen = 2]\n        T0->T1L\n        T0->T1R\n      { rank = same; T1R; T1L}\n    }\n    ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </div></div><p><span class="math display">\[
@@ -800,8 +806,8 @@ G_2 = \frac{21.33 + 21.33 - 0}{2} - 10 = 11.3333333
 <span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="htmlwidget-f146776e78d10f385021" style="width:100%;height:464px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-f146776e78d10f385021">{"x":{"diagram":"\n    digraph {\n      graph [ranksep = 0.2]\n      node [shape = box]\n        T1R [label = \"L: -9, 1, 2 \n Q score = 9\"]\n        T1L [label = \"R: 6 \n Q score = 18\"]\n        T0 [label = \"-9, 1 , 2 , 6\"]\n      edge [minlen = 2]\n        T0->T1L\n        T0->T1R\n      { rank = same; T1R; T1L}\n    }\n    ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-ea38aff9b9130be72000" style="width:100%;height:464px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-ea38aff9b9130be72000">{"x":{"diagram":"\n    digraph {\n      graph [ranksep = 0.2]\n      node [shape = box]\n        T1R [label = \"L: -9, 1, 2 \n Q score = 9\"]\n        T1L [label = \"R: 6 \n Q score = 18\"]\n        T0 [label = \"-9, 1 , 2 , 6\"]\n      edge [minlen = 2]\n        T0->T1L\n        T0->T1R\n      { rank = same; T1R; T1L}\n    }\n    ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </div></div><p><span class="math display">\[
@@ -876,8 +882,8 @@ Note
 <span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="htmlwidget-668a9eea662a3b579316" style="width:100%;height:325px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-668a9eea662a3b579316">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box, width = 0.3, height = 0.15, fontsize = 3, fixedsize = TRUE, penwidth = 0.2]\n      T1R [label = \"L: -9 \n w* = -4.5\"]\n      T1L [label = \"R: 1 , 2 , 6 \n w* = 2.25\"]\n      T0 [label = \"-9, 1 , 2 , 6\"]\n    edge [penwidth = 0.2, arrowsize = 0.3, len = 0.3]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-471ebfcc27649c73f72b" style="width:100%;height:325px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-471ebfcc27649c73f72b">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box, width = 0.3, height = 0.15, fontsize = 3, fixedsize = TRUE, penwidth = 0.2]\n      T1R [label = \"L: -9 \n w* = -4.5\"]\n      T1L [label = \"R: 1 , 2 , 6 \n w* = 2.25\"]\n      T0 [label = \"-9, 1 , 2 , 6\"]\n    edge [penwidth = 0.2, arrowsize = 0.3, len = 0.3]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>We now use <span class="math inline">\(w^*\)</span> from this tree to update our prediction according to <a href="#eq-update">Equation&nbsp;<span>8.7</span></a>.</p>
@@ -1005,8 +1011,8 @@ f_{i = 4,b = 1} = 6 + 0.3 \times 2.25 = 6.68
 <span id="cb45-23"><a href="#cb45-23" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb45-24"><a href="#cb45-24" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="htmlwidget-54000848662a967bd59a" style="width:100%;height:464px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-54000848662a967bd59a">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box, width = 0.4, height = 0.15, fontsize = 3, fixedsize = TRUE, penwidth = 0.2]\n      T1R [label = \"L: -8.18 \n w* = -3.83\"]\n      T1L [label = \"R: 0.71 , 1.71 , 5.71 \n w* = 1.74\"]\n      T0 [label = \"-8.18, 0.71 , 1.71 , 5.71\"]\n    edge [penwidth = 0.2, arrowsize = 0.3, len = 0.3]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-afa0e591946d1fec3432" style="width:100%;height:464px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-afa0e591946d1fec3432">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box, width = 0.4, height = 0.15, fontsize = 3, fixedsize = TRUE, penwidth = 0.2]\n      T1R [label = \"L: -8.18 \n w* = -3.83\"]\n      T1L [label = \"R: 0.71 , 1.71 , 5.71 \n w* = 1.74\"]\n      T0 [label = \"-8.18, 0.71 , 1.71 , 5.71\"]\n    edge [penwidth = 0.2, arrowsize = 0.3, len = 0.3]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>Let’s now update our predictions.</p>
@@ -1088,44 +1094,35 @@ Tip
 <p>You can use the <code>xgboost</code> package to implement XGB modeling.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(xgboost)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'xgboost'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following object is masked from 'package:dplyr':
-
-    slice</code></pre>
-</div>
 </div>
 <p>The first task is to create a class of matrix called <code>xgb.DMatrix</code> using the <code>xgb.DMatrix()</code> function. You provide the explanatory variable data matrix to the <code>data</code> option and the dependent variable matrix (vector) to the <code>label</code> option in <code>xgb.DMatrix()</code> like below.</p>
 <p>Let’s get the <code>mlb1</code> data from the <code>wooldridge</code> package for demonstration.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(wooldridge)</span>
-<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(mlb1)</span>
-<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>mlb1_dt <span class="ot">&lt;-</span> </span>
-<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>  mlb1 <span class="sc">%&gt;%</span> </span>
-<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="sc">%&gt;%</span> <span class="co"># turn into data.table </span></span>
-<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>  .[, salary <span class="sc">:</span><span class="er">=</span> <span class="cn">NULL</span>] <span class="sc">%&gt;%</span> <span class="co"># remove salary (use lsalary instead)</span></span>
-<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>() <span class="co"># remove observations with NA in any of the variables</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(wooldridge)</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(mlb1)</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>mlb1_dt <span class="ot">&lt;-</span> </span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>  mlb1 <span class="sc">%&gt;%</span> </span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="sc">%&gt;%</span> <span class="co"># turn into data.table </span></span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>  .[, salary <span class="sc">:</span><span class="er">=</span> <span class="cn">NULL</span>] <span class="sc">%&gt;%</span> <span class="co"># remove salary (use lsalary instead)</span></span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>() <span class="co"># remove observations with NA in any of the variables</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>mlb1_dm_X <span class="ot">&lt;-</span> </span>
-<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xgb.DMatrix</span>(</span>
-<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> <span class="fu">as.matrix</span>(mlb1_dt[, .(hruns, years, rbisyr, allstar, runsyr, hits, bavg)]),</span>
-<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">label =</span> <span class="fu">as.matrix</span>(mlb1_dt[, lsalary])</span>
-<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>mlb1_dm_X <span class="ot">&lt;-</span> </span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xgb.DMatrix</span>(</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> <span class="fu">as.matrix</span>(mlb1_dt[, .(hruns, years, rbisyr, allstar, runsyr, hits, bavg)]),</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">label =</span> <span class="fu">as.matrix</span>(mlb1_dt[, lsalary])</span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can then use <code>xgb.train()</code> to train a model using the XGB algorithm.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>xgb_fit <span class="ot">&lt;-</span></span>
-<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xgb.train</span>(</span>
-<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> mlb1_dm_X, <span class="co"># independent variable</span></span>
-<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">nrounds =</span> <span class="dv">100</span>, <span class="co"># number of iterations (trees to add)</span></span>
-<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">eta =</span> <span class="dv">1</span>, <span class="co"># learning rate</span></span>
-<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">objective =</span> <span class="st">"reg:squarederror"</span> <span class="co"># objective function</span></span>
-<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>xgb_fit <span class="ot">&lt;-</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xgb.train</span>(</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> mlb1_dm_X, <span class="co"># independent variable</span></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">nrounds =</span> <span class="dv">100</span>, <span class="co"># number of iterations (trees to add)</span></span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">eta =</span> <span class="dv">1</span>, <span class="co"># learning rate</span></span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">objective =</span> <span class="st">"reg:squarederror"</span> <span class="co"># objective function</span></span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
@@ -1133,6 +1130,12 @@ Attaching package: 'xgboost'</code></pre>
 </div>
 </div>
 </div>
+</section>
+<section id="resources" class="level2" data-number="8.5">
+<h2 data-number="8.5" class="anchored" data-anchor-id="resources"><span class="header-section-number">8.5</span> Resources</h2>
+<ul>
+<li><a href="https://machinelearningmastery.com/gentle-introduction-xgboost-applied-machine-learning/">A Gentle Introduction to XGBoost for Applied Machine Learning</a></li>
+</ul>
 
 
 </section>

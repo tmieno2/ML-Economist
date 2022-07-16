@@ -291,7 +291,7 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./C02-het-te.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">R-learner</span></a>
+  <a href="./C02-r-learner.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">R-learner</span></a>
   </div>
 </li>
     </ul>
@@ -329,6 +329,11 @@ div.csl-indent {
   <a href="./PROG-01-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PROG-02-model-selection-prediction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Model Selection (Prediction)</span></a>
+  </div>
+</li>
     </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -357,6 +362,7 @@ div.csl-indent {
   <ul>
   <li><a href="#gradient-boosting" id="toc-gradient-boosting" class="nav-link active" data-scroll-target="#gradient-boosting"> <span class="header-section-number">7.1</span> Gradient Boosting</a></li>
   <li><a href="#implementation" id="toc-implementation" class="nav-link" data-scroll-target="#implementation"> <span class="header-section-number">7.2</span> Implementation</a></li>
+  <li><a href="#resources" id="toc-resources" class="nav-link" data-scroll-target="#resources"> <span class="header-section-number">7.3</span> Resources</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/P02-boosted-regression-forest.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
@@ -518,16 +524,14 @@ r_{i,b} = - \huge[\normalsize\frac{\partial L(y_i, f(x_i))}{\partial f(x_i)}\hug
 <h2 data-number="7.2" class="anchored" data-anchor-id="implementation"><span class="header-section-number">7.2</span> Implementation</h2>
 <p>We can use the <code>gbm</code> package to train a gradient boosting regression. Just like <code>ranger()</code>, <code>gbm</code> takes formula and data like below.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gbm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Loaded gbm 2.1.8</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== fit a gbm model ===#</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>gbm_fit <span class="ot">&lt;-</span> </span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gbm</span>(</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    lsalary <span class="sc">~</span> hruns <span class="sc">+</span> years <span class="sc">+</span> rbisyr <span class="sc">+</span> allstar <span class="sc">+</span> runsyr <span class="sc">+</span> hits <span class="sc">+</span> bavg, </span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> mlb1_dt </span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gbm)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co">#=== fit a gbm model ===#</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>gbm_fit <span class="ot">&lt;-</span> </span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gbm</span>(</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    lsalary <span class="sc">~</span> hruns <span class="sc">+</span> years <span class="sc">+</span> rbisyr <span class="sc">+</span> allstar <span class="sc">+</span> runsyr <span class="sc">+</span> hits <span class="sc">+</span> bavg, </span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> mlb1_dt </span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Distribution not specified, assuming gaussian ...</code></pre>
 </div>
@@ -543,47 +547,53 @@ r_{i,b} = - \huge[\normalsize\frac{\partial L(y_i, f(x_i))}{\partial f(x_i)}\hug
 </ul>
 <p>By specifying <code>cv.folds</code>, <code>gbm()</code> automatically conducts cross-validation for you.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== gbm fit with CV ===#</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>gbm_fit <span class="ot">&lt;-</span> </span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gbm</span>(</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    lsalary <span class="sc">~</span> hruns <span class="sc">+</span> years <span class="sc">+</span> rbisyr <span class="sc">+</span> allstar <span class="sc">+</span> runsyr <span class="sc">+</span> hits <span class="sc">+</span> bavg, <span class="co"># . means all variables</span></span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> mlb1_dt,</span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv.folds =</span> <span class="dv">5</span>,</span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== gbm fit with CV ===#</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>gbm_fit <span class="ot">&lt;-</span> </span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gbm</span>(</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    lsalary <span class="sc">~</span> hruns <span class="sc">+</span> years <span class="sc">+</span> rbisyr <span class="sc">+</span> allstar <span class="sc">+</span> runsyr <span class="sc">+</span> hits <span class="sc">+</span> bavg, <span class="co"># . means all variables</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> mlb1_dt,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv.folds =</span> <span class="dv">5</span>,</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Distribution not specified, assuming gaussian ...</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== see the MSE history ===#  </span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>gbm_fit<span class="sc">$</span>cv.error</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== see the MSE history ===#  </span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>gbm_fit<span class="sc">$</span>cv.error</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  [1] 1.2253902 1.1116156 1.0205298 0.9433985 0.8753336 0.8117850 0.7593895
-  [8] 0.7155764 0.6749629 0.6405197 0.6118801 0.5826483 0.5540288 0.5337625
- [15] 0.5177188 0.5007340 0.4878714 0.4747264 0.4663002 0.4583888 0.4503843
- [22] 0.4436678 0.4382948 0.4307027 0.4249498 0.4213937 0.4168023 0.4129313
- [29] 0.4095522 0.4078445 0.4061228 0.4019636 0.3991148 0.3961212 0.3944443
- [36] 0.3933995 0.3927365 0.3916205 0.3909225 0.3905965 0.3876704 0.3875484
- [43] 0.3857054 0.3856561 0.3843438 0.3845230 0.3834490 0.3820814 0.3799813
- [50] 0.3787884 0.3772388 0.3766243 0.3780853 0.3774009 0.3772533 0.3754301
- [57] 0.3748004 0.3727322 0.3717758 0.3704500 0.3697340 0.3690566 0.3700647
- [64] 0.3693901 0.3699901 0.3689645 0.3679994 0.3679133 0.3664746 0.3670761
- [71] 0.3656355 0.3664515 0.3662979 0.3662695 0.3648815 0.3648221 0.3649502
- [78] 0.3650628 0.3647017 0.3643149 0.3650453 0.3658924 0.3661806 0.3655060
- [85] 0.3644879 0.3642080 0.3645590 0.3635509 0.3638712 0.3628455 0.3619427
- [92] 0.3623487 0.3623673 0.3620047 0.3620308 0.3620440 0.3620364 0.3609548
- [99] 0.3603481 0.3612251</code></pre>
+<pre><code>  [1] 1.2191880 1.1015250 1.0050680 0.9294631 0.8745051 0.8176282 0.7664257
+  [8] 0.7195205 0.6818668 0.6481660 0.6148138 0.5838843 0.5585350 0.5333754
+ [15] 0.5164453 0.5019125 0.4878977 0.4774396 0.4687803 0.4594458 0.4485123
+ [22] 0.4420331 0.4331413 0.4244907 0.4189750 0.4155506 0.4120766 0.4097871
+ [29] 0.4046734 0.4015477 0.3989534 0.3950775 0.3930688 0.3901039 0.3871875
+ [36] 0.3853211 0.3840217 0.3817207 0.3794712 0.3794971 0.3775034 0.3766019
+ [43] 0.3769173 0.3780535 0.3763851 0.3748660 0.3738965 0.3722499 0.3714544
+ [50] 0.3733506 0.3720057 0.3713949 0.3717841 0.3704210 0.3718373 0.3710667
+ [57] 0.3698289 0.3691092 0.3676788 0.3669917 0.3669641 0.3677942 0.3672820
+ [64] 0.3669054 0.3682547 0.3694019 0.3688350 0.3682118 0.3676258 0.3673998
+ [71] 0.3673412 0.3669621 0.3662814 0.3667271 0.3666357 0.3667600 0.3669023
+ [78] 0.3679692 0.3677411 0.3687041 0.3687730 0.3685688 0.3687680 0.3677898
+ [85] 0.3676835 0.3678223 0.3685639 0.3693481 0.3688605 0.3685095 0.3684889
+ [92] 0.3694775 0.3696664 0.3698492 0.3696046 0.3694359 0.3693577 0.3697084
+ [99] 0.3690294 0.3681130</code></pre>
 </div>
 </div>
 <p>You can visualize the CV results using <code>gbm.perf()</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gbm.perf</span>(gbm_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gbm.perf</span>(gbm_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="P02-boosted-regression-forest_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 99</code></pre>
+<pre><code>[1] 73</code></pre>
 </div>
 </div>
 <p>Note that it will tell you what the optimal number of trees is <span style="color:blue"> given </span> the values of the other hyper-parameters (here default values). If you want to tune other parameters as well, you need to program it yourself.</p>
+</section>
+<section id="resources" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="resources"><span class="header-section-number">7.3</span> Resources</h2>
+<ul>
+<li><a href="https://machinelearningmastery.com/gradient-boosting-with-scikit-learn-xgboost-lightgbm-and-catboost/">Gradient Boosting with Scikit-Learn, XGBoost, LightGBM, and CatBoost</a> by Jason Brownlee</li>
+</ul>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">

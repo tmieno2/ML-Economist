@@ -1,9 +1,6 @@
 # Generalized Random Forest {#sec-grf}
 
 
-@athey2019generalized
-
-
 ## GRF in a nutshell
 
 Here, we follow the notations used in @athey2019generalized as much as possible. Let, $O_i$ denote the entire data available.
@@ -80,11 +77,11 @@ You probably have noticed the similarity in idea between GRF and generalized met
 :::{.callout-tip}
 **GRF** procedure
 
-+ Step 1: train random forest
++ Step 1: Train random forest
   * Specify the score function that is appropriate for the statistics of interest and the data generating process
   * Derive pseudo outcome from the score function
   * Train random forest using the pseudo outcomes as the dependent variable
-+ Step 2: estimate (predict) $\theta(x)$
++ Step 2: Estimate (predict) $\theta(x)$
   * Find the weight for each observation based on the trained random forest according to @eq-weight and then solve the weighted minimization problem (@eq-opt).
 
 :::
@@ -377,7 +374,7 @@ tree_trained <-
 fancyRpartPlot(tree_trained, digits = 4)
 ```
 
-So the splitting rule is `hits < 356` as shown in @fig-tree-sub. At the terminal nodes, you see the prediction of `lsalary`: $12.47$ for the left and $14.23$ for the right. These predictions are NOT honest. They are obtained from the observed values of `lsalary` within the node using the splitting data (the data the tree is trained for). Instead of using these prediction values, an honest prediction applied the splitting rules (`hits < 356`) to the data reserved for prediction.s
+So the splitting rule is `hits < 356` as shown in @fig-tree-sub. At the terminal nodes, you see the prediction of `lsalary`: $12.47$ for the left and $14.23$ for the right. These predictions are NOT honest. They are obtained from the observed values of `lsalary` within the node using the splitting data (the data the tree is trained for). Instead of using these prediction values, an honest prediction applied the splitting rules (`hits < 356`) to the data reserved for prediction.
 
 ```{r}
 (
@@ -389,6 +386,10 @@ So, instead of $12.47$ and $14.23$, the predicted values from the honest tree ar
 
 More generally, in GRF, honesty is applied by using the evaluation data to solve @eq-opt based on the weight $\alpha_i(x)$ derived from the trained forest using the splitting data. Honesty is required for the GRF estimator to be consistent and asymptotically normal [@athey2019generalized]. However, the application of honesty can do more damage than help when the sample size is small.
 
+
+## References {.unnumbered}
+
+<div id="refs"></div>
 
 
 

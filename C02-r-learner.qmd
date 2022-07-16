@@ -1,0 +1,325 @@
+# R-learner {#sec-het-dml}
+
+## Motivation
+
+In @sec-dml, the basic idea of double machine learning (DML) methods was introduced when the treatment effect is homogeneous. We now turn our focus to the task of estimating heterogeneous treatment effects: the impact of a treatment varies based on observed attributes of the subjects. Heterogeneous treatment effect is also referred to as <span style="color:blue"> conditional </span> average treatment effect (CATE).
+
+::: {.column-margin}
+<span style="color:blue"> Conditional </span> on observed attributes.
+:::
+
+Understanding how treatment effects vary can be highly valuable in many circumstances. 
+
+<span style="color:blue"> Example 1: </span>
+If we come to know a particular drug is effective on elderly people but detrimental to kids, then doctors can make a smart decision of prescribing the drug to elderly people, but not to kids. 
+
+::: {.column-margin}
+In this example, the heterogeneity driver is age.
+:::
+
+<span style="color:blue"> Example 2: </span>
+If we come to know that fertilizer is more effective in increasing corn yield in soil type A than B, then farmers can apply more fertilizer on the parts of the field where soil type is A but less on where soil type is B. 
+
+::: {.column-margin}
+In this example, the heterogeneity driver is soil type.
+:::
+
+As you can see in these examples, knowledge on the heterogeneity of the treatment effect and its drivers can help decision makers smart-target treatments and policies. 
+
+## Modeling Framework
+
+The model of interest in a general form is as follows:
+
+$$
+\begin{aligned}
+Y & = \theta(X)\cdot T + g(X, W) + \varepsilon \\
+T & = f(X, W) + \eta 
+\end{aligned}
+$$ {#sec-model-framework}
+
++ $Y$: dependent variable
++ $T$: treatment variable (can be either binary dummy or continuous)
++ $X$: collection of variables that affect Y indirectly through the treatment ($\theta(X)\cdot T$) and directly ($g(X, W)$) independent of the treatment
++ $W$: collection of variables that affect directly ($g(X, W)$) independent of the treatment, but not through the treatment
+
+Here are the key assumptions:
+
++ $E[\varepsilon|X, W] = 0$
++ $E[\eta|X, W] = 0$
++ $E[\eta\cdot\varepsilon|X, W] = 0$
+
+Our objective is to estimate the <span style = "color: red;"> constant </span> marginal CATE $\theta(X)$. (constant in the sense marginal CATE is the same irrespective of the value of the treatment)
+
+## R-learner
+
+### Theoretical background
+
+Under the assumptions,
+
+$$
+\begin{aligned}
+E[Y|X, W] = \theta(X)\cdot E[T|X,W] + g(X,W)
+\end{aligned}
+$$
+
+Thus,
+
+$$
+\begin{aligned}
+Y & = \theta(X)\cdot T + g(X,W) + \varepsilon \\
+\Rightarrow Y - E[Y|X, W] & = \theta(X)\cdot T + g(X,W) + \varepsilon - \theta(X)\cdot E[T|X,W] - g(X,W) \\
+\Rightarrow Y - E[Y|X, W] & = \theta(X)\cdot (T - E[T|X,W]) + \varepsilon \\
+\end{aligned}
+$$
+
+
+$$
+\begin{aligned}
+Y - E[Y|X, W] & = \theta(X)\cdot (T - E[T|X,W]) + \varepsilon 
+\end{aligned}
+$$ 
+
+Suppose we know $E[Y|X, W]$ and $E[T|X,W]$, then we can construct the following new variables:
+
++ $\tilde{Y} = Y - E[Y|X, W]$
++ $\tilde{T} = T - E[T|X, W] = \eta$
+
+Then, the problem of identifying $\theta(X)$ reduces to estimating the following model:
+
+$$
+\begin{aligned}
+\tilde{Y} = \theta(X)\cdot \tilde{T} + \varepsilon
+\end{aligned}
+$$
+
+
+Since $E[\eta\cdot\varepsilon|X] = 0$ by assumption, we can regress $\tilde{Y}$ on $X$ and $\tilde{T}$,
+
+$$
+\begin{aligned}
+\hat{\theta} = argmin_{\theta} \;\; E[(\tilde{Y} - \theta(X)\cdot \tilde{T})^2]
+\end{aligned}
+$$ {#eq-est-equation}
+
+### Estimation steps {#sec-est-steps}
+
+In practice, we of course do not observe $E[Y|X, W]$ and $E[T|X, W]$. So, we first need to estimate them using the data at hand to construct $\hat{\tilde{Y}}$ and $\hat{\tilde{T}}$. You can use any suitable statistical methods to estimate $E[Y|X, W]$ and $E[T|X, W]$. Some machine learning methods allow you to estimate them without assuming any functional form or structural assumptions. If you believe they are linear functions of $X$ and $W$, may could alternatively use lasso or other linear models. It is important to keep in mind that the estimation of $E[Y|X, W]$ and $E[T|X, W]$ is done by cross-fitting (see @sec-cf) to avoid over-fitting bias. Let, $f(X, W)$ and $g(X,W)$ denote $\tilde{Y}$ and $\tilde{T}$, respectively. Further, let $I_{-i}$ denote all the observations that belong to the folds that $i$ does <span style="color:blue"> not </span> belong to. Finally, let $\hat{f}(X_i, W_i)^{I_{-i}}$ and $\hat{g}(X_i, W_i)^{I_{-i}}$ denote $\tilde{Y}$ and $\tilde{T}$ estimated using $I_{-i}$. 
+
+::: {.column-margin}
+Just like the DML approach discussed in @sec-dml, both $Y$ and $T$ are orthogonalized.
+:::
+
+Then the quality of fit (explaining the heterogeneity in the impact of treatment) can be expressed as follows, which is the empirical version of @eq-est-equation:
+
+$$
+\begin{aligned}
+\sum_{i=1}^N [Y_i - \hat{f}(X_i,W_i)^{I_{-i}} - \theta(X)\cdot (T_i - \hat{g}(X_i,W_i)^{I_{-i}})]^2
+\end{aligned}
+$$
+
+This is called <span style="color:blue"> R-score</span>, and it can be used for causal model selection, which is covered later. 
+
+The final stage of the R-learner is to estimate $\theta(X)$ by minimizing the R-score plus the regularization term (if desirable).
+
+$$
+\begin{aligned}
+\hat{\theta}(X) = argmin_{\theta(X)}\;\;\sum_{i=1}^N [Y_i - \hat{f}(X_i,W_i)^{I_{-i}} - \theta(X)\cdot (T_i - \hat{g}(X_i,W_i)^{I_{-i}})]^2 + \Lambda(\theta(X))
+\end{aligned}
+$$
+
+where $\Lambda(\theta(X))$ is the penalty on the complexity of $\theta(X)$. For example, if you choose to use lasso, then $\Lambda(\theta(X))$ is the L1 norm. You have lots of freedom as to what model you use in the final stage. The `econml` package offers several off-the-shelf choices of R-learner (DML) approaches that differ in the model used at the final stage, including causal forest, lasso, etc.
+
+## R-leaner Example: Linear DML
+
+We saw a general R-learner framework for CATE estimation. We now look at an example of Linear DML, which uses a linear model at the final stage. So, we are assuming $\theta(X)$ can be written as follows in @sec-model-framework:
+
+$$
+\begin{aligned}
+\theta(X) = \alpha + \beta_1 x_1 + \beta_2 x_2 + \dots + \beta_k x_k
+\end{aligned}
+$$
+
+where $x_1$ through $x_k$ are the drivers of heterogeneity in treatment effects and $\beta_1$ through $\beta_k$ are their coefficients.
+
+::: {.column-margin}
+**Packages to load for replication**
+
+```{r }
+#| include: false
+library(data.table)
+library(magick)
+library(fixest)
+library(officer)
+library(dplyr)
+library(ggplot2)
+library(reticulate)
+library(DoubleML)
+library(MASS)
+```
+
+```{r}
+#| eval: false
+library(data.table)
+library(magick)
+library(fixest)
+library(officer)
+library(dplyr)
+library(ggplot2)
+library(reticulate)
+library(DoubleML)
+library(MASS)
+```
+:::
+
+We use both Python and R for this demonstration. So, let's set things up for that.
+
+```{r}
+#| eval: false 
+library(reticulate)
+use_virtualenv("ml-learning")
+```
+
+For this demonstration, we use synthetic data according to the following data generating process:
+
+$$
+\begin{aligned}
+y_i = exp(x_{i,1}) d_i + x_{i,1} + \frac{1}{4}\cdot\frac{exp(x_{i,3})}{1 + exp(x_{i,3})} + \mu_i \\
+d_i = \frac{exp(x_{i,1})}{1 + exp(x_{i,1})} + \frac{1}{4}\cdot x_{i,3}+ \eta_i
+\end{aligned}
+$$
+
+Note that this is the same data generating process used in @sec-dml except that the impact of the treatment ($d$) now depends on $x_1$. We can use `gen_data()` function that is defined in @sec-dml-naive.
+
+```{r}
+#| eval: false 
+
+#=== sample size ===#
+N <- 1000 
+
+#=== generate data ===#
+synth_data <-
+  gen_data(
+    te_formula = formula(~ I(exp(x1)*d)),
+    n_obs = N *2
+  )
+
+X <- dplyr::select(synth_data, starts_with("x")) %>% as.matrix()
+y <- synth_data[, y]
+d <- synth_data[, d]
+```
+
+We now split the data into training and test datasets. 
+
+```{python}
+#| eval: false
+
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test, d_train, d_test= train_test_split(r.X, r.y, r.d,  test_size = 0.5, random_state = 8923)
+```
+
+Here, to train a linear DML model, we use the Python `econml` package, which offers one of the most comprehensive sets of off-the-shelf R-leaner (DML) methods [@econml]. We can use the `DML` class to implement linear DML.
+
+```{python}
+#| eval: false
+from econml.dml import DML
+```
+
+::: {.column-margin}
+`DML` is a child class of `_Rlearner`, which is a private class. The `DML` class has several child classes: `LinearDML`, `SpatseLinearDML`, `NonParamDML`, and `CausalForestDML`. 
+:::
+
+As we saw above in @sec-est-steps, we need to specify three models:
+
++ `model_y`: model for estimating $E[Y|X,W]$
++ `model_t`: model for estimating $E[T|X,W]$
++ `model_final`: model for estimating $\theta(X)$
+
+In this example, let's use gradient boosting regression for both `model_y` and `model_t` and use lasso with cross-validation for `model_final`. Let's import `GradientBoostingRegressor()` and `LassoCV()` from the `scikitlearn` package.
+
+```{python}
+#| eval: false
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.linear_model import LassoCV
+```
+
+We can now set up our DML framework like below:
+
+```{python}
+#| eval: false
+est = DML(
+    model_y = GradientBoostingRegressor(),
+    model_t = GradientBoostingRegressor(),
+    model_final = LassoCV(fit_intercept = False) 
+  )
+```
+
+Note that no training has happened yet at this point. We simply created a recipe. Once we provide ingredients (data), we can cook (train) with the `fit()` method. 
+
+```{python}
+#| eval: false
+est.fit(y_train, d_train, X = X_train, W = X_train)
+```
+
++ first argument: dependent variable
++ second argument: treatment variable 
++ `X`: variables that drive treatment effect heterogeneity
++ `W`: variables that affect the dependent variable directly
+
+::: {.column-margin}
+Here, we set `X = W`.
+:::
+
+Once, the training is done. We can use the `effect()` method to predict $\theta(X)$.
+
+```{python}
+#| eval: false
+te_test = est.effect(X_test)
+```
+
+@fig-est-theta-hat presents the estimated and true marginal treatment effect ($\theta(X)$) as a function of `x1`. 
+
+```{r}
+#| eval: false 
+plot_data <- 
+  data.table(
+    x1 = py$X_test[, 1],
+    te = py$te_test
+  )
+
+ggplot(plot_data) +
+  geom_point(aes(y = te, x = x1)) +
+  geom_line(aes(y = exp(x1), x = x1), color = "blue") +
+  theme_bw()
+```
+
+```{r}
+#| fig-cap: Estimated and true marginal treatment effects
+#| label: fig-est-theta-hat
+#| echo: false
+# plot_data <- 
+#   data.table(
+#     x1 = py$X_test[, 1],
+#     te = py$te_test
+#   )
+
+# g_het_te <-
+#   ggplot(plot_data) +
+#   geom_point(aes(y = te, x = x1)) +
+#   geom_line(aes(y = exp(x1), x = x1), color = "blue") +
+#   theme_bw()
+
+g_het_te <- readRDS("g_hte_te.rds")
+g_het_te
+```
+
+Since we forced $\theta(X)$ to be linear in `x1`, it is not surprising that the estimated MTE looks linear in `x1` even though the true MTE is an exponential function of `x1`. In the next chapter (@sec-forest-cate), we discuss CATE estimators based on forest, which estimates $\theta(X)$ non-parametrically, relaxing the assumption of $\theta(X)$ being linear-in-parameter.
+
+:::{.callout-tip}
+There are many more variations in DML than the one presented here. For those who are interested, I recommend going through examples presented [here](https://github.com/microsoft/EconML/blob/main/notebooks/Double%20Machine%20Learning%20Examples.ipynb) for `DML`
+:::
+
+
+
+
+

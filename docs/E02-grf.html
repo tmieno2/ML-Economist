@@ -295,7 +295,7 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./C02-het-te.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">R-learner</span></a>
+  <a href="./C02-r-learner.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">R-learner</span></a>
   </div>
 </li>
     </ul>
@@ -333,6 +333,11 @@ div.csl-indent {
   <a href="./PROG-01-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PROG-02-model-selection-prediction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Model Selection (Prediction)</span></a>
+  </div>
+</li>
     </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -366,6 +371,7 @@ div.csl-indent {
   <li><a href="#prediction" id="toc-prediction" class="nav-link" data-scroll-target="#prediction"> <span class="header-section-number">12.2.2</span> Prediction</a></li>
   </ul></li>
   <li><a href="#honesty" id="toc-honesty" class="nav-link" data-scroll-target="#honesty"> <span class="header-section-number">12.3</span> Honesty</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/E02-grf.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
@@ -388,7 +394,6 @@ div.csl-indent {
 
 </header>
 
-<p><span class="citation" data-cites="athey2019generalized">Athey, Tibshirani, and Wager (<a href="#ref-athey2019generalized" role="doc-biblioref">2019</a>)</span></p>
 <section id="grf-in-a-nutshell" class="level2 page-columns page-full" data-number="12.1">
 <h2 data-number="12.1" class="anchored" data-anchor-id="grf-in-a-nutshell"><span class="header-section-number">12.1</span> GRF in a nutshell</h2>
 <p>Here, we follow the notations used in <span class="citation" data-cites="athey2019generalized">Athey, Tibshirani, and Wager (<a href="#ref-athey2019generalized" role="doc-biblioref">2019</a>)</span> as much as possible. Let, <span class="math inline">\(O_i\)</span> denote the entire data available.</p>
@@ -484,13 +489,13 @@ Tip
 <div class="callout-body-container callout-body">
 <p><strong>GRF</strong> procedure</p>
 <ul>
-<li>Step 1: train random forest
+<li>Step 1: Train random forest
 <ul>
 <li>Specify the score function that is appropriate for the statistics of interest and the data generating process</li>
 <li>Derive pseudo outcome from the score function</li>
 <li>Train random forest using the pseudo outcomes as the dependent variable</li>
 </ul></li>
-<li>Step 2: estimate (predict) <span class="math inline">\(\theta(x)\)</span>
+<li>Step 2: Estimate (predict) <span class="math inline">\(\theta(x)\)</span>
 <ul>
 <li>Find the weight for each observation based on the trained random forest according to <a href="#eq-weight">Equation&nbsp;<span>12.2</span></a> and then solve the weighted minimization problem (<a href="#eq-opt">Equation&nbsp;<span>12.1</span></a>).</li>
 </ul></li>
@@ -721,8 +726,8 @@ $$
 </details>
 <div id="fig-honest" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<div id="htmlwidget-e9a8b5babac1b20fdcc3" style="width:100%;height:325px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-e9a8b5babac1b20fdcc3">{"x":{"diagram":"\ndigraph {\n  graph [ranksep = 0.2, fontsize = 4]\n  node [shape = box]\n    SS [label = \"Subsamples for splitting\"]\n    SP [label = \"Subsamples for predicting\"]\n    BD [label = \"Bootstrapped Data\"]\n    TT [label = \"Trained tree\"]\n    PV [label = \"Predicted value\"]\n  edge [minlen = 2]\n    BD->SP\n    BD->SS\n    SS->TT\n    SP->PV\n    TT->SP [label=\"apply the splitting rules\"]\n  { rank = same; SS; SP}\n  { rank = same; TT}\n  { rank = same; PV}\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-f5ae945c7766b25ffc01" style="width:100%;height:325px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-f5ae945c7766b25ffc01">{"x":{"diagram":"\ndigraph {\n  graph [ranksep = 0.2, fontsize = 4]\n  node [shape = box]\n    SS [label = \"Subsamples for splitting\"]\n    SP [label = \"Subsamples for predicting\"]\n    BD [label = \"Bootstrapped Data\"]\n    TT [label = \"Trained tree\"]\n    PV [label = \"Predicted value\"]\n  edge [minlen = 2]\n    BD->SP\n    BD->SS\n    SS->TT\n    SP->PV\n    TT->SP [label=\"apply the splitting rules\"]\n  { rank = same; SS; SP}\n  { rank = same; TT}\n  { rank = same; PV}\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 <p></p><figcaption aria-hidden="true" class="figure-caption">Figure 12.1: Illustration of an honest tree</figcaption><p></p>
 </figure>
 </div>
@@ -770,7 +775,7 @@ $$
 </div>
 </div>
 </div>
-<p>So the splitting rule is <code>hits &lt; 356</code> as shown in <a href="#fig-tree-sub">Figure&nbsp;<span>12.2</span></a>. At the terminal nodes, you see the prediction of <code>lsalary</code>: <span class="math inline">\(12.47\)</span> for the left and <span class="math inline">\(14.23\)</span> for the right. These predictions are NOT honest. They are obtained from the observed values of <code>lsalary</code> within the node using the splitting data (the data the tree is trained for). Instead of using these prediction values, an honest prediction applied the splitting rules (<code>hits &lt; 356</code>) to the data reserved for prediction.s</p>
+<p>So the splitting rule is <code>hits &lt; 356</code> as shown in <a href="#fig-tree-sub">Figure&nbsp;<span>12.2</span></a>. At the terminal nodes, you see the prediction of <code>lsalary</code>: <span class="math inline">\(12.47\)</span> for the left and <span class="math inline">\(14.23\)</span> for the right. These predictions are NOT honest. They are obtained from the observed values of <code>lsalary</code> within the node using the splitting data (the data the tree is trained for). Instead of using these prediction values, an honest prediction applied the splitting rules (<code>hits &lt; 356</code>) to the data reserved for prediction.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>honest_pred <span class="ot">&lt;-</span> eval_data[, <span class="fu">mean</span>(lsalary), <span class="at">by =</span> hits <span class="sc">&lt;</span> <span class="dv">356</span>]</span>
@@ -783,13 +788,16 @@ $$
 </div>
 <p>So, instead of <span class="math inline">\(12.47\)</span> and <span class="math inline">\(14.23\)</span>, the predicted values from the honest tree are <span class="math inline">\(12.62\)</span> and <span class="math inline">\(14.43\)</span> for the left and right nodes, respectively. Trees are built in this manner many times to form a forest.</p>
 <p>More generally, in GRF, honesty is applied by using the evaluation data to solve <a href="#eq-opt">Equation&nbsp;<span>12.1</span></a> based on the weight <span class="math inline">\(\alpha_i(x)\)</span> derived from the trained forest using the splitting data. Honesty is required for the GRF estimator to be consistent and asymptotically normal <span class="citation" data-cites="athey2019generalized">(<a href="#ref-athey2019generalized" role="doc-biblioref">Athey, Tibshirani, and Wager 2019</a>)</span>. However, the application of honesty can do more damage than help when the sample size is small.</p>
-
-
+</section>
+<section id="references" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
 <div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
 <div id="ref-athey2019generalized" class="csl-entry" role="doc-biblioentry">
 Athey, Susan, Julie Tibshirani, and Stefan Wager. 2019. <span>“Generalized Random Forests.”</span> <em>The Annals of Statistics</em> 47 (2): 1148–78.
 </div>
 </div>
+
+
 </section>
 
 </main> <!-- /main -->
