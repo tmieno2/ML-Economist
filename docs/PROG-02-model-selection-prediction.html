@@ -341,7 +341,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#reticulate-implementation" id="toc-reticulate-implementation" class="nav-link active" data-scroll-target="#reticulate-implementation"> <span class="header-section-number">14.1</span> <code>reticulate</code> Implementation</a></li>
+  <li><a href="#python-implementation" id="toc-python-implementation" class="nav-link active" data-scroll-target="#python-implementation"> <span class="header-section-number">14.1</span> Python implementation</a></li>
+  <li><a href="#reticulate-implementation" id="toc-reticulate-implementation" class="nav-link" data-scroll-target="#reticulate-implementation"> <span class="header-section-number">14.2</span> <code>reticulate</code> Implementation</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/PROG-02-model-selection-prediction.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
@@ -364,8 +365,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
-<p>When you use a DML approach, the first stage estimations are prediction tasks. In this section, python codes to select a model for the first stage estimations are presented.</p>
-<p>Suppose you are considering multiple class of estimators with various sets of hyper-parameter values for each model class. We can use <code>GridSearchCVList()</code> from the <code>econml</code> pacakge to conduct cross-validation to see which model works the best in predicting <span class="math inline">\(E[Y|X, W]\)</span> and <span class="math inline">\(E[T|X, W]\)</span> in terms of CV MSE. <code>GridSearchCVList()</code> is an extension of <code>GridSearchCV()</code> from the <code>sklearn</code> package. While <code>GridSearchCV()</code> conducts CV for a <span style="color:blue"> single</span> model class with various sets of hyper-parameter values, <code>GridSearchCVList()</code> conducts CV for <span style="color:blue"> multiple</span> classes of models with various sets of hyper-parameter values.</p>
+<p>When you use a DML approach, the first stage estimations are prediction tasks. In this section, python codes (and the <code>reticulate</code> version of the python codes) to select a model for the first stage estimations are presented.</p>
+<section id="python-implementation" class="level2" data-number="14.1">
+<h2 data-number="14.1" class="anchored" data-anchor-id="python-implementation"><span class="header-section-number">14.1</span> Python implementation</h2>
+<p>Suppose you are considering multiple classes of estimators with various sets of hyper-parameter values for each model class. We can use <code>GridSearchCVList()</code> from the <code>econml</code> pacakge to conduct cross-validation to see which model works the best in predicting <span class="math inline">\(E[Y|X, W]\)</span> and <span class="math inline">\(E[T|X, W]\)</span> in terms of CV MSE. <code>GridSearchCVList()</code> is an extension of <code>GridSearchCV()</code> from the <code>sklearn</code> package. While <code>GridSearchCV()</code> conducts CV for a <span style="color:blue"> single</span> model class with various sets of hyper-parameter values, <code>GridSearchCVList()</code> conducts CV for <span style="color:blue"> multiple</span> classes of models with various sets of hyper-parameter values.</p>
 <p>Let’s go through an example use of <code>GridSearchCVList()</code>. First, we import all the functions we will be using.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestRegressor</span>
@@ -402,9 +405,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><code>cv</code>: Specification of how CV is conducted</li>
 </ul>
 <p>Let’s define them one by one.</p>
-<ul>
-<li><code>estimator_list</code></li>
-</ul>
+<blockquote class="blockquote">
+<p><code>estimator_list</code></p>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>est_list <span class="op">=</span> [</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    Lasso(max_iter<span class="op">=</span><span class="dv">1000</span>), </span>
@@ -413,9 +416,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>So, the model classes we consider are lasso, random forest, and boosted forest. Note that you can fix the value of parameters that you do not vary in CV. For example, <code>RandomForestRegressor(min_samples_leaf = 5)</code> sets <code>min_samples_leaf</code> at 5.</p>
-<ul>
-<li><code>param_grid</code></li>
-</ul>
+<blockquote class="blockquote">
+<p><code>param_grid</code></p>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>par_grid_list <span class="op">=</span> [</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"alpha"</span>: [<span class="fl">0.001</span>, <span class="fl">0.01</span>, <span class="fl">0.1</span>, <span class="dv">1</span>, <span class="dv">10</span>]},</span>
@@ -441,9 +444,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 12        10           20</code></pre>
 </div>
 </div>
-<ul>
-<li><code>cv</code></li>
-</ul>
+<blockquote class="blockquote">
+<p><code>cv</code></p>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>rk_cv <span class="op">=</span> RepeatedKFold(n_splits <span class="op">=</span> <span class="dv">4</span>, n_repeats <span class="op">=</span> <span class="dv">2</span>, random_state <span class="op">=</span> <span class="dv">123</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -483,8 +486,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">#=== train ===#</span></span>
 <span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>est.fit(Y, T, X<span class="op">=</span>X, W<span class="op">=</span>X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="reticulate-implementation" class="level2" data-number="14.1">
-<h2 data-number="14.1" class="anchored" data-anchor-id="reticulate-implementation"><span class="header-section-number">14.1</span> <code>reticulate</code> Implementation</h2>
+</section>
+<section id="reticulate-implementation" class="level2" data-number="14.2">
+<h2 data-number="14.2" class="anchored" data-anchor-id="reticulate-implementation"><span class="header-section-number">14.2</span> <code>reticulate</code> Implementation</h2>
 <p>Here is the R codes that does the same thing using the <code>reticulate</code> package.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>

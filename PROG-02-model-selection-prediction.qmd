@@ -1,8 +1,10 @@
 # Model Selection (Prediction)
 
-When you use a DML approach, the first stage estimations are prediction tasks. In this section, python codes to select a model for the first stage estimations are presented.
+When you use a DML approach, the first stage estimations are prediction tasks. In this section, python codes (and the `reticulate` version of the python codes) to select a model for the first stage estimations are presented.
 
-Suppose you are considering multiple class of estimators with various sets of hyper-parameter values for each model class. We can use `GridSearchCVList()` from the `econml` pacakge to conduct cross-validation to see which model works the best in predicting $E[Y|X, W]$ and $E[T|X, W]$ in terms of CV MSE. `GridSearchCVList()` is an extension of `GridSearchCV()` from the `sklearn` package. While `GridSearchCV()` conducts CV for a <span style="color:blue"> single</span> model class with various sets of hyper-parameter values, `GridSearchCVList()` conducts CV for <span style="color:blue"> multiple</span> classes of models with various sets of hyper-parameter values.
+## Python implementation
+
+Suppose you are considering multiple classes of estimators with various sets of hyper-parameter values for each model class. We can use `GridSearchCVList()` from the `econml` pacakge to conduct cross-validation to see which model works the best in predicting $E[Y|X, W]$ and $E[T|X, W]$ in terms of CV MSE. `GridSearchCVList()` is an extension of `GridSearchCV()` from the `sklearn` package. While `GridSearchCV()` conducts CV for a <span style="color:blue"> single</span> model class with various sets of hyper-parameter values, `GridSearchCVList()` conducts CV for <span style="color:blue"> multiple</span> classes of models with various sets of hyper-parameter values.
 
 Let's go through an example use of `GridSearchCVList()`. First, we import all the functions we will be using. 
 
@@ -45,7 +47,7 @@ Some of the key parameters for `GridSearchCVList()` are:
 
 Let's define them one by one.
 
-+ `estimator_list`
+> `estimator_list`
 
 ```{python}
 est_list = [
@@ -57,7 +59,7 @@ est_list = [
 
 So, the model classes we consider are lasso, random forest, and boosted forest. Note that you can fix the value of parameters that you do not vary in CV. For example, `RandomForestRegressor(min_samples_leaf = 5)` sets `min_samples_leaf` at 5. 
 
-+ `param_grid`
+> `param_grid`
 
 ```{python}
 par_grid_list = [
@@ -76,7 +78,7 @@ max_features <- c(3, 5, 10, 20)
 expand.grid(max_depth = max_depth, max_features = max_features)
 ```
 
-+ `cv`
+> `cv`
 
 ```{python}
 rk_cv = RepeatedKFold(n_splits = 4, n_repeats = 2, random_state = 123)
