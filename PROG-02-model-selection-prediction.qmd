@@ -1,6 +1,6 @@
 # Model Selection (Prediction)
 
-When you use a DML approach, the first stage estimations are prediction tasks. In this section, python codes (and the `reticulate` version of the python codes) to select a model for the first stage estimations are presented.
+When you use a DML approach, the first stage estimations are prediction tasks. In this section, R and python codes (and the `reticulate` version of the python codes) to select a model for the first stage estimations are presented.
 
 ## Python implementation
 
@@ -81,7 +81,10 @@ expand.grid(max_depth = max_depth, max_features = max_features)
 > `cv`
 
 ```{python}
-rk_cv = RepeatedKFold(n_splits = 4, n_repeats = 2, random_state = 123)
+rk_cv = RepeatedKFold(n_splits = 4, n_repeats = 3, random_state = 123)
+
+#=== check the number of splits ===#  
+rk_cv.get_n_splits()
 ```
 
 Cross-validation specification can be done using the `sklearn.model_selection` module. Here, we are using `RepeatedKFold`, and it is a 4-fold CV repeated 2 times.
@@ -92,10 +95,15 @@ Let's now specify `GridSearchCVList()` using the above parameters.
 first_stage = GridSearchCVList(
     estimator_list = est_list,
     param_grid_list= par_grid_list,
-    cv = rk_cv
+    cv = rk_cv,
+    scoring = "neg_mean_squared_error"
 )
 ```
 
+::: {.column-margin}
+[scoring](https://scikit-learn.org/stable/modules/model_evaluation.html#scoring-parameter)
+:::
+  
 We now conduct CV with the `fit()` method and then access the best estimator by referring to `best_estimator_` attribute.
 
 ```{python}
@@ -127,9 +135,9 @@ est = LinearDML(
 est.fit(Y, T, X=X, W=X)
 ```
 
-## `reticulate` Implementation
+## `reticulate` (Python) Implementation
 
-Here is the R codes that does the same thing using the `reticulate` package. 
+Here is the R codes that does the same thing as above using the `reticulate` package without needing to interact with Python console directly.  
 
 ```{r}
 #| eval: false 
@@ -152,11 +160,11 @@ np <- import("numpy")
 # Generate synthetic data
 #--------------------------
 #=== set parameters for data generation ===#
-n_samples <- as.integer(2000)
-n_features <- as.integer(20)
-n_informative <- as.integer(15)
-noise <- as.integer(2)
-rng <- np$random$RandomState(as.integer(8934))
+n_samples <- 2000L
+n_features <- 20L
+n_informative <- 15L
+noise <- 2L
+rng <- np$random$RandomState(8934L)
 
 #=== generate synthetic data ===#
 data <-
@@ -180,9 +188,9 @@ Y  <- data[[2]]
 #=== list of estimators ===#
 est_list <- 
   c(
-    sk_lm$Lasso(max_iter=as.integer(1000)), 
+    sk_lm$Lasso(max_iter=1000L), 
     sk_ensemble$GradientBoostingRegressor(),
-    sk_ensemble$RandomForestRegressor(min_samples_leaf = as.integer(5))
+    sk_ensemble$RandomForestRegressor(min_samples_leaf = 5L)
   ) 
 
 #=== list of parameter values ===#
@@ -202,16 +210,16 @@ par_grid_list <-
 #=== CV specification ===#
 rk_cv <- 
   sk_ms$RepeatedKFold(
-    n_splits = as.integer(4), 
-    n_repeats = as.integer(2), 
-    random_state = as.integer(123)
+    n_splits = 4L, 
+    n_repeats = 2L, 
+    random_state = 123L
   )
 
 #=== set up a GridSearchCVList ===#
 first_stage <-
   econml_sk_ms$GridSearchCVList(
     estimator_list = est_list,
-    param_grid_list= par_grid_list,
+    param_grid_list = par_grid_list,
     cv = rk_cv
   )
 
@@ -219,7 +227,7 @@ first_stage <-
 # Run CV
 #--------------------------
 #=== Y ===#
-model_y <- first_stage$fit(X, y)$best_estimator_
+model_y <- first_stage$fit(X, Y)$best_estimator_
 
 #=== T ===#
 model_t <- first_stage$fit(X, T)$best_estimator_
@@ -236,5 +244,8 @@ est = econml_dml$LinearDML(
 #=== train ===#
 est$fit(Y, T, X=X, W=X)
 ```
+
+## R implementation
+
 
 

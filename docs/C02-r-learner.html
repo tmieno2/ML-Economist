@@ -410,12 +410,12 @@ div.csl-indent {
 <section id="modeling-framework" class="level2" data-number="10.2">
 <h2 data-number="10.2" class="anchored" data-anchor-id="modeling-framework"><span class="header-section-number">10.2</span> Modeling Framework</h2>
 <p>The model of interest in a general form is as follows:</p>
-<p><span class="math display">\[
+<p><span id="eq-model-framework"><span class="math display">\[
 \begin{aligned}
 Y &amp; = \theta(X)\cdot T + g(X, W) + \varepsilon \\
 T &amp; = f(X, W) + \eta
 \end{aligned}
-\]</span> {#sec-model-framework}</p>
+\tag{10.1}\]</span></span></p>
 <ul>
 <li><span class="math inline">\(Y\)</span>: dependent variable</li>
 <li><span class="math inline">\(T\)</span>: treatment variable (can be either binary dummy or continuous)</li>
@@ -469,7 +469,7 @@ Y - E[Y|X, W] &amp; = \theta(X)\cdot (T - E[T|X,W]) + \varepsilon
 \begin{aligned}
 \hat{\theta} = argmin_{\theta} \;\; E[(\tilde{Y} - \theta(X)\cdot \tilde{T})^2]
 \end{aligned}
-\tag{10.1}\]</span></span></p>
+\tag{10.2}\]</span></span></p>
 </section>
 <section id="sec-est-steps" class="level3 page-columns page-full" data-number="10.3.2">
 <h3 data-number="10.3.2" class="anchored" data-anchor-id="sec-est-steps"><span class="header-section-number">10.3.2</span> Estimation steps</h3>
@@ -477,7 +477,7 @@ Y - E[Y|X, W] &amp; = \theta(X)\cdot (T - E[T|X,W]) + \varepsilon
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p>Just like the DML approach discussed in <a href="C01-dml.html"><span>Chapter&nbsp;9</span></a>, both <span class="math inline">\(Y\)</span> and <span class="math inline">\(T\)</span> are orthogonalized.</p>
-</div></div><p>Then the quality of fit (explaining the heterogeneity in the impact of treatment) can be expressed as follows, which is the empirical version of <a href="#eq-est-equation">Equation&nbsp;<span>10.1</span></a>:</p>
+</div></div><p>Then the quality of fit (explaining the heterogeneity in the impact of treatment) can be expressed as follows, which is the empirical version of <a href="#eq-est-equation">Equation&nbsp;<span>10.2</span></a>:</p>
 <p><span class="math display">\[
 \begin{aligned}
 \sum_{i=1}^N [Y_i - \hat{f}(X_i,W_i)^{I_{-i}} - \theta(X)\cdot (T_i - \hat{g}(X_i,W_i)^{I_{-i}})]^2
@@ -495,7 +495,7 @@ Y - E[Y|X, W] &amp; = \theta(X)\cdot (T - E[T|X,W]) + \varepsilon
 </section>
 <section id="r-leaner-example-linear-dml" class="level2 page-columns page-full" data-number="10.4">
 <h2 data-number="10.4" class="anchored" data-anchor-id="r-leaner-example-linear-dml"><span class="header-section-number">10.4</span> R-leaner Example: Linear DML</h2>
-<p>We saw a general R-learner framework for CATE estimation. We now look at an example of Linear DML, which uses a linear model at the final stage. So, we are assuming <span class="math inline">\(\theta(X)\)</span> can be written as follows in <span class="quarto-unresolved-ref">?sec-model-framework</span>:</p>
+<p>We saw a general R-learner framework for CATE estimation. We now look at an example of Linear DML, which uses a linear model at the final stage. So, we are assuming that <span class="math inline">\(\theta(X)\)</span> can be written as follows in <a href="#eq-model-framework">Equation&nbsp;<span>10.1</span></a>:</p>
 <p><span class="math display">\[
 \begin{aligned}
 \theta(X) = \alpha + \beta_1 x_1 + \beta_2 x_2 + \dots + \beta_k x_k

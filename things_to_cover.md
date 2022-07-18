@@ -83,5 +83,6 @@ https://www.r-bloggers.com/2020/04/how-to-run-pythons-scikit-learn-in-r-in-5-min
 #/*=================================================*/
 
 + https://daviddalpiaz.github.io/r4sl/
-
++[Predictive Modelin](https://bookdown.org/egarpor/PM-UC3M/)
+  - used this for local regression (Nadaraya-Watson estimator)
 

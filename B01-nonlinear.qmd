@@ -15,6 +15,7 @@ library(data.table)
 library(tidyverse)
 library(mgcv)
 library(parallel)
+library(patchwork)
 library(caret)
 ```
 
@@ -25,6 +26,7 @@ library(data.table)
 library(tidyverse)
 library(mgcv)
 library(parallel)
+library(patchwork)
 library(caret)
 ```
 :::
@@ -87,7 +89,7 @@ ggplot(plot_data) +
 
 None of the specifications do quite well. Indeed, you cannot represent the relationship well using well-known popular functional forms. Let's now look at methods that are flexible enough to capture the relationship. First, smoothing splines, and then K-nearest neighbor next. 
 
-## Smoothing Splines (semi-parametric)
+## Smoothing Splines (semi-parametric) {#sec-smoothing-splines}
 
 Detailed discussion of smoothing splines is out of the scope of this book. Only its basic ideas will be presented in this chapter. See @wood2006generalized for a fuller treatment of this topic.
 
@@ -321,44 +323,426 @@ You can see that the tuning of `sp` is successful and has resulted in a much bet
 
 ## Local Regression
 
-:::{.callout-note}
-Understanding what local regression helps you understand how generalized random forest works in @sec-grf.
+Local regression is a non-parametric method that predicts $y$ at the target value of $X$ (say $x_0$) using the observations that are "close" to it (called neighbors). One of such methods is Nadaraya-Watson (NW) estimator.
+
+Prediction of $y$ at a particular value of $X$ by the NW estimator takes the following steps:
+
+1. Find the weights for all the observations based on the choice of Kernel function ($K(\cdot)$) and bandwidth value ($h$)
+2. Calculate the weighted mean of $y$
+
+Mathematically, it can be written as follows:
+
+$$
+\begin{aligned}
+\hat{f}(X = x_0) & = \sum_{i=1}^N W_i(x_0)\cdot Y_i \\
+\mbox{where, } W_i(x_0) & = \frac{K(\frac{x_0 - X_i}{h})}{\sum_{i=1}^n K(\frac{x_0 - X_i}{h})}
+\end{aligned}
+$$
+
++ $K()$: Kernel function
++ $h$: bandwidth
+
+Note that $\sum_{i=1}^N W_i = 1$, and $W_i(x_0)$ is considered a weight for observation $i$. So, this estimator simply calculates the weighted average of observed values of the dependent variable. 
+
+Now, let's have a closer look at the weight. There are many types of Kernel functions. Some of them include
+
++ Uniform: $K(u) = 1/2\cdot I{|u| < 1}$ 
++ Epanechnikov: $K(u) = \frac{3}{4}(1-u^2)\cdot I{|u| < 1}$
++ Gaussian: $K(u) = \frac{1}{\sqrt{2\pi}}\cdot e^{-\frac{1}{2}u^2}$ (density function of standard normal distribution)
+
+::: {.column-margin}
+$I\{\cdot\}$ is an indicator function that takes 1 if the statement inside the curly brackets is true, and 0 otherwise.
+:::
+
+@fig-kernel presents graphical representations of these functions. 
+
+```{r}
+#| fig-cap: Kernel function examples
+#| label: fig-kernel 
+#| code-fold: true
+
+u_seq <- seq(-3, 3, length = 1000)
+
+uni_data <- 
+  data.table(
+    u = u_seq,
+    d = 1/2
+  ) %>% 
+  .[, type := "Uniform"] %>% 
+  .[abs(u) > 1, d := 0]
+
+epanechnikov_data <- 
+  data.table(
+    u = u_seq
+  ) %>% 
+  .[, d := 3 / 4 * (1-u^2)] %>% 
+  .[, type := "Epanechnikov"] %>% 
+  .[abs(u) > 1, d := 0]
+
+gaussian_data <-
+  data.table(
+    u = u_seq
+  ) %>% 
+  .[, d := dnorm(u)] %>% 
+  .[, type:= "Gaussian"]
+
+all_data <- 
+  rbind(uni_data, epanechnikov_data, gaussian_data) %>% 
+  .[, type := factor(type, levels = c("Uniform", "Epanechnikov", "Gaussian"))]
+
+ggplot(all_data) +
+  geom_line(aes(y = d, x = u), color = "blue") +
+  facet_grid(type ~ .) +
+  theme_bw()
+
+```
+
+Clearly, the choice of Kernel function affects the weights given to each observation. Bandwidth ($h$) determines how "local" the estimator is. The lower the value of $h$ is, the more "local" the estimator is. Let's see this using the uniform Kernel with bandwidth values of $2$ and $5$. We use the same data generated in @sec-smoothing-splines. Suppose we are interested in estimating `y` at `x = 100`. 
+
+@fig-weights presents the the data points on the first row for $h = 2$ (left) and $h=5$ (right) and corresponding weights on the second row $h = 2$ (left) and $h=5$ (right). 
+
+As you can see, when $h$ is higher, more data points will involve in estimating $y$: 5 observations when $h=2$ and 12 observations when $h=5$.
+
+```{r}
+#| fig-cap: Weights under h = 2 and h = 5.
+#| label: fig-weights
+#| echo: false
+#--------------------------
+# h = 2
+#--------------------------
+h <- 2
+
+kernel_data <- 
+  data.table(
+    x = seq(90, 110, length = 1000),
+    d = 1/2
+  ) %>% 
+  .[abs((x - 100)/h) > 1, d := 0]
+
+weight_data_h2 <- 
+  copy(data) %>% 
+  .[, u := (x - 100) / h] %>% 
+  .[, weight := fifelse(abs(u) <= 1, 1/2, 0)] %>% 
+  .[weight != 0, id := 1:.N]
+
+g_point_h2 <- 
+  ggplot() +
+  geom_point(
+    data = weight_data_h2, 
+    aes(y = y, x = x),
+    size = 0.5
+  ) +
+  geom_point(
+    data = weight_data_h2[weight != 0, ], 
+    aes(y = y, x = x),
+    color = "red"
+  ) + 
+  geom_text(
+    data = weight_data_h2[weight != 0, ], 
+    aes(y = y , x = x - 1, label = id),
+    color = "blue",
+    size = 3
+  ) + 
+  theme_bw() +
+  xlim(90, 110) +
+  ggtitle("Data points: h = 2")
+
+g_weight_h2 <-
+  ggplot() +
+  geom_line(
+    data = kernel_data,
+    aes(y = d, x = x)
+  )  +
+  geom_point(
+    data = weight_data_h2[weight!=0, ], 
+    aes(y = weight, x = x),
+    color = "red"
+  )  +
+  geom_point(
+    data = weight_data_h2[weight==0, ], 
+    aes(y = weight, x = x),
+    color = "black"
+  )  +
+  geom_text(
+    data = weight_data_h2[weight != 0, ], 
+    aes(y = weight + 0.02, x = x, label = id),
+    color = "blue",
+    size = 3
+  ) +
+  xlim(90, 110) +
+  theme_bw() +
+  ylab("K((x - 100)/h)") +
+  xlab("x") +
+  ggtitle("Corresponding weights: h = 2")
+
+g_h2 <- g_point_h2 / g_weight_h2
+
+#--------------------------
+# h = 2
+#--------------------------
+h <- 5
+
+kernel_data <- 
+  data.table(
+    x = seq(90, 110, length = 1000),
+    d = 1/2
+  ) %>% 
+  .[abs((x - 100)/h) > 1, d := 0]
+
+weight_data_h5 <- 
+  copy(data) %>% 
+  .[, u := (x - 100) / h] %>% 
+  .[, weight := fifelse(abs(u) <= 1, 1/2, 0)] %>% 
+  .[weight != 0, id := 1:.N]
+
+g_point_h5 <- 
+  ggplot() +
+  geom_point(
+    data = weight_data_h5, 
+    aes(y = y, x = x),
+    size = 0.5
+  ) +
+  geom_point(
+    data = weight_data_h5[weight != 0, ], 
+    aes(y = y, x = x),
+    color = "red"
+  ) + 
+  geom_text(
+    data = weight_data_h5[weight != 0, ], 
+    aes(y = y , x = x - 1, label = id),
+    color = "blue",
+    size = 3
+  ) + 
+  theme_bw() +
+  xlim(90, 110) +
+  ggtitle("Data points: h = 5")
+
+g_weight_h5 <-
+  ggplot() +
+  geom_line(
+    data = kernel_data,
+    aes(y = d, x = x)
+  )  +
+  geom_point(
+    data = weight_data_h5[weight!=0, ], 
+    aes(y = weight, x = x),
+    color = "red"
+  )  +
+  geom_point(
+    data = weight_data_h5[weight==0, ], 
+    aes(y = weight, x = x),
+    color = "black"
+  ) + 
+  geom_text(
+    data = weight_data_h5[weight != 0, ], 
+    aes(y = weight + 0.02, x = x, label = id),
+    color = "blue",
+    size = 3
+  ) +
+  xlim(90, 110) +
+  theme_bw() +
+  ylab("K((x - 100)/h)") +
+  xlab("x") +
+  ggtitle("Corresponding weights: h = 5")
+g_h5 <- g_point_h5 / g_weight_h5
+
+g_h2 | g_h5
+
+```
+
+Let's write a code to predict `y` at several different values of `x` using `data` for illustration. We will use the Epanechnikov Kernel function with bandwidth value of 10. First, we work on prediction at `x = 120`.
+
+
+```{r}
+x_0 <- 120
+h <- 10
+
+lr_data <-
+  copy(data) %>% 
+  #=== calculate u ===#
+  .[, u := (x - 120)/h] %>% 
+  #=== K(u) ===#
+  .[, k_of_u := 3 / 4 * (1-u^2)] %>% 
+  #=== turn k_of_u to 0 if abs(u) > 1  ===#
+  .[abs(u) >= 1, k_of_u := 0] %>% 
+  #=== find the weight ===#
+  .[, weight := k_of_u / sum(k_of_u)]
+```
+
+Here are the data points that have non-zero weights:
+
+```{r}
+lr_data[weight != 0, .(x, y, k_of_u, weight)]
+```
+
+We can then simply calculate the weighted mean.
+
+```{r}
+(
+y_hat_x120 <- lr_data[, sum(weight * y)]
+)
+```
+
+We can do this for many values of $X$ and and connects the dots to find the "fitted curve." First, let's define a function that predicts `y` at a particular value of `x` using the Epanechnikov Kernel function for a given value of $h$. 
+
+```{r}
+est_y_nw <- function(data, x0, h)
+{
+  y_hat <-
+    copy(data) %>% 
+    #=== calculate u ===#
+    .[, u := (x - x0)/h] %>% 
+    #=== K(u) ===#
+    .[, k_of_u := 3 / 4 * (1-u^2)] %>% 
+    #=== turn k_of_u to 0 if abs(u) > 1  ===#
+    .[abs(u) >= 1, k_of_u := 0] %>% 
+    #=== find the weight ===#
+    .[, weight := k_of_u / sum(k_of_u)] %>% 
+    .[, sum(weight * y)]
+
+  return(y_hat)
+}
+```
+
+Now, we do predictions at various values of `x`.
+
+```{r}
+#=== sequence of values of x to do predictions at ===#
+x_seq <- seq(data[, min(x)], data[, max(x)], length = 100)
+
+#=== predict ===#
+y_hat_seq <-
+  lapply(
+    x_seq,
+    function(x) est_y_nw(data, x, 10)
+  ) %>% 
+  unlist()
+```
+
+@fig-nw visualizes the prediction results. 
+
+```{r}
+#| code-fold: true
+#| fig-cap: Predictions at various values of x
+#| label: fig-nw
+data_plot <- 
+  data.table(
+    x = x_seq,
+    y_hat = y_hat_seq
+  )
+
+ggplot() +
+  geom_line(
+    data = data_plot,
+    aes(y = y_hat, x = x),
+    color = "red"
+  ) +
+  geom_point(
+    data = data_plot,
+    aes(y = y_hat, x = x),
+    color = "red"
+  ) +
+  geom_point(
+    data = data,
+    aes(y = y, x = x)
+  )
+```
+
+One critical difference between local non-parametric regression and smoothing splines is that the former fits the data locally (unless $h$ is very high) while smoothing splines fits the data globally (it uses all the data points to fit a single curve).
+
+Another important distinction between the two approaches is that local non-parametric regression requires going through the entire process above whenever predicting $y$ at a particular value of $X$. This means that you need the entire train dataset every time. On the other hand, once smoothing splines regression is conducted, then you no longer need the train data any more because the fitted curve is characterized completely by the basis functions and their estimated coefficients.
+
+
+Now, let's see how the choice of $h$ affects the fitted "curve." We will try `h = 2, 10, 20, 50`
+
+```{r}
+#| code-fold: true
+
+get_y_hat_given_h <- function(data, x_seq, h_val)
+{
+  y_hat_seq <-
+    lapply(
+      x_seq,
+      function(x) est_y_nw(data, x, h_val)
+    ) %>% 
+    unlist()
+
+  return_data <-
+    data.table(
+      x = x_seq,
+      y_hat = y_hat_seq
+    ) %>% 
+    .[, h := h_val]
+
+  return(return_data)
+}
+
+y_hat_h_various <- 
+  lapply(
+    c(2, 10, 20, 50),
+    function(x) get_y_hat_given_h(data, x_seq, x)
+  ) %>% 
+  rbindlist()
+```
+
+```{r}
+#| code-fold: true
+#| fig-cap: Fitted curves at different values of h 
+#| label: fig-fitted-curves-h
+ggplot(y_hat_h_various) +
+  geom_point(data = data, aes(y = y, x = x), size = 0.8) +
+  geom_line(aes(y = y_hat, x = x), color = "red") +
+  facet_wrap(h ~ .) 
+```
+
+As you can see in @fig-fitted-curves-h, at $h = 2$, the fitted curve is extremely wiggly and over-fitted. Increasing the value of $h$ make the fitted curves smoother. Nobody uses NW estimator for any practical applications when the problem at hand is high-dimensional as it suffers from the curse of dimensionality. However, NW estimator is a great example to illustrate the importance of the choice of an arbitrary parameter (hyper-parameter). As discussed above, we will later look at cross-validation as a way to tune hyper-parameters.
+
+### Local linear regression
+
+The NW estimator is a locally constant regression. You can see this from the fact that the NW estimator comes from solving the following minimization problem:
+
+$$
+\begin{aligned}
+\hat{f}(x = x_0) = argmin_{\alpha} \sum_{i=1}^N W_i(x_0)(Y_i - \alpha)^2
+\end{aligned}
+$$
+
+By modifying the objective function slightly, we will have local linear regression:
+
+$$
+\begin{aligned}
+\hat{f}(x = x_0) = argmin_{\alpha,\beta} \sum_{i=1}^N W_i(x_0)(Y_i - (\alpha + \beta x_i ))^2
+\end{aligned}
+$$
+
+Then the fitted value is given by $\hat{f}(x = x_0) = \hat{\alpha} + \hat{\beta} x_0$.
+
+You can of course make the function locally more flexible by including polynomials of $x. For example, this is a locally cubic regression.
+
+$$
+\begin{aligned}
+\hat{f}(x = x_0) = argmin_{\alpha,\beta} \sum_{i=1}^N W_i(x_0)(Y_i - (\alpha + \beta x_i^2 + \beta_2 x_i^2 + \beta_3 x_i^3))^2
+\end{aligned}
+$$
+
+We will see that a similar kind of minimization problem is solved in generalized random forest (GRF) in @sec-grf.
+
+:::{.callout-tip}
+Understanding what local regression is helps you understand how generalized random forest works in @sec-grf later.
 :::
 
 ### K-nearest neighbor
 
-The idea of K-nearest neighbor (KNN) regression (a special case of kernel regression with a uniform kernel) is very simple. The prediction of $y$ conditional on $x$ is simply the average of $y$ observed for the K closest (in terms of distance to $x$) observations in the data. 
+K-nearest neighbor (KNN) regression is a special case of local non-parametric regression. The prediction of $y$ conditional on $x$ is simply the average of $y$ observed for the K closest (in terms of distance to $x$) observations in the data. So, it is like the NW estimator with the uniform Kernel function. But, it is not a NW estimator because it does not fix the number of observations in the **neighbor**.  
 
-Let's illustrate the method using the `data` generated in @sec-functional-form. Suppose you are interested in estimating $E[y|x = 100]$. Here is a visualization of the 10 closest data points to $x = 100$. Blue points are the 10-closest observed data points. The red point is the 10-nearest neighbor estimate of $E[y|x = 100]$.
+::: {.column-margin}
+Predictions at points around a more densely populated area have larger numbers of observations in their **neighbors**.
+:::
 
-```{r}
-#| code-fold: true 
-
-neighbors <-
-  copy(data)[, abs_dist_100 := abs(x -100)] %>% 
-  .[order(abs_dist_100), ] %>%
-  .[1:10, ] 
-
-y_estimate <- neighbors[, mean(y)]
-
-ggplot() +
-  geom_point(data = data, aes(y = y, x = x), color = "darkgray") +
-  geom_point(data = neighbors, aes(y = y, x = x), color = "blue") +
-  geom_point(aes(y = y_estimate, x = 100), color = "red") +
-  geom_line(
-    data  = data.table(y = y_estimate, x = 0:100),
-    aes(y = y, x = x),
-    color = "red",
-    linetype = 2
-  )
-```
-
-One critical difference between KNN and smoothing splines is that KNN fits data locally while smoothing splines fit the data globally, meaning use all the data to fit a single curve at the same time. 
-
-The hyper-parameter for KNN regression is `k` (the number of neighbors). The choice of the value of $k$ has a dramatic impacts on the fitted curve.
-
+The hyper-parameter for KNN regression is `k` (the number of neighbors). The choice of the value of $k$ has a dramatic impacts on the fitted curve just like how the choice of $h$ affects the fitted curve by the NW estimator.
 
 ```{r}
+#| code-fold: true
 
 plot_data <-
   data.table(
@@ -384,7 +768,7 @@ ggplot() +
 
 ```
 
-As you can see, at `k` $= 1$, the fitted curve fits perfectly with the observed data, and it is highly over-fitted. While increasing `k` to $5$ alleviates the over-fitting problem, the fitted curve is still very much wiggly. Nobody uses KNN for any practical applications. However, KNN is great to illustrate the importance of the choice of an arbitrary parameter (hyper-parameter). As discussed above, we will later look at cross-validation as a way to tune hyper-parameters.  
+As you can see, at `k` $= 1$, the fitted curve fits perfectly with the observed data, and it is highly over-fitted. While increasing `k` to $5$ alleviates the over-fitting problem, the fitted curve is still very much wiggly. 
 
 ## Efficiency: Parametric vs Non-parametric Methods
 
@@ -488,7 +872,6 @@ ggplot(data = mc_results) +
   geom_vline(xintercept = log(2))
 
 ```
-
 
 
 
