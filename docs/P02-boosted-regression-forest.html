@@ -213,9 +213,10 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./preface.html" class="sidebar-item-text sidebar-link">Preface: Prediction v.s. Causal Inference</a>
+  <a href="./H00-preface.html" class="sidebar-item-text sidebar-link">Preface</a>
   </div>
 </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
         <a href="./basics.html" class="sidebar-item-text sidebar-link">Basics</a>
@@ -251,6 +252,7 @@ div.csl-indent {
 </li>
     </ul>
   </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
         <a href="./prediction-ml.html" class="sidebar-item-text sidebar-link">Prediction ML</a>
@@ -276,6 +278,7 @@ div.csl-indent {
 </li>
     </ul>
   </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
         <a href="./C00-causal-ml.html" class="sidebar-item-text sidebar-link">Causal Machine Learning (CML) Methods</a>
@@ -296,6 +299,7 @@ div.csl-indent {
 </li>
     </ul>
   </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
         <a href="./extensions.html" class="sidebar-item-text sidebar-link">Extensions</a>
@@ -316,6 +320,7 @@ div.csl-indent {
 </li>
     </ul>
   </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
         <a href="./PROG-00-programming.html" class="sidebar-item-text sidebar-link">Programming Guide</a>
@@ -326,12 +331,17 @@ div.csl-indent {
     <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PROG-01-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
+  <a href="./PROG-01-mlr3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Machine Learning with <code>mlr3</code> in R</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PROG-02-model-selection-prediction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Model Selection (Prediction)</span></a>
+  <a href="./PROG-02-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PROG-03-model-selection-prediction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Model Selection (Prediction)</span></a>
   </div>
 </li>
     </ul>
@@ -560,21 +570,21 @@ r_{i,b} = - \huge[\normalsize\frac{\partial L(y_i, f(x_i))}{\partial f(x_i)}\hug
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== see the MSE history ===#  </span></span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>gbm_fit<span class="sc">$</span>cv.error</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  [1] 1.2213569 1.1185884 1.0267527 0.9474581 0.8866438 0.8251186 0.7676034
-  [8] 0.7270800 0.6844398 0.6489554 0.6210889 0.5950647 0.5689451 0.5458108
- [15] 0.5218369 0.5030289 0.4930129 0.4778402 0.4666157 0.4572820 0.4459858
- [22] 0.4375978 0.4304367 0.4241305 0.4210573 0.4166940 0.4129243 0.4101441
- [29] 0.4059875 0.4022162 0.3979738 0.3939459 0.3919195 0.3902685 0.3864018
- [36] 0.3858989 0.3855134 0.3836101 0.3803490 0.3784761 0.3780014 0.3753900
- [43] 0.3756802 0.3747641 0.3732770 0.3715543 0.3697209 0.3675155 0.3680625
- [50] 0.3666774 0.3665481 0.3652653 0.3658542 0.3655006 0.3652547 0.3655695
- [57] 0.3671875 0.3660913 0.3647287 0.3648674 0.3645317 0.3637830 0.3632035
- [64] 0.3620029 0.3618092 0.3613029 0.3609949 0.3609139 0.3619402 0.3614924
- [71] 0.3606139 0.3608170 0.3590640 0.3590367 0.3607542 0.3612624 0.3611010
- [78] 0.3604650 0.3599574 0.3595088 0.3585119 0.3591625 0.3584494 0.3583900
- [85] 0.3585081 0.3574537 0.3574026 0.3575942 0.3575650 0.3563738 0.3568405
- [92] 0.3572665 0.3576583 0.3573447 0.3577984 0.3586195 0.3586741 0.3576050
- [99] 0.3575519 0.3569290</code></pre>
+<pre><code>  [1] 1.2312853 1.1208626 1.0300263 0.9426954 0.8747580 0.8171035 0.7637346
+  [8] 0.7181916 0.6735201 0.6374264 0.6084940 0.5864886 0.5587326 0.5407685
+ [15] 0.5205056 0.5032916 0.4906488 0.4766873 0.4667972 0.4564071 0.4450166
+ [22] 0.4369528 0.4281947 0.4181177 0.4121255 0.4096455 0.4069479 0.4017255
+ [29] 0.3997547 0.3972802 0.3939247 0.3924261 0.3900370 0.3893408 0.3866535
+ [36] 0.3841372 0.3815904 0.3804404 0.3775971 0.3769400 0.3765199 0.3761447
+ [43] 0.3754923 0.3749039 0.3743577 0.3724797 0.3736561 0.3716188 0.3704288
+ [50] 0.3696292 0.3691988 0.3672440 0.3671881 0.3674223 0.3666126 0.3666750
+ [57] 0.3656464 0.3649801 0.3651326 0.3647448 0.3652844 0.3649664 0.3639018
+ [64] 0.3644965 0.3651666 0.3655160 0.3655834 0.3655083 0.3663305 0.3654180
+ [71] 0.3659607 0.3658882 0.3649535 0.3664140 0.3669551 0.3671955 0.3675281
+ [78] 0.3681239 0.3679226 0.3678824 0.3674731 0.3666094 0.3660311 0.3663215
+ [85] 0.3669840 0.3678513 0.3677954 0.3683224 0.3671354 0.3677760 0.3688309
+ [92] 0.3681160 0.3674962 0.3679523 0.3672931 0.3675060 0.3671446 0.3648886
+ [99] 0.3640371 0.3632712</code></pre>
 </div>
 </div>
 <p>You can visualize the CV results using <code>gbm.perf()</code>.</p>
@@ -584,7 +594,7 @@ r_{i,b} = - \huge[\normalsize\frac{\partial L(y_i, f(x_i))}{\partial f(x_i)}\hug
 <p><img src="P02-boosted-regression-forest_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 90</code></pre>
+<pre><code>[1] 100</code></pre>
 </div>
 </div>
 <p>Note that it will tell you what the optimal number of trees is <span style="color:blue"> given </span> the values of the other hyper-parameters (here default values). If you want to tune other parameters as well, you need to program it yourself.</p>

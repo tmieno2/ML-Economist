@@ -1,0 +1,2403 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-0.9.629">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Introduction to Machine Learning for Economists - 13&nbsp; Machine Learning with mlr3 in R</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./PROG-02-reticulate.html" rel="next">
+<link href="./PROG-00-programming.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<link href="style.css" rel="stylesheet" type="text/css">
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-45VKT2HZSL"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+
+  gtag('config', 'G-45VKT2HZSL');
+</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating slimcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Machine Learning with <code>mlr3</code> in R</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Introduction to Machine Learning for Economists</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/tmieno2/ML-Economist" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+    <a href="" title="Share" id="sidebar-tool-dropdown-0" class="sidebar-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-share"></i></a>
+    <ul class="dropdown-menu" aria-labelledby="sidebar-tool-dropdown-0">
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=|url|">
+            <i class="bi bi-bi-twitter pe-1"></i>
+          Twitter
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
+            <i class="bi bi-bi-facebook pe-1"></i>
+          Facebook
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://www.linkedin.com/sharing/share-offsite/?url=|url|">
+            <i class="bi bi-bi-linkedin pe-1"></i>
+          LinkedIn
+          </a>
+        </li>
+    </ul>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Welcome</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./H00-preface.html" class="sidebar-item-text sidebar-link">Preface</a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="./basics.html" class="sidebar-item-text sidebar-link">Basics</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./B01-nonlinear.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Non-linear function estimation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./B02-bias-variance-tradeoff.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Bias-variance Trade-off</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./B03-cross-validation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Cross-validation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./B04-regularization.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Regression Shrinkage Methods</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./B05-bootstrap.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Bootstrap</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="./prediction-ml.html" class="sidebar-item-text sidebar-link">Prediction ML</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./P01-random-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Random Forest</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./P02-boosted-regression-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Boosted Regression Forest</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./P03-xgb.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Extreme Gradient Boosting</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="./C00-causal-ml.html" class="sidebar-item-text sidebar-link">Causal Machine Learning (CML) Methods</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./C01-dml.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Double Machine Learning</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./C02-r-learner.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">R-learner</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="./extensions.html" class="sidebar-item-text sidebar-link">Extensions</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./E01-spatial-cv.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./E02-grf.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Generalized Random Forest</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="./PROG-00-programming.html" class="sidebar-item-text sidebar-link">Programming Guide</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PROG-01-mlr3.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Machine Learning with <code>mlr3</code> in R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PROG-02-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PROG-03-model-selection-prediction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Model Selection (Prediction)</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">Appendices</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./A01-mc-simulation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Monte Carlo (MC) Simulation</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#tasks" id="toc-tasks" class="nav-link active" data-scroll-target="#tasks"> <span class="header-section-number">13.1</span> Tasks</a></li>
+  <li><a href="#learners" id="toc-learners" class="nav-link" data-scroll-target="#learners"> <span class="header-section-number">13.2</span> Learners</a></li>
+  <li><a href="#train-predict-assessment" id="toc-train-predict-assessment" class="nav-link" data-scroll-target="#train-predict-assessment"> <span class="header-section-number">13.3</span> Train, predict, assessment</a>
+  <ul class="collapse">
+  <li><a href="#train" id="toc-train" class="nav-link" data-scroll-target="#train"> <span class="header-section-number">13.3.1</span> Train</a></li>
+  <li><a href="#prediction" id="toc-prediction" class="nav-link" data-scroll-target="#prediction"> <span class="header-section-number">13.3.2</span> Prediction</a></li>
+  <li><a href="#performance-assessment" id="toc-performance-assessment" class="nav-link" data-scroll-target="#performance-assessment"> <span class="header-section-number">13.3.3</span> Performance assessment</a></li>
+  </ul></li>
+  <li><a href="#resampling-cross-validation-and-cross-fitting" id="toc-resampling-cross-validation-and-cross-fitting" class="nav-link" data-scroll-target="#resampling-cross-validation-and-cross-fitting"> <span class="header-section-number">13.4</span> Resampling, cross-validation, and cross-fitting</a>
+  <ul class="collapse">
+  <li><a href="#resampling" id="toc-resampling" class="nav-link" data-scroll-target="#resampling"> <span class="header-section-number">13.4.1</span> Resampling</a></li>
+  <li><a href="#cross-validation-and-cross-fitting" id="toc-cross-validation-and-cross-fitting" class="nav-link" data-scroll-target="#cross-validation-and-cross-fitting"> <span class="header-section-number">13.4.2</span> Cross-validation and cross-fitting</a></li>
+  </ul></li>
+  <li><a href="#hyper-parameter-tuning" id="toc-hyper-parameter-tuning" class="nav-link" data-scroll-target="#hyper-parameter-tuning"> <span class="header-section-number">13.5</span> Hyper-parameter tuning</a>
+  <ul class="collapse">
+  <li><a href="#tuninginstance" id="toc-tuninginstance" class="nav-link" data-scroll-target="#tuninginstance"> <span class="header-section-number">13.5.1</span> TuningInstance</a></li>
+  <li><a href="#tuner" id="toc-tuner" class="nav-link" data-scroll-target="#tuner"> <span class="header-section-number">13.5.2</span> Tuner</a></li>
+  <li><a href="#tuning" id="toc-tuning" class="nav-link" data-scroll-target="#tuning"> <span class="header-section-number">13.5.3</span> Tuning</a></li>
+  <li><a href="#autotuner" id="toc-autotuner" class="nav-link" data-scroll-target="#autotuner"> <span class="header-section-number">13.5.4</span> AutoTuner</a></li>
+  </ul></li>
+  <li><a href="#mlr3-in-action" id="toc-mlr3-in-action" class="nav-link" data-scroll-target="#mlr3-in-action"> <span class="header-section-number">13.6</span> <code>mlr3</code> in action</a>
+  <ul class="collapse">
+  <li><a href="#first-stage" id="toc-first-stage" class="nav-link" data-scroll-target="#first-stage"> <span class="header-section-number">13.6.1</span> First stage</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/PROG-01-mlr3.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Machine Learning with <code>mlr3</code> in R</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<p>The <code>mlr3</code> package is an R package that makes it easy for you to implement standard machine learning procedures (e.g., training, prediction, cross-validation) in a unified framework. It is similar to the Python scikit-learn package. In this section, we cover the basic use cases of the <code>mlr3</code> package accompanied by an real-world example at the end. The authors of the package is currently writing a <a href="https://mlr3book.mlr-org.com/02-basics-learners.html">book</a> on how to use it. Materials covered in this section is basically a condensed (and far less comprehensive) version of the book. Yet, they should still be sufficient for the majority of ML tasks you typically implement in practice.</p>
+<p>To start working with <code>mlr3</code>, it is convenient to load the <code>mlr3verse</code> package, which is a collection of packages that provide useful extensions (e.g., quick visualization (<code>mlr3viz</code>), machine learning methods (<code>mlr3leaners</code>), etc). It is like the <code>tidyverse</code> package.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>See <a href="https://github.com/mlr-org/mlr3verse">here</a> for the list of included packages.</p>
+</div></div><div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlr3verse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>An alternative ML utility package in R is the <code>tidymodels</code> package. In this book, we do not cover how to use the package. Interested readers can read an excellent free on-line book <a href="https://www.tmwr.org/">here</a>.</p>
+</div>
+</div>
+<p>For those who have been using solely R for their programming needs are not likely to be familiar with the way <code>mlr3</code> works. It uses R6 classes provided the <code>R6</code> package. The package provides an implementation of encapsulated object-oriented programing, which how Python works. So, if you are familiar with Python, then <code>mlr3</code> should come quite natural to you. Fortunately, understanding how <code>R6</code> works is not too hard (especially for us who are just using it). Reading the introduction of the <code>R6</code> provided <a href="https://r6.r-lib.org/articles/Introduction.html">here</a> should suffice.</p>
+<p>To implement ML tasks, we need two core components at least: task, and learner. Roughly speaking, here are what they are.</p>
+<ul>
+<li>Task: data</li>
+<li>Learner: model</li>
+</ul>
+<p>We will take a deeper look at these two components first, and then training, prediction, and other ML tasks.</p>
+<section id="tasks" class="level2 page-columns page-full" data-number="13.1">
+<h2 data-number="13.1" class="anchored" data-anchor-id="tasks"><span class="header-section-number">13.1</span> Tasks</h2>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><strong>Packages to load for replication</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DoubleML)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlr3verse)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mltools)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(parallel)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div></div><p>A task in the <code>mlr3</code> parlance is basically a dataset (called <code>backend</code>) with information on which variable is the dependent variable (called <code>target</code>) and which variables are explanatory variables (called <code>features</code>).</p>
+<p>Here, we will use <code>mtcars</code> data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== load mtcars ===#</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"mtcars"</span>, <span class="at">package =</span> <span class="st">"datasets"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#=== see the first 6 rows ===#</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(mtcars)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   mpg cyl disp  hp drat    wt  qsec vs am gear carb
+Mazda RX4         21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
+Mazda RX4 Wag     21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
+Datsun 710        22.8   4  108  93 3.85 2.320 18.61  1  1    4    1
+Hornet 4 Drive    21.4   6  258 110 3.08 3.215 19.44  1  0    3    1
+Hornet Sportabout 18.7   8  360 175 3.15 3.440 17.02  0  0    3    2
+Valiant           18.1   6  225 105 2.76 3.460 20.22  1  0    3    1</code></pre>
+</div>
+</div>
+<p>When you create a task, you need to recognize what type of analysis you will be doing and use an appropriate class. Here, we will be running regression, so we use the <code>TaskRegr</code> class (see <a href="https://mlr3book.mlr-org.com/02-basics-tasks.html#tasks-types">here</a> for other task types).</p>
+<p>Now, let’s create a task using the <code>TaskRegr</code> class with</p>
+<ul>
+<li><code>mtcars</code> as <code>backend</code> (data)</li>
+<li><code>mpg</code> as <code>target</code> (dependent variable)</li>
+<li><code>example</code> as <code>id</code> (this is the id for the task, you can give any name)</li>
+</ul>
+<p>You can instantiate a new <code>TaskRegr</code> instance using the <code>new()</code> methods on the <code>TaskRegr</code> class.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>reg_task <span class="ot">&lt;-</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  TaskRegr<span class="sc">$</span><span class="fu">new</span>(</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">id =</span> <span class="st">"example"</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">backend =</span> mtcars,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">target =</span> <span class="st">"mpg"</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;TaskRegr:example&gt; (32 x 11)
+* Target: mpg
+* Properties: -
+* Features (10):
+  - dbl (10): am, carb, cyl, disp, drat, gear, hp, qsec, vs, wt</code></pre>
+</div>
+</div>
+<p>As you can see, <code>mpg</code> is the <code>Target</code> and the rest was automatically set to <code>Features</code>.</p>
+<p>You can use the <code>cole_roles()</code> method to return the roles of the variables.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>reg_task<span class="sc">$</span>col_roles </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$feature
+ [1] "am"   "carb" "cyl"  "disp" "drat" "gear" "hp"   "qsec" "vs"   "wt"  
+
+$target
+[1] "mpg"
+
+$name
+character(0)
+
+$order
+character(0)
+
+$stratum
+character(0)
+
+$group
+character(0)
+
+$weight
+character(0)</code></pre>
+</div>
+</div>
+<p>You can extract information from the task using various methods:</p>
+<ul>
+<li>$nrow: returns the number of rows</li>
+<li>$ncol: returns the number of columns</li>
+<li>$feature_names: returns the name of the feature variables</li>
+<li>$target_names: returns the name of the target variable(s)</li>
+<li>$row_ids: return row ids (integers starting from 1 to the number of rows)</li>
+<li>$data(): returns the backend (data) as a <code>data.table</code></li>
+</ul>
+<p>Let’s see some of these.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== row ids ===#</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>reg_task<span class="sc">$</span>row_ids</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
+[26] 26 27 28 29 30 31 32</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== data ===#</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>reg_task<span class="sc">$</span><span class="fu">data</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     mpg am carb cyl  disp drat gear  hp  qsec vs    wt
+ 1: 21.0  1    4   6 160.0 3.90    4 110 16.46  0 2.620
+ 2: 21.0  1    4   6 160.0 3.90    4 110 17.02  0 2.875
+ 3: 22.8  1    1   4 108.0 3.85    4  93 18.61  1 2.320
+ 4: 21.4  0    1   6 258.0 3.08    3 110 19.44  1 3.215
+ 5: 18.7  0    2   8 360.0 3.15    3 175 17.02  0 3.440
+ 6: 18.1  0    1   6 225.0 2.76    3 105 20.22  1 3.460
+ 7: 14.3  0    4   8 360.0 3.21    3 245 15.84  0 3.570
+ 8: 24.4  0    2   4 146.7 3.69    4  62 20.00  1 3.190
+ 9: 22.8  0    2   4 140.8 3.92    4  95 22.90  1 3.150
+10: 19.2  0    4   6 167.6 3.92    4 123 18.30  1 3.440
+11: 17.8  0    4   6 167.6 3.92    4 123 18.90  1 3.440
+12: 16.4  0    3   8 275.8 3.07    3 180 17.40  0 4.070
+13: 17.3  0    3   8 275.8 3.07    3 180 17.60  0 3.730
+14: 15.2  0    3   8 275.8 3.07    3 180 18.00  0 3.780
+15: 10.4  0    4   8 472.0 2.93    3 205 17.98  0 5.250
+16: 10.4  0    4   8 460.0 3.00    3 215 17.82  0 5.424
+17: 14.7  0    4   8 440.0 3.23    3 230 17.42  0 5.345
+18: 32.4  1    1   4  78.7 4.08    4  66 19.47  1 2.200
+19: 30.4  1    2   4  75.7 4.93    4  52 18.52  1 1.615
+20: 33.9  1    1   4  71.1 4.22    4  65 19.90  1 1.835
+21: 21.5  0    1   4 120.1 3.70    3  97 20.01  1 2.465
+22: 15.5  0    2   8 318.0 2.76    3 150 16.87  0 3.520
+23: 15.2  0    2   8 304.0 3.15    3 150 17.30  0 3.435
+24: 13.3  0    4   8 350.0 3.73    3 245 15.41  0 3.840
+25: 19.2  0    2   8 400.0 3.08    3 175 17.05  0 3.845
+26: 27.3  1    1   4  79.0 4.08    4  66 18.90  1 1.935
+27: 26.0  1    2   4 120.3 4.43    5  91 16.70  0 2.140
+28: 30.4  1    2   4  95.1 3.77    5 113 16.90  1 1.513
+29: 15.8  1    4   8 351.0 4.22    5 264 14.50  0 3.170
+30: 19.7  1    6   6 145.0 3.62    5 175 15.50  0 2.770
+31: 15.0  1    8   8 301.0 3.54    5 335 14.60  0 3.570
+32: 21.4  1    2   4 121.0 4.11    4 109 18.60  1 2.780
+     mpg am carb cyl  disp drat gear  hp  qsec vs    wt</code></pre>
+</div>
+</div>
+<p>It is possible to retrieve only a portion of the data using <code>rows</code> and <code>cols</code> options inside <code>data()</code> as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>reg_task<span class="sc">$</span><span class="fu">data</span>(<span class="at">rows =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"mpg"</span>, <span class="st">'wt'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     mpg    wt
+ 1: 21.0 2.620
+ 2: 21.0 2.875
+ 3: 22.8 2.320
+ 4: 21.4 3.215
+ 5: 18.7 3.440
+ 6: 18.1 3.460
+ 7: 14.3 3.570
+ 8: 24.4 3.190
+ 9: 22.8 3.150
+10: 19.2 3.440</code></pre>
+</div>
+</div>
+<p>To retrieve the complete data from the task, you can apply <code>as.data.table()</code> to the task.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>data_extracted <span class="ot">&lt;-</span> <span class="fu">as.data.table</span>(reg_task)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     mpg am carb cyl  disp drat gear  hp  qsec vs    wt
+ 1: 21.0  1    4   6 160.0 3.90    4 110 16.46  0 2.620
+ 2: 21.0  1    4   6 160.0 3.90    4 110 17.02  0 2.875
+ 3: 22.8  1    1   4 108.0 3.85    4  93 18.61  1 2.320
+ 4: 21.4  0    1   6 258.0 3.08    3 110 19.44  1 3.215
+ 5: 18.7  0    2   8 360.0 3.15    3 175 17.02  0 3.440
+ 6: 18.1  0    1   6 225.0 2.76    3 105 20.22  1 3.460
+ 7: 14.3  0    4   8 360.0 3.21    3 245 15.84  0 3.570
+ 8: 24.4  0    2   4 146.7 3.69    4  62 20.00  1 3.190
+ 9: 22.8  0    2   4 140.8 3.92    4  95 22.90  1 3.150
+10: 19.2  0    4   6 167.6 3.92    4 123 18.30  1 3.440
+11: 17.8  0    4   6 167.6 3.92    4 123 18.90  1 3.440
+12: 16.4  0    3   8 275.8 3.07    3 180 17.40  0 4.070
+13: 17.3  0    3   8 275.8 3.07    3 180 17.60  0 3.730
+14: 15.2  0    3   8 275.8 3.07    3 180 18.00  0 3.780
+15: 10.4  0    4   8 472.0 2.93    3 205 17.98  0 5.250
+16: 10.4  0    4   8 460.0 3.00    3 215 17.82  0 5.424
+17: 14.7  0    4   8 440.0 3.23    3 230 17.42  0 5.345
+18: 32.4  1    1   4  78.7 4.08    4  66 19.47  1 2.200
+19: 30.4  1    2   4  75.7 4.93    4  52 18.52  1 1.615
+20: 33.9  1    1   4  71.1 4.22    4  65 19.90  1 1.835
+21: 21.5  0    1   4 120.1 3.70    3  97 20.01  1 2.465
+22: 15.5  0    2   8 318.0 2.76    3 150 16.87  0 3.520
+23: 15.2  0    2   8 304.0 3.15    3 150 17.30  0 3.435
+24: 13.3  0    4   8 350.0 3.73    3 245 15.41  0 3.840
+25: 19.2  0    2   8 400.0 3.08    3 175 17.05  0 3.845
+26: 27.3  1    1   4  79.0 4.08    4  66 18.90  1 1.935
+27: 26.0  1    2   4 120.3 4.43    5  91 16.70  0 2.140
+28: 30.4  1    2   4  95.1 3.77    5 113 16.90  1 1.513
+29: 15.8  1    4   8 351.0 4.22    5 264 14.50  0 3.170
+30: 19.7  1    6   6 145.0 3.62    5 175 15.50  0 2.770
+31: 15.0  1    8   8 301.0 3.54    5 335 14.60  0 3.570
+32: 21.4  1    2   4 121.0 4.11    4 109 18.60  1 2.780
+     mpg am carb cyl  disp drat gear  hp  qsec vs    wt</code></pre>
+</div>
+</div>
+<p>You can mutate tasks using the <code>select()</code> and <code>filter()</code> methods. It is important to remember here that the instance at which these mutations are implemented is indeed mutated. Let’s see what I mean by this.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== first select few variables ===#</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>reg_task<span class="sc">$</span><span class="fu">select</span>(<span class="fu">c</span>(<span class="st">"am"</span>, <span class="st">"carb"</span>, <span class="st">"cyl"</span>))</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co">#=== see the backend now ===#</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>reg_task<span class="sc">$</span><span class="fu">data</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     mpg am carb cyl
+ 1: 21.0  1    4   6
+ 2: 21.0  1    4   6
+ 3: 22.8  1    1   4
+ 4: 21.4  0    1   6
+ 5: 18.7  0    2   8
+ 6: 18.1  0    1   6
+ 7: 14.3  0    4   8
+ 8: 24.4  0    2   4
+ 9: 22.8  0    2   4
+10: 19.2  0    4   6
+11: 17.8  0    4   6
+12: 16.4  0    3   8
+13: 17.3  0    3   8
+14: 15.2  0    3   8
+15: 10.4  0    4   8
+16: 10.4  0    4   8
+17: 14.7  0    4   8
+18: 32.4  1    1   4
+19: 30.4  1    2   4
+20: 33.9  1    1   4
+21: 21.5  0    1   4
+22: 15.5  0    2   8
+23: 15.2  0    2   8
+24: 13.3  0    4   8
+25: 19.2  0    2   8
+26: 27.3  1    1   4
+27: 26.0  1    2   4
+28: 30.4  1    2   4
+29: 15.8  1    4   8
+30: 19.7  1    6   6
+31: 15.0  1    8   8
+32: 21.4  1    2   4
+     mpg am carb cyl</code></pre>
+</div>
+</div>
+<p>As you can see, <code>reg_task</code> now holds only the variables that were selected (plus the target variable <code>mpg</code>). This behavior is similar to how <code>data.table</code> works when you create a new variable using <code>data[, := ]</code> syntax. And, this is different from how <code>dplyr::select</code> works.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== create a dataset ===#</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>data_temp <span class="ot">&lt;-</span> reg_task<span class="sc">$</span><span class="fu">data</span>()</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co">#=== select mpg, carb ===#</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>dplyr<span class="sc">::</span><span class="fu">select</span>(data_temp, mpg, carb)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     mpg carb
+ 1: 21.0    4
+ 2: 21.0    4
+ 3: 22.8    1
+ 4: 21.4    1
+ 5: 18.7    2
+ 6: 18.1    1
+ 7: 14.3    4
+ 8: 24.4    2
+ 9: 22.8    2
+10: 19.2    4
+11: 17.8    4
+12: 16.4    3
+13: 17.3    3
+14: 15.2    3
+15: 10.4    4
+16: 10.4    4
+17: 14.7    4
+18: 32.4    1
+19: 30.4    2
+20: 33.9    1
+21: 21.5    1
+22: 15.5    2
+23: 15.2    2
+24: 13.3    4
+25: 19.2    2
+26: 27.3    1
+27: 26.0    2
+28: 30.4    2
+29: 15.8    4
+30: 19.7    6
+31: 15.0    8
+32: 21.4    2
+     mpg carb</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== look at data_temp ===#</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>data_temp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     mpg am carb cyl
+ 1: 21.0  1    4   6
+ 2: 21.0  1    4   6
+ 3: 22.8  1    1   4
+ 4: 21.4  0    1   6
+ 5: 18.7  0    2   8
+ 6: 18.1  0    1   6
+ 7: 14.3  0    4   8
+ 8: 24.4  0    2   4
+ 9: 22.8  0    2   4
+10: 19.2  0    4   6
+11: 17.8  0    4   6
+12: 16.4  0    3   8
+13: 17.3  0    3   8
+14: 15.2  0    3   8
+15: 10.4  0    4   8
+16: 10.4  0    4   8
+17: 14.7  0    4   8
+18: 32.4  1    1   4
+19: 30.4  1    2   4
+20: 33.9  1    1   4
+21: 21.5  0    1   4
+22: 15.5  0    2   8
+23: 15.2  0    2   8
+24: 13.3  0    4   8
+25: 19.2  0    2   8
+26: 27.3  1    1   4
+27: 26.0  1    2   4
+28: 30.4  1    2   4
+29: 15.8  1    4   8
+30: 19.7  1    6   6
+31: 15.0  1    8   8
+32: 21.4  1    2   4
+     mpg am carb cyl</code></pre>
+</div>
+</div>
+<p>As you can see, <code>data_temp</code> is not mutated after <code>select()</code>. To save the the result of <code>dplyr::select()</code>, you need to explicitly assign it to another R object.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>The target variable cannot be selected in <code>select()</code>. It is automatically selected.</p>
+</div></div><p>If you would like to keep the original task, you can use the <code>clone()</code> method to create a distinct instance.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== create a clone ===#</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>reg_task_independent <span class="ot">&lt;-</span> reg_task<span class="sc">$</span><span class="fu">clone</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s filter the data using the <code>filter()</code> method.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== filter ===#</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>reg_task<span class="sc">$</span><span class="fu">filter</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co">#=== see the backend ===#</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>reg_task<span class="sc">$</span><span class="fu">data</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     mpg am carb cyl
+ 1: 21.0  1    4   6
+ 2: 21.0  1    4   6
+ 3: 22.8  1    1   4
+ 4: 21.4  0    1   6
+ 5: 18.7  0    2   8
+ 6: 18.1  0    1   6
+ 7: 14.3  0    4   8
+ 8: 24.4  0    2   4
+ 9: 22.8  0    2   4
+10: 19.2  0    4   6</code></pre>
+</div>
+</div>
+<p>However, <code>reg_task_independent</code> is not affected.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>reg_task_independent<span class="sc">$</span><span class="fu">data</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     mpg am carb cyl
+ 1: 21.0  1    4   6
+ 2: 21.0  1    4   6
+ 3: 22.8  1    1   4
+ 4: 21.4  0    1   6
+ 5: 18.7  0    2   8
+ 6: 18.1  0    1   6
+ 7: 14.3  0    4   8
+ 8: 24.4  0    2   4
+ 9: 22.8  0    2   4
+10: 19.2  0    4   6
+11: 17.8  0    4   6
+12: 16.4  0    3   8
+13: 17.3  0    3   8
+14: 15.2  0    3   8
+15: 10.4  0    4   8
+16: 10.4  0    4   8
+17: 14.7  0    4   8
+18: 32.4  1    1   4
+19: 30.4  1    2   4
+20: 33.9  1    1   4
+21: 21.5  0    1   4
+22: 15.5  0    2   8
+23: 15.2  0    2   8
+24: 13.3  0    4   8
+25: 19.2  0    2   8
+26: 27.3  1    1   4
+27: 26.0  1    2   4
+28: 30.4  1    2   4
+29: 15.8  1    4   8
+30: 19.7  1    6   6
+31: 15.0  1    8   8
+32: 21.4  1    2   4
+     mpg am carb cyl</code></pre>
+</div>
+</div>
+<p>You can use the <code>rbind()</code> and <code>cbind()</code> methods to append data vertically and horizontally, respectively.</p>
+<p>Here is an example use of <code>rbind()</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>reg_task<span class="sc">$</span><span class="fu">rbind</span>(</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>(<span class="at">mpg =</span> <span class="dv">20</span>, <span class="at">am =</span> <span class="dv">1</span>, <span class="at">carb =</span> <span class="dv">3</span>, <span class="at">cyl =</span> <span class="dv">99</span>)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="co">#=== see the change ===#</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>reg_task<span class="sc">$</span><span class="fu">data</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     mpg am carb cyl
+ 1: 21.0  1    4   6
+ 2: 21.0  1    4   6
+ 3: 22.8  1    1   4
+ 4: 21.4  0    1   6
+ 5: 18.7  0    2   8
+ 6: 18.1  0    1   6
+ 7: 14.3  0    4   8
+ 8: 24.4  0    2   4
+ 9: 22.8  0    2   4
+10: 19.2  0    4   6
+11: 20.0  1    3  99</code></pre>
+</div>
+</div>
+</section>
+<section id="learners" class="level2 page-columns page-full" data-number="13.2">
+<h2 data-number="13.2" class="anchored" data-anchor-id="learners"><span class="header-section-number">13.2</span> Learners</h2>
+<p>In Python, the majority of ML packages are written to be compatible with <code>scikit-learn</code> framework. However, in R, there is no single framework that is equivalent to <code>scikit-learn</code> to which all the developers of ML packages conform to. Fortunately, the author of the <code>mlr3</code> package picked popular ML packages (e.g., <code>ranger</code>, <code>xgboost</code>) and made it easier for us to use those packages under the unified framework.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><code>tidymodels</code> have their own collection of packages, which is very similar to what <code>mlr3</code> has.</p>
+</div></div><p>Here is the list of learners that is available after loading the <code>mlr3verse</code> package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>mlr_learners</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;DictionaryLearner&gt; with 129 stored values
+Keys: classif.AdaBoostM1, classif.bart, classif.C50, classif.catboost,
+  classif.cforest, classif.ctree, classif.cv_glmnet, classif.debug,
+  classif.earth, classif.featureless, classif.fnn, classif.gam,
+  classif.gamboost, classif.gausspr, classif.gbm, classif.glmboost,
+  classif.glmnet, classif.IBk, classif.J48, classif.JRip, classif.kknn,
+  classif.ksvm, classif.lda, classif.liblinear, classif.lightgbm,
+  classif.LMT, classif.log_reg, classif.lssvm, classif.mob,
+  classif.multinom, classif.naive_bayes, classif.nnet, classif.OneR,
+  classif.PART, classif.qda, classif.randomForest, classif.ranger,
+  classif.rfsrc, classif.rpart, classif.svm, classif.xgboost,
+  clust.agnes, clust.ap, clust.cmeans, clust.cobweb, clust.dbscan,
+  clust.diana, clust.em, clust.fanny, clust.featureless, clust.ff,
+  clust.hclust, clust.kkmeans, clust.kmeans, clust.MBatchKMeans,
+  clust.meanshift, clust.pam, clust.SimpleKMeans, clust.xmeans,
+  dens.kde_ks, dens.locfit, dens.logspline, dens.mixed, dens.nonpar,
+  dens.pen, dens.plug, dens.spline, regr.bart, regr.catboost,
+  regr.cforest, regr.ctree, regr.cubist, regr.cv_glmnet, regr.debug,
+  regr.earth, regr.featureless, regr.fnn, regr.gam, regr.gamboost,
+  regr.gausspr, regr.gbm, regr.glm, regr.glmboost, regr.glmnet,
+  regr.IBk, regr.kknn, regr.km, regr.ksvm, regr.liblinear,
+  regr.lightgbm, regr.lm, regr.lmer, regr.M5Rules, regr.mars, regr.mob,
+  regr.randomForest, regr.ranger, regr.rfsrc, regr.rpart, regr.rvm,
+  regr.svm, regr.xgboost, surv.akritas, surv.blackboost, surv.cforest,
+  surv.coxboost, surv.coxtime, surv.ctree, surv.cv_coxboost,
+  surv.cv_glmnet, surv.deephit, surv.deepsurv, surv.dnnsurv,
+  surv.flexible, surv.gamboost, surv.gbm, surv.glmboost, surv.glmnet,
+  surv.loghaz, surv.mboost, surv.nelson, surv.obliqueRSF,
+  surv.parametric, surv.pchazard, surv.penalized, surv.ranger,
+  surv.rfsrc, surv.svm, surv.xgboost</code></pre>
+</div>
+</div>
+<p>As you can see, packages that we have seen earlier (e.g., <code>glmnet</code>, <code>ranger</code>, <code>xgboost</code>, <code>gam</code>) are available. the <code>mlr3extralearners</code> package provides you with additional but less-supported learners. You can check the complete list of learners <a href="https://mlr3extralearners.mlr-org.com/articles/learners/list_learners.html">here</a>.</p>
+<p>You set up a learner by giving the name of the learner you would like to implement from the list to <code>lrn()</code> like below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>learner <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"regr.ranger"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Note that you need to pick the one with the appropriate prediction type prefix (the prefixes are self-explanatory). Here, since we are interested in regression, we picked <code>"regr.ranger"</code>.</p>
+<p>Once you set up a learner, you can see the set of the learner’s hyper-parameters.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>learner<span class="sc">$</span>param_set</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;ParamSet&gt;
+                              id    class lower upper nlevels        default
+ 1:                        alpha ParamDbl  -Inf   Inf     Inf            0.5
+ 2:       always.split.variables ParamUty    NA    NA     Inf &lt;NoDefault[3]&gt;
+ 3:                      holdout ParamLgl    NA    NA       2          FALSE
+ 4:                   importance ParamFct    NA    NA       4 &lt;NoDefault[3]&gt;
+ 5:                   keep.inbag ParamLgl    NA    NA       2          FALSE
+ 6:                    max.depth ParamInt     0   Inf     Inf               
+ 7:                min.node.size ParamInt     1   Inf     Inf              5
+ 8:                     min.prop ParamDbl  -Inf   Inf     Inf            0.1
+ 9:                      minprop ParamDbl  -Inf   Inf     Inf            0.1
+10:                         mtry ParamInt     1   Inf     Inf &lt;NoDefault[3]&gt;
+11:                   mtry.ratio ParamDbl     0     1     Inf &lt;NoDefault[3]&gt;
+12:            num.random.splits ParamInt     1   Inf     Inf              1
+13:                  num.threads ParamInt     1   Inf     Inf              1
+14:                    num.trees ParamInt     1   Inf     Inf            500
+15:                    oob.error ParamLgl    NA    NA       2           TRUE
+16:                     quantreg ParamLgl    NA    NA       2          FALSE
+17:        regularization.factor ParamUty    NA    NA     Inf              1
+18:      regularization.usedepth ParamLgl    NA    NA       2          FALSE
+19:                      replace ParamLgl    NA    NA       2           TRUE
+20:    respect.unordered.factors ParamFct    NA    NA       3         ignore
+21:              sample.fraction ParamDbl     0     1     Inf &lt;NoDefault[3]&gt;
+22:                  save.memory ParamLgl    NA    NA       2          FALSE
+23: scale.permutation.importance ParamLgl    NA    NA       2          FALSE
+24:                    se.method ParamFct    NA    NA       2        infjack
+25:                         seed ParamInt  -Inf   Inf     Inf               
+26:         split.select.weights ParamUty    NA    NA     Inf               
+27:                    splitrule ParamFct    NA    NA       3       variance
+28:                      verbose ParamLgl    NA    NA       2           TRUE
+29:                 write.forest ParamLgl    NA    NA       2           TRUE
+                              id    class lower upper nlevels        default
+       parents value
+ 1:  splitrule      
+ 2:                 
+ 3:                 
+ 4:                 
+ 5:                 
+ 6:                 
+ 7:                 
+ 8:                 
+ 9:  splitrule      
+10:                 
+11:                 
+12:  splitrule      
+13:                1
+14:                 
+15:                 
+16:                 
+17:                 
+18:                 
+19:                 
+20:                 
+21:                 
+22:                 
+23: importance      
+24:                 
+25:                 
+26:                 
+27:                 
+28:                 
+29:                 
+       parents value</code></pre>
+</div>
+</div>
+<p>Right now, only <code>num.threads</code> is set explicitly.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>learner<span class="sc">$</span>param_set<span class="sc">$</span>values</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$num.threads
+[1] 1</code></pre>
+</div>
+</div>
+<p>You can update or assign the value of a parameter like this:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== set max.depth to 5 ===#</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>learner<span class="sc">$</span>param_set<span class="sc">$</span>values<span class="sc">$</span>max.depth <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="co">#=== see the values ===#</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>learner<span class="sc">$</span>param_set<span class="sc">$</span>values</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$num.threads
+[1] 1
+
+$max.depth
+[1] 5</code></pre>
+</div>
+</div>
+<p>When you would like to set values for multiple hyper-parameters at the same time, you can provide a named list to <code>$param_set$values</code>. Here is an example:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== create a named vector ===#</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>parameter_values <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="st">"min.node.size"</span> <span class="ot">=</span> <span class="dv">10</span>, <span class="st">"mtry"</span> <span class="ot">=</span> <span class="dv">5</span>, <span class="st">"num.trees"</span> <span class="ot">=</span> <span class="dv">500</span>)</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="co">#=== assign them ===#</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>learner<span class="sc">$</span>param_set<span class="sc">$</span>values <span class="ot">&lt;-</span> parameter_values</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a><span class="co">#=== see the values ===#</span></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>learner<span class="sc">$</span>param_set<span class="sc">$</span>values</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$min.node.size
+[1] 10
+
+$mtry
+[1] 5
+
+$num.trees
+[1] 500</code></pre>
+</div>
+</div>
+<p>But, notice that the values we set previously for <code>max.depth</code> and <code>num.threads</code> are gone.</p>
+</section>
+<section id="train-predict-assessment" class="level2" data-number="13.3">
+<h2 data-number="13.3" class="anchored" data-anchor-id="train-predict-assessment"><span class="header-section-number">13.3</span> Train, predict, assessment</h2>
+<section id="train" class="level3" data-number="13.3.1">
+<h3 data-number="13.3.1" class="anchored" data-anchor-id="train"><span class="header-section-number">13.3.1</span> Train</h3>
+<p>Training a model can be done using the <code>$train()</code> method on a leaner by supplying a task to it. Let’s first set up a task and learner.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== define a task ===#</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>reg_task <span class="ot">&lt;-</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  TaskRegr<span class="sc">$</span><span class="fu">new</span>(</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">id =</span> <span class="st">"example"</span>,</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">backend =</span> mtcars,</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">target =</span> <span class="st">"mpg"</span></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a><span class="co">#=== set up a learner ===#</span></span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>learner <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"regr.ranger"</span>)</span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>learner<span class="sc">$</span>param_set<span class="sc">$</span>values <span class="ot">&lt;-</span> </span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"min.node.size"</span> <span class="ot">=</span> <span class="dv">10</span>, </span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"mtry"</span> <span class="ot">=</span> <span class="dv">5</span>, </span>
+<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"num.trees"</span> <span class="ot">=</span> <span class="dv">500</span></span>
+<span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Notice that the <code>model</code> attribute of the learner is empty at this point.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>learner<span class="sc">$</span>model</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>NULL</code></pre>
+</div>
+</div>
+<p>Now, let’s train.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>learner<span class="sc">$</span><span class="fu">train</span>(reg_task)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We now how information about the trained model in the <code>model</code> attribute.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>learner<span class="sc">$</span>model</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Ranger result
+
+Call:
+ ranger::ranger(dependent.variable.name = task$target_names, data = task$data(),      case.weights = task$weights$weight, min.node.size = 10L,      mtry = 5L, num.trees = 500L) 
+
+Type:                             Regression 
+Number of trees:                  500 
+Sample size:                      32 
+Number of independent variables:  10 
+Mtry:                             5 
+Target node size:                 10 
+Variable importance mode:         none 
+Splitrule:                        variance 
+OOB prediction error (MSE):       5.847337 
+R squared (OOB):                  0.8390232 </code></pre>
+</div>
+</div>
+<p>Notice that this is exactly what you would get if you use <code>ranger()</code> to train your model.</p>
+<p>The <code>train()</code> function has the <code>row_ids()</code> option, where you can specify which rows of the data backend in the task are used for training.</p>
+<p>Let’s split extract the <code>row_ids</code> attribute and then split it for train and test purposes.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== extract row ids ===#</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>row_ids <span class="ot">&lt;-</span> reg_task<span class="sc">$</span>row_ids</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="co">#=== train ===#</span></span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>train_ids <span class="ot">&lt;-</span> row_ids[<span class="dv">1</span><span class="sc">:</span>(<span class="fu">length</span>(row_ids) <span class="sc">/</span> <span class="dv">2</span>)]</span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a><span class="co">#=== test ===#</span></span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>test_ids <span class="ot">&lt;-</span> row_ids[<span class="sc">!</span>(row_ids <span class="sc">%in%</span> train_ids)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>He, we are doing the split manually. But, you should use resampling methods, which we will look at later.</p>
+</div>
+</div>
+<p>Now train using the train data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== train ===#</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>learner<span class="sc">$</span><span class="fu">train</span>(reg_task, <span class="at">row_ids =</span> train_ids)</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a><span class="co">#=== seed the trained model ===#</span></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>learner<span class="sc">$</span>model</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Ranger result
+
+Call:
+ ranger::ranger(dependent.variable.name = task$target_names, data = task$data(),      case.weights = task$weights$weight, min.node.size = 10L,      mtry = 5L, num.trees = 500L) 
+
+Type:                             Regression 
+Number of trees:                  500 
+Sample size:                      16 
+Number of independent variables:  10 
+Mtry:                             5 
+Target node size:                 10 
+Variable importance mode:         none 
+Splitrule:                        variance 
+OOB prediction error (MSE):       5.541355 
+R squared (OOB):                  0.6778782 </code></pre>
+</div>
+</div>
+</section>
+<section id="prediction" class="level3" data-number="13.3.2">
+<h3 data-number="13.3.2" class="anchored" data-anchor-id="prediction"><span class="header-section-number">13.3.2</span> Prediction</h3>
+<p>We can use the <code>predict()</code> method to make predictions by supplying a task to it. Just like the <code>train()</code> method, we can use the <code>row_ids</code> option inside <code>predict_newdata()</code> to apply prediction only on a portion of the data. Let’s use <code>test_ids</code> we created above.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>prediction <span class="ot">&lt;-</span> learner<span class="sc">$</span><span class="fu">predict</span>(reg_task, <span class="at">row_ids =</span> test_ids)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>prediction</code> is of a class called <code>Prediction</code>. You can make the prediction available as a <code>data.table</code> by using <code>as.data.table()</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.data.table</span>(prediction)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    row_ids truth response
+ 1:      17  14.7 14.04355
+ 2:      18  32.4 21.79415
+ 3:      19  30.4 21.78283
+ 4:      20  33.9 21.79934
+ 5:      21  21.5 21.68372
+ 6:      22  15.5 16.35774
+ 7:      23  15.2 17.88491
+ 8:      24  13.3 14.80301
+ 9:      25  19.2 16.12982
+10:      26  27.3 21.78283
+11:      27  26.0 21.72157
+12:      28  30.4 21.57346
+13:      29  15.8 17.07639
+14:      30  19.7 20.46415
+15:      31  15.0 15.26233
+16:      32  21.4 21.59630</code></pre>
+</div>
+</div>
+<p>You can predict on a new dataset by supplying a new dataset as a <code>data.frame</code>/<code>data.table</code> to the <code>predict_newdata()</code> method. Here, we just use parts of <code>mtcars</code> (just pretend this is a newdataset).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>prediction <span class="ot">&lt;-</span> learner<span class="sc">$</span><span class="fu">predict_newdata</span>(mtcars)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="performance-assessment" class="level3" data-number="13.3.3">
+<h3 data-number="13.3.3" class="anchored" data-anchor-id="performance-assessment"><span class="header-section-number">13.3.3</span> Performance assessment</h3>
+<p>There are many measure of performance we can use under <code>mlr3</code>. Here is the list:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>mlr_measures</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;DictionaryMeasure&gt; with 63 stored values
+Keys: aic, bic, classif.acc, classif.auc, classif.bacc, classif.bbrier,
+  classif.ce, classif.costs, classif.dor, classif.fbeta, classif.fdr,
+  classif.fn, classif.fnr, classif.fomr, classif.fp, classif.fpr,
+  classif.logloss, classif.mbrier, classif.mcc, classif.npv,
+  classif.ppv, classif.prauc, classif.precision, classif.recall,
+  classif.sensitivity, classif.specificity, classif.tn, classif.tnr,
+  classif.tp, classif.tpr, clust.ch, clust.db, clust.dunn,
+  clust.silhouette, clust.wss, debug, oob_error, regr.bias, regr.ktau,
+  regr.mae, regr.mape, regr.maxae, regr.medae, regr.medse, regr.mse,
+  regr.msle, regr.pbias, regr.rae, regr.rmse, regr.rmsle, regr.rrse,
+  regr.rse, regr.rsq, regr.sae, regr.smape, regr.srho, regr.sse,
+  selected_features, sim.jaccard, sim.phi, time_both, time_predict,
+  time_train</code></pre>
+</div>
+</div>
+<p>We can access a measure using the <code>msr()</code> function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== get a measure ===#</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>measure <span class="ot">&lt;-</span> <span class="fu">msr</span>(<span class="st">"regr.mse"</span>)</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a><span class="co">#=== check the class ===#</span></span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(measure)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "MeasureRegrSimple" "MeasureRegr"       "Measure"          
+[4] "R6"               </code></pre>
+</div>
+</div>
+<p>We can do performance evaluation using the <code>$score()</code> method on a <code>Prediction</code> object by supplying a <code>Measure</code> object.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>prediction<span class="sc">$</span><span class="fu">score</span>(measure)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>regr.mse 
+16.28408 </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="resampling-cross-validation-and-cross-fitting" class="level2" data-number="13.4">
+<h2 data-number="13.4" class="anchored" data-anchor-id="resampling-cross-validation-and-cross-fitting"><span class="header-section-number">13.4</span> Resampling, cross-validation, and cross-fitting</h2>
+<section id="resampling" class="level3" data-number="13.4.1">
+<h3 data-number="13.4.1" class="anchored" data-anchor-id="resampling"><span class="header-section-number">13.4.1</span> Resampling</h3>
+<p><code>mlr3</code> offers the following resampling methods:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.data.table</span>(mlr_resamplings)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           key                         label        params iters
+1:   bootstrap                     Bootstrap ratio,repeats    30
+2:      custom                 Custom Splits                  NA
+3:   custom_cv Custom Split Cross-Validation                  NA
+4:          cv              Cross-Validation         folds    10
+5:     holdout                       Holdout         ratio     1
+6:    insample           Insample Resampling                   1
+7:         loo                 Leave-One-Out                  NA
+8: repeated_cv     Repeated Cross-Validation folds,repeats   100
+9: subsampling                   Subsampling ratio,repeats    30</code></pre>
+</div>
+</div>
+<p>You can access a resampling method using the <code>rsmp()</code> function. You can specify parameters at the same time.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>resampling <span class="ot">&lt;-</span> <span class="fu">rsmp</span>(<span class="st">"repeated_cv"</span>, <span class="at">repeats =</span> <span class="dv">2</span>, <span class="at">folds =</span> <span class="dv">3</span>)</span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;ResamplingRepeatedCV&gt;: Repeated Cross-Validation
+* Iterations: 6
+* Instantiated: FALSE
+* Parameters: repeats=2, folds=3</code></pre>
+</div>
+</div>
+<p>You can check the number of iterations (number of train-test datasets combinations) by accessing the <code>iters</code> attribute.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>resampling<span class="sc">$</span>iters</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 6</code></pre>
+</div>
+</div>
+<p>You can override parameters just like you did for a leaner.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== update ===#</span></span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>resampling<span class="sc">$</span>param_set<span class="sc">$</span>values <span class="ot">=</span> <span class="fu">list</span>(<span class="at">repeats =</span> <span class="dv">3</span>, <span class="at">folds =</span> <span class="dv">4</span>)</span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a><span class="co">#=== see the updates ===#</span></span>
+<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a>resampling</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;ResamplingRepeatedCV&gt;: Repeated Cross-Validation
+* Iterations: 12
+* Instantiated: FALSE
+* Parameters: repeats=3, folds=4</code></pre>
+</div>
+</div>
+<p>We can use the <code>instantiate()</code> method to implement the specified resampling method:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>resampling<span class="sc">$</span><span class="fu">instantiate</span>(reg_task)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>You can access the train and test datasets using the <code>train_set()</code> and <code>test_set()</code> method. respectively. Since <code>repeats = 3</code> and <code>folds = 4</code>, we have 12 sets of train and test datasets. You indicate which set you want inside <code>train_set()</code> and <code>test_set()</code>.</p>
+<p>First pair:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>resampling<span class="sc">$</span><span class="fu">train_set</span>(<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1]  4  9 12 17 20 24 27 31  1  6  8 16 23 25 30 32  2  3  7 10 14 19 28 29</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>resampling<span class="sc">$</span><span class="fu">test_set</span>(<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  5 11 13 15 18 21 22 26</code></pre>
+</div>
+</div>
+<p>Last pair:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>resampling<span class="sc">$</span><span class="fu">train_set</span>(<span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1]  6  7  9 17 18 23 24 27  2  3 10 14 22 26 30 32  1  4 11 13 16 19 25 29</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>resampling<span class="sc">$</span><span class="fu">test_set</span>(<span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  5  8 12 15 20 21 28 31</code></pre>
+</div>
+</div>
+</section>
+<section id="cross-validation-and-cross-fitting" class="level3" data-number="13.4.2">
+<h3 data-number="13.4.2" class="anchored" data-anchor-id="cross-validation-and-cross-fitting"><span class="header-section-number">13.4.2</span> Cross-validation and cross-fitting</h3>
+<p>Now that data splits are determined (along with a task and leaner), we can conduct a cross-validation using the <code>resample()</code> function like below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>cv_results <span class="ot">&lt;-</span> <span class="fu">resample</span>(reg_task, learner, resampling)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>INFO  [14:46:56.190] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/12) 
+INFO  [14:46:56.213] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/12) 
+INFO  [14:46:56.226] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 8/12) 
+INFO  [14:46:56.235] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 12/12) 
+INFO  [14:46:56.245] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 4/12) 
+INFO  [14:46:56.256] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 6/12) 
+INFO  [14:46:56.266] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/12) 
+INFO  [14:46:56.276] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 7/12) 
+INFO  [14:46:56.286] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 5/12) 
+INFO  [14:46:56.296] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 10/12) 
+INFO  [14:46:56.306] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 11/12) 
+INFO  [14:46:56.316] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 9/12) </code></pre>
+</div>
+</div>
+<p>This code applies the method specified in <code>leaner</code> to each of the 12 train datasets, and evaluate the trained model on each of the 12 test datasets.</p>
+<p>You can look at the prediction results using the <code>predictions()</code> method.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>cv_results<span class="sc">$</span><span class="fu">predictions</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+&lt;PredictionRegr&gt; for 8 observations:
+    row_ids truth response
+          5  18.7 16.56812
+         11  17.8 19.99469
+         13  17.3 15.63812
+---                       
+         21  21.5 23.80009
+         22  15.5 16.36762
+         26  27.3 28.59156
+
+[[2]]
+&lt;PredictionRegr&gt; for 8 observations:
+    row_ids truth response
+          4  21.4 18.65725
+          9  22.8 22.54196
+         12  16.4 16.43165
+---                       
+         24  13.3 15.60555
+         27  26.0 24.77733
+         31  15.0 15.74025
+
+[[3]]
+&lt;PredictionRegr&gt; for 8 observations:
+    row_ids truth response
+          1  21.0 21.23899
+          6  18.1 20.10992
+          8  24.4 23.20591
+---                       
+         25  19.2 16.23912
+         30  19.7 19.68123
+         32  21.4 23.46640
+
+[[4]]
+&lt;PredictionRegr&gt; for 8 observations:
+    row_ids truth response
+          2  21.0 21.04319
+          3  22.8 25.74807
+          7  14.3 14.65294
+---                       
+         19  30.4 28.32467
+         28  30.4 25.34148
+         29  15.8 17.78381
+
+[[5]]
+&lt;PredictionRegr&gt; for 8 observations:
+    row_ids truth response
+          4  21.4 18.96609
+         13  17.3 16.39794
+         14  15.2 16.36484
+---                       
+         23  15.2 17.42268
+         24  13.3 15.75305
+         28  30.4 25.26058
+
+[[6]]
+&lt;PredictionRegr&gt; for 8 observations:
+    row_ids truth response
+          7  14.3 14.95200
+         11  17.8 19.53787
+         18  32.4 27.17424
+---                       
+         26  27.3 28.33350
+         29  15.8 18.42887
+         30  19.7 21.31249
+
+[[7]]
+&lt;PredictionRegr&gt; for 8 observations:
+    row_ids truth response
+          2  21.0 20.87202
+          3  22.8 25.55210
+          5  18.7 16.30216
+---                       
+         27  26.0 25.61598
+         31  15.0 14.85875
+         32  21.4 23.59337
+
+[[8]]
+&lt;PredictionRegr&gt; for 8 observations:
+    row_ids truth response
+          1  21.0 21.32480
+          6  18.1 20.26471
+          8  24.4 23.02925
+---                       
+         15  10.4 14.13329
+         19  30.4 28.78483
+         22  15.5 16.73046
+
+[[9]]
+&lt;PredictionRegr&gt; for 8 observations:
+    row_ids truth response
+          6  18.1 19.42194
+          7  14.3 15.95745
+          9  22.8 22.49616
+---                       
+         23  15.2 17.63428
+         24  13.3 15.87288
+         27  26.0 23.38173
+
+[[10]]
+&lt;PredictionRegr&gt; for 8 observations:
+    row_ids truth response
+          2  21.0 20.87825
+          3  22.8 26.79378
+         10  19.2 18.46452
+---                       
+         26  27.3 29.08747
+         30  19.7 20.37982
+         32  21.4 24.10691
+
+[[11]]
+&lt;PredictionRegr&gt; for 8 observations:
+    row_ids truth response
+          1  21.0 20.77129
+          4  21.4 19.08411
+         11  17.8 19.60939
+---                       
+         19  30.4 29.23713
+         25  19.2 15.68123
+         29  15.8 17.36235
+
+[[12]]
+&lt;PredictionRegr&gt; for 8 observations:
+    row_ids truth response
+          5  18.7 16.11160
+          8  24.4 24.05819
+         12  16.4 16.09468
+---                       
+         21  21.5 23.46819
+         28  30.4 24.43523
+         31  15.0 15.10713</code></pre>
+</div>
+</div>
+<p>You can get the all predictions combined using the <code>prediction()</code> method.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== all combined ===#</span></span>
+<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a>all_predictions <span class="ot">&lt;-</span> cv_results<span class="sc">$</span><span class="fu">prediction</span>()</span>
+<span id="cb81-3"><a href="#cb81-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb81-4"><a href="#cb81-4" aria-hidden="true" tabindex="-1"></a><span class="co">#=== check the class ===#</span></span>
+<span id="cb81-5"><a href="#cb81-5" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(all_predictions)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "PredictionRegr" "Prediction"     "R6"            </code></pre>
+</div>
+</div>
+<p>Since it is a <code>Prediciton</code> object, we can apply the <code>score()</code> method like this.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a>all_predictions<span class="sc">$</span><span class="fu">score</span>(<span class="fu">msr</span>(<span class="st">"regr.mse"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>regr.mse 
+6.235452 </code></pre>
+</div>
+</div>
+<p>Of course, you are also cross-fitting when you are doing cross-validation. You can just take the prediction results and use them if you are implementing DML for example.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a>cross_fitted_yhat <span class="ot">&lt;-</span></span>
+<span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.table</span>(all_predictions) <span class="sc">%&gt;%</span></span>
+<span id="cb85-4"><a href="#cb85-4" aria-hidden="true" tabindex="-1"></a>  .[, .(<span class="at">y_hat_cf =</span> <span class="fu">mean</span>(response)), <span class="at">by =</span> row_ids]</span>
+<span id="cb85-5"><a href="#cb85-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    row_ids y_hat_cf
+ 1:       5 16.32729
+ 2:      11 19.71398
+ 3:      13 15.79140
+ 4:      15 14.15893
+ 5:      18 27.36727
+ 6:      21 23.63169
+ 7:      22 16.61131
+ 8:      26 28.67084
+ 9:       4 18.90248
+10:       9 22.75680
+11:      12 16.19345
+12:      17 13.84645
+13:      20 28.17348
+14:      24 15.74383
+15:      27 24.59168
+16:      31 15.23538
+17:       1 21.11169
+18:       6 19.93219
+19:       8 23.43112
+20:      16 13.94089
+21:      23 17.39645
+22:      25 15.79360
+23:      30 20.45785
+24:      32 23.72223
+25:       2 20.93115
+26:       3 26.03131
+27:       7 15.18746
+28:      10 18.70814
+29:      14 16.60126
+30:      19 28.78221
+31:      28 25.01243
+32:      29 17.85835
+    row_ids y_hat_cf</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="hyper-parameter-tuning" class="level2" data-number="13.5">
+<h2 data-number="13.5" class="anchored" data-anchor-id="hyper-parameter-tuning"><span class="header-section-number">13.5</span> Hyper-parameter tuning</h2>
+<p>In conducting hyper-parameter tuning under the <code>mlr3</code> framework, you define <code>TuningInstance*</code> class, select the tuning method, and then trigger it.</p>
+<section id="tuninginstance" class="level3" data-number="13.5.1">
+<h3 data-number="13.5.1" class="anchored" data-anchor-id="tuninginstance"><span class="header-section-number">13.5.1</span> TuningInstance</h3>
+<p>There are two tuning instance classes.</p>
+<ul>
+<li>TuningInstanceSingleCrit</li>
+<li>TuningInstanceMultiCrit</li>
+</ul>
+<p>The difference should be clear by looking at the name of the classes. We focus on the <code>TuningInstanceSingleCrit</code> class here.</p>
+<p>Tuning instance consists of six elements:</p>
+<ul>
+<li><code>task</code></li>
+<li><code>learner</code></li>
+<li><code>resampling</code></li>
+<li><code>measure</code></li>
+<li><code>search_space</code></li>
+<li><code>terminator</code></li>
+</ul>
+<p>We have covered all except <code>search_space</code> and <code>terminator</code>. Let’s look at these two.</p>
+<p>Let’s quickly create the first four elements.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== task ===#</span></span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a>reg_task <span class="ot">&lt;-</span></span>
+<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a>  TaskRegr<span class="sc">$</span><span class="fu">new</span>(</span>
+<span id="cb87-4"><a href="#cb87-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">id =</span> <span class="st">"example"</span>,</span>
+<span id="cb87-5"><a href="#cb87-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">backend =</span> mtcars,</span>
+<span id="cb87-6"><a href="#cb87-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">target =</span> <span class="st">"mpg"</span></span>
+<span id="cb87-7"><a href="#cb87-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb87-8"><a href="#cb87-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-9"><a href="#cb87-9" aria-hidden="true" tabindex="-1"></a><span class="co">#=== learner ===#</span></span>
+<span id="cb87-10"><a href="#cb87-10" aria-hidden="true" tabindex="-1"></a>learner <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"regr.ranger"</span>)</span>
+<span id="cb87-11"><a href="#cb87-11" aria-hidden="true" tabindex="-1"></a>learner<span class="sc">$</span>param_set<span class="sc">$</span>values<span class="sc">$</span>max.depth <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb87-12"><a href="#cb87-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-13"><a href="#cb87-13" aria-hidden="true" tabindex="-1"></a><span class="co">#=== resampling ===#</span></span>
+<span id="cb87-14"><a href="#cb87-14" aria-hidden="true" tabindex="-1"></a>resampling <span class="ot">&lt;-</span> <span class="fu">rsmp</span>(<span class="st">"cv"</span>, <span class="at">folds =</span> <span class="dv">3</span>) <span class="co"># k-fold cv</span></span>
+<span id="cb87-15"><a href="#cb87-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-16"><a href="#cb87-16" aria-hidden="true" tabindex="-1"></a><span class="co">#=== measure ===#</span></span>
+<span id="cb87-17"><a href="#cb87-17" aria-hidden="true" tabindex="-1"></a>measure <span class="ot">&lt;-</span> <span class="fu">msr</span>(<span class="st">"regr.mse"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>search_space</code> defines which hyper-parameters to tune and their ranges. You can use <code>ps()</code> to create a search space. Before doing so, let’s look at the parameters of the learner.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>learner<span class="sc">$</span>param_set</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;ParamSet&gt;
+                              id    class lower upper nlevels        default
+ 1:                        alpha ParamDbl  -Inf   Inf     Inf            0.5
+ 2:       always.split.variables ParamUty    NA    NA     Inf &lt;NoDefault[3]&gt;
+ 3:                      holdout ParamLgl    NA    NA       2          FALSE
+ 4:                   importance ParamFct    NA    NA       4 &lt;NoDefault[3]&gt;
+ 5:                   keep.inbag ParamLgl    NA    NA       2          FALSE
+ 6:                    max.depth ParamInt     0   Inf     Inf               
+ 7:                min.node.size ParamInt     1   Inf     Inf              5
+ 8:                     min.prop ParamDbl  -Inf   Inf     Inf            0.1
+ 9:                      minprop ParamDbl  -Inf   Inf     Inf            0.1
+10:                         mtry ParamInt     1   Inf     Inf &lt;NoDefault[3]&gt;
+11:                   mtry.ratio ParamDbl     0     1     Inf &lt;NoDefault[3]&gt;
+12:            num.random.splits ParamInt     1   Inf     Inf              1
+13:                  num.threads ParamInt     1   Inf     Inf              1
+14:                    num.trees ParamInt     1   Inf     Inf            500
+15:                    oob.error ParamLgl    NA    NA       2           TRUE
+16:                     quantreg ParamLgl    NA    NA       2          FALSE
+17:        regularization.factor ParamUty    NA    NA     Inf              1
+18:      regularization.usedepth ParamLgl    NA    NA       2          FALSE
+19:                      replace ParamLgl    NA    NA       2           TRUE
+20:    respect.unordered.factors ParamFct    NA    NA       3         ignore
+21:              sample.fraction ParamDbl     0     1     Inf &lt;NoDefault[3]&gt;
+22:                  save.memory ParamLgl    NA    NA       2          FALSE
+23: scale.permutation.importance ParamLgl    NA    NA       2          FALSE
+24:                    se.method ParamFct    NA    NA       2        infjack
+25:                         seed ParamInt  -Inf   Inf     Inf               
+26:         split.select.weights ParamUty    NA    NA     Inf               
+27:                    splitrule ParamFct    NA    NA       3       variance
+28:                      verbose ParamLgl    NA    NA       2           TRUE
+29:                 write.forest ParamLgl    NA    NA       2           TRUE
+                              id    class lower upper nlevels        default
+       parents value
+ 1:  splitrule      
+ 2:                 
+ 3:                 
+ 4:                 
+ 5:                 
+ 6:               10
+ 7:                 
+ 8:                 
+ 9:  splitrule      
+10:                 
+11:                 
+12:  splitrule      
+13:                1
+14:                 
+15:                 
+16:                 
+17:                 
+18:                 
+19:                 
+20:                 
+21:                 
+22:                 
+23: importance      
+24:                 
+25:                 
+26:                 
+27:                 
+28:                 
+29:                 
+       parents value</code></pre>
+</div>
+</div>
+<p>Let’s tune three parameters here: <code>mtry.ratio</code>, <code>min.node.size</code>, and <code>num.trees</code>. For each parameter to tune, we need to use an appropriate function to define the range. You can see what functions to use from <code>class</code> variable.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>learner<span class="sc">$</span>param_set <span class="sc">%&gt;%</span> </span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.table</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a>  .[id <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"mtry.ratio"</span>, <span class="st">"min.node.size"</span>), .(id, class, lower, upper)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              id    class lower upper
+1: min.node.size ParamInt     1   Inf
+2:    mtry.ratio ParamDbl     0     1</code></pre>
+</div>
+</div>
+<p>In this case, we use <code>p_int()</code> for “min.node.size” as its class is <code>ParamInt</code> and use <code>p_dbl()</code> for “mtry.ratio” as its class is <code>ParamDbl</code>. You cannot specify the range that go beyond the <code>lower</code> and <code>upper</code> for each parameter.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>search_space <span class="ot">&lt;-</span> </span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ps</span>(</span>
+<span id="cb92-3"><a href="#cb92-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mtry.ratio =</span> <span class="fu">p_dbl</span>(<span class="at">lower =</span> <span class="fl">0.5</span>, <span class="at">upper =</span> <span class="fl">0.9</span>),</span>
+<span id="cb92-4"><a href="#cb92-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">min.node.size =</span> <span class="fu">p_int</span>(<span class="at">lower =</span> <span class="dv">1</span>, <span class="at">upper =</span> <span class="dv">20</span>)</span>
+<span id="cb92-5"><a href="#cb92-5" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s define a <code>terminator</code> now. <code>mlr3</code> offers five different options. We will just look at the most common one here, which is <code>TerminatorEvals</code>. <code>TerminatorEvals</code> terminates tuning after a given number of iterations specified by the user (see <a href="https://mlr3book.mlr-org.com/04-optimization-tuning.html#tuning-optimization">here</a> for other terminator options).</p>
+<p>You can use the <code>trm()</code> function to define a Terminator object.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb93"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a>terminator <span class="ot">&lt;-</span> <span class="fu">trm</span>(<span class="st">"evals"</span>, <span class="at">n_evals =</span> <span class="dv">100</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Inside <code>trm()</code>, “evals” indicates that we would like to use the <code>TerminatorEvals</code> option.</p>
+<p>Now that we have all the components specified, we can instantiate (generate) a TuningInstanceSingleCrit class.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb94-2"><a href="#cb94-2" aria-hidden="true" tabindex="-1"></a>tuning_instance <span class="ot">&lt;-</span> </span>
+<span id="cb94-3"><a href="#cb94-3" aria-hidden="true" tabindex="-1"></a>  TuningInstanceSingleCrit<span class="sc">$</span><span class="fu">new</span>(</span>
+<span id="cb94-4"><a href="#cb94-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">task =</span> reg_task,</span>
+<span id="cb94-5"><a href="#cb94-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">learner =</span> learner,</span>
+<span id="cb94-6"><a href="#cb94-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">resampling =</span> resampling,</span>
+<span id="cb94-7"><a href="#cb94-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">measure =</span> measure,</span>
+<span id="cb94-8"><a href="#cb94-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">search_space =</span> search_space,</span>
+<span id="cb94-9"><a href="#cb94-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">terminator =</span> terminator</span>
+<span id="cb94-10"><a href="#cb94-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb94-11"><a href="#cb94-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;TuningInstanceSingleCrit&gt;
+* State:  Not optimized
+* Objective: &lt;ObjectiveTuning:regr.ranger_on_example&gt;
+* Search Space:
+              id    class lower upper nlevels
+1:    mtry.ratio ParamDbl   0.5   0.9     Inf
+2: min.node.size ParamInt   1.0  20.0      20
+* Terminator: &lt;TerminatorEvals&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="tuner" class="level3" data-number="13.5.2">
+<h3 data-number="13.5.2" class="anchored" data-anchor-id="tuner"><span class="header-section-number">13.5.2</span> Tuner</h3>
+<p>Let’s now define the method of tuning. <code>mlr3</code> offers four options:</p>
+<ul>
+<li>Grid Search (<code>TunerGridSearch</code>)</li>
+<li>Random Search (<code>TunerRandomSearch</code>)</li>
+<li>Generalized Simulated Annealing (<code>TunerGenSA</code>)</li>
+<li>Non-Linear Optimization (<code>TunerNLoptr</code>)</li>
+</ul>
+<p>Here we use <code>TunerGridSearch</code>. We can set up a tuner using the <code>tnr()</code> function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>tuner <span class="ot">&lt;-</span> <span class="fu">tnr</span>(<span class="st">"grid_search"</span>, <span class="at">resolution =</span> <span class="dv">4</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>resolution = 4</code> means that each parameter takes four values where the values are equidistant between the upper and lower bounds specified in <code>search_space</code>. So, this tuning will look at <span class="math inline">\(4^2 = 16\)</span> parameter configurations. Notice that we set the number of evaluations to 100 above. So, all <span class="math inline">\(16\)</span> cases will be evaluated. However, if you set <code>n_evals</code> lower than <span class="math inline">\(16\)</span>, then the tuning will not look at all the cases.</p>
+</section>
+<section id="tuning" class="level3" data-number="13.5.3">
+<h3 data-number="13.5.3" class="anchored" data-anchor-id="tuning"><span class="header-section-number">13.5.3</span> Tuning</h3>
+<p>You can trigger tuning by supplying a tuning instance to the <code>optimizer()</code> method on <code>tuner</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb97"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a>tuner<span class="sc">$</span><span class="fu">optimize</span>(tuning_instance)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Since the execution of this tuning prints so many lines of results, it is not presented here.</p>
+<p>One the tuning is done, you can get the optimized parameters by accessing the <code>result_learner_param_values</code> attribute of the tuning instance.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb98"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a>tuning_instance<span class="sc">$</span>result_learner_param_vals</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$num.threads
+[1] 1
+
+$max.depth
+[1] 10
+
+$mtry.ratio
+[1] 0.7666667
+
+$min.node.size
+[1] 1</code></pre>
+</div>
+</div>
+<p>You can look at the evaluation results of other parameter configurations by accessing the <code>archive</code> attribute of the tuning instance.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.data.table</span>(tuning_instance<span class="sc">$</span>archive) <span class="sc">%&gt;%</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   mtry.ratio min.node.size  regr.mse x_domain_mtry.ratio
+1:  0.5000000             7  6.112394           0.5000000
+2:  0.5000000            14  8.617444           0.5000000
+3:  0.7666667             7  6.030930           0.7666667
+4:  0.5000000            20 11.995067           0.5000000
+5:  0.7666667             1  5.207847           0.7666667
+6:  0.6333333            20 11.805631           0.6333333
+   x_domain_min.node.size runtime_learners           timestamp batch_nr
+1:                      7            0.028 2022-07-20 14:46:56        1
+2:                     14            0.018 2022-07-20 14:46:56        2
+3:                      7            0.026 2022-07-20 14:46:56        3
+4:                     20            0.017 2022-07-20 14:46:56        4
+5:                      1            0.037 2022-07-20 14:46:56        5
+6:                     20            0.017 2022-07-20 14:46:56        6
+   warnings errors      resample_result
+1:        0      0 &lt;ResampleResult[22]&gt;
+2:        0      0 &lt;ResampleResult[22]&gt;
+3:        0      0 &lt;ResampleResult[22]&gt;
+4:        0      0 &lt;ResampleResult[22]&gt;
+5:        0      0 &lt;ResampleResult[22]&gt;
+6:        0      0 &lt;ResampleResult[22]&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="autotuner" class="level3" data-number="13.5.4">
+<h3 data-number="13.5.4" class="anchored" data-anchor-id="autotuner"><span class="header-section-number">13.5.4</span> AutoTuner</h3>
+<p><code>AutoTuner</code> sounds like it is a tuner, but it is really learner where tuning is automatically implemented when training is triggered with a task. An <code>AutoTuner</code> class can be instantiated using the <code>new()</code> method on <code>AutoTuner</code> class like below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb102-2"><a href="#cb102-2" aria-hidden="true" tabindex="-1"></a>auto_tunning_learner <span class="ot">&lt;-</span> </span>
+<span id="cb102-3"><a href="#cb102-3" aria-hidden="true" tabindex="-1"></a>  AutoTuner<span class="sc">$</span><span class="fu">new</span>(</span>
+<span id="cb102-4"><a href="#cb102-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">learner =</span> learner,</span>
+<span id="cb102-5"><a href="#cb102-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">resampling =</span> resampling,</span>
+<span id="cb102-6"><a href="#cb102-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">measure =</span> measure,</span>
+<span id="cb102-7"><a href="#cb102-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">search_space =</span> search_space,</span>
+<span id="cb102-8"><a href="#cb102-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">terminator =</span> terminator,</span>
+<span id="cb102-9"><a href="#cb102-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">tuner =</span> tuner</span>
+<span id="cb102-10"><a href="#cb102-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb102-11"><a href="#cb102-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;AutoTuner:regr.ranger.tuned&gt;
+* Model: -
+* Search Space:
+&lt;ParamSet&gt;
+              id    class lower upper nlevels        default value
+1:    mtry.ratio ParamDbl   0.5   0.9     Inf &lt;NoDefault[3]&gt;      
+2: min.node.size ParamInt   1.0  20.0      20 &lt;NoDefault[3]&gt;      
+* Packages: mlr3, mlr3tuning, mlr3learners, ranger
+* Predict Type: response
+* Feature Types: logical, integer, numeric, character, factor, ordered
+* Properties: hotstart_backward, importance, oob_error, weights</code></pre>
+</div>
+</div>
+<p>Note that unlike TuningInstance, <code>AutoTuner</code> does not take a task as its element and takes a <code>Tuner</code> instead. Once an <code>AutoTuner</code> is instantiated, you can use it like a learner and invoke the <code>train()</code> method with a task to train a model. The difference from a regular leaner is that it automatically tune the parameters internally and use the optimized parameter values to train.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a>auto_tunning_learner<span class="sc">$</span><span class="fu">train</span>(reg_task)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>INFO  [14:46:57.547] [bbotk] Starting to optimize 2 parameter(s) with '&lt;TunerGridSearch&gt;' and '&lt;TerminatorEvals&gt; [n_evals=100, k=0]' 
+INFO  [14:46:57.548] [bbotk] Evaluating 1 configuration(s) 
+INFO  [14:46:57.558] [mlr3] Running benchmark with 3 resampling iterations 
+INFO  [14:46:57.561] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
+INFO  [14:46:57.571] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
+INFO  [14:46:57.580] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
+INFO  [14:46:57.591] [mlr3] Finished benchmark 
+INFO  [14:46:57.602] [bbotk] Result of batch 1: 
+INFO  [14:46:57.603] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
+INFO  [14:46:57.603] [bbotk]         0.5            14  9.22283        0      0            0.019 
+INFO  [14:46:57.603] [bbotk]                                 uhash 
+INFO  [14:46:57.603] [bbotk]  73087255-9448-4ef4-91fa-00481cd2e640 
+INFO  [14:46:57.603] [bbotk] Evaluating 1 configuration(s) 
+INFO  [14:46:57.613] [mlr3] Running benchmark with 3 resampling iterations 
+INFO  [14:46:57.615] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
+INFO  [14:46:57.625] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
+INFO  [14:46:57.633] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
+INFO  [14:46:57.646] [mlr3] Finished benchmark 
+INFO  [14:46:57.660] [bbotk] Result of batch 2: 
+INFO  [14:46:57.661] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
+INFO  [14:46:57.661] [bbotk]   0.7666667            20 12.35841        0      0            0.015 
+INFO  [14:46:57.661] [bbotk]                                 uhash 
+INFO  [14:46:57.661] [bbotk]  6c4c25ac-8cf8-4f54-908f-06dd34d6e241 
+INFO  [14:46:57.661] [bbotk] Evaluating 1 configuration(s) 
+INFO  [14:46:57.671] [mlr3] Running benchmark with 3 resampling iterations 
+INFO  [14:46:57.673] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
+INFO  [14:46:57.682] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
+INFO  [14:46:57.691] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
+INFO  [14:46:57.700] [mlr3] Finished benchmark 
+INFO  [14:46:57.712] [bbotk] Result of batch 3: 
+INFO  [14:46:57.712] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
+INFO  [14:46:57.712] [bbotk]   0.6333333            20 12.23414        0      0            0.018 
+INFO  [14:46:57.712] [bbotk]                                 uhash 
+INFO  [14:46:57.712] [bbotk]  bc2fa1d8-870f-4ad6-88ee-a31934666504 
+INFO  [14:46:57.713] [bbotk] Evaluating 1 configuration(s) 
+INFO  [14:46:57.722] [mlr3] Running benchmark with 3 resampling iterations 
+INFO  [14:46:57.725] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
+INFO  [14:46:57.738] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
+INFO  [14:46:57.751] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
+INFO  [14:46:57.771] [mlr3] Finished benchmark 
+INFO  [14:46:57.782] [bbotk] Result of batch 4: 
+INFO  [14:46:57.783] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
+INFO  [14:46:57.783] [bbotk]   0.6333333             1 7.591765        0      0            0.033 
+INFO  [14:46:57.783] [bbotk]                                 uhash 
+INFO  [14:46:57.783] [bbotk]  1b44bdb6-fb6a-49f0-8829-bd049a39ad10 
+INFO  [14:46:57.783] [bbotk] Evaluating 1 configuration(s) 
+INFO  [14:46:57.792] [mlr3] Running benchmark with 3 resampling iterations 
+INFO  [14:46:57.794] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
+INFO  [14:46:57.804] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
+INFO  [14:46:57.812] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
+INFO  [14:46:57.821] [mlr3] Finished benchmark 
+INFO  [14:46:57.832] [bbotk] Result of batch 5: 
+INFO  [14:46:57.833] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
+INFO  [14:46:57.833] [bbotk]         0.9            20 12.50437        0      0            0.016 
+INFO  [14:46:57.833] [bbotk]                                 uhash 
+INFO  [14:46:57.833] [bbotk]  1a75e7a5-aff7-482f-903f-6d406ad718e2 
+INFO  [14:46:57.833] [bbotk] Evaluating 1 configuration(s) 
+INFO  [14:46:57.842] [mlr3] Running benchmark with 3 resampling iterations 
+INFO  [14:46:57.845] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
+INFO  [14:46:57.855] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
+INFO  [14:46:57.873] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
+INFO  [14:46:57.885] [mlr3] Finished benchmark 
+INFO  [14:46:57.896] [bbotk] Result of batch 6: 
+INFO  [14:46:57.897] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
+INFO  [14:46:57.897] [bbotk]         0.9             7 7.661883        0      0            0.023 
+INFO  [14:46:57.897] [bbotk]                                 uhash 
+INFO  [14:46:57.897] [bbotk]  c9d0a833-cd14-473b-8e1f-b9a7856887cb 
+INFO  [14:46:57.897] [bbotk] Evaluating 1 configuration(s) 
+INFO  [14:46:57.906] [mlr3] Running benchmark with 3 resampling iterations 
+INFO  [14:46:57.909] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
+INFO  [14:46:57.919] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
+INFO  [14:46:57.929] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
+INFO  [14:46:57.939] [mlr3] Finished benchmark 
+INFO  [14:46:57.950] [bbotk] Result of batch 7: 
+INFO  [14:46:57.951] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
+INFO  [14:46:57.951] [bbotk]   0.6333333             7   7.7254        0      0            0.021 
+INFO  [14:46:57.951] [bbotk]                                 uhash 
+INFO  [14:46:57.951] [bbotk]  75d5970a-d576-4b88-baca-82bb0e697af0 
+INFO  [14:46:57.951] [bbotk] Evaluating 1 configuration(s) 
+INFO  [14:46:57.960] [mlr3] Running benchmark with 3 resampling iterations 
+INFO  [14:46:57.969] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
+INFO  [14:46:57.983] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
+INFO  [14:46:57.997] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
+INFO  [14:46:58.010] [mlr3] Finished benchmark 
+INFO  [14:46:58.021] [bbotk] Result of batch 8: 
+INFO  [14:46:58.022] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
+INFO  [14:46:58.022] [bbotk]         0.5             1 7.710079        0      0            0.029 
+INFO  [14:46:58.022] [bbotk]                                 uhash 
+INFO  [14:46:58.022] [bbotk]  70683d6c-3538-48b5-8f0b-ac6e19204d65 
+INFO  [14:46:58.022] [bbotk] Evaluating 1 configuration(s) 
+INFO  [14:46:58.031] [mlr3] Running benchmark with 3 resampling iterations 
+INFO  [14:46:58.033] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
+INFO  [14:46:58.042] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
+INFO  [14:46:58.051] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
+INFO  [14:46:58.060] [mlr3] Finished benchmark 
+INFO  [14:46:58.071] [bbotk] Result of batch 9: 
+INFO  [14:46:58.072] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
+INFO  [14:46:58.072] [bbotk]         0.9            14 9.488438        0      0            0.017 
+INFO  [14:46:58.072] [bbotk]                                 uhash 
+INFO  [14:46:58.072] [bbotk]  36015320-5ed4-41bb-9c1d-8d33cf49d740 
+INFO  [14:46:58.072] [bbotk] Evaluating 1 configuration(s) 
+INFO  [14:46:58.085] [mlr3] Running benchmark with 3 resampling iterations 
+INFO  [14:46:58.089] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
+INFO  [14:46:58.100] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
+INFO  [14:46:58.111] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
+INFO  [14:46:58.123] [mlr3] Finished benchmark 
+INFO  [14:46:58.134] [bbotk] Result of batch 10: 
+INFO  [14:46:58.135] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
+INFO  [14:46:58.135] [bbotk]   0.7666667             7 7.744834        0      0            0.024 
+INFO  [14:46:58.135] [bbotk]                                 uhash 
+INFO  [14:46:58.135] [bbotk]  e7a1f559-b890-4650-ba72-6e8a1bf3a8d0 
+INFO  [14:46:58.136] [bbotk] Evaluating 1 configuration(s) 
+INFO  [14:46:58.145] [mlr3] Running benchmark with 3 resampling iterations 
+INFO  [14:46:58.148] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
+INFO  [14:46:58.163] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
+INFO  [14:46:58.178] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
+INFO  [14:46:58.194] [mlr3] Finished benchmark 
+INFO  [14:46:58.205] [bbotk] Result of batch 11: 
+INFO  [14:46:58.206] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
+INFO  [14:46:58.206] [bbotk]         0.9             1 7.735991        0      0            0.033 
+INFO  [14:46:58.206] [bbotk]                                 uhash 
+INFO  [14:46:58.206] [bbotk]  b767f36a-03dc-4c67-bb0f-8a7b41263980 
+INFO  [14:46:58.206] [bbotk] Evaluating 1 configuration(s) 
+INFO  [14:46:58.224] [mlr3] Running benchmark with 3 resampling iterations 
+INFO  [14:46:58.226] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
+INFO  [14:46:58.236] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
+INFO  [14:46:58.246] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
+INFO  [14:46:58.257] [mlr3] Finished benchmark 
+INFO  [14:46:58.268] [bbotk] Result of batch 12: 
+INFO  [14:46:58.269] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
+INFO  [14:46:58.269] [bbotk]   0.7666667            14 9.393034        0      0            0.018 
+INFO  [14:46:58.269] [bbotk]                                 uhash 
+INFO  [14:46:58.269] [bbotk]  7eb619c3-8914-4221-97ab-292152f1a85b 
+INFO  [14:46:58.270] [bbotk] Evaluating 1 configuration(s) 
+INFO  [14:46:58.279] [mlr3] Running benchmark with 3 resampling iterations 
+INFO  [14:46:58.282] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
+INFO  [14:46:58.290] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
+INFO  [14:46:58.299] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
+INFO  [14:46:58.309] [mlr3] Finished benchmark 
+INFO  [14:46:58.320] [bbotk] Result of batch 13: 
+INFO  [14:46:58.321] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
+INFO  [14:46:58.321] [bbotk]         0.5            20 11.82662        0      0            0.016 
+INFO  [14:46:58.321] [bbotk]                                 uhash 
+INFO  [14:46:58.321] [bbotk]  d3cf98a3-1d40-4925-b674-372769f57d98 
+INFO  [14:46:58.321] [bbotk] Evaluating 1 configuration(s) 
+INFO  [14:46:58.339] [mlr3] Running benchmark with 3 resampling iterations 
+INFO  [14:46:58.342] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
+INFO  [14:46:58.356] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
+INFO  [14:46:58.370] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
+INFO  [14:46:58.384] [mlr3] Finished benchmark 
+INFO  [14:46:58.396] [bbotk] Result of batch 14: 
+INFO  [14:46:58.396] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
+INFO  [14:46:58.396] [bbotk]   0.7666667             1 7.593573        0      0            0.032 
+INFO  [14:46:58.396] [bbotk]                                 uhash 
+INFO  [14:46:58.396] [bbotk]  c9fcb07b-1d90-4247-8e33-1e9831488c9c 
+INFO  [14:46:58.397] [bbotk] Evaluating 1 configuration(s) 
+INFO  [14:46:58.406] [mlr3] Running benchmark with 3 resampling iterations 
+INFO  [14:46:58.408] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
+INFO  [14:46:58.417] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
+INFO  [14:46:58.426] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
+INFO  [14:46:58.435] [mlr3] Finished benchmark 
+INFO  [14:46:58.452] [bbotk] Result of batch 15: 
+INFO  [14:46:58.453] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
+INFO  [14:46:58.453] [bbotk]   0.6333333            14 9.639086        0      0            0.018 
+INFO  [14:46:58.453] [bbotk]                                 uhash 
+INFO  [14:46:58.453] [bbotk]  efcc0020-e14b-42f6-9811-526d0e2f7774 
+INFO  [14:46:58.454] [bbotk] Evaluating 1 configuration(s) 
+INFO  [14:46:58.464] [mlr3] Running benchmark with 3 resampling iterations 
+INFO  [14:46:58.467] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
+INFO  [14:46:58.477] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
+INFO  [14:46:58.487] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
+INFO  [14:46:58.498] [mlr3] Finished benchmark 
+INFO  [14:46:58.509] [bbotk] Result of batch 16: 
+INFO  [14:46:58.510] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
+INFO  [14:46:58.510] [bbotk]         0.5             7 7.630313        0      0            0.021 
+INFO  [14:46:58.510] [bbotk]                                 uhash 
+INFO  [14:46:58.510] [bbotk]  cb1c76b8-c1f1-4459-b5e4-9b92277717f6 
+INFO  [14:46:58.512] [bbotk] Finished optimizing after 16 evaluation(s) 
+INFO  [14:46:58.512] [bbotk] Result: 
+INFO  [14:46:58.512] [bbotk]  mtry.ratio min.node.size learner_param_vals  x_domain regr.mse 
+INFO  [14:46:58.512] [bbotk]   0.6333333             1          &lt;list[4]&gt; &lt;list[2]&gt; 7.591765 </code></pre>
+</div>
+</div>
+<p>You can access the optimized learner by accessing the <code>model$learner</code> attribute.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a>auto_tunning_learner<span class="sc">$</span>model<span class="sc">$</span>learner</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;LearnerRegrRanger:regr.ranger&gt;
+* Model: ranger
+* Parameters: num.threads=1, max.depth=10, mtry.ratio=0.6333,
+  min.node.size=1
+* Packages: mlr3, mlr3learners, ranger
+* Predict Type: response
+* Feature types: logical, integer, numeric, character, factor, ordered
+* Properties: hotstart_backward, importance, oob_error, weights</code></pre>
+</div>
+</div>
+<p>You can look at the history of tuning process like below:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a>auto_tunning_learner<span class="sc">$</span>model<span class="sc">$</span>tuning_instance</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;TuningInstanceSingleCrit&gt;
+* State:  Optimized
+* Objective: &lt;ObjectiveTuning:regr.ranger_on_example&gt;
+* Search Space:
+              id    class lower upper nlevels
+1:    mtry.ratio ParamDbl   0.5   0.9     Inf
+2: min.node.size ParamInt   1.0  20.0      20
+* Terminator: &lt;TerminatorEvals&gt;
+* Result:
+   mtry.ratio min.node.size regr.mse
+1:  0.6333333             1 7.591765
+* Archive:
+    mtry.ratio min.node.size  regr.mse
+ 1:  0.5000000            14  9.222830
+ 2:  0.7666667            20 12.358408
+ 3:  0.6333333            20 12.234137
+ 4:  0.6333333             1  7.591765
+ 5:  0.9000000            20 12.504365
+ 6:  0.9000000             7  7.661883
+ 7:  0.6333333             7  7.725400
+ 8:  0.5000000             1  7.710079
+ 9:  0.9000000            14  9.488438
+10:  0.7666667             7  7.744834
+11:  0.9000000             1  7.735991
+12:  0.7666667            14  9.393034
+13:  0.5000000            20 11.826616
+14:  0.7666667             1  7.593573
+15:  0.6333333            14  9.639086
+16:  0.5000000             7  7.630313</code></pre>
+</div>
+</div>
+<p>You can of course use the <code>predict()</code> method as well.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb110"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a>auto_tunning_learner<span class="sc">$</span><span class="fu">predict</span>(reg_task)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;PredictionRegr&gt; for 32 observations:
+    row_ids truth response
+          1  21.0 20.82100
+          2  21.0 20.82260
+          3  22.8 23.77940
+---                       
+         30  19.7 19.77387
+         31  15.0 14.94260
+         32  21.4 21.89160</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="mlr3-in-action" class="level2 page-columns page-full" data-number="13.6">
+<h2 data-number="13.6" class="anchored" data-anchor-id="mlr3-in-action"><span class="header-section-number">13.6</span> <code>mlr3</code> in action</h2>
+<p>Here, an example usage of the <code>mlr3</code> framework as a part of a research process is presented. Suppose our goal is to estimate the heterogeneous treatment effect using causal forest using the R <code>grf</code> package. The <code>grf::causal_forest()</code> function implements causal forest as an R-learner and it uses random forest for its first-stage estimations by default. However, the function allows the users to provide their own estimated values of <span class="math inline">\(y\)</span> (dependent variable) and <span class="math inline">\(T\)</span> (treatment). We will code the process of conducting the first stage using <code>mlr3</code> and then use <code>grf::causal_forest()</code> to estimate heterogeneous treatment effects.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb112"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== load the Treatment dataset ===#</span></span>
+<span id="cb112-2"><a href="#cb112-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"Treatment"</span>, <span class="at">package =</span> <span class="st">"Ecdat"</span>)</span>
+<span id="cb112-3"><a href="#cb112-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb112-4"><a href="#cb112-4" aria-hidden="true" tabindex="-1"></a><span class="co">#=== convert to a data.table ===#</span></span>
+<span id="cb112-5"><a href="#cb112-5" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb112-6"><a href="#cb112-6" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> </span>
+<span id="cb112-7"><a href="#cb112-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>(Treatment)</span>
+<span id="cb112-8"><a href="#cb112-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      treat age educ     ethn married    re74    re75     re78   u74   u75
+   1:  TRUE  37   11    black    TRUE     0.0     0.0  9930.05  TRUE  TRUE
+   2:  TRUE  30   12    black   FALSE     0.0     0.0 24909.50  TRUE  TRUE
+   3:  TRUE  27   11    black   FALSE     0.0     0.0  7506.15  TRUE  TRUE
+   4:  TRUE  33    8    black   FALSE     0.0     0.0   289.79  TRUE  TRUE
+   5:  TRUE  22    9    black   FALSE     0.0     0.0  4056.49  TRUE  TRUE
+  ---                                                                     
+2671: FALSE  47    8    other    TRUE 44667.4 33837.1 38568.70 FALSE FALSE
+2672: FALSE  32    8    other    TRUE 47022.4 67137.1 59109.10 FALSE FALSE
+2673: FALSE  47   10    other    TRUE 48198.0 47968.1 55710.30 FALSE FALSE
+2674: FALSE  54    0 hispanic    TRUE 49228.5 44221.0 20540.40 FALSE FALSE
+2675: FALSE  40    8    other    TRUE 50940.9 55500.0 53198.20 FALSE FALSE</code></pre>
+</div>
+</div>
+<p>The dependent variable is <code>re78</code> (<span class="math inline">\(Y\)</span>), which is real annual earnings in 1978 (after treatment). The treatment variable of interest is <code>treat</code> (<span class="math inline">\(T\)</span>), which is <code>TRUE</code> a person had gone through a training, <code>FALSE</code> otherwise. The features that are included as potential drivers of the heterogeneity in the impact of <code>treat</code> on <code>re78</code> is <code>age</code>, <code>educ</code>, <code>ethn</code>, and <code>married</code> (<span class="math inline">\(X\)</span>). Note that the focus of this section is just showcasing the use of <code>mlr3</code> and no attention is paid to potential endogeneity problems.</p>
+<section id="first-stage" class="level3 page-columns page-full" data-number="13.6.1">
+<h3 data-number="13.6.1" class="anchored" data-anchor-id="first-stage"><span class="header-section-number">13.6.1</span> First stage</h3>
+<p>We will use <code>ranger()</code> and <code>xgboost()</code> as learners. While <code>ranger()</code> accepts factor variables, <code>xgboost()</code> does not. So, we will one-hot-encode the data using <code>mltools::one_hot()</code> so that we can just create a single <code>Task</code> and use it for both. We also turn <code>treat</code> to a factor so it is amenable with classification jobs by the two learner functions.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb114"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb114-2"><a href="#cb114-2" aria-hidden="true" tabindex="-1"></a>data_trt <span class="ot">&lt;-</span> </span>
+<span id="cb114-3"><a href="#cb114-3" aria-hidden="true" tabindex="-1"></a>  mltools<span class="sc">::</span><span class="fu">one_hot</span>(data) <span class="sc">%&gt;%</span> </span>
+<span id="cb114-4"><a href="#cb114-4" aria-hidden="true" tabindex="-1"></a>  .[, <span class="at">treat :=</span> <span class="fu">factor</span>(treat)]</span>
+<span id="cb114-5"><a href="#cb114-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Note that we need separate procedures for estimating <span class="math inline">\(E[Y|X]\)</span> and <span class="math inline">\(E[T|X]\)</span>. The former is a regression and the latter is a classification task.</p>
+<p>Let’s first work on estimating <span class="math inline">\(E[Y|X]\)</span>. First, we set up a task.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb115"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a>y_est_task <span class="ot">&lt;-</span> </span>
+<span id="cb115-2"><a href="#cb115-2" aria-hidden="true" tabindex="-1"></a>  TaskRegr<span class="sc">$</span><span class="fu">new</span>(</span>
+<span id="cb115-3"><a href="#cb115-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">id =</span> <span class="st">"estimate_y_on_x"</span>,</span>
+<span id="cb115-4"><a href="#cb115-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">backend =</span> data_trt[, .(</span>
+<span id="cb115-5"><a href="#cb115-5" aria-hidden="true" tabindex="-1"></a>      re78, age, educ, married, </span>
+<span id="cb115-6"><a href="#cb115-6" aria-hidden="true" tabindex="-1"></a>      ethn_other, ethn_black, ethn_hispanic </span>
+<span id="cb115-7"><a href="#cb115-7" aria-hidden="true" tabindex="-1"></a>    )],</span>
+<span id="cb115-8"><a href="#cb115-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">target =</span> <span class="st">"re78"</span></span>
+<span id="cb115-9"><a href="#cb115-9" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We consider two modeling approaches: random forest by <code>ranger</code> and gradient boosted forest by <code>xgboost</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb116"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a>y_learner_ranger <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"regr.ranger"</span>)</span>
+<span id="cb116-2"><a href="#cb116-2" aria-hidden="true" tabindex="-1"></a>y_learner_xgboost <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"regr.xgboost"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We will implement a K-fold cross-validation to select the better model with optimized hyper-parameter values. We do this by applying triggering <code>Tuner</code> classed defined separately for the two learners.</p>
+<p>Let’s define the resampling method, measure, terminator, and tuner that will be shared by the two approaches.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb117"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a>resampling_y <span class="ot">&lt;-</span> <span class="fu">rsmp</span>(<span class="st">"cv"</span>, <span class="at">folds =</span> <span class="dv">4</span>)</span>
+<span id="cb117-2"><a href="#cb117-2" aria-hidden="true" tabindex="-1"></a>measure_y <span class="ot">&lt;-</span> <span class="fu">msr</span>(<span class="st">"regr.mse"</span>)</span>
+<span id="cb117-3"><a href="#cb117-3" aria-hidden="true" tabindex="-1"></a>terminator <span class="ot">&lt;-</span> <span class="fu">trm</span>(<span class="st">"evals"</span>, <span class="at">n_evals =</span> <span class="dv">100</span>)</span>
+<span id="cb117-4"><a href="#cb117-4" aria-hidden="true" tabindex="-1"></a>tuner <span class="ot">&lt;-</span> <span class="fu">tnr</span>(<span class="st">"grid_search"</span>, <span class="at">resolution =</span> <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now, when we compare multiple models, we should use the same CV splits to have a fair comparison their model performance. To ensure this, we need to use an instantiated <code>Resampling</code> object.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>If you provide an un-instantiated <code>Resampling</code> object to an <code>AutoTuner</code>, it will instantiate the <code>Resampling</code> object internally and two separate <code>AutoTuner</code>s can result in two distinct splits.</p>
+</div></div><div class="cell">
+<div class="sourceCode cell-code" id="cb118"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb118-1"><a href="#cb118-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== instantiate ===#</span></span>
+<span id="cb118-2"><a href="#cb118-2" aria-hidden="true" tabindex="-1"></a>resampling_y<span class="sc">$</span><span class="fu">instantiate</span>(y_est_task)</span>
+<span id="cb118-3"><a href="#cb118-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb118-4"><a href="#cb118-4" aria-hidden="true" tabindex="-1"></a><span class="co">#=== confirm it is indeed instantiated ===#</span></span>
+<span id="cb118-5"><a href="#cb118-5" aria-hidden="true" tabindex="-1"></a>resampling_y</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;ResamplingCV&gt;: Cross-Validation
+* Iterations: 4
+* Instantiated: TRUE
+* Parameters: folds=4</code></pre>
+</div>
+</div>
+<p>Let’s define search space for each of the learners.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb120"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a>search_space_ranger <span class="ot">&lt;-</span></span>
+<span id="cb120-2"><a href="#cb120-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ps</span>(</span>
+<span id="cb120-3"><a href="#cb120-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mtry =</span> <span class="fu">p_int</span>(<span class="at">lower =</span> <span class="dv">1</span>, <span class="at">upper =</span> <span class="fu">length</span>(y_est_task<span class="sc">$</span>feature_names)),</span>
+<span id="cb120-4"><a href="#cb120-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">min.node.size =</span> <span class="fu">p_int</span>(<span class="at">lower =</span> <span class="dv">1</span>, <span class="at">upper =</span> <span class="dv">20</span>)</span>
+<span id="cb120-5"><a href="#cb120-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb120-6"><a href="#cb120-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb120-7"><a href="#cb120-7" aria-hidden="true" tabindex="-1"></a>search_space_xgboost <span class="ot">&lt;-</span></span>
+<span id="cb120-8"><a href="#cb120-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ps</span>(</span>
+<span id="cb120-9"><a href="#cb120-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">nrounds =</span> <span class="fu">p_int</span>(<span class="at">lower =</span> <span class="dv">100</span>, <span class="at">upper =</span> <span class="dv">400</span>),</span>
+<span id="cb120-10"><a href="#cb120-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">eta =</span> <span class="fu">p_dbl</span>(<span class="at">lower =</span> <span class="fl">0.01</span>, <span class="at">upper =</span> <span class="dv">1</span>)</span>
+<span id="cb120-11"><a href="#cb120-11" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We have all the ingredients to set up <code>TuningInstance</code>s for the learners.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb121"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb121-1"><a href="#cb121-1" aria-hidden="true" tabindex="-1"></a>tuning_instance_ranger <span class="ot">&lt;-</span></span>
+<span id="cb121-2"><a href="#cb121-2" aria-hidden="true" tabindex="-1"></a>  TuningInstanceSingleCrit<span class="sc">$</span><span class="fu">new</span>(</span>
+<span id="cb121-3"><a href="#cb121-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">task =</span> y_est_task,</span>
+<span id="cb121-4"><a href="#cb121-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">learner =</span> y_learner_ranger,</span>
+<span id="cb121-5"><a href="#cb121-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">resampling =</span> resampling_y,</span>
+<span id="cb121-6"><a href="#cb121-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">measure =</span> measure_y,</span>
+<span id="cb121-7"><a href="#cb121-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">search_space =</span> search_space_ranger,</span>
+<span id="cb121-8"><a href="#cb121-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">terminator =</span> terminator</span>
+<span id="cb121-9"><a href="#cb121-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb121-10"><a href="#cb121-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb121-11"><a href="#cb121-11" aria-hidden="true" tabindex="-1"></a>tuning_instance_xgboost <span class="ot">&lt;-</span></span>
+<span id="cb121-12"><a href="#cb121-12" aria-hidden="true" tabindex="-1"></a>  TuningInstanceSingleCrit<span class="sc">$</span><span class="fu">new</span>(</span>
+<span id="cb121-13"><a href="#cb121-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">task =</span> y_est_task,</span>
+<span id="cb121-14"><a href="#cb121-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">learner =</span> y_learner_xgboost,</span>
+<span id="cb121-15"><a href="#cb121-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">resampling =</span> resampling_y,</span>
+<span id="cb121-16"><a href="#cb121-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">measure =</span> measure_y,</span>
+<span id="cb121-17"><a href="#cb121-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">search_space =</span> search_space_xgboost,</span>
+<span id="cb121-18"><a href="#cb121-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">terminator =</span> terminator</span>
+<span id="cb121-19"><a href="#cb121-19" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s tune them now (this can take a while).</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>We use using the same tuner here, but you can use different tuning processes for the learners. For example, you can have <code>resolution = 5</code> for tuning <code>regr.xgboost</code>.</p>
+</div></div><div class="cell">
+<div class="sourceCode cell-code" id="cb122"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== tune ranger ===#</span></span>
+<span id="cb122-2"><a href="#cb122-2" aria-hidden="true" tabindex="-1"></a>tuner<span class="sc">$</span><span class="fu">optimize</span>(tuning_instance_ranger)</span>
+<span id="cb122-3"><a href="#cb122-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb122-4"><a href="#cb122-4" aria-hidden="true" tabindex="-1"></a><span class="co">#=== tune xgboost ===#</span></span>
+<span id="cb122-5"><a href="#cb122-5" aria-hidden="true" tabindex="-1"></a>tuner<span class="sc">$</span><span class="fu">optimize</span>(tuning_instance_xgboost)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Here are the MSEs from the two individually tuned learners.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb123"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb123-1"><a href="#cb123-1" aria-hidden="true" tabindex="-1"></a>tuning_instance_ranger<span class="sc">$</span>result_y</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> regr.mse 
+194685635 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb125"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb125-1"><a href="#cb125-1" aria-hidden="true" tabindex="-1"></a>tuning_instance_xgboost<span class="sc">$</span>result_y</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> regr.mse 
+198482810 </code></pre>
+</div>
+</div>
+<p>So, in this example, we go with <code>regr.ranger</code> with its optimized hyper-parameter values. Let’s update our learner with the optimized hyper-parameter values.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb127"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb127-1"><a href="#cb127-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb127-2"><a href="#cb127-2" aria-hidden="true" tabindex="-1"></a>y_learner_ranger<span class="sc">$</span>param_set<span class="sc">$</span>values <span class="ot">&lt;-</span> tuning_instance_ranger<span class="sc">$</span>result_learner_param_vals</span>
+<span id="cb127-3"><a href="#cb127-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$num.threads
+[1] 1
+
+$mtry
+[1] 2
+
+$min.node.size
+[1] 14</code></pre>
+</div>
+</div>
+<p>Now that we have decided on the model to use for predicting <span class="math inline">\(E[y|X]\)</span>, let’s implement cross-fitting.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb129"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb129-1"><a href="#cb129-1" aria-hidden="true" tabindex="-1"></a>cv_results_y <span class="ot">&lt;-</span></span>
+<span id="cb129-2"><a href="#cb129-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resample</span>(</span>
+<span id="cb129-3"><a href="#cb129-3" aria-hidden="true" tabindex="-1"></a>    y_est_task, </span>
+<span id="cb129-4"><a href="#cb129-4" aria-hidden="true" tabindex="-1"></a>    y_learner_ranger, </span>
+<span id="cb129-5"><a href="#cb129-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rsmp</span>(<span class="st">"repeated_cv"</span>, <span class="at">repeats =</span> <span class="dv">4</span>, <span class="at">folds =</span> <span class="dv">3</span>) </span>
+<span id="cb129-6"><a href="#cb129-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>INFO  [14:47:26.398] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 8/12) 
+INFO  [14:47:26.525] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 5/12) 
+INFO  [14:47:26.651] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 1/12) 
+INFO  [14:47:26.777] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 10/12) 
+INFO  [14:47:26.903] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 6/12) 
+INFO  [14:47:27.029] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 9/12) 
+INFO  [14:47:27.159] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 3/12) 
+INFO  [14:47:27.289] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 7/12) 
+INFO  [14:47:27.418] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 11/12) 
+INFO  [14:47:27.545] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 4/12) 
+INFO  [14:47:27.669] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 2/12) 
+INFO  [14:47:27.800] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 12/12) </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb131"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb131-1"><a href="#cb131-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== all combined ===#</span></span>
+<span id="cb131-2"><a href="#cb131-2" aria-hidden="true" tabindex="-1"></a>all_predictions_y <span class="ot">&lt;-</span> </span>
+<span id="cb131-3"><a href="#cb131-3" aria-hidden="true" tabindex="-1"></a>  cv_results_y<span class="sc">$</span><span class="fu">prediction</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb131-4"><a href="#cb131-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.table</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb131-5"><a href="#cb131-5" aria-hidden="true" tabindex="-1"></a>  .[, .(<span class="at">y_hat =</span> <span class="fu">mean</span>(response)), by <span class="ot">=</span> row_ids] <span class="sc">%&gt;%</span></span>
+<span id="cb131-6"><a href="#cb131-6" aria-hidden="true" tabindex="-1"></a>  .[<span class="fu">order</span>(row_ids), ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We basically follow the same process for estimating <span class="math inline">\(E[T|X]\)</span>. Let’s set up tuning processes for the learners.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb132"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb132-1"><a href="#cb132-1" aria-hidden="true" tabindex="-1"></a>t_est_task <span class="ot">&lt;-</span></span>
+<span id="cb132-2"><a href="#cb132-2" aria-hidden="true" tabindex="-1"></a>  TaskClassif<span class="sc">$</span><span class="fu">new</span>(</span>
+<span id="cb132-3"><a href="#cb132-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">id =</span> <span class="st">"estimate_t_on_x"</span>,</span>
+<span id="cb132-4"><a href="#cb132-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">backend =</span> </span>
+<span id="cb132-5"><a href="#cb132-5" aria-hidden="true" tabindex="-1"></a>      data_trt[, .(</span>
+<span id="cb132-6"><a href="#cb132-6" aria-hidden="true" tabindex="-1"></a>        treat, age, educ, married, </span>
+<span id="cb132-7"><a href="#cb132-7" aria-hidden="true" tabindex="-1"></a>        ethn_other, ethn_black, ethn_hispanic </span>
+<span id="cb132-8"><a href="#cb132-8" aria-hidden="true" tabindex="-1"></a>      )],</span>
+<span id="cb132-9"><a href="#cb132-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">target =</span> <span class="st">"treat"</span></span>
+<span id="cb132-10"><a href="#cb132-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb132-11"><a href="#cb132-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb132-12"><a href="#cb132-12" aria-hidden="true" tabindex="-1"></a>t_learner_ranger <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"classif.ranger"</span>)</span>
+<span id="cb132-13"><a href="#cb132-13" aria-hidden="true" tabindex="-1"></a>t_learner_xgboost <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"classif.xgboost"</span>)</span>
+<span id="cb132-14"><a href="#cb132-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb132-15"><a href="#cb132-15" aria-hidden="true" tabindex="-1"></a>resampling_t <span class="ot">&lt;-</span> <span class="fu">rsmp</span>(<span class="st">"cv"</span>, <span class="at">folds =</span> <span class="dv">4</span>)</span>
+<span id="cb132-16"><a href="#cb132-16" aria-hidden="true" tabindex="-1"></a>resampling_y<span class="sc">$</span><span class="fu">instantiate</span>(t_est_task)</span>
+<span id="cb132-17"><a href="#cb132-17" aria-hidden="true" tabindex="-1"></a>measure_t <span class="ot">&lt;-</span> <span class="fu">msr</span>(<span class="st">"classif.ce"</span>)</span>
+<span id="cb132-18"><a href="#cb132-18" aria-hidden="true" tabindex="-1"></a>terminator <span class="ot">&lt;-</span> <span class="fu">trm</span>(<span class="st">"evals"</span>, <span class="at">n_evals =</span> <span class="dv">100</span>)</span>
+<span id="cb132-19"><a href="#cb132-19" aria-hidden="true" tabindex="-1"></a>tuner <span class="ot">&lt;-</span> <span class="fu">tnr</span>(<span class="st">"grid_search"</span>, <span class="at">resolution =</span> <span class="dv">4</span>)</span>
+<span id="cb132-20"><a href="#cb132-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb132-21"><a href="#cb132-21" aria-hidden="true" tabindex="-1"></a>tuning_instance_ranger <span class="ot">&lt;-</span></span>
+<span id="cb132-22"><a href="#cb132-22" aria-hidden="true" tabindex="-1"></a>  TuningInstanceSingleCrit<span class="sc">$</span><span class="fu">new</span>(</span>
+<span id="cb132-23"><a href="#cb132-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">task =</span> t_est_task,</span>
+<span id="cb132-24"><a href="#cb132-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">learner =</span> t_learner_ranger,</span>
+<span id="cb132-25"><a href="#cb132-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">resampling =</span> resampling_y,</span>
+<span id="cb132-26"><a href="#cb132-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">measure =</span> measure_t,</span>
+<span id="cb132-27"><a href="#cb132-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">search_space =</span> search_space_ranger,</span>
+<span id="cb132-28"><a href="#cb132-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">terminator =</span> terminator</span>
+<span id="cb132-29"><a href="#cb132-29" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb132-30"><a href="#cb132-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb132-31"><a href="#cb132-31" aria-hidden="true" tabindex="-1"></a>tuning_instance_xgboost <span class="ot">&lt;-</span></span>
+<span id="cb132-32"><a href="#cb132-32" aria-hidden="true" tabindex="-1"></a>  TuningInstanceSingleCrit<span class="sc">$</span><span class="fu">new</span>(</span>
+<span id="cb132-33"><a href="#cb132-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">task =</span> t_est_task,</span>
+<span id="cb132-34"><a href="#cb132-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">learner =</span> t_learner_xgboost,</span>
+<span id="cb132-35"><a href="#cb132-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">resampling =</span> resampling_y,</span>
+<span id="cb132-36"><a href="#cb132-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">measure =</span> measure_t,</span>
+<span id="cb132-37"><a href="#cb132-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">search_space =</span> search_space_xgboost,</span>
+<span id="cb132-38"><a href="#cb132-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">terminator =</span> terminator</span>
+<span id="cb132-39"><a href="#cb132-39" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Here are the classification error from the two individually tuned learners.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb133"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb133-1"><a href="#cb133-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== tune ranger ===#</span></span>
+<span id="cb133-2"><a href="#cb133-2" aria-hidden="true" tabindex="-1"></a>tuner<span class="sc">$</span><span class="fu">optimize</span>(tuning_instance_ranger)</span>
+<span id="cb133-3"><a href="#cb133-3" aria-hidden="true" tabindex="-1"></a>tuning_instance_ranger<span class="sc">$</span>result_y</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb134"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb134-1"><a href="#cb134-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== tune xgboost ===#</span></span>
+<span id="cb134-2"><a href="#cb134-2" aria-hidden="true" tabindex="-1"></a>tuner<span class="sc">$</span><span class="fu">optimize</span>(tuning_instance_xgboost)</span>
+<span id="cb134-3"><a href="#cb134-3" aria-hidden="true" tabindex="-1"></a>tuning_instance_xgboost<span class="sc">$</span>result_y</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>So, we are picking the <code>classif.ranger</code> option here as well as it has a lower classification error.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb135"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb135-1"><a href="#cb135-1" aria-hidden="true" tabindex="-1"></a>t_learner_ranger<span class="sc">$</span>param_set<span class="sc">$</span>values <span class="ot">&lt;-</span> tuning_instance_ranger<span class="sc">$</span>result_learner_param_vals</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now that we have decided on the model to use for predicting <span class="math inline">\(E[T|X]\)</span>, let’s implement cross-fitting. Before cross-fitting, we need to tell <code>t_learner_ranger</code> to predict probability instead of classification (either 0 or 1).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb136"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb136-1"><a href="#cb136-1" aria-hidden="true" tabindex="-1"></a>t_learner_ranger<span class="sc">$</span>predict_type <span class="ot">&lt;-</span> <span class="st">"prob"</span></span>
+<span id="cb136-2"><a href="#cb136-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb136-3"><a href="#cb136-3" aria-hidden="true" tabindex="-1"></a>cv_results_t <span class="ot">&lt;-</span></span>
+<span id="cb136-4"><a href="#cb136-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resample</span>(</span>
+<span id="cb136-5"><a href="#cb136-5" aria-hidden="true" tabindex="-1"></a>    t_est_task, </span>
+<span id="cb136-6"><a href="#cb136-6" aria-hidden="true" tabindex="-1"></a>    t_learner_ranger, </span>
+<span id="cb136-7"><a href="#cb136-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rsmp</span>(<span class="st">"repeated_cv"</span>, <span class="at">repeats =</span> <span class="dv">4</span>, <span class="at">folds =</span> <span class="dv">3</span>) </span>
+<span id="cb136-8"><a href="#cb136-8" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>INFO  [14:47:47.606] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 8/12) 
+INFO  [14:47:47.771] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 2/12) 
+INFO  [14:47:47.947] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 7/12) 
+INFO  [14:47:48.111] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 11/12) 
+INFO  [14:47:48.288] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 1/12) 
+INFO  [14:47:48.465] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 5/12) 
+INFO  [14:47:48.628] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 6/12) 
+INFO  [14:47:48.803] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 12/12) 
+INFO  [14:47:48.960] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 9/12) 
+INFO  [14:47:49.128] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 10/12) 
+INFO  [14:47:49.295] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 3/12) 
+INFO  [14:47:49.442] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 4/12) </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb138"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb138-1"><a href="#cb138-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== all combined ===#</span></span>
+<span id="cb138-2"><a href="#cb138-2" aria-hidden="true" tabindex="-1"></a>all_predictions_t <span class="ot">&lt;-</span> </span>
+<span id="cb138-3"><a href="#cb138-3" aria-hidden="true" tabindex="-1"></a>  cv_results_t<span class="sc">$</span><span class="fu">prediction</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb138-4"><a href="#cb138-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.table</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb138-5"><a href="#cb138-5" aria-hidden="true" tabindex="-1"></a>  .[, .(<span class="at">t_hat =</span> <span class="fu">mean</span>(prob.TRUE)), by <span class="ot">=</span> row_ids] <span class="sc">%&gt;%</span> </span>
+<span id="cb138-6"><a href="#cb138-6" aria-hidden="true" tabindex="-1"></a>  .[<span class="fu">order</span>(row_ids), ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We now use <code>all_predictions_y</code> and <code>all_predictions_t</code> for <code>Y.hat</code> and <code>W.hat</code> in <code>grf::causal_forest()</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb139"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb139-1"><a href="#cb139-1" aria-hidden="true" tabindex="-1"></a>grf<span class="sc">::</span><span class="fu">causal_forest</span>(</span>
+<span id="cb139-2"><a href="#cb139-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">X =</span> data_trt[, .(age, educ, married, ethn_other, ethn_black, ethn_hispanic)] <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>(),</span>
+<span id="cb139-3"><a href="#cb139-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Y =</span> data_trt[, re78],</span>
+<span id="cb139-4"><a href="#cb139-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">W =</span> data_trt[, <span class="fu">fifelse</span>(treat <span class="sc">==</span> <span class="cn">TRUE</span>, <span class="dv">1</span>, <span class="dv">0</span>)],</span>
+<span id="cb139-5"><a href="#cb139-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Y.hat =</span> all_predictions_y[, y_hat],</span>
+<span id="cb139-6"><a href="#cb139-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">W.hat =</span> all_predictions_t[, t_hat]</span>
+<span id="cb139-7"><a href="#cb139-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>GRF forest object of type causal_forest 
+Number of trees: 2000 
+Number of training samples: 2675 
+Variable importance: 
+    1     2     3     4     5     6 
+0.493 0.295 0.119 0.027 0.056 0.011 </code></pre>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./PROG-00-programming.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Programming Guide</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./PROG-02-reticulate.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Running Python from R</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

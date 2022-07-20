@@ -58,11 +58,14 @@ quarto::quarto_render(here::here("LectureNotes/linear-nonparametric-efficiency.q
 #/*=================================================*/
 #' # Programming
 #/*=================================================*/
+#=== mlr3 ===#
+quarto::quarto_render(here::here("LectureNotes/PROG-01-mlr3.qmd"))
+
 #=== reticulate ===#
-quarto::quarto_render(here::here("LectureNotes/PROG-01-reticulate.qmd"))
+quarto::quarto_render(here::here("LectureNotes/PROG-02-reticulate.qmd"))
 
 #=== model selection ===#
-quarto::quarto_render(here::here("LectureNotes/PROG-02-model-selection-prediction.qmd"))
+quarto::quarto_render(here::here("LectureNotes/PROG-03-model-selection-prediction.qmd"))
 
 #/*=================================================*/
 #' # Extensions

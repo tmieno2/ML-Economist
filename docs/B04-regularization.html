@@ -213,9 +213,10 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./preface.html" class="sidebar-item-text sidebar-link">Preface: Prediction v.s. Causal Inference</a>
+  <a href="./H00-preface.html" class="sidebar-item-text sidebar-link">Preface</a>
   </div>
 </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
         <a href="./basics.html" class="sidebar-item-text sidebar-link">Basics</a>
@@ -251,6 +252,7 @@ div.csl-indent {
 </li>
     </ul>
   </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
         <a href="./prediction-ml.html" class="sidebar-item-text sidebar-link">Prediction ML</a>
@@ -276,6 +278,7 @@ div.csl-indent {
 </li>
     </ul>
   </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
         <a href="./C00-causal-ml.html" class="sidebar-item-text sidebar-link">Causal Machine Learning (CML) Methods</a>
@@ -296,6 +299,7 @@ div.csl-indent {
 </li>
     </ul>
   </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
         <a href="./extensions.html" class="sidebar-item-text sidebar-link">Extensions</a>
@@ -316,6 +320,7 @@ div.csl-indent {
 </li>
     </ul>
   </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
         <a href="./PROG-00-programming.html" class="sidebar-item-text sidebar-link">Programming Guide</a>
@@ -326,12 +331,17 @@ div.csl-indent {
     <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PROG-01-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
+  <a href="./PROG-01-mlr3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Machine Learning with <code>mlr3</code> in R</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PROG-02-model-selection-prediction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Model Selection (Prediction)</span></a>
+  <a href="./PROG-02-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PROG-03-model-selection-prediction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Model Selection (Prediction)</span></a>
   </div>
 </li>
     </ul>
@@ -508,7 +518,7 @@ Min_{\beta} &amp; \sum_{i=1}^N (y_i - \beta_1 x_1 - \beta_2 x_2)^2 \\
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>(Intercept)         x_1         x_2 
-0.008857216 2.038242302 0.238612305 </code></pre>
+-0.02256236  1.98190237  0.26000561 </code></pre>
 </div>
 </div>
 <p>We now calculate the value of the objective functions at different values of <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\beta_2\)</span>. Here is the set of <span class="math inline">\(\{\beta_1, \beta_2\}\)</span> combinations we look at.</p>
@@ -1033,7 +1043,7 @@ V20         -1.144987654</code></pre>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>cv_lasso<span class="sc">$</span>lambda.min</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.06284188</code></pre>
+<pre><code>[1] 0.05217244</code></pre>
 </div>
 </div>
 <p>You can access the coefficient estimates when <span class="math inline">\(\lambda\)</span> is <code>lambda.min</code> as follows</p>
@@ -1042,27 +1052,27 @@ V20         -1.144987654</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
                       s1
-(Intercept)  0.145832036
-V1           1.340981414
+(Intercept)  0.140076081
+V1           1.347383065
 V2           .          
-V3           0.708347140
+V3           0.712555760
 V4           .          
-V5          -0.848087765
-V6           0.554823782
-V7           0.038519738
-V8           0.347221319
+V5          -0.855449422
+V6           0.564158207
+V7           0.050401187
+V8           0.354841505
 V9           .          
-V10          0.010034050
-V11          0.186365265
+V10          0.028831014
+V11          0.199511972
 V12          .          
-V13          .          
-V14         -1.086006902
-V15         -0.004444319
+V13         -0.001983046
+V14         -1.100192172
+V15         -0.025611555
 V16          .          
 V17          .          
 V18          .          
 V19          .          
-V20         -1.069942845</code></pre>
+V20         -1.086745008</code></pre>
 </div>
 </div>
 <p>The following code gives you the coefficient estimates when <span class="math inline">\(\lambda\)</span> is <code>lambda.1se</code></p>
@@ -1071,27 +1081,27 @@ V20         -1.069942845</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
                     s1
-(Intercept)  0.1536661
-V1           1.3019575
+(Intercept)  0.1559184
+V1           1.2861359
 V2           .        
-V3           0.6422426
+V3           0.6142724
 V4           .        
-V5          -0.7892388
-V6           0.4944794
+V5          -0.7653592
+V6           0.4722462
 V7           .        
-V8           0.2943189
+V8           0.2730791
 V9           .        
 V10          .        
-V11          0.1058440
+V11          0.0753461
 V12          .        
 V13          .        
-V14         -1.0402312
+V14         -1.0238284
 V15          .        
 V16          .        
 V17          .        
 V18          .        
 V19          .        
-V20         -0.9791172</code></pre>
+V20         -0.9430068</code></pre>
 </div>
 </div>
 <div class="callout-note callout callout-style-default callout-captioned">
@@ -1122,28 +1132,28 @@ Note
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coef</span>(<span class="at">s =</span> <span class="st">"lambda.min"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
-                    s1
-(Intercept)  0.1482955
-V1           1.3381070
-V2           .        
-V3           0.6936938
-V4           .        
-V5          -0.8249778
-V6           0.5448439
-V7           0.0230429
-V8           0.3398575
-V9           .        
-V10          .        
-V11          0.1648445
-V12          .        
-V13          .        
-V14         -1.0801745
-V15          .        
-V16          .        
-V17          .        
-V18          .        
-V19          .        
-V20         -1.0338882</code></pre>
+                      s1
+(Intercept)  0.146685074
+V1           1.344353724
+V2           .          
+V3           0.706109036
+V4           .          
+V5          -0.837919112
+V6           0.556149716
+V7           0.035106848
+V8           0.349162103
+V9           .          
+V10          0.004419849
+V11          0.181086854
+V12          .          
+V13          .          
+V14         -1.088189405
+V15          .          
+V16          .          
+V17          .          
+V18          .          
+V19          .          
+V20         -1.053554743</code></pre>
 </div>
 </div>
 <p>Here is after scaling:</p>
@@ -1188,55 +1198,55 @@ V20         -1.235523619</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
                      s1
-(Intercept)  0.14867414
-V1           1.33377821
+(Intercept)  0.14936467
+V1           1.32975267
 V2           .         
-V3           0.69787701
+V3           0.69096092
 V4           .         
-V5          -0.83726751
-V6           0.54334327
-V7           0.02668633
-V8           0.33741131
+V5          -0.83122558
+V6           0.53669611
+V7           0.02005438
+V8           0.33193760
 V9           .         
 V10          .         
-V11          0.17105029
+V11          0.16239419
 V12          .         
 V13          .         
-V14         -1.07552680
+V14         -1.07081121
 V15          .         
 V16          .         
 V17          .         
 V18          .         
 V19          .         
-V20         -1.05278699</code></pre>
+V20         -1.04340741</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== scaled ===#</span></span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cv.glmnet</span>(X_scaled, y, <span class="at">nfolds =</span> <span class="dv">5</span>, <span class="at">standardize =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
 <span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coef</span>(<span class="at">s =</span> <span class="st">"lambda.min"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
-                      s1
-(Intercept)    0.1501130
-V1          1325.3733250
-V2             .        
-V3             0.6833693
-V4             .        
-V5            -0.8246020
-V6             0.5293940
-V7             0.0127738
-V8             0.3259468
-V9             .        
-V10            .        
-V11            0.1528706
-V12            .        
-V13            .        
-V14           -1.0656291
-V15            .        
-V16            .        
-V17            .        
-V18            .        
-V19            .        
-V20           -1.0330999</code></pre>
+                       s1
+(Intercept)    0.14867414
+V1          1333.77821030
+V2             .         
+V3             0.69787701
+V4             .         
+V5            -0.83726751
+V6             0.54334327
+V7             0.02668633
+V8             0.33741131
+V9             .         
+V10            .         
+V11            0.17105029
+V12            .         
+V13            .         
+V14           -1.07552680
+V15            .         
+V16            .         
+V17            .         
+V18            .         
+V19            .         
+V20           -1.05278699</code></pre>
 </div>
 </div>
 <p>While you do not have to worry about scaling issues as long as you are using <code>glmnet()</code>, this is something worth remembering.</p>

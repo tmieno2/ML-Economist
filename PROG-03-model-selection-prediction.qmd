@@ -135,7 +135,28 @@ est = LinearDML(
 est.fit(Y, T, X=X, W=X)
 ```
 
-## `reticulate` (Python) Implementation
+## `reticulate` (Python) Implementation of `GridSearchCVList()` {#sec-r-gscvl}
+
+::: {.column-margin}
+**Packages to load for replication**
+
+```{r}
+#| include: false
+
+library(data.table)
+library(reticulate)
+library(mlr3verse)
+library(tidyverse)
+```
+
+```{r}
+#| eval: false
+library(data.table)
+library(reticulate)
+library(mlr3verse)
+library(tidyverse)
+```
+:::
 
 Here is the R codes that does the same thing as above using the `reticulate` package without needing to interact with Python console directly.  
 
@@ -237,15 +258,148 @@ model_t <- first_stage$fit(X, T)$best_estimator_
 #--------------------------
 #=== set up a linear DML ===#
 est = econml_dml$LinearDML(
-    model_y=model_y, 
-    model_t=model_t
+    model_y = model_y, 
+    model_t = model_t
 )
 
 #=== train ===#
 est$fit(Y, T, X=X, W=X)
 ```
 
-## R implementation
+## R implementation using `mlr3`
+
+You can use `benchmark_grid()` and `benchmark()` to imitate `GridSearchCVList()` from the Python `econml` package with a bit of extra coding. 
+
+Let's use `mtcars` data for demonstration.
+
+```{r}
+#=== load the mtcars data ===#
+data("mtcars", package = "datasets")
+
+reg_task <-
+  TaskRegr$new(
+    id = "regression",
+    backend = mtcars,
+    target = "mpg"
+  )
+```
+
+We can create a list of learners that vary in the value of hyper-parameters we would like to tune. Suppose you are interested in using random forest and extreme gradient boosting. We can create such a list for each of them and then combine. Let's do that for random forest first. It is much like what we did for `GridSearchCVList()` above.
+
+First create a sequence of values for parameters to be tuned. 
+
+```{r}
+#=== sequence of values ===#
+mtry_seq <- c(1, 3, 5)
+min_node_size_seq <- c(5, 10, 20)
+```
+
+We can create a grid of values ourselves. 
+
+```{r}
+(
+search_space_ranger <- 
+  data.table::CJ(
+    mtry = mtry_seq,
+    min_node_size = min_node_size_seq
+  )
+)
+```
+
+We now loop over the row of `search_space_ranger` to create learners with each pair (row) stored in `search_space_ranger`.
+
+```{r}
+lrn_list_ranger <-
+  lapply(
+    seq_len(nrow(search_space_ranger)),
+    function(x) {
+      lrn(
+        "regr.ranger", 
+        mtry = search_space_ranger[x, mtry], 
+        min.node.size = search_space_ranger[x, min_node_size]
+      )
+    }
+  )
+```
+
+We can do the same for xgboost.
+
+```{r}
+#=== sequence of values ===#
+nrounds_seq <- c(100, 400, by = 100)
+eta_seq <- seq(0.01, 1, length = 5)
+
+#=== define the grid ===#
+search_space_xgb <- 
+  data.table::CJ(
+    nrounds = nrounds_seq,
+    eta = eta_seq
+  )
+
+lrn_list_xgboost <-
+  lapply(
+    seq_len(nrow(search_space_xgb)),
+    function(x) {
+      lrn(
+        "regr.xgboost",
+        nrounds = search_space_xgb[x, nrounds],
+        eta = search_space_xgb[x, eta]
+      )
+    }
+  )
+```
+
+Now, we combine all the learners we want to evaluate.
+
+```{r}
+all_learners <- c(lrn_list_ranger,lrn_list_xgboost)
+```
+
+We need all the learners to use the same resampled datasets. So, we need to used an instantiated resampling. 
+
+```{r}
+resampling <- rsmp("cv", folds = 3)
+resampling$instantiate(reg_task)
+```
+
+We can then supply `all_learners` to `benchmark_grid()` along with a task and resampling method, and ten call `benchmark()` on it.
+
+```{r}
+#=== benchmark design ===#
+benchmark_design <- 
+  benchmark_grid(
+    task = reg_task, 
+    learners = all_learners,
+    resampling = resampling
+  )
+
+#=== benchmark implementation ===#
+bmr_results <- benchmark(benchmark_design)
+```
+
+We can calculate MSE for each of the learners using the `aggregate()` method with `msr("regr.mse")`.
+
+```{r}
+(
+bmr_perf <- bmr_results$aggregate(msr("regr.mse"))
+)
+```
+
+We then pick the best learner which minimized `regr.mse`.
+
+```{r}
+#=== get the index ===#
+best_nr <- as.data.table(bmr_perf) %>% 
+  .[which.min(regr.mse), nr]
+
+#=== get the best learner by the index ===#
+best_learner <- all_learners[[best_nr]] 
+``` 
+
+
+
+
+
 
 
 
