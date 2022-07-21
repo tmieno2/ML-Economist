@@ -70,6 +70,7 @@ https://www.r-bloggers.com/2020/04/how-to-run-pythons-scikit-learn-in-r-in-5-min
 #' # MC experiments
 #/*=================================================*/
 
++ which CV works better in tuning parameters? (@cawley_over-tting_nodate)
 + Simple linear regression to introduce Loss function and K-nearest neighbor
 + GAM 
 + MC simulations to check how well CV works in picking the best model

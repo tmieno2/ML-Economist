@@ -662,7 +662,7 @@ You can of course use the `predict()` method as well.
 auto_tunning_learner$predict(reg_task)
 ```
 
-## `mlr3` in action 
+## `mlr3` in action {#sec-mlr3-in-action}
 
 Here, an example usage of the `mlr3` framework as a part of a research process is presented. Suppose our goal is to estimate the heterogeneous treatment effect using causal forest using the R `grf` package. The `grf::causal_forest()` function implements causal forest as an R-learner and it uses random forest for its first-stage estimations by default. However, the function allows the users to provide their own estimated values of $y$ (dependent variable) and $T$ (treatment). We will code the process of conducting the first stage using `mlr3` and then use `grf::causal_forest()` to estimate heterogeneous treatment effects.
 

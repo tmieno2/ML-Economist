@@ -16,6 +16,7 @@ y = \theta d + g_0(X) + \mu \\
 d = m_0(X) + \eta
 \end{aligned}
 $$
+
 Your sole interest is in estimating $\theta$: the impact of the treatment ($d$). $g_0(X)$ is the impact of a collection of variables $X$. $m_0(X)$ expresses how $X$ affects the treatment status, $d$. $d$ may be binary or continuous. The key assumptions here are $E[\mu|X]$ and $E[\eta|X]$....... That is...
 
 Note that the treatment effect is assumed to be constant irrespective of the value of $X$. So, the treatment effect is not heterogeneous. We will cover heterogeneous treatment effect estimation later.
@@ -900,7 +901,7 @@ ggplot() +
   theme(legend.position = "bottom")
 ```
 
-@fig-cf-debiased shows the distribution of $\hat{\theta}$ with double-deabiasing and cross-fitting. It is slightly biased in this instance (mean is `r round(mean(theta_hats_cf), digits = 3)`), but the average $\hat{\theta}$ is very close to the true parameter. 
+@fig-cf-debiased shows the distribution of $\hat{\theta}$ with double-debiasing and cross-fitting. It is slightly biased in this instance (mean is `r round(mean(theta_hats_cf), digits = 3)`), but the average $\hat{\theta}$ is very close to the true parameter. 
 
 :::{.callout-important}
 
@@ -915,7 +916,12 @@ ggplot() +
 
 
 
-## What if the unconfoundedness assumption does not hold
+## What if the unconfoundedness assumption does not hold?
+
+
+
+## Suggested Exercises
+
 
 
 ## References {.unnumbered}

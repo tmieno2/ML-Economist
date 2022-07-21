@@ -100,8 +100,11 @@ data <- gen_data(x = runif(100) * 5)
 Visually, here is the relationship between $E[y]$ and $x$:
 
 ```{r}
+#| code-fold: true
+
 ggplot(data = data) +
-  geom_line(aes(y = ey, x = x))
+  geom_line(aes(y = ey, x = x)) +
+  theme_bw()
 ```
 
 For example, for the case where the first observation is left out for validation,
@@ -271,14 +274,15 @@ plot(fit_gam)
 Looks good. By the way, here are the fitted curves for some other `sp` values.
 
 ```{r}
+#| code-fold: true
 #| label: fig-fitted-penalization-others
 #| layout-ncol: 2
 #| fig-cap: Fitted curves at various penalization parameters
 #| fig-subcap: 
-#|   - "k = 0"
-#|   - "k = 0.6"
-#|   - "k = 1"
-#|   - "k = 2"
+#|   - "sp = 0"
+#|   - "sp = 0.6"
+#|   - "sp = 1"
+#|   - "sp = 2"
 
 fitted_curves <- 
   lapply(
@@ -482,7 +486,7 @@ ggplot(data = mse_results) +
 Even though we compared different specification of the same approach (GAM), we can compare across different models as well. For example, you can find KCV for an RF model with a particular specifications of its hyper-parameters and compare the KCV with those of the GAM model specifications and see what comes at the top.  
 :::
 
-## Repeated K-fold Cross-Validation (KCV)
+## Repeated K-fold Cross-Validation (RKCV)
 
 As its name suggest, repeated KCV repeats the process of KCV multiple times. Each KCV iteration splits the original data into k-fold in a different way. A single KCV may not be reliable as the original data was split into such a way that favors one parameter set of or model class over the others. However, if we repeat KCV multiple times, then we can safe-guard against this randomness in a KCV procedure. Repeated KCV is preferred over a single KCV. 
 
@@ -511,7 +515,7 @@ mean_mse <-
 
 ## Does KCV really work?
 
-LOOCV and KCV use the train data to estimate test MSE. But, does it really work? In other words, does it let us pick the parameter that minimizes the test MSE? We will run a simple MC simulations to test this. We continue to use the same data generating process and gam models for this simulation as well. 
+LOOCV and KCV use the train data to estimate test MSE. But, does it really work? In other words, does it let us pick the parameter that minimizes the test MSE? We will run a simple MC simulations to test this. We continue to use the same data generating process and GAM models for this simulation as well. 
 
 Now, since we know the data generating process, we can actually use the following metric instead of MSE.
 

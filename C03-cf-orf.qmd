@@ -10,11 +10,7 @@ Causal Forest (CF) (as implemented by the R `grf` package or python `econml` pac
 See @sec-grf for a brief description of what GRF is. 
 :::
 
-:::{.callout-tip}
-**When useful?**
-
-Causal Forest is useful in estimating heterogeneous treatment effects when they are complex and/or non-linear functions of attributes (heterogeneity drivers) and it is hard to represent them using linear models.
-:::
+Causal Forest can be useful in estimating heterogeneous treatment effects when they are complex and/or non-linear functions of attributes (heterogeneity drivers) and it is hard to represent them using linear models.
 
 ### Mechanics
 
@@ -35,23 +31,50 @@ $$
 
 where $\alpha_i(X_i)$ is the weight given to each $i$. $\alpha_i(X_i)$ is found using random forest based on a causal criterion. 
 
-Unlike the DML approaches we saw in @sec-het-dml that uses a linear model as the final model, CF does not assume any functional form for how $X$ affects $\theta$ as you can see from the above minimization problem. 
+Unlike the DML approaches we saw in @sec-het-dml that uses a linear model as the final model, CF does not assume any functional form for how $X$ affects $\theta$ as you can see from the above minimization problem. As mentioned earlier, CF is a special case of GRF (discussed in @sec-grf), so CF is a local non-parametric regression.
 
-### Key assumptions
+:::{.callout-important}
+CF is consistent only if the conditional unconfoundedness is satisfied. 
+:::
+
+In other words, all potential variables that simultaneously affect the treatment decision and the outcome (confounders) are observed and included in the model. This is a very hard condition to satisfy using empirical data. An important exception is of course a randomized controlled trials. 
 
 
 ### Implementation 
 
-We can use the `causal_forest()` function from the R `grf` package to train a CF model. 
+We can use the `causal_forest()` function from the `grf` package to train a CF model in R. In Python, you can use `CausalForestDML()` from the `econml` package or `GRFForestRegressor` from the `skgrf` package.
 
-Python [skgrf](https://skgrf.readthedocs.io/en/latest/index.html) package
+As of now, there are some notable differences between `grf` and `econml` are. 
+
+:::{.callout-tip}
++ While `grf` support clustering, `econml` does not.
++ It is easy to modify the first stage estimations in `econml`. `grf` uses random forest by default for them. If you would like to try other ML methods, then you need to write a code to predict $Y - E[Y|X, W]$ and $T - E[T|X, W]$ with your choice of ML methods yourself (see @sec-mlr3-in-action for an example code to do this).
++ `grf` doe not cross-fit in the first-stage estimation. Rather, it uses out-of-bag prediction from the trained random forest models, which avoids over-fitting (Note that the motivation behind cross-fitting in DML is to avoid over-fitting bias in the second stage estimation. See @sec-dml).
+:::
 
 
-### Empirical example 
+::: {.panel-tabset}
+
+## R
+
+```{r}
+
+grf::causal_forest(
+
+)
+
+```
+
+## Python
+
+```{python}
+from econml import 
+```
+
+:::
 
 
-
-
+### Empirical example
 
 
 

@@ -94,7 +94,7 @@ When $t$ is set to 1 in @eq-constrained-lasso, Lasso tries to estimate the coeff
 $$
 \begin{align}
 Min_{\beta} & \sum_{i=1}^N (y_i - \beta_1 x_1 - \beta_2 x_2)^2 \\
-\mbox{s.t. } & \sum_{k=1}^K |\beta_k| < \textcolor{red}{1}    
+\mbox{s.t. } & \sum_{k=1}^K |\beta_k| \leq \textcolor{red}{1}    
 \end{align}
 $$
 
@@ -366,7 +366,7 @@ Elastic net is at somewhere between Lasso and Ridge with $0 < \alpha < 1$ in @eq
 $$
 \begin{aligned}
 Min_{\beta} & \sum_{i=1}^N (y_i - X_i\beta)^2 \\
-\mbox{s.t. } & \frac{1-\alpha}{2}\sqrt{\sum_{k=1}^K \beta_k^2} + \alpha\sum_{k=1}^K |\beta_k| < t
+\mbox{s.t. } & \frac{1-\alpha}{2}\sqrt{\sum_{k=1}^K \beta_k^2} + \alpha\sum_{k=1}^K |\beta_k| \leq t
 \end{aligned}
 $$ {#eq-constrained-ridge}
 
