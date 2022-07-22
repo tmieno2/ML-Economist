@@ -690,7 +690,7 @@ Tip
 </div>
 <p>So, the variable-threshold combination that minimizes RSS is hits - 356.5. We now have the first split. This tree is developed further by splitting nodes like this.</p>
 </section>
-<section id="a-note-on-splitting-algorithm" class="level3" data-number="6.1.2">
+<section id="a-note-on-splitting-algorithm" class="level3 page-columns page-full" data-number="6.1.2">
 <h3 data-number="6.1.2" class="anchored" data-anchor-id="a-note-on-splitting-algorithm"><span class="header-section-number">6.1.2</span> A note on splitting algorithm</h3>
 <p>Instead of minimizing RSS, it is equivalent to <span style="color:blue"> maximize </span> the sum of <span style="color:blue"> similarity score </span>from the two splits. Let <span class="math inline">\(C_1(r)\)</span> and <span class="math inline">\(C_2(r)\)</span> denote the set of observations that belong to the first and second splits, respectively given splitting rule <span class="math inline">\(r\)</span>. For a given split combination <span class="math inline">\(C_1(r)\)</span> and <span class="math inline">\(C_2(r)\)</span>, the estimators for the two splits are simply the average value of <span class="math inline">\(Y\)</span> in the respective splits. Denoting the means as <span class="math inline">\(\hat{\mu}_1\)</span> and <span class="math inline">\(\hat{\mu}_2\)</span>, minimizing RSS can be written as</p>
 <p><span id="eq-rss-min"><span class="math display">\[
@@ -698,7 +698,10 @@ Tip
 \min_r \sum_{i\in C_1} (\hat{\mu}_1 - Y_i)^2 + \sum_{i\in C_2} (\hat{\mu}_2 - Y_i)^2
 \end{aligned}
 \tag{6.1}\]</span></span></p>
-<p>Now, in general, the following holds</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><span class="math inline">\(\hat{\mu}_k = \frac{\sum_{i\in C_k} Y_i}{N_k}\)</span>, where <span class="math inline">\(N_k\)</span> is the number of observations in <span class="math inline">\(C_k\)</span>.</p>
+</div></div><p>Now, in general, the following holds</p>
 <p><span class="math display">\[
 \begin{aligned}
 \sum_{i\in C_k} (\hat{\mu}_k - Y_i)^2 = \sum_{i\in C_k} Y_i^2 - \sum_{i\in C_k} \hat{\mu}_1^2
@@ -707,20 +710,21 @@ Tip
 <p>So, <a href="#eq-rss-min">Equation&nbsp;<span>6.1</span></a> can be rewritten as</p>
 <p><span class="math display">\[
 \begin{aligned}
-\min_r \sum_{i\in C_1} Y_i^2 + \sum_{i\in C_2} Y_i^2 - (\sum_{i\in C_2} \hat{\mu}_1^2 + \sum_{i\in C_2} \hat{\mu}_1^2)
+\min_r \sum_{i\in C_1(r)} Y_i^2 + \sum_{i\in C_2(r)} Y_i^2 - (\sum_{i\in C_2(r)} \hat{\mu}_1^2 + \sum_{i\in C_2(r)} \hat{\mu}_1^2)
 \end{aligned}
 \]</span></p>
-<p>Since <span class="math inline">\(\sum_{i\in C_1} Y_i^2 + \sum_{i\in C_2} Y_i^2\)</span> is always the same. It can be further reduced to</p>
+<p>Since <span class="math inline">\(\sum_{i\in C_1(r)} Y_i^2 + \sum_{i\in C_2(r)} Y_i^2\)</span> is always the same, it can be further reduced to</p>
 <p><span id="eq-min-score"><span class="math display">\[
 \begin{aligned}
-\min_r - (\sum_{i\in C_1} Y_i)^2 + (\sum_{i\in C_2} Y_i)^2
+&amp; \min_r - N_1 (\frac{\sum_{i\in C_1(r)} Y_i}{N_1})^2 - N_2 (\frac{\sum_{i\in C_2(r)} Y_i}{N_2})^2 \\
+\Rightarrow &amp; \min_r - \frac{(\sum_{i\in C_1(r)} Y_i)^2}{N_1} - \frac{(\sum_{i\in C_2(r)} Y_i)^2}{N_2}
 \end{aligned}
 \tag{6.2}\]</span></span></p>
-<p>where <span class="math inline">\([\sum_{i\in C_k} Y_i]^2\)</span> is called <span style="color:blue"> similarity score </span>. The name comes from the fact that the more similar element in <span class="math inline">\(C_k\)</span> are, the higher the score is. Consider for example, the split <span class="math inline">\(\{3, 2\}\)</span>, <span class="math inline">\(\{-1, -2\}\)</span>. the similarity score is <span class="math inline">\(34 (=25 + 9)\)</span>. However, if the split is <span class="math inline">\(\{2, -2\}\)</span>, <span class="math inline">\(\{3, -1\}\)</span>, then the score is <span class="math inline">\(4 (=0 + 4)\)</span>. Since summation happens first and then the sum is squared, the more similar the elements are, the higher the score is.</p>
+<p>where <span class="math inline">\(N_1\)</span> and <span class="math inline">\(N_2\)</span> are the number of observations in <span class="math inline">\(C_1\)</span> and <span class="math inline">\(C_2\)</span>, respectively. <span class="math inline">\(\frac{(\sum_{i\in C_k} Y_i)^2}{N_k}\)</span> is called <span style="color:blue"> similarity score </span>. The name comes from the fact that the more similar element in <span class="math inline">\(C_k\)</span> are, the higher the score is. Consider for example, a four-observation case where their values of the dependent variable are <span class="math inline">\(\{3, 2, -1, -2\}\)</span>. For the split <span class="math inline">\(\{3, 2\}\)</span>, <span class="math inline">\(\{-1, -2\}\)</span>, the similarity score is <span class="math inline">\(17 (=25/2 + 9/2)\)</span>. However, if the split is <span class="math inline">\(\{2, -2\}\)</span>, <span class="math inline">\(\{3, -1\}\)</span>, then the score is <span class="math inline">\(2 (=0/2 + 4/2)\)</span>. Since summation happens first and then the sum is squared, the more similar the elements are, the higher the score is.</p>
 <p><a href="#eq-min-score">Equation&nbsp;<span>6.2</span></a> can be reformulated as the maximization problem with the objective function being the sum of the similarity scores from the two splits.</p>
 <p><span id="eq-max-score"><span class="math display">\[
 \begin{aligned}
-\textcolor{red}{\max}_r (\sum_{i\in C_1} Y_i)^2 + \sum_{i\in C_2} Y_i)^2
+\textcolor{red}{\max}_r \frac{(\sum_{i\in C_1(r)} Y_i)^2}{N_1} + \frac{(\sum_{i\in C_2(r)} Y_i)^2}{N_2}
 \end{aligned}
 \tag{6.3}\]</span></span></p>
 <p>Note that it is much more computationally efficient to solve this maximization problem than the RSS minimization problem (<a href="#eq-rss-min">Equation&nbsp;<span>6.1</span></a>). In the RSS minimization problem, for each split, you calculate the mean, subtract it from <span class="math inline">\(Y_i\)</span> for all the observations, square them and sum them. On the other hand, in the similarity maximization problem, you can simply sum <span class="math inline">\(Y_i\)</span> and then square it for each split. So, programatically, tree building is done using <a href="#eq-max-score">Equation&nbsp;<span>6.3</span></a>. You can also see the use of <a href="#eq-max-score">Equation&nbsp;<span>6.3</span></a> in the extreme gradient boosting algorithm (<a href="P03-xgb.html"><span>Chapter&nbsp;8</span></a>) and also in the implementation of GRF (<a href="E02-grf.html"><span>Chapter&nbsp;12</span></a>).</p>
@@ -886,7 +890,7 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 <span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(x_1, x_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -0.036284</code></pre>
+<pre><code>[1] -0.02971332</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== second approach (positively correlated) ===#</span></span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>x_1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
@@ -894,7 +898,7 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 <span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(x_1, x_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.4841862</code></pre>
+<pre><code>[1] 0.4930152</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== third approach (negatively correlated) ===#</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>x_1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
@@ -902,7 +906,7 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 <span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(x_1, x_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -0.7653836</code></pre>
+<pre><code>[1] -0.8056775</code></pre>
 </div>
 </div>
 <p>The following function runs a single iteration of estimating <span class="math inline">\(E[x]\)</span> using the four approaches.</p>
@@ -947,7 +951,7 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_alpha</span>(<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   alpha_hat_0 alpha_hat_1 alpha_hat_2 alpha_hat_3
-1:  0.01258195  -0.2263914   0.2945053   0.4349306</code></pre>
+1:    0.662731   0.6809719    1.218965  -0.3474651</code></pre>
 </div>
 </div>
 <p>Repeating this many times,</p>

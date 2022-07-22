@@ -281,6 +281,10 @@ $$
 \end{aligned}
 $$ {#eq-rss-min}
 
+::: {.column-margin}
+$\hat{\mu}_k = \frac{\sum_{i\in C_k} Y_i}{N_k}$, where $N_k$ is the number of observations in $C_k$.
+:::
+
 Now, in general, the following holds
 
 $$
@@ -293,25 +297,26 @@ So, @eq-rss-min can be rewritten as
 
 $$
 \begin{aligned}
-\min_r \sum_{i\in C_1} Y_i^2 + \sum_{i\in C_2} Y_i^2 - (\sum_{i\in C_2} \hat{\mu}_1^2 + \sum_{i\in C_2} \hat{\mu}_1^2) 
+\min_r \sum_{i\in C_1(r)} Y_i^2 + \sum_{i\in C_2(r)} Y_i^2 - (\sum_{i\in C_2(r)} \hat{\mu}_1^2 + \sum_{i\in C_2(r)} \hat{\mu}_1^2) 
 \end{aligned}
 $$
 
-Since $\sum_{i\in C_1} Y_i^2 + \sum_{i\in C_2} Y_i^2$ is always the same. It can be further reduced to
+Since $\sum_{i\in C_1(r)} Y_i^2 + \sum_{i\in C_2(r)} Y_i^2$ is always the same, it can be further reduced to
 
 $$
 \begin{aligned}
-\min_r - (\sum_{i\in C_1} Y_i)^2 + (\sum_{i\in C_2} Y_i)^2
+ & \min_r - N_1 (\frac{\sum_{i\in C_1(r)} Y_i}{N_1})^2 - N_2 (\frac{\sum_{i\in C_2(r)} Y_i}{N_2})^2 \\
+\Rightarrow & \min_r - \frac{(\sum_{i\in C_1(r)} Y_i)^2}{N_1} - \frac{(\sum_{i\in C_2(r)} Y_i)^2}{N_2}
 \end{aligned}
 $$ {#eq-min-score}
 
-where $[\sum_{i\in C_k} Y_i]^2$ is called <span style="color:blue"> similarity score </span>. The name comes from the fact that the more similar element in $C_k$ are, the higher the score is. Consider for example, the split $\{3, 2\}$, $\{-1, -2\}$. the similarity score is $34 (=25 + 9)$. However, if the split is $\{2, -2\}$, $\{3, -1\}$, then the score is $4 (=0 + 4)$. Since summation happens first and then the sum is squared, the more similar the elements are, the higher the score is.
+where $N_1$ and $N_2$ are the number of observations in $C_1$ and $C_2$, respectively. $\frac{(\sum_{i\in C_k} Y_i)^2}{N_k}$ is called <span style="color:blue"> similarity score </span>. The name comes from the fact that the more similar element in $C_k$ are, the higher the score is. Consider for example, a four-observation case where their values of the dependent variable are $\{3, 2, -1, -2\}$. For the split $\{3, 2\}$, $\{-1, -2\}$, the similarity score is $17 (=25/2 + 9/2)$. However, if the split is $\{2, -2\}$, $\{3, -1\}$, then the score is $2 (=0/2 + 4/2)$. Since summation happens first and then the sum is squared, the more similar the elements are, the higher the score is.
 
 @eq-min-score can be reformulated as the maximization problem with the objective function being the sum of the similarity scores from the two splits.
 
 $$
 \begin{aligned}
-\textcolor{red}{\max}_r (\sum_{i\in C_1} Y_i)^2 + \sum_{i\in C_2} Y_i)^2
+\textcolor{red}{\max}_r \frac{(\sum_{i\in C_1(r)} Y_i)^2}{N_1} + \frac{(\sum_{i\in C_2(r)} Y_i)^2}{N_2}
 \end{aligned}
 $$ {#eq-max-score}
 
