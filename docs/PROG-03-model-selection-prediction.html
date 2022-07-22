@@ -327,6 +327,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
     </ul>
   </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
         <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">Appendices</a>
@@ -352,7 +353,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
    
   <ul>
   <li><a href="#python-implementation" id="toc-python-implementation" class="nav-link active" data-scroll-target="#python-implementation"> <span class="header-section-number">15.1</span> Python implementation</a></li>
-  <li><a href="#sec-r-gscvl" id="toc-sec-r-gscvl" class="nav-link" data-scroll-target="#sec-r-gscvl"> <span class="header-section-number">15.2</span> <code>reticulate</code> (Python) Implementation of <code>GridSearchCVList()</code></a></li>
+  <li><a href="#reticulate-implementation-in-r" id="toc-reticulate-implementation-in-r" class="nav-link" data-scroll-target="#reticulate-implementation-in-r"> <span class="header-section-number">15.2</span> <code>reticulate</code> implementation in R</a></li>
   <li><a href="#r-implementation-using-mlr3" id="toc-r-implementation-using-mlr3" class="nav-link" data-scroll-target="#r-implementation-using-mlr3"> <span class="header-section-number">15.3</span> R implementation using <code>mlr3</code></a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/PROG-03-model-selection-prediction.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
@@ -508,8 +509,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>est.fit(Y, T, X<span class="op">=</span>X, W<span class="op">=</span>X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="sec-r-gscvl" class="level2 page-columns page-full" data-number="15.2">
-<h2 data-number="15.2" class="anchored" data-anchor-id="sec-r-gscvl"><span class="header-section-number">15.2</span> <code>reticulate</code> (Python) Implementation of <code>GridSearchCVList()</code></h2>
+<section id="reticulate-implementation-in-r" class="level2 page-columns page-full" data-number="15.2">
+<h2 data-number="15.2" class="anchored" data-anchor-id="reticulate-implementation-in-r"><span class="header-section-number">15.2</span> <code>reticulate</code> implementation in R</h2>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p><strong>Packages to load for replication</strong></p>
@@ -729,80 +730,80 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="co">#=== benchmark implementation ===#</span></span>
 <span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>bmr_results <span class="ot">&lt;-</span> <span class="fu">benchmark</span>(benchmark_design)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>INFO  [14:48:03.160] [mlr3] Running benchmark with 72 resampling iterations 
-INFO  [14:48:03.192] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
-INFO  [14:48:03.222] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
-INFO  [14:48:03.231] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
-INFO  [14:48:03.243] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
-INFO  [14:48:03.253] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
-INFO  [14:48:03.280] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
-INFO  [14:48:03.291] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
-INFO  [14:48:03.303] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
-INFO  [14:48:03.313] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
-INFO  [14:48:03.324] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
-INFO  [14:48:03.335] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
-INFO  [14:48:03.345] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
-INFO  [14:48:03.525] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
-INFO  [14:48:03.537] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
-INFO  [14:48:03.565] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
-INFO  [14:48:03.576] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
-INFO  [14:48:03.587] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
-INFO  [14:48:03.618] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
-INFO  [14:48:03.626] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
-INFO  [14:48:03.656] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
-INFO  [14:48:03.666] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
-INFO  [14:48:03.693] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
-INFO  [14:48:03.701] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
-INFO  [14:48:03.729] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
-INFO  [14:48:03.738] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
-INFO  [14:48:03.750] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
-INFO  [14:48:03.760] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
-INFO  [14:48:03.776] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
-INFO  [14:48:03.804] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
-INFO  [14:48:03.816] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
-INFO  [14:48:03.828] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
-INFO  [14:48:03.840] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
-INFO  [14:48:03.853] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
-INFO  [14:48:03.862] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
-INFO  [14:48:03.874] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
-INFO  [14:48:03.885] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
-INFO  [14:48:03.920] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
-INFO  [14:48:03.932] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
-INFO  [14:48:03.944] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
-INFO  [14:48:03.973] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
-INFO  [14:48:04.001] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
-INFO  [14:48:04.013] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
-INFO  [14:48:04.025] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
-INFO  [14:48:04.059] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
-INFO  [14:48:04.069] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
-INFO  [14:48:04.080] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
-INFO  [14:48:04.092] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
-INFO  [14:48:04.119] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
-INFO  [14:48:04.131] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
-INFO  [14:48:04.162] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
-INFO  [14:48:04.174] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
-INFO  [14:48:04.182] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
-INFO  [14:48:04.192] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
-INFO  [14:48:04.203] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
-INFO  [14:48:04.214] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
-INFO  [14:48:04.225] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
-INFO  [14:48:04.236] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
-INFO  [14:48:04.245] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
-INFO  [14:48:04.272] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
-INFO  [14:48:04.288] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
-INFO  [14:48:04.297] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
-INFO  [14:48:04.308] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
-INFO  [14:48:04.319] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
-INFO  [14:48:04.330] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
-INFO  [14:48:04.342] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
-INFO  [14:48:04.351] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
-INFO  [14:48:04.379] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
-INFO  [14:48:04.388] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
-INFO  [14:48:04.399] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
-INFO  [14:48:04.410] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
-INFO  [14:48:04.425] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
-INFO  [14:48:04.434] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
-INFO  [14:48:04.448] [mlr3] Finished benchmark </code></pre>
+<pre><code>INFO  [10:17:36.119] [mlr3] Running benchmark with 72 resampling iterations 
+INFO  [10:17:36.151] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
+INFO  [10:17:36.180] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
+INFO  [10:17:36.189] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
+INFO  [10:17:36.198] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
+INFO  [10:17:36.207] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
+INFO  [10:17:36.233] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
+INFO  [10:17:36.243] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
+INFO  [10:17:36.254] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
+INFO  [10:17:36.265] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
+INFO  [10:17:36.275] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
+INFO  [10:17:36.287] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
+INFO  [10:17:36.296] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
+INFO  [10:17:36.471] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
+INFO  [10:17:36.483] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
+INFO  [10:17:36.511] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
+INFO  [10:17:36.522] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
+INFO  [10:17:36.534] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
+INFO  [10:17:36.565] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
+INFO  [10:17:36.573] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
+INFO  [10:17:36.603] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
+INFO  [10:17:36.613] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
+INFO  [10:17:36.639] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
+INFO  [10:17:36.648] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
+INFO  [10:17:36.675] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
+INFO  [10:17:36.684] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
+INFO  [10:17:36.695] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
+INFO  [10:17:36.705] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
+INFO  [10:17:36.722] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
+INFO  [10:17:36.750] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
+INFO  [10:17:36.761] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
+INFO  [10:17:36.773] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
+INFO  [10:17:36.785] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
+INFO  [10:17:36.797] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
+INFO  [10:17:36.807] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
+INFO  [10:17:36.819] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
+INFO  [10:17:36.830] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
+INFO  [10:17:36.866] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
+INFO  [10:17:36.877] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
+INFO  [10:17:36.889] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
+INFO  [10:17:36.917] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
+INFO  [10:17:36.945] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
+INFO  [10:17:36.956] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
+INFO  [10:17:36.968] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
+INFO  [10:17:37.001] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
+INFO  [10:17:37.011] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
+INFO  [10:17:37.022] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
+INFO  [10:17:37.034] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
+INFO  [10:17:37.060] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
+INFO  [10:17:37.072] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
+INFO  [10:17:37.103] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
+INFO  [10:17:37.114] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
+INFO  [10:17:37.122] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
+INFO  [10:17:37.132] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
+INFO  [10:17:37.143] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
+INFO  [10:17:37.154] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
+INFO  [10:17:37.165] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
+INFO  [10:17:37.176] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
+INFO  [10:17:37.185] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
+INFO  [10:17:37.211] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
+INFO  [10:17:37.227] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
+INFO  [10:17:37.235] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
+INFO  [10:17:37.247] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
+INFO  [10:17:37.258] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
+INFO  [10:17:37.269] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
+INFO  [10:17:37.280] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
+INFO  [10:17:37.288] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
+INFO  [10:17:37.315] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
+INFO  [10:17:37.324] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
+INFO  [10:17:37.335] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
+INFO  [10:17:37.347] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
+INFO  [10:17:37.362] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
+INFO  [10:17:37.371] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
+INFO  [10:17:37.384] [mlr3] Finished benchmark </code></pre>
 </div>
 </div>
 <p>We can calculate MSE for each of the learners using the <code>aggregate()</code> method with <code>msr("regr.mse")</code>.</p>

@@ -346,6 +346,7 @@ div.csl-indent {
 </li>
     </ul>
   </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
         <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">Appendices</a>
@@ -379,7 +380,8 @@ div.csl-indent {
   <li><a href="#overcoming-the-regularization-bias" id="toc-overcoming-the-regularization-bias" class="nav-link" data-scroll-target="#overcoming-the-regularization-bias"> <span class="header-section-number">9.3</span> Overcoming the regularization bias</a></li>
   <li><a href="#sec-cf" id="toc-sec-cf" class="nav-link" data-scroll-target="#sec-cf"> <span class="header-section-number">9.4</span> Overcoming the over-fitting bias</a></li>
   <li><a href="#implementation" id="toc-implementation" class="nav-link" data-scroll-target="#implementation"> <span class="header-section-number">9.5</span> Implementation</a></li>
-  <li><a href="#what-if-the-unconfoundedness-assumption-does-not-hold" id="toc-what-if-the-unconfoundedness-assumption-does-not-hold" class="nav-link" data-scroll-target="#what-if-the-unconfoundedness-assumption-does-not-hold"> <span class="header-section-number">9.6</span> What if the unconfoundedness assumption does not hold</a></li>
+  <li><a href="#what-if-the-unconfoundedness-assumption-does-not-hold" id="toc-what-if-the-unconfoundedness-assumption-does-not-hold" class="nav-link" data-scroll-target="#what-if-the-unconfoundedness-assumption-does-not-hold"> <span class="header-section-number">9.6</span> What if the unconfoundedness assumption does not hold?</a></li>
+  <li><a href="#suggested-exercises" id="toc-suggested-exercises" class="nav-link" data-scroll-target="#suggested-exercises"> <span class="header-section-number">9.7</span> Suggested Exercises</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/C01-dml.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
@@ -485,8 +487,8 @@ d_i = \frac{exp(x_{i,1})}{1 + exp(x_{i,1})} + \frac{1}{4}\cdot x_{i,3}+ \eta_i
 <p><code>gen_data()</code> allows you to specify <span class="math inline">\(g_0(X)\)</span> and <span class="math inline">\(m_0(X)\)</span> unlike <code>make_plr_CCDDHNR2018()</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>gen_data <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">g_formula =</span> <span class="fu">formula</span>(<span class="sc">~</span> <span class="fu">I</span>(<span class="fu">exp</span>(x1)<span class="sc">/</span>(<span class="dv">1</span><span class="sc">+</span><span class="fu">exp</span>(x1))) <span class="sc">+</span> <span class="fu">I</span>(x3<span class="sc">/</span><span class="dv">4</span>)), <span class="co"># formula that defines g(x)</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">m_formula =</span> <span class="fu">formula</span>(<span class="sc">~</span> x1 <span class="sc">+</span> <span class="fu">I</span>(<span class="fu">exp</span>(x3)<span class="sc">/</span>(<span class="dv">1</span><span class="sc">+</span><span class="fu">exp</span>(x3))<span class="sc">/</span><span class="dv">4</span>)), <span class="co"># formula that defines m(x)</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">m_formula =</span> <span class="fu">formula</span>(<span class="sc">~</span> <span class="fu">I</span>(<span class="fu">exp</span>(x1)<span class="sc">/</span>(<span class="dv">1</span><span class="sc">+</span><span class="fu">exp</span>(x1))) <span class="sc">+</span> <span class="fu">I</span>(x3<span class="sc">/</span><span class="dv">4</span>)), <span class="co"># formula that defines m(x)</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">g_formula =</span> <span class="fu">formula</span>(<span class="sc">~</span> x1 <span class="sc">+</span> <span class="fu">I</span>(<span class="fu">exp</span>(x3)<span class="sc">/</span>(<span class="dv">1</span><span class="sc">+</span><span class="fu">exp</span>(x3))<span class="sc">/</span><span class="dv">4</span>)), <span class="co"># formula that defines g(x)</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">te_formula =</span> <span class="fu">formula</span>(<span class="sc">~</span> <span class="fu">I</span>(<span class="fl">0.5</span><span class="sc">*</span>d)), <span class="co"># formula that defines theta(x) * t</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_obs =</span> <span class="dv">500</span>, </span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_vars =</span> <span class="dv">20</span>, </span>
@@ -559,10 +561,10 @@ d_i = \frac{exp(x_{i,1})}{1 + exp(x_{i,1})} + \frac{1}{4}\cdot x_{i,3}+ \eta_i
  $ x18: num  0.335 -0.592 -0.433 0.486 -0.446 ...
  $ x19: num  0.839 -1.647 -1.352 -0.152 -0.446 ...
  $ x20: num  -0.0674 -2.1706 -2.148 -0.8532 -0.5553 ...
- $ d  : num  1.242 -0.103 -0.227 1.69 1.047 ...
- $ g  : num  0.78 1.075 0.338 0.867 0.735 ...
- $ te : num  0.621 -0.0513 -0.1135 0.8449 0.5234 ...
- $ y  : num  3.215 0.027 -0.669 3.583 1.922 ...
+ $ d  : num  1.011 0.321 0.452 2.083 1.26 ...
+ $ g  : num  1.01 0.652 -0.341 0.474 0.522 ...
+ $ te : num  0.506 0.16 0.226 1.042 0.63 ...
+ $ y  : num  3.331 -0.185 -1.008 3.386 1.815 ...
  - attr(*, ".internal.selfref")=&lt;externalptr&gt; </code></pre>
 </div>
 </div>
@@ -690,7 +692,7 @@ d_i = \frac{exp(x_{i,1})}{1 + exp(x_{i,1})} + \frac{1}{4}\cdot x_{i,3}+ \eta_i
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        d 
-0.4944072 </code></pre>
+0.5454263 </code></pre>
 </div>
 </div>
 <p>So, in this instance, we get an estimate of <span class="math inline">\(\theta\)</span> that is a bit lower than the true value of <span class="math inline">\(\theta\)</span>. Let’s repeat this process many times to see how this procedure performs on average.</p>
@@ -967,7 +969,7 @@ Note
 <span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>theta_hat <span class="ot">&lt;-</span> training_data[, <span class="fu">sum</span>(d_less_m <span class="sc">*</span> y_less_g) <span class="sc">/</span> <span class="fu">sum</span>(d_less_m <span class="sc">*</span> d)]</span>
 <span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.4933098</code></pre>
+<pre><code>[1] 0.5168418</code></pre>
 </div>
 </div>
 <p>Now, let’s repeat this 500 times.</p>
@@ -1027,7 +1029,7 @@ Note
 </div>
 </div>
 </div>
-<p><a href="#fig-dd">Figure&nbsp;<span>9.4</span></a> shows the distribution of <span class="math inline">\(\hat{\theta}\)</span>, which is centered about <span class="math inline">\(0.48\)</span>. The current approach still suffers from the so-called over-fitting bias<span class="citation" data-cites="Chernozhukov2018">(<a href="#ref-Chernozhukov2018" role="doc-biblioref">Chernozhukov et al. 2018</a>)</span>. Let’s look at how we can overcome this bias next.</p>
+<p><a href="#fig-dd">Figure&nbsp;<span>9.4</span></a> shows the distribution of <span class="math inline">\(\hat{\theta}\)</span>, which is centered about <span class="math inline">\(0.49\)</span>. The current approach still suffers from the so-called over-fitting bias<span class="citation" data-cites="Chernozhukov2018">(<a href="#ref-Chernozhukov2018" role="doc-biblioref">Chernozhukov et al. 2018</a>)</span>. Let’s look at how we can overcome this bias next.</p>
 </section>
 <section id="sec-cf" class="level2 page-columns page-full" data-number="9.4">
 <h2 data-number="9.4" class="anchored" data-anchor-id="sec-cf"><span class="header-section-number">9.4</span> Overcoming the over-fitting bias</h2>
@@ -1177,7 +1179,7 @@ Note
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>theta_hat <span class="ot">&lt;-</span> data_orth[, <span class="fu">sum</span>(d_tilde <span class="sc">*</span> y_tilde) <span class="sc">/</span> <span class="fu">sum</span>(d_tilde <span class="sc">*</span> d)]</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.5172923</code></pre>
+<pre><code>[1] 0.5480196</code></pre>
 </div>
 </div>
 <p>We can repeat this for all the folds (<code>cross_fit()</code> which finds <span class="math inline">\(\hat{\theta}\)</span> for a particular fold is defined on the side).</p>
@@ -1239,7 +1241,7 @@ Note
 <span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>() <span class="co"># average them</span></span>
 <span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.5055226</code></pre>
+<pre><code>[1] 0.5031857</code></pre>
 </div>
 </div>
 <p>Okay, now that we understand the steps of this approach, let’s repeat this many times (<code>get_theta_cf()</code> that finds <span class="math inline">\(\hat{\theta}\)</span> by cross-fitting is defined on the side).</p>
@@ -1298,7 +1300,7 @@ Note
 </div>
 </div>
 </div>
-<p><a href="#fig-cf-debiased">Figure&nbsp;<span>9.6</span></a> shows the distribution of <span class="math inline">\(\hat{\theta}\)</span> with double-deabiasing and cross-fitting. It is slightly biased in this instance (mean is 0.506), but the average <span class="math inline">\(\hat{\theta}\)</span> is very close to the true parameter.</p>
+<p><a href="#fig-cf-debiased">Figure&nbsp;<span>9.6</span></a> shows the distribution of <span class="math inline">\(\hat{\theta}\)</span> with double-debiasing and cross-fitting. It is slightly biased in this instance (mean is 0.513), but the average <span class="math inline">\(\hat{\theta}\)</span> is very close to the true parameter.</p>
 <div class="callout-important callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1320,7 +1322,10 @@ Important
 <h2 data-number="9.5" class="anchored" data-anchor-id="implementation"><span class="header-section-number">9.5</span> Implementation</h2>
 </section>
 <section id="what-if-the-unconfoundedness-assumption-does-not-hold" class="level2" data-number="9.6">
-<h2 data-number="9.6" class="anchored" data-anchor-id="what-if-the-unconfoundedness-assumption-does-not-hold"><span class="header-section-number">9.6</span> What if the unconfoundedness assumption does not hold</h2>
+<h2 data-number="9.6" class="anchored" data-anchor-id="what-if-the-unconfoundedness-assumption-does-not-hold"><span class="header-section-number">9.6</span> What if the unconfoundedness assumption does not hold?</h2>
+</section>
+<section id="suggested-exercises" class="level2" data-number="9.7">
+<h2 data-number="9.7" class="anchored" data-anchor-id="suggested-exercises"><span class="header-section-number">9.7</span> Suggested Exercises</h2>
 </section>
 <section id="references" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="references">References</h2>

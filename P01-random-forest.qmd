@@ -271,6 +271,52 @@ min_rss_by_var <-
 
 So, the variable-threshold combination that minimizes RSS is `r min_rss_by_var[which.min(rss), var_name]` - `r min_rss_by_var[which.min(rss), round(var_value, digits = 2)]`. We now have the first split. This tree is developed further by splitting nodes like this. 
 
+### A note on splitting algorithm
+
+Instead of minimizing RSS, it is equivalent to <span style="color:blue"> maximize </span> the sum of <span style="color:blue"> similarity score </span>from the two splits. Let $C_1(r)$ and $C_2(r)$ denote the set of observations that belong to the first and second splits, respectively given splitting rule $r$. For a given split combination $C_1(r)$ and $C_2(r)$, the estimators for the two splits are simply the average value of $Y$ in the respective splits. Denoting the means as $\hat{\mu}_1$ and $\hat{\mu}_2$, minimizing RSS can be written as 
+
+$$
+\begin{aligned}
+\min_r \sum_{i\in C_1} (\hat{\mu}_1 - Y_i)^2 + \sum_{i\in C_2} (\hat{\mu}_2 - Y_i)^2
+\end{aligned}
+$$ {#eq-rss-min}
+
+Now, in general, the following holds
+
+$$
+\begin{aligned}
+\sum_{i\in C_k} (\hat{\mu}_k - Y_i)^2 = \sum_{i\in C_k} Y_i^2 - \sum_{i\in C_k} \hat{\mu}_1^2
+\end{aligned}
+$$
+
+So, @eq-rss-min can be rewritten as 
+
+$$
+\begin{aligned}
+\min_r \sum_{i\in C_1} Y_i^2 + \sum_{i\in C_2} Y_i^2 - (\sum_{i\in C_2} \hat{\mu}_1^2 + \sum_{i\in C_2} \hat{\mu}_1^2) 
+\end{aligned}
+$$
+
+Since $\sum_{i\in C_1} Y_i^2 + \sum_{i\in C_2} Y_i^2$ is always the same. It can be further reduced to
+
+$$
+\begin{aligned}
+\min_r - (\sum_{i\in C_1} Y_i)^2 + (\sum_{i\in C_2} Y_i)^2
+\end{aligned}
+$$ {#eq-min-score}
+
+where $[\sum_{i\in C_k} Y_i]^2$ is called <span style="color:blue"> similarity score </span>. The name comes from the fact that the more similar element in $C_k$ are, the higher the score is. Consider for example, the split $\{3, 2\}$, $\{-1, -2\}$. the similarity score is $34 (=25 + 9)$. However, if the split is $\{2, -2\}$, $\{3, -1\}$, then the score is $4 (=0 + 4)$. Since summation happens first and then the sum is squared, the more similar the elements are, the higher the score is.
+
+@eq-min-score can be reformulated as the maximization problem with the objective function being the sum of the similarity scores from the two splits.
+
+$$
+\begin{aligned}
+\textcolor{red}{\max}_r (\sum_{i\in C_1} Y_i)^2 + \sum_{i\in C_2} Y_i)^2
+\end{aligned}
+$$ {#eq-max-score}
+
+Note that it is much more computationally efficient to solve this maximization problem than the RSS minimization problem (@eq-rss-min). In the RSS minimization problem, for each split, you calculate the mean, subtract it from $Y_i$ for all the observations, square them and sum them. On the other hand, in the similarity maximization problem, you can simply sum $Y_i$ and then square it for each split. So, programatically, tree building is done using @eq-max-score. You can also see the use of @eq-max-score in the extreme gradient boosting algorithm (@sec-xgb) and also in the implementation of GRF (@sec-grf).
+
 
 ### Training a regression tree in R
 

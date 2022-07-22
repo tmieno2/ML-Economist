@@ -15,6 +15,25 @@ span.underline{text-decoration: underline;}
 div.column{display: inline-block; vertical-align: top; width: 50%;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 
@@ -264,6 +283,7 @@ ul.task-list{list-style: none;}
 </li>
     </ul>
   </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
         <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">Appendices</a>
@@ -284,7 +304,14 @@ ul.task-list{list-style: none;}
 </nav>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#what-is-cml" id="toc-what-is-cml" class="nav-link active" data-scroll-target="#what-is-cml">What is CML?</a></li>
+  <li><a href="#some-notes-on-cml" id="toc-some-notes-on-cml" class="nav-link" data-scroll-target="#some-notes-on-cml">Some notes on CML</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/C00-causal-ml.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content page-columns page-full" id="quarto-document-content">
@@ -305,6 +332,32 @@ ul.task-list{list-style: none;}
 
 </header>
 
+<section id="what-is-cml" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="what-is-cml">What is CML?</h2>
+<p>Unlike prediction-oriented machine learning (POML) methods, the focus of causal machine learning (CML) methods is to identify the treatment effect of a treatment (or small number of distinct treatments).</p>
+<p><span class="math display">\[
+TE(X) = \theta(X)\cdot T
+\]</span></p>
+<p><span class="math inline">\(\theta(X)\)</span> is the impact of the treatment when <span class="math inline">\(T\)</span> is binary and marginal impact of the treatment when <span class="math inline">\(T\)</span> is continuous. <span class="math inline">\(\theta(X)\)</span> is a function of attributes (<span class="math inline">\(X\)</span>), meaning that the impact of the treatment can vary (heterogeneous) based on the value of the attributes.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><span class="math inline">\(\theta(X) = \theta\)</span>, where <span class="math inline">\(\theta\)</span> is a constant, is a special case where the treatment effect is not a function of any observed features.</p>
+</div><div class="">
+<p><span class="math inline">\(T\)</span> may be continuous or discrete.</p>
+</div></div>
+<p>CML considers the following model (following <a href="https://econml.azurewebsites.net/spec/estimation/dml.html">the documentation of the <code>econml</code> Python package</a>)</p>
+<p><span class="math display">\[
+\begin{aligned}
+Y &amp; = \theta(X)\cdot T + g(X, W) + \varepsilon \\
+T &amp; = f(X, W) + \eta
+\end{aligned}
+\]</span></p>
+<p><span class="math inline">\(W\)</span> are the collection of attributes that affect <span class="math inline">\(Y\)</span> along with <span class="math inline">\(X\)</span> (represented by <span class="math inline">\(g(X, W)\)</span>), but not as drivers of the heterogeneity in the impact of the treatment. <span class="math inline">\(X\)</span> not just affects <span class="math inline">\(Y\)</span> as drivers of the heterogeneity in the impact of the treatment (<span class="math inline">\(\theta(X)\cdot T\)</span>), but also directly along with <span class="math inline">\(W\)</span>.</p>
+<p>Both <span class="math inline">\(X\)</span> and <span class="math inline">\(W\)</span> are potential confounders. While we do control for them (eliminating their influence) by partialing out <span class="math inline">\(f(X, W)\)</span> and <span class="math inline">\(g(X, W)\)</span>, the sole focus is on the estimation of <span class="math inline">\(\theta(X)\)</span>. This is in stark contrast to the focus of the ML methods we have seen in earlier sections, which primarily focuses on the accurate prediction of the <span style="color:blue"> level</span> of the dependent variable, rather than how the level of the dependent variable <span style="color:blue"> changes </span> when treated like CML methods.</p>
+<p>In this chapter, we first cover double-debiased machine learning (DML) method by <span class="citation" data-cites="Chernozhukov2018">Chernozhukov et al. (<a href="#ref-Chernozhukov2018" role="doc-biblioref">2018</a>)</span>, which many prominent CML methods follow. We then move on to discuss R-leaner, followed by causal forest and orthogonal forest.</p>
+</section>
+<section id="some-notes-on-cml" class="level2">
+<h2 class="anchored" data-anchor-id="some-notes-on-cml">Some notes on CML</h2>
 <div class="callout-important callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -316,44 +369,27 @@ Important
 </div>
 <div class="callout-body-container callout-body">
 <ul>
-<li>the use of causal machine learning model does not guarantee you the estimate you got is indeed a causal effect (model itself does not have any ability)</li>
-<li>it always comes with an assumption</li>
-<li>CML is not a panacea at all. How can it be better than the traditional approaches?
+<li><p>Point 1. The use of causal machine learning model does not guarantee you the estimate you got is indeed a causal effect.</p></li>
+<li><p>Point 2. Careful examinations of the underlying assumptions is necessary just like traditional causal inference methods.</p></li>
+<li><p>Point 3. CML is not a panacea at all. How can it be better than the traditional approaches?</p>
 <ul>
-<li>may be able to capture complex non-linear interactions of variables without specifying how they interact</li>
-<li>robust to specification errors</li>
-<li>(can be less efficient)</li>
+<li>They may be able to capture complex non-linear interactions of variables without specifying how they interact</li>
+<li>They are robust to specification errors</li>
+<li>They can be less efficient to correctly specified (or well approximated) parametric models</li>
 </ul></li>
 </ul>
 </div>
 </div>
-<p>Unlike prediction-oriented machine learning (POML) methods, the focus of causal machine learning (CML) methods is to identify the heterogenous treatment effects of a treatment (or small number of distinct treatments).</p>
-<p><span class="math display">\[
-TE(X) = \theta(X)\cdot T
-\]</span></p>
-<p><span class="math inline">\(\theta(X)\)</span> is the impact of the treatment when <span class="math inline">\(T\)</span> is binary and marginal impact of the treatment when <span class="math inline">\(T\)</span> is continuous. <span class="math inline">\(\theta(X)\)</span> is a function of attributes (<span class="math inline">\(X\)</span>), meaning that the impact of the treatment varies (heterogeneous) based on the value of the attributes.</p>
-
-<div class="no-row-height column-margin column-container"><div class="">
-<p><span class="math inline">\(T\)</span> is 0 if not treated, 1 if treated.</p>
-</div></div><p>CML considers the following model (following <a href="https://econml.azurewebsites.net/spec/estimation/dml.html">the documentation of the <code>econml</code> Python package</a>)</p>
-<p><span class="math display">\[
-\begin{aligned}
-Y &amp; = \theta(X)\cdot T + g(X, W) + \varepsilon \\
-T &amp; = f(X, W) + \eta
-\end{aligned}
-\]</span></p>
-<p><span class="math inline">\(W\)</span> are the collection of attributes that affect <span class="math inline">\(Y\)</span> along with <span class="math inline">\(X\)</span> (represented by <span class="math inline">\(g(X, W)\)</span>), but not as drivers of the heterogeneity in the impact of the treatment. <span class="math inline">\(X\)</span> not just affects <span class="math inline">\(Y\)</span> as drivers of the heterogeneity in the impact of the treatment (<span class="math inline">\(\theta(X)\cdot T\)</span>), but also directly along with <span class="math inline">\(W\)</span>.</p>
-<p>Both <span class="math inline">\(X\)</span> and <span class="math inline">\(W\)</span> are potential confounders. While we do control for them (eliminating their influence) by partialing out <span class="math inline">\(f(X, W)\)</span> and <span class="math inline">\(g(X, W)\)</span>, the sole focus is on the estimation of <span class="math inline">\(\theta(X)\)</span>. This is in stark contrast to the focus of the ML methods we have seen in earlier sections, which primarily focuses on the accurate prediction of the <span style="color:blue"> level</span> of the dependent variable, rather than how the level of the dependent variable <span style="color:blue"> changes </span> when treated like CML methods.</p>
-<p><span style="color:blue"> guidance on how this chapeter looks </span></p>
-<ul>
-<li>first DML with <span class="math inline">\(\theta(X)\)</span> is just <span class="math inline">\(\theta\)</span></li>
-<li>R-leaner heterogeneous</li>
-<li>Doubly-robust</li>
-<li>Causal forest</li>
-<li>orthogonal forest</li>
-</ul>
+<p>Point 1 is not just for CML, but for any statistical models in general. Any statistical model is just a mathematical manipulation of numbers. Model themselves have no ability to identify causal effects.</p>
+<p><span style="color:blue"> More on this later…. </span></p>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-Chernozhukov2018" class="csl-entry" role="doc-biblioentry">
+Chernozhukov, Victor, Denis Chetverikov, Mert Demirer, Esther Duflo, Christian Hansen, Whitney Newey, and James Robins. 2018. <span>“<span class="nocase">Double/debiased machine learning for treatment and structural parameters</span>.”</span> <em>The Econometrics Journal</em> 21 (1): C1–68. <a href="https://doi.org/10.1111/ectj.12097">https://doi.org/10.1111/ectj.12097</a>.
+</div>
+</div>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

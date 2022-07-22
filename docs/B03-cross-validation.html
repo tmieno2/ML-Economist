@@ -346,6 +346,7 @@ div.csl-indent {
 </li>
     </ul>
   </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
         <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">Appendices</a>
@@ -381,8 +382,9 @@ div.csl-indent {
   <ul class="collapse">
   <li><a href="#selecting-the-best-gam-specification-illustration-1" id="toc-selecting-the-best-gam-specification-illustration-1" class="nav-link" data-scroll-target="#selecting-the-best-gam-specification-illustration-1"> <span class="header-section-number">3.3.1</span> Selecting the best GAM specification: Illustration</a></li>
   </ul></li>
-  <li><a href="#repeated-k-fold-cross-validation-kcv" id="toc-repeated-k-fold-cross-validation-kcv" class="nav-link" data-scroll-target="#repeated-k-fold-cross-validation-kcv"> <span class="header-section-number">3.4</span> Repeated K-fold Cross-Validation (KCV)</a></li>
-  <li><a href="#does-kcv-really-work" id="toc-does-kcv-really-work" class="nav-link" data-scroll-target="#does-kcv-really-work"> <span class="header-section-number">3.5</span> Does KCV really work?</a></li>
+  <li><a href="#repeated-k-fold-cross-validation-rkcv" id="toc-repeated-k-fold-cross-validation-rkcv" class="nav-link" data-scroll-target="#repeated-k-fold-cross-validation-rkcv"> <span class="header-section-number">3.4</span> Repeated K-fold Cross-Validation (RKCV)</a></li>
+  <li><a href="#how-are-loocv-kcv-and-rkcv-different" id="toc-how-are-loocv-kcv-and-rkcv-different" class="nav-link" data-scroll-target="#how-are-loocv-kcv-and-rkcv-different"> <span class="header-section-number">3.5</span> How are LOOCV, KCV and RKCV different?</a></li>
+  <li><a href="#does-kcv-really-work" id="toc-does-kcv-really-work" class="nav-link" data-scroll-target="#does-kcv-really-work"> <span class="header-section-number">3.6</span> Does KCV really work?</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/B03-cross-validation.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
@@ -511,8 +513,12 @@ Note
 </div>
 <p>Visually, here is the relationship between <span class="math inline">\(E[y]\)</span> and <span class="math inline">\(x\)</span>:</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> data) <span class="sc">+</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> ey, <span class="at">x =</span> x))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> ey, <span class="at">x =</span> x)) <span class="sc">+</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <p><img src="B03-cross-validation_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -682,6 +688,8 @@ Note
 </div>
 <p>Looks good. By the way, here are the fitted curves for some other <code>sp</code> values.</p>
 <div>
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>fitted_curves <span class="ot">&lt;-</span> </span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.6</span>, <span class="dv">1</span>, <span class="dv">2</span>),</span>
@@ -694,6 +702,7 @@ Note
 <span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (plot <span class="cf">in</span> fitted_curves) {</span>
 <span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(plot)</span>
 <span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div id="fig-fitted-penalization-others" class="cell quarto-layout-panel">
 <figure class="figure">
 <div class="quarto-layout-row quarto-layout-valign-top">
@@ -701,7 +710,7 @@ Note
 <div id="fig-fitted-penalization-others-1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="B03-cross-validation_files/figure-html/fig-fitted-penalization-others-1.png" class="img-fluid figure-img" data-ref-parent="fig-fitted-penalization-others" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">(a) k = 0</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">(a) sp = 0</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -709,7 +718,7 @@ Note
 <div id="fig-fitted-penalization-others-2" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="B03-cross-validation_files/figure-html/fig-fitted-penalization-others-2.png" class="img-fluid figure-img" data-ref-parent="fig-fitted-penalization-others" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">(b) k = 0.6</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">(b) sp = 0.6</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -719,7 +728,7 @@ Note
 <div id="fig-fitted-penalization-others-3" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="B03-cross-validation_files/figure-html/fig-fitted-penalization-others-3.png" class="img-fluid figure-img" data-ref-parent="fig-fitted-penalization-others" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">(c) k = 1</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">(c) sp = 1</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -727,7 +736,7 @@ Note
 <div id="fig-fitted-penalization-others-4" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="B03-cross-validation_files/figure-html/fig-fitted-penalization-others-4.png" class="img-fluid figure-img" data-ref-parent="fig-fitted-penalization-others" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">(d) k = 2</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">(d) sp = 2</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -1028,8 +1037,8 @@ Note
 </div>
 </section>
 </section>
-<section id="repeated-k-fold-cross-validation-kcv" class="level2" data-number="3.4">
-<h2 data-number="3.4" class="anchored" data-anchor-id="repeated-k-fold-cross-validation-kcv"><span class="header-section-number">3.4</span> Repeated K-fold Cross-Validation (KCV)</h2>
+<section id="repeated-k-fold-cross-validation-rkcv" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="repeated-k-fold-cross-validation-rkcv"><span class="header-section-number">3.4</span> Repeated K-fold Cross-Validation (RKCV)</h2>
 <p>As its name suggest, repeated KCV repeats the process of KCV multiple times. Each KCV iteration splits the original data into k-fold in a different way. A single KCV may not be reliable as the original data was split into such a way that favors one parameter set of or model class over the others. However, if we repeat KCV multiple times, then we can safe-guard against this randomness in a KCV procedure. Repeated KCV is preferred over a single KCV.</p>
 <p>You can use <code>rsample::vfold_cv()</code> to create repeated k-fold datasets by using the <code>repeats</code> argument.</p>
 <div class="cell">
@@ -1071,9 +1080,12 @@ Note
 </div>
 </div>
 </section>
-<section id="does-kcv-really-work" class="level2" data-number="3.5">
-<h2 data-number="3.5" class="anchored" data-anchor-id="does-kcv-really-work"><span class="header-section-number">3.5</span> Does KCV really work?</h2>
-<p>LOOCV and KCV use the train data to estimate test MSE. But, does it really work? In other words, does it let us pick the parameter that minimizes the test MSE? We will run a simple MC simulations to test this. We continue to use the same data generating process and gam models for this simulation as well.</p>
+<section id="how-are-loocv-kcv-and-rkcv-different" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="how-are-loocv-kcv-and-rkcv-different"><span class="header-section-number">3.5</span> How are LOOCV, KCV and RKCV different?</h2>
+</section>
+<section id="does-kcv-really-work" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="does-kcv-really-work"><span class="header-section-number">3.6</span> Does KCV really work?</h2>
+<p>LOOCV and KCV use the train data to estimate test MSE. But, does it really work? In other words, does it let us pick the parameter that minimizes the test MSE? We will run a simple MC simulations to test this. We continue to use the same data generating process and GAM models for this simulation as well.</p>
 <p>Now, since we know the data generating process, we can actually use the following metric instead of MSE.</p>
 <p><span class="math display">\[
 \sum_{i=1}^N(\hat{f}(x_i) - E[y|x_i])^2
