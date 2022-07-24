@@ -392,12 +392,12 @@ y = f(T, X) +  \mu \\
 \theta(X)_{a \rightarrow b} = \hat{f}(T=b, X) - \hat{f}(T=a, X)
 \end{aligned}
 \]</span></p>
-<p>This approach actually has a name and it is called S-leaner. <span style="color:blue"> Indeed, lots of empirical studies in many scientific fields (not so much in economics) have used (and have been using) this approach for causal inference</span>. So, can’t we just use this approach for every single causal inference task?</p>
+<p>This approach actually has a name and it is called S-leaner. <span style="color:blue"> Indeed, lots of empirical studies in many scientific fields (not so much in economics) have used (and have been using) this approach for causal inference</span>. So, can’t we just use this approach for every single causal inference task? The idea of S-learner seems solid.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p>Many of these studies actually are not aware of the distinctions between prediction and causal inference.</p>
 </div></div><p>Unfortunately, S-leaner is inappropriate in many circumstances. Let’s see the performance of S-leaner using simple simulations. As a competitor, we also run causal forest (CF), one of the CML methods we will learn later (<span class="quarto-unresolved-ref">?sec-cf-orf</span>). You do not need to understand how CF works here. You just need to know that it is a method that can estimate heterogeneous treatment effects at this point.</p>
-<p>As an example, consider the following data generating process:</p>
+<p>As an example, consider the following toy data generating process:</p>
 <p><span class="math display">\[
 \begin{aligned}
 y = \theta(X)\cdot T + g(X) + \mu
