@@ -1061,8 +1061,8 @@ Mtry:                             5
 Target node size:                 10 
 Variable importance mode:         none 
 Splitrule:                        variance 
-OOB prediction error (MSE):       6.258365 
-R squared (OOB):                  0.8277076 </code></pre>
+OOB prediction error (MSE):       6.231742 
+R squared (OOB):                  0.8284406 </code></pre>
 </div>
 </div>
 <p>Notice that this is exactly what you would get if you use <code>ranger()</code> to train your model.</p>
@@ -1112,8 +1112,8 @@ Mtry:                             5
 Target node size:                 10 
 Variable importance mode:         none 
 Splitrule:                        variance 
-OOB prediction error (MSE):       5.646619 
-R squared (OOB):                  0.6717591 </code></pre>
+OOB prediction error (MSE):       5.285623 
+R squared (OOB):                  0.692744 </code></pre>
 </div>
 </div>
 </section>
@@ -1128,22 +1128,22 @@ R squared (OOB):                  0.6717591 </code></pre>
 <div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.data.table</span>(prediction)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    row_ids truth response
- 1:      17  14.7 13.89411
- 2:      18  32.4 21.80353
- 3:      19  30.4 21.78887
- 4:      20  33.9 21.80353
- 5:      21  21.5 21.64481
- 6:      22  15.5 16.62973
- 7:      23  15.2 17.83081
- 8:      24  13.3 14.85810
- 9:      25  19.2 16.23676
-10:      26  27.3 21.78887
-11:      27  26.0 21.70862
-12:      28  30.4 21.62854
-13:      29  15.8 17.24302
-14:      30  19.7 20.76519
-15:      31  15.0 15.50807
-16:      32  21.4 21.67349</code></pre>
+ 1:      17  14.7 13.72412
+ 2:      18  32.4 21.79910
+ 3:      19  30.4 21.76574
+ 4:      20  33.9 21.79286
+ 5:      21  21.5 21.62064
+ 6:      22  15.5 16.50682
+ 7:      23  15.2 17.76050
+ 8:      24  13.3 14.80629
+ 9:      25  19.2 16.20863
+10:      26  27.3 21.77219
+11:      27  26.0 21.61444
+12:      28  30.4 21.57888
+13:      29  15.8 17.10211
+14:      30  19.7 20.72753
+15:      31  15.0 15.44628
+16:      32  21.4 21.63135</code></pre>
 </div>
 </div>
 <p>You can predict on a new dataset by supplying a new dataset as a <code>data.frame</code>/<code>data.table</code> to the <code>predict_newdata()</code> method. Here, we just use parts of <code>mtcars</code> (just pretend this is a newdataset).</p>
@@ -1190,7 +1190,7 @@ Keys: aic, bic, classif.acc, classif.auc, classif.bacc, classif.bbrier,
 <div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>prediction<span class="sc">$</span><span class="fu">score</span>(measure)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>regr.mse 
-16.25349 </code></pre>
+16.24544 </code></pre>
 </div>
 </div>
 </section>
@@ -1257,22 +1257,22 @@ Keys: aic, bic, classif.acc, classif.auc, classif.bacc, classif.bbrier,
 <div class="cell">
 <div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>resampling<span class="sc">$</span><span class="fu">train_set</span>(<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1]  6  8  9 12 24 25 28 30  1  2  3 10 13 17 18 31  5 15 16 20 22 27 29 32</code></pre>
+<pre><code> [1]  1  2  9 13 15 23 26 29  5  6 12 22 25 27 30 31  4  8 16 17 19 20 21 24</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>resampling<span class="sc">$</span><span class="fu">test_set</span>(<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1]  4  7 11 14 19 21 23 26</code></pre>
+<pre><code>[1]  3  7 10 11 14 18 28 32</code></pre>
 </div>
 </div>
 <p>Last pair:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>resampling<span class="sc">$</span><span class="fu">train_set</span>(<span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1]  2  6 11 18 21 22 30 31  8  9 12 14 23 27 28 32  3  5 13 15 17 20 25 29</code></pre>
+<pre><code> [1]  4 12 15 20 22 23 24 32  3  9 13 16 19 25 27 28  1  2  5  7  8 10 21 29</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>resampling<span class="sc">$</span><span class="fu">test_set</span>(<span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1]  1  4  7 10 16 19 24 26</code></pre>
+<pre><code>[1]  6 11 14 17 18 26 30 31</code></pre>
 </div>
 </div>
 </section>
@@ -1282,18 +1282,18 @@ Keys: aic, bic, classif.acc, classif.auc, classif.bacc, classif.bbrier,
 <div class="cell">
 <div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>cv_results <span class="ot">&lt;-</span> <span class="fu">resample</span>(reg_task, learner, resampling)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>INFO  [10:16:29.030] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 8/12) 
-INFO  [10:16:29.053] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 4/12) 
-INFO  [10:16:29.066] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 7/12) 
-INFO  [10:16:29.077] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/12) 
-INFO  [10:16:29.087] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 6/12) 
-INFO  [10:16:29.097] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 10/12) 
-INFO  [10:16:29.107] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 11/12) 
-INFO  [10:16:29.117] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 12/12) 
-INFO  [10:16:29.127] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 9/12) 
-INFO  [10:16:29.137] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/12) 
-INFO  [10:16:29.147] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/12) 
-INFO  [10:16:29.158] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 5/12) </code></pre>
+<pre><code>INFO  [14:59:44.832] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 9/12) 
+INFO  [14:59:44.856] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 6/12) 
+INFO  [14:59:44.869] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 4/12) 
+INFO  [14:59:44.879] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 8/12) 
+INFO  [14:59:44.889] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 5/12) 
+INFO  [14:59:44.899] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/12) 
+INFO  [14:59:44.909] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 12/12) 
+INFO  [14:59:44.919] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 11/12) 
+INFO  [14:59:44.929] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/12) 
+INFO  [14:59:44.940] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 7/12) 
+INFO  [14:59:44.949] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/12) 
+INFO  [14:59:44.959] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 10/12) </code></pre>
 </div>
 </div>
 <p>This code applies the method specified in <code>leaner</code> to each of the 12 train datasets, and evaluate the trained model on each of the 12 test datasets.</p>
@@ -1304,134 +1304,134 @@ INFO  [10:16:29.158] [mlr3] Applying learner 'regr.ranger' on task 'example' (it
 <pre><code>[[1]]
 &lt;PredictionRegr&gt; for 8 observations:
     row_ids truth response
-          4  21.4 19.46184
-          7  14.3 14.94176
-         11  17.8 19.95740
+          3  22.8 24.77770
+          7  14.3 15.10921
+         10  19.2 20.32976
 ---                       
-         21  21.5 24.45553
-         23  15.2 17.60467
-         26  27.3 28.98348
+         18  32.4 27.20278
+         28  30.4 24.88010
+         32  21.4 23.34287
 
 [[2]]
 &lt;PredictionRegr&gt; for 8 observations:
     row_ids truth response
-          6  18.1 19.96700
-          8  24.4 23.99442
-          9  22.8 21.89425
+          1  21.0 20.38635
+          2  21.0 20.41393
+          9  22.8 23.05543
 ---                       
-         25  19.2 15.87329
-         28  30.4 25.37426
-         30  19.7 19.48631
+         23  15.2 18.07839
+         26  27.3 29.20338
+         29  15.8 17.60815
 
 [[3]]
 &lt;PredictionRegr&gt; for 8 observations:
     row_ids truth response
-          1  21.0 20.26863
-          2  21.0 20.27457
-          3  22.8 24.88696
+          5  18.7 15.05024
+          6  18.1 19.93636
+         12  16.4 14.90928
 ---                       
-         17  14.7 12.84734
-         18  32.4 27.50348
-         31  15.0 14.99237
+         27  26.0 25.43182
+         30  19.7 19.32294
+         31  15.0 14.98257
 
 [[4]]
 &lt;PredictionRegr&gt; for 8 observations:
     row_ids truth response
-          5  18.7 16.71478
-         15  10.4 15.98401
-         16  10.4 15.68187
+          4  21.4 18.65181
+          8  24.4 22.54925
+         16  10.4 14.04568
 ---                       
-         27  26.0 25.52167
-         29  15.8 17.80089
-         32  21.4 23.26498
+         20  33.9 27.13735
+         21  21.5 24.10446
+         24  13.3 15.70986
 
 [[5]]
 &lt;PredictionRegr&gt; for 8 observations:
     row_ids truth response
-          4  21.4 19.16111
-         16  10.4 14.04269
-         17  14.7 14.28331
+         11  17.8 19.98049
+         13  17.3 15.51560
+         14  15.2 15.34903
 ---                       
-         23  15.2 17.92905
-         26  27.3 29.09164
-         28  30.4 25.17481
+         23  15.2 16.73917
+         25  19.2 15.53410
+         28  30.4 24.97874
 
 [[6]]
 &lt;PredictionRegr&gt; for 8 observations:
     row_ids truth response
-          1  21.0 21.66897
-          5  18.7 15.32978
-          6  18.1 20.01167
+          6  18.1 20.01887
+         10  19.2 19.18044
+         12  16.4 16.03081
 ---                       
-         20  33.9 28.24979
-         25  19.2 15.02931
-         29  15.8 16.36541
+         22  15.5 15.62435
+         24  13.3 15.38187
+         30  19.7 20.34655
 
 [[7]]
 &lt;PredictionRegr&gt; for 8 observations:
     row_ids truth response
-          2  21.0 20.93504
-          9  22.8 22.89185
-         10  19.2 19.00348
+          3  22.8 25.34960
+          5  18.7 16.61455
+          7  14.3 15.73377
 ---                       
-         18  32.4 26.83803
-         19  30.4 27.80025
-         31  15.0 14.96863
+         27  26.0 26.02388
+         29  15.8 18.25733
+         31  15.0 16.04920
 
 [[8]]
 &lt;PredictionRegr&gt; for 8 observations:
     row_ids truth response
-          3  22.8 25.93104
-          7  14.3 15.45542
-         12  16.4 16.95824
+          1  21.0 19.94737
+          2  21.0 19.51274
+          4  21.4 18.68932
 ---                       
-         27  26.0 26.55125
-         30  19.7 20.42764
-         32  21.4 23.86373
+         20  33.9 28.00898
+         26  27.3 28.00898
+         32  21.4 23.45701
 
 [[9]]
 &lt;PredictionRegr&gt; for 8 observations:
     row_ids truth response
-          2  21.0 21.84280
-          6  18.1 20.28309
-         11  17.8 20.07780
+          4  21.4 19.32975
+         12  16.4 16.29279
+         15  10.4 14.51093
 ---                       
-         22  15.5 15.95429
-         30  19.7 20.35291
-         31  15.0 15.12408
+         23  15.2 18.04248
+         24  13.3 15.49425
+         32  21.4 23.53913
 
 [[10]]
 &lt;PredictionRegr&gt; for 8 observations:
     row_ids truth response
-          8  24.4 23.59253
-          9  22.8 21.28974
-         12  16.4 17.09272
+          3  22.8 23.72769
+          9  22.8 21.87272
+         13  17.3 15.34483
 ---                       
-         27  26.0 24.59119
-         28  30.4 25.32560
-         32  21.4 22.28587
+         25  19.2 15.56700
+         27  26.0 24.36130
+         28  30.4 26.20746
 
 [[11]]
 &lt;PredictionRegr&gt; for 8 observations:
     row_ids truth response
-          3  22.8 25.73129
-          5  18.7 15.15344
-         13  17.3 15.10646
+          1  21.0 20.67833
+          2  21.0 20.52678
+          5  18.7 16.28969
 ---                       
-         20  33.9 28.36041
-         25  19.2 14.80228
-         29  15.8 17.00126
+         10  19.2 18.58831
+         21  21.5 24.60538
+         29  15.8 17.20739
 
 [[12]]
 &lt;PredictionRegr&gt; for 8 observations:
     row_ids truth response
-          1  21.0 20.88603
-          4  21.4 18.79627
-          7  14.3 16.04845
+          6  18.1 20.34923
+         11  17.8 20.15159
+         14  15.2 15.84236
 ---                       
-         19  30.4 29.00363
-         24  13.3 16.22820
-         26  27.3 28.91929</code></pre>
+         26  27.3 28.37478
+         30  19.7 20.19231
+         31  15.0 15.21153</code></pre>
 </div>
 </div>
 <p>You can get the all predictions combined using the <code>prediction()</code> method.</p>
@@ -1450,7 +1450,7 @@ INFO  [10:16:29.158] [mlr3] Applying learner 'regr.ranger' on task 'example' (it
 <div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a>all_predictions<span class="sc">$</span><span class="fu">score</span>(<span class="fu">msr</span>(<span class="st">"regr.mse"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>regr.mse 
-6.669289 </code></pre>
+7.018794 </code></pre>
 </div>
 </div>
 <p>Of course, you are also cross-fitting when you are doing cross-validation. You can just take the prediction results and use them if you are implementing DML for example.</p>
@@ -1462,38 +1462,38 @@ INFO  [10:16:29.158] [mlr3] Applying learner 'regr.ranger' on task 'example' (it
 <span id="cb85-5"><a href="#cb85-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    row_ids y_hat_cf
- 1:       4 19.13974
- 2:       7 15.48187
- 3:      11 20.03951
- 4:      14 16.73750
- 5:      19 28.59226
- 6:      21 24.23825
- 7:      23 17.74983
- 8:      26 28.99814
- 9:       6 20.08725
-10:       8 23.62942
-11:       9 22.02528
-12:      12 16.59428
-13:      24 15.62042
-14:      25 15.23496
-15:      28 25.29155
-16:      30 20.08895
-17:       1 20.94121
-18:       2 21.01747
-19:       3 25.51643
-20:      10 18.86897
-21:      13 15.60794
-22:      17 13.73741
-23:      18 27.15270
-24:      31 15.02836
-25:       5 15.73267
-26:      15 14.69537
-27:      16 14.50281
-28:      20 28.42827
-29:      22 16.73706
-30:      27 25.55470
-31:      29 17.05585
-32:      32 23.13819
+ 1:       3 24.61833
+ 2:       7 15.18230
+ 3:      10 19.36617
+ 4:      11 20.16231
+ 5:      14 15.75521
+ 6:      18 27.06107
+ 7:      28 25.35543
+ 8:      32 23.44634
+ 9:       1 20.33735
+10:       2 20.15115
+11:       9 22.46271
+12:      13 15.42434
+13:      15 14.96705
+14:      23 17.62001
+15:      26 28.52905
+16:      29 17.69096
+17:       5 15.98482
+18:       6 20.10149
+19:      12 15.74429
+20:      22 16.02718
+21:      25 15.26203
+22:      27 25.27234
+23:      30 19.95394
+24:      31 15.41443
+25:       4 18.89029
+26:       8 22.60437
+27:      16 14.50583
+28:      17 13.92126
+29:      19 28.41084
+30:      20 27.68998
+31:      21 24.23529
+32:      24 15.52866
     row_ids y_hat_cf</code></pre>
 </div>
 </div>
@@ -1692,10 +1692,10 @@ $max.depth
 [1] 10
 
 $mtry.ratio
-[1] 0.6333333
+[1] 0.7666667
 
 $min.node.size
-[1] 7</code></pre>
+[1] 1</code></pre>
 </div>
 </div>
 <p>You can look at the evaluation results of other parameter configurations by accessing the <code>archive</code> attribute of the tuning instance.</p>
@@ -1703,19 +1703,19 @@ $min.node.size
 <div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.data.table</span>(tuning_instance<span class="sc">$</span>archive) <span class="sc">%&gt;%</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   mtry.ratio min.node.size  regr.mse x_domain_mtry.ratio
-1:  0.6333333             1  8.839304           0.6333333
-2:  0.9000000            14 10.842224           0.9000000
-3:  0.9000000             1  9.068900           0.9000000
-4:  0.9000000            20 12.864389           0.9000000
-5:  0.6333333            20 12.896037           0.6333333
-6:  0.7666667            20 12.978295           0.7666667
+1:  0.5000000             7  6.667235           0.5000000
+2:  0.5000000            20 11.369392           0.5000000
+3:  0.5000000            14  9.790349           0.5000000
+4:  0.9000000             1  5.969436           0.9000000
+5:  0.9000000             7  6.413599           0.9000000
+6:  0.6333333            20 11.301508           0.6333333
    x_domain_min.node.size runtime_learners           timestamp batch_nr
-1:                      1            0.040 2022-07-22 10:16:29        1
-2:                     14            0.019 2022-07-22 10:16:29        2
-3:                      1            0.039 2022-07-22 10:16:29        3
-4:                     20            0.016 2022-07-22 10:16:29        4
-5:                     20            0.021 2022-07-22 10:16:29        5
-6:                     20            0.018 2022-07-22 10:16:29        6
+1:                      7            0.026 2022-07-24 14:59:45        1
+2:                     20            0.016 2022-07-24 14:59:45        2
+3:                     14            0.021 2022-07-24 14:59:45        3
+4:                      1            0.037 2022-07-24 14:59:45        4
+5:                      7            0.029 2022-07-24 14:59:45        5
+6:                     20            0.016 2022-07-24 14:59:45        6
    warnings errors      resample_result
 1:        0      0 &lt;ResampleResult[22]&gt;
 2:        0      0 &lt;ResampleResult[22]&gt;
@@ -1759,187 +1759,187 @@ $min.node.size
 <div class="cell">
 <div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a>auto_tunning_learner<span class="sc">$</span><span class="fu">train</span>(reg_task)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>INFO  [10:16:30.396] [bbotk] Starting to optimize 2 parameter(s) with '&lt;TunerGridSearch&gt;' and '&lt;TerminatorEvals&gt; [n_evals=100, k=0]' 
-INFO  [10:16:30.398] [bbotk] Evaluating 1 configuration(s) 
-INFO  [10:16:30.408] [mlr3] Running benchmark with 3 resampling iterations 
-INFO  [10:16:30.410] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
-INFO  [10:16:30.426] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
-INFO  [10:16:30.442] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
-INFO  [10:16:30.458] [mlr3] Finished benchmark 
-INFO  [10:16:30.469] [bbotk] Result of batch 1: 
-INFO  [10:16:30.470] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
-INFO  [10:16:30.470] [bbotk]         0.9             1 5.023205        0      0            0.037 
-INFO  [10:16:30.470] [bbotk]                                 uhash 
-INFO  [10:16:30.470] [bbotk]  55977363-b721-4365-9876-3c1eb8451206 
-INFO  [10:16:30.470] [bbotk] Evaluating 1 configuration(s) 
-INFO  [10:16:30.480] [mlr3] Running benchmark with 3 resampling iterations 
-INFO  [10:16:30.483] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
-INFO  [10:16:30.492] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
-INFO  [10:16:30.502] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
-INFO  [10:16:30.515] [mlr3] Finished benchmark 
-INFO  [10:16:30.530] [bbotk] Result of batch 2: 
-INFO  [10:16:30.530] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
-INFO  [10:16:30.530] [bbotk]         0.9            14 8.255786        0      0             0.02 
-INFO  [10:16:30.530] [bbotk]                                 uhash 
-INFO  [10:16:30.530] [bbotk]  81a27077-5eac-43a4-abc2-955e4d286f18 
-INFO  [10:16:30.531] [bbotk] Evaluating 1 configuration(s) 
-INFO  [10:16:30.540] [mlr3] Running benchmark with 3 resampling iterations 
-INFO  [10:16:30.542] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
-INFO  [10:16:30.552] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
-INFO  [10:16:30.560] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
-INFO  [10:16:30.569] [mlr3] Finished benchmark 
-INFO  [10:16:30.580] [bbotk] Result of batch 3: 
-INFO  [10:16:30.581] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
-INFO  [10:16:30.581] [bbotk]         0.9            20 12.07496        0      0            0.018 
-INFO  [10:16:30.581] [bbotk]                                 uhash 
-INFO  [10:16:30.581] [bbotk]  698439d5-721c-4bc6-b111-208e1c4f2916 
-INFO  [10:16:30.581] [bbotk] Evaluating 1 configuration(s) 
-INFO  [10:16:30.590] [mlr3] Running benchmark with 3 resampling iterations 
-INFO  [10:16:30.592] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
-INFO  [10:16:30.603] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
-INFO  [10:16:30.613] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
-INFO  [10:16:30.630] [mlr3] Finished benchmark 
-INFO  [10:16:30.641] [bbotk] Result of batch 4: 
-INFO  [10:16:30.641] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
-INFO  [10:16:30.641] [bbotk]         0.9             7 5.574736        0      0            0.023 
-INFO  [10:16:30.641] [bbotk]                                 uhash 
-INFO  [10:16:30.641] [bbotk]  de5a4ad2-1b17-4f5c-857f-83c39bd6a194 
-INFO  [10:16:30.642] [bbotk] Evaluating 1 configuration(s) 
-INFO  [10:16:30.651] [mlr3] Running benchmark with 3 resampling iterations 
-INFO  [10:16:30.653] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
-INFO  [10:16:30.662] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
-INFO  [10:16:30.671] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
-INFO  [10:16:30.680] [mlr3] Finished benchmark 
-INFO  [10:16:30.691] [bbotk] Result of batch 5: 
-INFO  [10:16:30.691] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
-INFO  [10:16:30.691] [bbotk]   0.7666667            14 8.417554        0      0            0.017 
-INFO  [10:16:30.691] [bbotk]                                 uhash 
-INFO  [10:16:30.691] [bbotk]  18ac12f2-2ce7-4b78-8eb7-e824ff8046b5 
-INFO  [10:16:30.692] [bbotk] Evaluating 1 configuration(s) 
-INFO  [10:16:30.701] [mlr3] Running benchmark with 3 resampling iterations 
-INFO  [10:16:30.703] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
-INFO  [10:16:30.712] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
-INFO  [10:16:30.727] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
-INFO  [10:16:30.737] [mlr3] Finished benchmark 
-INFO  [10:16:30.748] [bbotk] Result of batch 6: 
-INFO  [10:16:30.749] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
-INFO  [10:16:30.749] [bbotk]         0.5            14 8.956543        0      0             0.02 
-INFO  [10:16:30.749] [bbotk]                                 uhash 
-INFO  [10:16:30.749] [bbotk]  58bef7bf-67be-47cf-a41a-99d28b049999 
-INFO  [10:16:30.750] [bbotk] Evaluating 1 configuration(s) 
-INFO  [10:16:30.759] [mlr3] Running benchmark with 3 resampling iterations 
-INFO  [10:16:30.761] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
-INFO  [10:16:30.770] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
-INFO  [10:16:30.778] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
-INFO  [10:16:30.787] [mlr3] Finished benchmark 
-INFO  [10:16:30.798] [bbotk] Result of batch 7: 
-INFO  [10:16:30.799] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
-INFO  [10:16:30.799] [bbotk]   0.6333333            14  8.67749        0      0            0.016 
-INFO  [10:16:30.799] [bbotk]                                 uhash 
-INFO  [10:16:30.799] [bbotk]  2d59a352-945f-40ea-96e0-fc36fe9cbe14 
-INFO  [10:16:30.799] [bbotk] Evaluating 1 configuration(s) 
-INFO  [10:16:30.808] [mlr3] Running benchmark with 3 resampling iterations 
-INFO  [10:16:30.811] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
-INFO  [10:16:30.827] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
-INFO  [10:16:30.836] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
-INFO  [10:16:30.845] [mlr3] Finished benchmark 
-INFO  [10:16:30.856] [bbotk] Result of batch 8: 
-INFO  [10:16:30.857] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
-INFO  [10:16:30.857] [bbotk]         0.5            20 12.14943        0      0            0.017 
-INFO  [10:16:30.857] [bbotk]                                 uhash 
-INFO  [10:16:30.857] [bbotk]  94ff0376-44e6-46ef-9c40-bcb88c91e18e 
-INFO  [10:16:30.857] [bbotk] Evaluating 1 configuration(s) 
-INFO  [10:16:30.866] [mlr3] Running benchmark with 3 resampling iterations 
-INFO  [10:16:30.868] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
-INFO  [10:16:30.879] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
-INFO  [10:16:30.889] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
-INFO  [10:16:30.899] [mlr3] Finished benchmark 
-INFO  [10:16:30.910] [bbotk] Result of batch 9: 
-INFO  [10:16:30.911] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
-INFO  [10:16:30.911] [bbotk]   0.7666667             7 5.636941        0      0            0.022 
-INFO  [10:16:30.911] [bbotk]                                 uhash 
-INFO  [10:16:30.911] [bbotk]  d7751e93-f9d5-4b97-9c62-a40bef7d080b 
-INFO  [10:16:30.911] [bbotk] Evaluating 1 configuration(s) 
-INFO  [10:16:30.924] [mlr3] Running benchmark with 3 resampling iterations 
-INFO  [10:16:30.927] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
-INFO  [10:16:30.937] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
-INFO  [10:16:30.945] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
-INFO  [10:16:30.954] [mlr3] Finished benchmark 
-INFO  [10:16:30.965] [bbotk] Result of batch 10: 
-INFO  [10:16:30.966] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
-INFO  [10:16:30.966] [bbotk]   0.6333333            20 11.96528        0      0            0.016 
-INFO  [10:16:30.966] [bbotk]                                 uhash 
-INFO  [10:16:30.966] [bbotk]  9e38d9a9-3398-403a-8003-36a2476e16fe 
-INFO  [10:16:30.967] [bbotk] Evaluating 1 configuration(s) 
-INFO  [10:16:30.976] [mlr3] Running benchmark with 3 resampling iterations 
-INFO  [10:16:30.978] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
-INFO  [10:16:30.992] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
-INFO  [10:16:31.007] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
-INFO  [10:16:31.022] [mlr3] Finished benchmark 
-INFO  [10:16:31.034] [bbotk] Result of batch 11: 
-INFO  [10:16:31.035] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
-INFO  [10:16:31.035] [bbotk]   0.7666667             1 5.130579        0      0            0.033 
-INFO  [10:16:31.035] [bbotk]                                 uhash 
-INFO  [10:16:31.035] [bbotk]  e6facc92-98c1-473b-bdea-e6983ccab6de 
-INFO  [10:16:31.035] [bbotk] Evaluating 1 configuration(s) 
-INFO  [10:16:31.053] [mlr3] Running benchmark with 3 resampling iterations 
-INFO  [10:16:31.056] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
-INFO  [10:16:31.066] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
-INFO  [10:16:31.077] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
-INFO  [10:16:31.088] [mlr3] Finished benchmark 
-INFO  [10:16:31.099] [bbotk] Result of batch 12: 
-INFO  [10:16:31.100] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
-INFO  [10:16:31.100] [bbotk]         0.5             7 5.782136        0      0            0.021 
-INFO  [10:16:31.100] [bbotk]                                 uhash 
-INFO  [10:16:31.100] [bbotk]  be730602-9699-42dc-b90f-c3dc07283575 
-INFO  [10:16:31.101] [bbotk] Evaluating 1 configuration(s) 
-INFO  [10:16:31.110] [mlr3] Running benchmark with 3 resampling iterations 
-INFO  [10:16:31.112] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
-INFO  [10:16:31.126] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
-INFO  [10:16:31.140] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
-INFO  [10:16:31.154] [mlr3] Finished benchmark 
-INFO  [10:16:31.165] [bbotk] Result of batch 13: 
-INFO  [10:16:31.166] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
-INFO  [10:16:31.166] [bbotk]         0.5             1 5.186178        0      0             0.03 
-INFO  [10:16:31.166] [bbotk]                                 uhash 
-INFO  [10:16:31.166] [bbotk]  99157dea-67e1-4709-8b72-c19cb4c64e17 
-INFO  [10:16:31.167] [bbotk] Evaluating 1 configuration(s) 
-INFO  [10:16:31.184] [mlr3] Running benchmark with 3 resampling iterations 
-INFO  [10:16:31.187] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
-INFO  [10:16:31.198] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
-INFO  [10:16:31.209] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
-INFO  [10:16:31.220] [mlr3] Finished benchmark 
-INFO  [10:16:31.231] [bbotk] Result of batch 14: 
-INFO  [10:16:31.231] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
-INFO  [10:16:31.231] [bbotk]   0.6333333             7 5.579312        0      0            0.021 
-INFO  [10:16:31.231] [bbotk]                                 uhash 
-INFO  [10:16:31.231] [bbotk]  6a8f14ce-f8a2-4c3f-902a-206476d7e504 
-INFO  [10:16:31.232] [bbotk] Evaluating 1 configuration(s) 
-INFO  [10:16:31.241] [mlr3] Running benchmark with 3 resampling iterations 
-INFO  [10:16:31.243] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
-INFO  [10:16:31.258] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
-INFO  [10:16:31.271] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
-INFO  [10:16:31.285] [mlr3] Finished benchmark 
-INFO  [10:16:31.302] [bbotk] Result of batch 15: 
-INFO  [10:16:31.302] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
-INFO  [10:16:31.302] [bbotk]   0.6333333             1 4.814211        0      0            0.031 
-INFO  [10:16:31.302] [bbotk]                                 uhash 
-INFO  [10:16:31.302] [bbotk]  de9fec18-f9b9-4c54-b9ed-ac915054ffc0 
-INFO  [10:16:31.303] [bbotk] Evaluating 1 configuration(s) 
-INFO  [10:16:31.313] [mlr3] Running benchmark with 3 resampling iterations 
-INFO  [10:16:31.315] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
-INFO  [10:16:31.324] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
-INFO  [10:16:31.333] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
-INFO  [10:16:31.343] [mlr3] Finished benchmark 
-INFO  [10:16:31.354] [bbotk] Result of batch 16: 
-INFO  [10:16:31.355] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
-INFO  [10:16:31.355] [bbotk]   0.7666667            20 12.11029        0      0            0.018 
-INFO  [10:16:31.355] [bbotk]                                 uhash 
-INFO  [10:16:31.355] [bbotk]  74fe5f0c-4788-44bc-a92a-bfca1e0ad9e7 
-INFO  [10:16:31.357] [bbotk] Finished optimizing after 16 evaluation(s) 
-INFO  [10:16:31.357] [bbotk] Result: 
-INFO  [10:16:31.357] [bbotk]  mtry.ratio min.node.size learner_param_vals  x_domain regr.mse 
-INFO  [10:16:31.357] [bbotk]   0.6333333             1          &lt;list[4]&gt; &lt;list[2]&gt; 4.814211 </code></pre>
+<pre><code>INFO  [14:59:46.183] [bbotk] Starting to optimize 2 parameter(s) with '&lt;TunerGridSearch&gt;' and '&lt;TerminatorEvals&gt; [n_evals=100, k=0]' 
+INFO  [14:59:46.184] [bbotk] Evaluating 1 configuration(s) 
+INFO  [14:59:46.193] [mlr3] Running benchmark with 3 resampling iterations 
+INFO  [14:59:46.196] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
+INFO  [14:59:46.207] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
+INFO  [14:59:46.219] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
+INFO  [14:59:46.230] [mlr3] Finished benchmark 
+INFO  [14:59:46.241] [bbotk] Result of batch 1: 
+INFO  [14:59:46.241] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
+INFO  [14:59:46.241] [bbotk]   0.7666667             7 6.288867        0      0            0.024 
+INFO  [14:59:46.241] [bbotk]                                 uhash 
+INFO  [14:59:46.241] [bbotk]  7fb9db4b-df54-439b-9d9b-1fce430b2444 
+INFO  [14:59:46.242] [bbotk] Evaluating 1 configuration(s) 
+INFO  [14:59:46.251] [mlr3] Running benchmark with 3 resampling iterations 
+INFO  [14:59:46.253] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
+INFO  [14:59:46.266] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
+INFO  [14:59:46.280] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
+INFO  [14:59:46.299] [mlr3] Finished benchmark 
+INFO  [14:59:46.313] [bbotk] Result of batch 2: 
+INFO  [14:59:46.314] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
+INFO  [14:59:46.314] [bbotk]   0.6333333             1 6.001241        0      0            0.031 
+INFO  [14:59:46.314] [bbotk]                                 uhash 
+INFO  [14:59:46.314] [bbotk]  55d4a355-9f0e-4575-aa7c-af9fc3083fc0 
+INFO  [14:59:46.314] [bbotk] Evaluating 1 configuration(s) 
+INFO  [14:59:46.323] [mlr3] Running benchmark with 3 resampling iterations 
+INFO  [14:59:46.326] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
+INFO  [14:59:46.336] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
+INFO  [14:59:46.345] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
+INFO  [14:59:46.354] [mlr3] Finished benchmark 
+INFO  [14:59:46.366] [bbotk] Result of batch 3: 
+INFO  [14:59:46.367] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
+INFO  [14:59:46.367] [bbotk]   0.6333333            14 8.358977        0      0            0.018 
+INFO  [14:59:46.367] [bbotk]                                 uhash 
+INFO  [14:59:46.367] [bbotk]  96f300bb-ae12-4743-b556-d336681cbc91 
+INFO  [14:59:46.367] [bbotk] Evaluating 1 configuration(s) 
+INFO  [14:59:46.376] [mlr3] Running benchmark with 3 resampling iterations 
+INFO  [14:59:46.378] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
+INFO  [14:59:46.387] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
+INFO  [14:59:46.395] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
+INFO  [14:59:46.410] [mlr3] Finished benchmark 
+INFO  [14:59:46.421] [bbotk] Result of batch 4: 
+INFO  [14:59:46.422] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
+INFO  [14:59:46.422] [bbotk]   0.7666667            20 10.36319        0      0            0.017 
+INFO  [14:59:46.422] [bbotk]                                 uhash 
+INFO  [14:59:46.422] [bbotk]  69b2e5cb-401f-4483-ae3d-1908e402dfed 
+INFO  [14:59:46.422] [bbotk] Evaluating 1 configuration(s) 
+INFO  [14:59:46.431] [mlr3] Running benchmark with 3 resampling iterations 
+INFO  [14:59:46.433] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
+INFO  [14:59:46.444] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
+INFO  [14:59:46.455] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
+INFO  [14:59:46.466] [mlr3] Finished benchmark 
+INFO  [14:59:46.478] [bbotk] Result of batch 5: 
+INFO  [14:59:46.478] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
+INFO  [14:59:46.478] [bbotk]         0.9             7 6.260343        0      0            0.024 
+INFO  [14:59:46.478] [bbotk]                                 uhash 
+INFO  [14:59:46.478] [bbotk]  5fb6873c-77b8-4bd5-ac16-7ce2ee96606d 
+INFO  [14:59:46.479] [bbotk] Evaluating 1 configuration(s) 
+INFO  [14:59:46.488] [mlr3] Running benchmark with 3 resampling iterations 
+INFO  [14:59:46.490] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
+INFO  [14:59:46.499] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
+INFO  [14:59:46.513] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
+INFO  [14:59:46.523] [mlr3] Finished benchmark 
+INFO  [14:59:46.534] [bbotk] Result of batch 6: 
+INFO  [14:59:46.535] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
+INFO  [14:59:46.535] [bbotk]         0.5            14   8.5339        0      0            0.018 
+INFO  [14:59:46.535] [bbotk]                                 uhash 
+INFO  [14:59:46.535] [bbotk]  a1c89e25-5eb7-4be7-b5e9-1abf74f4a743 
+INFO  [14:59:46.536] [bbotk] Evaluating 1 configuration(s) 
+INFO  [14:59:46.544] [mlr3] Running benchmark with 3 resampling iterations 
+INFO  [14:59:46.547] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
+INFO  [14:59:46.559] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
+INFO  [14:59:46.572] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
+INFO  [14:59:46.584] [mlr3] Finished benchmark 
+INFO  [14:59:46.595] [bbotk] Result of batch 7: 
+INFO  [14:59:46.596] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
+INFO  [14:59:46.596] [bbotk]         0.5             1 6.163622        0      0            0.027 
+INFO  [14:59:46.596] [bbotk]                                 uhash 
+INFO  [14:59:46.596] [bbotk]  c9c4c5d7-c555-4018-a2d3-33a150229b51 
+INFO  [14:59:46.596] [bbotk] Evaluating 1 configuration(s) 
+INFO  [14:59:46.605] [mlr3] Running benchmark with 3 resampling iterations 
+INFO  [14:59:46.614] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
+INFO  [14:59:46.624] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
+INFO  [14:59:46.633] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
+INFO  [14:59:46.642] [mlr3] Finished benchmark 
+INFO  [14:59:46.653] [bbotk] Result of batch 8: 
+INFO  [14:59:46.654] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
+INFO  [14:59:46.654] [bbotk]         0.5            20 10.21165        0      0            0.018 
+INFO  [14:59:46.654] [bbotk]                                 uhash 
+INFO  [14:59:46.654] [bbotk]  9f3e7e25-cf14-4318-8db7-42c994b92074 
+INFO  [14:59:46.654] [bbotk] Evaluating 1 configuration(s) 
+INFO  [14:59:46.663] [mlr3] Running benchmark with 3 resampling iterations 
+INFO  [14:59:46.665] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
+INFO  [14:59:46.675] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
+INFO  [14:59:46.683] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
+INFO  [14:59:46.692] [mlr3] Finished benchmark 
+INFO  [14:59:46.704] [bbotk] Result of batch 9: 
+INFO  [14:59:46.704] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
+INFO  [14:59:46.704] [bbotk]   0.7666667            14 8.447506        0      0            0.017 
+INFO  [14:59:46.704] [bbotk]                                 uhash 
+INFO  [14:59:46.704] [bbotk]  acd1b8bc-06f7-4163-bdb5-d98fa3be70d3 
+INFO  [14:59:46.705] [bbotk] Evaluating 1 configuration(s) 
+INFO  [14:59:46.718] [mlr3] Running benchmark with 3 resampling iterations 
+INFO  [14:59:46.721] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
+INFO  [14:59:46.731] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
+INFO  [14:59:46.740] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
+INFO  [14:59:46.750] [mlr3] Finished benchmark 
+INFO  [14:59:46.762] [bbotk] Result of batch 10: 
+INFO  [14:59:46.762] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
+INFO  [14:59:46.762] [bbotk]         0.9            20    10.44        0      0            0.018 
+INFO  [14:59:46.762] [bbotk]                                 uhash 
+INFO  [14:59:46.762] [bbotk]  8435e0ed-359c-4799-9c14-5e3653c3a375 
+INFO  [14:59:46.763] [bbotk] Evaluating 1 configuration(s) 
+INFO  [14:59:46.772] [mlr3] Running benchmark with 3 resampling iterations 
+INFO  [14:59:46.775] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
+INFO  [14:59:46.784] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
+INFO  [14:59:46.794] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
+INFO  [14:59:46.804] [mlr3] Finished benchmark 
+INFO  [14:59:46.815] [bbotk] Result of batch 11: 
+INFO  [14:59:46.816] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
+INFO  [14:59:46.816] [bbotk]         0.9            14  8.24572        0      0            0.018 
+INFO  [14:59:46.816] [bbotk]                                 uhash 
+INFO  [14:59:46.816] [bbotk]  b2af6488-5fb8-45a8-b162-fe48fff9ab92 
+INFO  [14:59:46.817] [bbotk] Evaluating 1 configuration(s) 
+INFO  [14:59:46.834] [mlr3] Running benchmark with 3 resampling iterations 
+INFO  [14:59:46.836] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
+INFO  [14:59:46.846] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
+INFO  [14:59:46.855] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
+INFO  [14:59:46.865] [mlr3] Finished benchmark 
+INFO  [14:59:46.876] [bbotk] Result of batch 12: 
+INFO  [14:59:46.877] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
+INFO  [14:59:46.877] [bbotk]   0.6333333            20 10.12095        0      0            0.018 
+INFO  [14:59:46.877] [bbotk]                                 uhash 
+INFO  [14:59:46.877] [bbotk]  dfbecdc4-4036-48cc-a459-7524bb951076 
+INFO  [14:59:46.878] [bbotk] Evaluating 1 configuration(s) 
+INFO  [14:59:46.887] [mlr3] Running benchmark with 3 resampling iterations 
+INFO  [14:59:46.889] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
+INFO  [14:59:46.904] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
+INFO  [14:59:46.919] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
+INFO  [14:59:46.934] [mlr3] Finished benchmark 
+INFO  [14:59:46.946] [bbotk] Result of batch 13: 
+INFO  [14:59:46.946] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
+INFO  [14:59:46.946] [bbotk]         0.9             1 6.405706        0      0            0.033 
+INFO  [14:59:46.946] [bbotk]                                 uhash 
+INFO  [14:59:46.946] [bbotk]  881a1ef2-efd5-4562-ae3d-f77a80e94b78 
+INFO  [14:59:46.947] [bbotk] Evaluating 1 configuration(s) 
+INFO  [14:59:46.964] [mlr3] Running benchmark with 3 resampling iterations 
+INFO  [14:59:46.967] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
+INFO  [14:59:46.982] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
+INFO  [14:59:46.995] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
+INFO  [14:59:47.010] [mlr3] Finished benchmark 
+INFO  [14:59:47.021] [bbotk] Result of batch 14: 
+INFO  [14:59:47.022] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
+INFO  [14:59:47.022] [bbotk]   0.7666667             1 6.355635        0      0            0.031 
+INFO  [14:59:47.022] [bbotk]                                 uhash 
+INFO  [14:59:47.022] [bbotk]  bbe329f8-2f51-4604-9c75-3a31b6870bf9 
+INFO  [14:59:47.022] [bbotk] Evaluating 1 configuration(s) 
+INFO  [14:59:47.031] [mlr3] Running benchmark with 3 resampling iterations 
+INFO  [14:59:47.034] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
+INFO  [14:59:47.044] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
+INFO  [14:59:47.054] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
+INFO  [14:59:47.065] [mlr3] Finished benchmark 
+INFO  [14:59:47.082] [bbotk] Result of batch 15: 
+INFO  [14:59:47.084] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
+INFO  [14:59:47.084] [bbotk]         0.5             7 6.416616        0      0            0.022 
+INFO  [14:59:47.084] [bbotk]                                 uhash 
+INFO  [14:59:47.084] [bbotk]  151523b3-6013-48ca-9c0c-ba82e8eeedf1 
+INFO  [14:59:47.085] [bbotk] Evaluating 1 configuration(s) 
+INFO  [14:59:47.095] [mlr3] Running benchmark with 3 resampling iterations 
+INFO  [14:59:47.098] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 2/3) 
+INFO  [14:59:47.108] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 3/3) 
+INFO  [14:59:47.119] [mlr3] Applying learner 'regr.ranger' on task 'example' (iter 1/3) 
+INFO  [14:59:47.130] [mlr3] Finished benchmark 
+INFO  [14:59:47.141] [bbotk] Result of batch 16: 
+INFO  [14:59:47.142] [bbotk]  mtry.ratio min.node.size regr.mse warnings errors runtime_learners 
+INFO  [14:59:47.142] [bbotk]   0.6333333             7 6.243041        0      0            0.022 
+INFO  [14:59:47.142] [bbotk]                                 uhash 
+INFO  [14:59:47.142] [bbotk]  8431e050-4ff0-423f-aaf3-cf2ae646823b 
+INFO  [14:59:47.144] [bbotk] Finished optimizing after 16 evaluation(s) 
+INFO  [14:59:47.144] [bbotk] Result: 
+INFO  [14:59:47.144] [bbotk]  mtry.ratio min.node.size learner_param_vals  x_domain regr.mse 
+INFO  [14:59:47.144] [bbotk]   0.6333333             1          &lt;list[4]&gt; &lt;list[2]&gt; 6.001241 </code></pre>
 </div>
 </div>
 <p>You can access the optimized learner by accessing the <code>model$learner</code> attribute.</p>
@@ -1970,25 +1970,25 @@ INFO  [10:16:31.357] [bbotk]   0.6333333             1          &lt;list[4]&gt; 
 * Terminator: &lt;TerminatorEvals&gt;
 * Result:
    mtry.ratio min.node.size regr.mse
-1:  0.6333333             1 4.814211
+1:  0.6333333             1 6.001241
 * Archive:
     mtry.ratio min.node.size  regr.mse
- 1:  0.9000000             1  5.023205
- 2:  0.9000000            14  8.255786
- 3:  0.9000000            20 12.074960
- 4:  0.9000000             7  5.574736
- 5:  0.7666667            14  8.417554
- 6:  0.5000000            14  8.956543
- 7:  0.6333333            14  8.677490
- 8:  0.5000000            20 12.149434
- 9:  0.7666667             7  5.636941
-10:  0.6333333            20 11.965279
-11:  0.7666667             1  5.130579
-12:  0.5000000             7  5.782136
-13:  0.5000000             1  5.186178
-14:  0.6333333             7  5.579312
-15:  0.6333333             1  4.814211
-16:  0.7666667            20 12.110286</code></pre>
+ 1:  0.7666667             7  6.288867
+ 2:  0.6333333             1  6.001241
+ 3:  0.6333333            14  8.358977
+ 4:  0.7666667            20 10.363193
+ 5:  0.9000000             7  6.260343
+ 6:  0.5000000            14  8.533900
+ 7:  0.5000000             1  6.163622
+ 8:  0.5000000            20 10.211646
+ 9:  0.7666667            14  8.447506
+10:  0.9000000            20 10.440004
+11:  0.9000000            14  8.245720
+12:  0.6333333            20 10.120951
+13:  0.9000000             1  6.405706
+14:  0.7666667             1  6.355635
+15:  0.5000000             7  6.416616
+16:  0.6333333             7  6.243041</code></pre>
 </div>
 </div>
 <p>You can of course use the <code>predict()</code> method as well.</p>
@@ -1997,13 +1997,13 @@ INFO  [10:16:31.357] [bbotk]   0.6333333             1          &lt;list[4]&gt; 
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;PredictionRegr&gt; for 32 observations:
     row_ids truth response
-          1  21.0  20.8102
-          2  21.0  20.8290
-          3  22.8  24.0082
+          1  21.0  20.8254
+          2  21.0  20.8486
+          3  22.8  24.1226
 ---                       
-         30  19.7  19.8449
-         31  15.0  14.8464
-         32  21.4  21.7804</code></pre>
+         30  19.7  19.9402
+         31  15.0  14.8862
+         32  21.4  21.8844</code></pre>
 </div>
 </div>
 </section>
@@ -2141,12 +2141,12 @@ INFO  [10:16:31.357] [bbotk]   0.6333333             1          &lt;list[4]&gt; 
 <div class="sourceCode cell-code" id="cb123"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb123-1"><a href="#cb123-1" aria-hidden="true" tabindex="-1"></a>tuning_instance_ranger<span class="sc">$</span>result_y</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> regr.mse 
-193851212 </code></pre>
+192020018 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb125"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb125-1"><a href="#cb125-1" aria-hidden="true" tabindex="-1"></a>tuning_instance_xgboost<span class="sc">$</span>result_y</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> regr.mse 
-200789944 </code></pre>
+196622856 </code></pre>
 </div>
 </div>
 <p>So, in this example, we go with <code>regr.ranger</code> with its optimized hyper-parameter values. Let’s update our learner with the optimized hyper-parameter values.</p>
@@ -2162,7 +2162,7 @@ $mtry
 [1] 2
 
 $min.node.size
-[1] 7</code></pre>
+[1] 14</code></pre>
 </div>
 </div>
 <p>Now that we have decided on the model to use for predicting <span class="math inline">\(E[y|X]\)</span>, let’s implement cross-fitting.</p>
@@ -2174,18 +2174,18 @@ $min.node.size
 <span id="cb129-5"><a href="#cb129-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rsmp</span>(<span class="st">"repeated_cv"</span>, <span class="at">repeats =</span> <span class="dv">4</span>, <span class="at">folds =</span> <span class="dv">3</span>) </span>
 <span id="cb129-6"><a href="#cb129-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>INFO  [10:16:58.960] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 5/12) 
-INFO  [10:16:59.090] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 7/12) 
-INFO  [10:16:59.217] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 3/12) 
-INFO  [10:16:59.344] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 10/12) 
-INFO  [10:16:59.472] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 11/12) 
-INFO  [10:16:59.605] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 4/12) 
-INFO  [10:16:59.745] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 9/12) 
-INFO  [10:16:59.875] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 12/12) 
-INFO  [10:17:00.000] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 1/12) 
-INFO  [10:17:00.133] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 2/12) 
-INFO  [10:17:00.260] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 8/12) 
-INFO  [10:17:00.390] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 6/12) </code></pre>
+<pre><code>INFO  [15:00:14.892] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 9/12) 
+INFO  [15:00:15.022] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 10/12) 
+INFO  [15:00:15.149] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 8/12) 
+INFO  [15:00:15.275] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 6/12) 
+INFO  [15:00:15.399] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 4/12) 
+INFO  [15:00:15.526] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 7/12) 
+INFO  [15:00:15.655] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 1/12) 
+INFO  [15:00:15.781] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 12/12) 
+INFO  [15:00:15.904] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 5/12) 
+INFO  [15:00:16.029] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 2/12) 
+INFO  [15:00:16.154] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 3/12) 
+INFO  [15:00:16.287] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_on_x' (iter 11/12) </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb131"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb131-1"><a href="#cb131-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== all combined ===#</span></span>
 <span id="cb131-2"><a href="#cb131-2" aria-hidden="true" tabindex="-1"></a>all_predictions_y <span class="ot">&lt;-</span> </span>
@@ -2262,18 +2262,18 @@ INFO  [10:17:00.390] [mlr3] Applying learner 'regr.ranger' on task 'estimate_y_o
 <span id="cb136-7"><a href="#cb136-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rsmp</span>(<span class="st">"repeated_cv"</span>, <span class="at">repeats =</span> <span class="dv">4</span>, <span class="at">folds =</span> <span class="dv">3</span>) </span>
 <span id="cb136-8"><a href="#cb136-8" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>INFO  [10:17:20.132] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 7/12) 
-INFO  [10:17:20.260] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 3/12) 
-INFO  [10:17:20.386] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 4/12) 
-INFO  [10:17:20.526] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 6/12) 
-INFO  [10:17:20.651] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 12/12) 
-INFO  [10:17:20.778] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 1/12) 
-INFO  [10:17:20.911] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 9/12) 
-INFO  [10:17:21.038] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 5/12) 
-INFO  [10:17:21.163] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 11/12) 
-INFO  [10:17:21.291] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 8/12) 
-INFO  [10:17:21.424] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 10/12) 
-INFO  [10:17:21.562] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 2/12) </code></pre>
+<pre><code>INFO  [15:00:35.992] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 3/12) 
+INFO  [15:00:36.123] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 12/12) 
+INFO  [15:00:36.250] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 8/12) 
+INFO  [15:00:36.378] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 9/12) 
+INFO  [15:00:36.503] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 1/12) 
+INFO  [15:00:36.634] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 6/12) 
+INFO  [15:00:36.766] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 5/12) 
+INFO  [15:00:36.894] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 10/12) 
+INFO  [15:00:37.021] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 2/12) 
+INFO  [15:00:37.149] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 11/12) 
+INFO  [15:00:37.274] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 4/12) 
+INFO  [15:00:37.410] [mlr3] Applying learner 'classif.ranger' on task 'estimate_t_on_x' (iter 7/12) </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb138"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb138-1"><a href="#cb138-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== all combined ===#</span></span>
 <span id="cb138-2"><a href="#cb138-2" aria-hidden="true" tabindex="-1"></a>all_predictions_t <span class="ot">&lt;-</span> </span>
@@ -2297,7 +2297,7 @@ Number of trees: 2000
 Number of training samples: 2675 
 Variable importance: 
     1     2     3     4     5     6 
-0.519 0.287 0.116 0.020 0.052 0.006 </code></pre>
+0.498 0.299 0.126 0.019 0.051 0.008 </code></pre>
 </div>
 </div>
 
