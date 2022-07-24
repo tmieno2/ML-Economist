@@ -1,26 +1,56 @@
 # Extreme Gradient Boosting {#sec-xgb}
 
-Extreme gradient boosting (XGB) is a variant of gradient boosting that has been extremely popular due to its superb performance. The basic concept is the same as the gradient boosting algorithm described above, however, it has its own way of building a tree, which is more mindful of avoiding over-fitting trees. 
+Extreme gradient boosting (XGB) has been extremely popular due to its superb performance [@chen2016xgboost]. It is a variant of gradient boosting and follows the same steps as gradient boosting covered in @sec-brf. However, it has it has its own way of building a tree, which is more mindful of avoiding over-fitting trees. 
 
-## Tree updating in XGB (general)
+:::{.callout-note}
 
-Let $f_{i,b}(x_i)$ be the prediction for the $i$th observation at the $b$-th iteration. Further, let $w_t(x_i)$ is the term that is added to $f_{i,b}(x_i)$ to obtain $f_{i,b+1}(x_i)$. In XGB, $w_t(x_i)$ is such that it minimizes the following objective:
+1. Set $f_0(X_i)  = \frac{\sum_{i=1}^N y_i}{N}$ for all $i = 1, \dots, N$
+2. For b = 1 to B,
+  i. For $i = 1, \dots, N$, calculate
+    $$
+    r_{i,b} =  (y_i - f_{b-1}(X_i))
+    $$
+  ii. <span style="color:blue"> Build a tree XGB-way </span>
+  iii. Update $f_{b-1}(X_i)$ to $f_{b}(X_i)$
+3. Finally, $\hat{f}(X_i) = f_B(X_i)$
+
+:::
+
+XGB can be implemented by the `XGBoost` package (for both R and Python). They have several different ways of build trees (Step 2.ii). While we discuss only a variant of the available algorithms in this chapter, understanding of the general idea of XGB can still be gained.
+
+::: {.column-margin}
+See [here](https://xgboost.readthedocs.io/en/stable/treemethod.html) for various tree building algorithms.
+:::
+
+## Tree updating in XGB (general case)
+
+Let $f_{i,b}(x_i)$ be the prediction for the $i$th observation at the $b$-th iteration. Further, let $I_j$ denote a set of observations that belong to leaf $j$ ($j = 1, \dots, J$) of the tree that is built at Step 2.ii. Then, at Step 2.iii, $f_{i,b-1}(x_i)$ is updated to $f_{i,b}(x_i)$ according to the following:
 
 $$
-\Psi_t = \sum_{i=1}^N [L(y_i, f_{i,b}(x_i) + w_t(x_i))] + \Omega(w_t)
+\begin{aligned}
+f_{i,b}(x_i) = f_{i,b-1}(x_i) + \eta w_j(x_i)
+\end{aligned}
+$$
+
+Ideally, it would be great to find $w_j(x_i)$ is such that it minimizes the following objective:
+
+$$
+\Psi = \sum_{i=1}^N [L(y_i, f_{i,b}(x_i) + w_j(x_i))] + \Omega(w_j)
 $$ {#eq-obj}
 
-where $L()$ is the user-specified loss-function that is differentiable and $\Omega(w_t)$ is the regularization term. Instead of @eq-obj, XGB uses the second order Taylor expansion of $L()$ about $w$^[This helps for some of the commonly used loss functions]. 
+where $L()$ is the user-specified loss-function that is differentiable and $\Omega(w_j)$ is the regularization term. Instead of @eq-obj, XGB uses the second order Taylor expansion of $L()$ about $w$^[This helps for some of the commonly used loss functions]. 
 
 $$
-\tilde{\Psi}_t = \sum_{i=1}^N [L(y_i, f_{i,b}(x_i)) + g_i w_t(x_i) + \frac{1}{2}h_i w_t(x_i)^2] + \Omega(w_t)
+\tilde{\Psi} = \sum_{i=1}^N [L(y_i, f_{i,b}(x_i)) + g_i w_j(x_i) + \frac{1}{2}h_i w_j(x_i)^2] + \Omega(w_j)
 $$ {#eq-obj-taylor}
 
 where $g_i = \frac{\partial L(y_i, p_i)}{\partial p_i}$ (first-order derivative) and $h_i = \frac{\partial^2 L(y_i, p_i)}{\partial p_i^2}$ (second-order derivative). Since $L(y_i, f_{i,b}(x_i))$ is just a constant, we can safely remove it from the objective function, which leads to
 
 $$
-\tilde{\Psi}_t = \sum_{i=1}^N [g_i w_t(x_i) + \frac{1}{2}h_i w_t(x_i)^2] + \Omega(w_t)
+\tilde{\Psi}_t = \sum_{i=1}^N [g_i w_j(x_i) + \frac{1}{2}h_i w_j(x_i)^2] + \Omega(w_j)
 $$ {#eq-obj-taylor-final}
+
+Suppose the L2 norm is used and $\Omega(w_j) = \frac{1}{2}\lambda\sum_{j=1}^J w_j^2$.
 
 Let $I_j$ denote a set of observations that belong to leaf $j$ ($j = 1, \dots, J$). Then, @eq-obj-taylor-final is written as follows:
 
@@ -59,10 +89,10 @@ We could find the best tree structure by finding $w_j^*(q)$ according to @eq-obj
 
 However, it is impossible to consider all possible tree structures practically. So, a greedy (myopic) approach that starts from a single leaf and iteratively splits leaves is used instead. 
 
-Consider splitting an existing leaf $s$ (where in the tree it may be located) into two leaves $L$ and $R$ when there are $J$ existing leaves. Then, we find $w_j^*$ and calculate $\tilde{\Psi}_t(q)^*$ for each leaf, and the resulting minimized objective is
+Consider splitting an existing leaf $p$ (where in the tree it may be located) into two leaves $L$ and $R$ according to splitting rule $s$ when there are $J$ existing leaves. Then, the resulting minimized objective is
 
 $$
--\frac{1}{2} \huge[\normalsize Q_L + Q_R + \Gamma \huge]\normalsize + \gamma(J+1)
+-\frac{1}{2} \huge[\normalsize Q_L(s) + Q_R(s) + \Gamma \huge]\normalsize + \gamma(J+1)
 $$
 
 where $\Gamma$ is the sum of quality scores for all the leaves except $L$ and $R$. 
@@ -76,31 +106,30 @@ $$
 The minimized objective before splitting is
 
 $$
--\frac{1}{2} \huge[\normalsize Q_s + \Gamma \huge]\normalsize + \gamma J
+-\frac{1}{2} \huge[\normalsize Q_p + \Gamma \huge]\normalsize + \gamma J
 $$
 
 So, the <span style="color:blue">reduction </span> in loss after the split is
 
 $$
-G(s, L, R) = \frac{1}{2} \huge[\normalsize Q_L + Q_R - Q_s \huge]\normalsize - \gamma
+G(s,p) = \frac{1}{2} \huge[\normalsize Q_L(s) + Q_R(s) - Q_p \huge]\normalsize - \gamma
 $$
 
-Let's call $G(s, L, R)$ simply a gain (of the split).
+Let's call $G(s, p)$ simply a gain of split parent node $p$ using splitting rule $s$.
 
 ::: {.column-margin}
 A more positive value of gain ($G(s, L, R)$) means a more successful split.
-
 :::
 
-We can try many different patterns of $I_L$ and $I_R$ (how to split tree $s$), calculate the gain for each of them and pick the split that has the highest gain.
+We calculate the gain for all the possible splits of $p$ and pick the split that has the highest gain.
 
 ::: {.column-margin}
 Different patterns of $I_L$ and $I_R$ arise from different variable-cutpoint combinations 
 :::
 
-If the highest gain is negative, then the leaf under consideration for splitting is not split. 
+If the highest gain is negative, then leaf $p$ is not split. 
 
-Once the best tree is chosen (the tree that has the highest gain among the ones investigated), then we update our prediction based on $w^*$ of the tree. For observation $i$ that belongs to leaf $j$ of the tree,
+Once the best tree is built, then we update our prediction based on $w^*$ of the terminal nodes of the tree. For observation $i$ that belongs to leaf $j$ of the tree,
 
 $$
 \begin{aligned}
@@ -121,30 +150,68 @@ First, let's find $g_i$ and $h_i$ for $L(y_i, p_i) = \frac{1}{2}(y_i - p_i)^2$.
 $$
 \begin{aligned} 
 g_i = \frac{\partial L(y_i, p_i)}{\partial p_i}  = -(y_i - p_i)\\
+\end{aligned}
+$$ {#eq-g}
+
+$$
+\begin{aligned}
 h_i = \frac{\partial^2 L(y_i, p_i)}{\partial p_i^2} = 1 \\
 \end{aligned}
-$$
+$$ {#eq-h}
 
 So, $g_i$ is simply the negative of the residual for $i$. 
 
+
 Now, suppose you are at iteration $b$ and the predicted value for $i$ is denoted as $f_{i,b}(x_i)$. Further, let $r_{i,b}$ denote the residual ($y_i - f_{i,b}(x_i)$). 
 
-Plugging these into @eq-foc-leaf,
+Given this, here is how a tree is built at iteration $b$. 
+
+:::{.callout-note}
+**Steps 2.ii and 2.iii** of the XGB algorithm:
+
+1. For a given splitting rule ($s$) among all the possible splits (denoted as leaves $L$ and $R$) of parent node $p$, calculate the quality score ($Q$) and then gain ($G$):
+
+$$
+Q_j(s) = \frac{(\sum_{i\in I_j(s)}r_{i,b})^2}{N_j + \lambda}, \;\; j = \{L, R\}
+$$ 
+
+$$
+\begin{aligned}
+G(s) = \frac{1}{2}[Q_L(s) + Q_R(s) - Q_p] - \gamma
+\end{aligned}
+$$
+
+where $Q_p$ is the quality score of the parent node.
+
+2. Find the splitting rule that produces the highest gain. If the highest gain is positive, then split the parent node according to the associated splitting rule, otherwise do not split the parent node. 
+
+3. Repeat 1 and 2 until no further splits are possible.
+
+4. For each observation, calculate $w^*$. For all the observations that belong to leaf $j$, $w^*$ can be obtained as follows (plugging @eq-h and @eq-g into @eq-foc-leaf)
 
 $$
 \begin{aligned}
 w_j^* & = \frac{\sum_{i\in I_j}r_{i,b}}{\sum_{i\in I_j}1 + \lambda} \\
       & = \frac{\sum_{i\in I_j}r_{i,b}}{N_j + \lambda}
 \end{aligned}
-$$ {#eq-w-reg}
+$$ 
 
+::: {.column-margin}
 That is, for a given leaf $j$, the optimal predicted value ($w_j^*$) is the sum of the residuals of all the observations in leaf $j$ divided by the number of observations in leaf $j$ plus $\lambda$. When $\lambda = 0$, the optimal predicted value ($w_j^*$) is simply the mean of the residuals.
+:::
 
-The quality score for leaf $j$ is then, 
+5. Update the prediction for each observation according to 
 
 $$
-Q_j = \frac{(\sum_{i\in I_j}r_{i,b})^2}{N_j + \lambda}
-$$ {#eq-q-reg}
+\begin{aligned}
+f_{i,b} = f_{i,b-1} + \eta \cdot w_j^*
+\end{aligned}
+$$ 
+:::
+
+
+
+
 
 
 ## Illustration of XGB for regression
@@ -441,8 +508,8 @@ DiagrammeR::grViz(
 
 $$
 \begin{aligned}
-q_L^* & = (-9)^2 / (2 + `r lambda`) = `r round(measures_2$q_L, digits = 2)` \\
-q_R^* & = (1 + 2 + 6)^2 / (2 + `r lambda`) = `r round(measures_2$q_R, digits = 2)`
+q_L^* & = (-9 + 1)^2 / (2 + `r lambda`) = `r round(measures_2$q_L, digits = 2)` \\
+q_R^* & = (2 + 6)^2 / (2 + `r lambda`) = `r round(measures_2$q_R, digits = 2)`
 \end{aligned}
 $$
 
@@ -493,8 +560,8 @@ DiagrammeR::grViz(
 
 $$
 \begin{aligned}
-q_L^* & = (-9)^2 / (1 + `r lambda`) = `r round(measures_3$q_L, digits = 2)` \\
-q_R^* & = (1 + 2 + 6)^2 / (3 + `r lambda`) = `r round(measures_3$q_R, digits = 2)`
+q_L^* & = (-9+1+2)^2 / (3 + `r lambda`) = `r round(measures_3$q_L, digits = 2)` \\
+q_R^* & = (6)^2 / (1 + `r lambda`) = `r round(measures_3$q_R, digits = 2)`
 \end{aligned}
 $$
 

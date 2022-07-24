@@ -29,14 +29,21 @@ quarto::quarto_render(here::here("LectureNotes/B05-bootstrap.qmd")) # === bootst
 #/*=================================================*/
 #' # Prediction (forest-based)
 #/*=================================================*/
-# === Tree-based ===#
+# === RF ===#
 quarto::quarto_render(here::here("LectureNotes/P01-random-forest.qmd"))
+
+#=== GB ===#
 quarto::quarto_render(here::here("LectureNotes/P02-boosted-regression-forest.qmd"))
+
+#=== XGB ===#
 quarto::quarto_render(here::here("LectureNotes/P03-xgb.qmd"))
 
 #/*=================================================*/
 #' # Causal ML
 #/*=================================================*/
+#=== why not this? ===#
+quarto::quarto_render(here::here("LectureNotes/C00-why-not-this.qmd"))
+
 # === double-ml ===#
 quarto::quarto_render(here::here("LectureNotes/C01-dml.qmd"))
 

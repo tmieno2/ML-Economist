@@ -1,4 +1,4 @@
-# Boosted Regression Forest
+# Boosted Regression Forest {#sec-brf}
 
 
 ## Gradient Boosting
@@ -45,6 +45,10 @@ In training RF that uses the idea of bagging, the original data is used to gener
 
 While there are many variants of boosting methods (see Chapter 10 of @hastie2009elements), we will look at gradient boosting using trees for regression in particular (Algorithm 10.3 in @hastie2009elements presents the generic gradient tree boosting algorithm), where squared error is used as the loss function.  
 
+
+:::{.callout-note}
+<span style="color:blue"> Algorithm: Gradient Boosting Regression Forest </span>
+
 1. Set $f_0(X_i)  = \frac{\sum_{i=1}^N y_i}{N}$ for all $i = 1, \dots, N$
 2. For b = 1 to B,
   i. For $i = 1, \dots, N$, calculate
@@ -54,6 +58,8 @@ While there are many variants of boosting methods (see Chapter 10 of @hastie2009
   ii. Fit a regression tree to $r_{i, b}$, which generates terminal regions $R_{j,b}$, $j = 1, \dots, J$, and denote the predicted value of region $R_{j,b}$ as $\gamma_{j,b}$.
   iii. Set $f_b(X_i) = f_{b-1}(X_i) + \lambda \cdot \sum_{j=1}^J\gamma_{j, b}\cdot I(X_i \in R_{j,b})$
 3. Finally, $\hat{f}(X_i) = f_B(X_i)$
+
+:::
 
 Let's try to go through this algorithm a bit to have it sink in for you.
 

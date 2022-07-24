@@ -371,17 +371,19 @@ div.csl-indent {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#problem-setting" id="toc-problem-setting" class="nav-link active" data-scroll-target="#problem-setting"> <span class="header-section-number">9.1</span> Problem Setting</a></li>
-  <li><a href="#sec-dml-naive" id="toc-sec-dml-naive" class="nav-link" data-scroll-target="#sec-dml-naive"> <span class="header-section-number">9.2</span> A naive approach and regularization bias</a>
+  <li><a href="#dml-the-basic-idea" id="toc-dml-the-basic-idea" class="nav-link active" data-scroll-target="#dml-the-basic-idea"> <span class="header-section-number">9.1</span> DML: the basic idea</a>
   <ul class="collapse">
-  <li><a href="#step-1" id="toc-step-1" class="nav-link" data-scroll-target="#step-1"> <span class="header-section-number">9.2.1</span> Step 1</a></li>
-  <li><a href="#step-2" id="toc-step-2" class="nav-link" data-scroll-target="#step-2"> <span class="header-section-number">9.2.2</span> Step 2</a></li>
+  <li><a href="#problem-setting" id="toc-problem-setting" class="nav-link" data-scroll-target="#problem-setting"> <span class="header-section-number">9.1.1</span> Problem Setting</a></li>
+  <li><a href="#sec-dml-naive" id="toc-sec-dml-naive" class="nav-link" data-scroll-target="#sec-dml-naive"> <span class="header-section-number">9.1.2</span> A naive approach</a></li>
+  <li><a href="#overcoming-the-regularization-bias" id="toc-overcoming-the-regularization-bias" class="nav-link" data-scroll-target="#overcoming-the-regularization-bias"> <span class="header-section-number">9.1.3</span> Overcoming the regularization bias</a></li>
+  <li><a href="#sec-cf" id="toc-sec-cf" class="nav-link" data-scroll-target="#sec-cf"> <span class="header-section-number">9.1.4</span> Overcoming the over-fitting bias</a></li>
   </ul></li>
-  <li><a href="#overcoming-the-regularization-bias" id="toc-overcoming-the-regularization-bias" class="nav-link" data-scroll-target="#overcoming-the-regularization-bias"> <span class="header-section-number">9.3</span> Overcoming the regularization bias</a></li>
-  <li><a href="#sec-cf" id="toc-sec-cf" class="nav-link" data-scroll-target="#sec-cf"> <span class="header-section-number">9.4</span> Overcoming the over-fitting bias</a></li>
-  <li><a href="#implementation" id="toc-implementation" class="nav-link" data-scroll-target="#implementation"> <span class="header-section-number">9.5</span> Implementation</a></li>
-  <li><a href="#what-if-the-unconfoundedness-assumption-does-not-hold" id="toc-what-if-the-unconfoundedness-assumption-does-not-hold" class="nav-link" data-scroll-target="#what-if-the-unconfoundedness-assumption-does-not-hold"> <span class="header-section-number">9.6</span> What if the unconfoundedness assumption does not hold?</a></li>
-  <li><a href="#suggested-exercises" id="toc-suggested-exercises" class="nav-link" data-scroll-target="#suggested-exercises"> <span class="header-section-number">9.7</span> Suggested Exercises</a></li>
+  <li><a href="#models-and-implementation-by-doubleml" id="toc-models-and-implementation-by-doubleml" class="nav-link" data-scroll-target="#models-and-implementation-by-doubleml"> <span class="header-section-number">9.2</span> Models and implementation by <code>DoubleML</code></a>
+  <ul class="collapse">
+  <li><a href="#a-note-on-method-of-moment-and-score-function" id="toc-a-note-on-method-of-moment-and-score-function" class="nav-link" data-scroll-target="#a-note-on-method-of-moment-and-score-function"> <span class="header-section-number">9.2.1</span> A note on method of moment and score function</a></li>
+  <li><a href="#partially-linear-model" id="toc-partially-linear-model" class="nav-link" data-scroll-target="#partially-linear-model"> <span class="header-section-number">9.2.2</span> Partially linear model</a></li>
+  </ul></li>
+  <li><a href="#suggested-exercises" id="toc-suggested-exercises" class="nav-link" data-scroll-target="#suggested-exercises"> <span class="header-section-number">9.3</span> Suggested Exercises</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/C01-dml.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
@@ -405,21 +407,55 @@ div.csl-indent {
 
 </header>
 
-<p>One of the most important ideas of the recent development of causal machine learning (CML) methods originate from <span class="citation" data-cites="Chernozhukov2018">Chernozhukov et al. (<a href="#ref-Chernozhukov2018" role="doc-biblioref">2018</a>)</span>, which proposed Double/Debiased ML methods. In this section, we go over those key ideas that are the heart of many other important CML methods we will learn later.</p>
-<section id="problem-setting" class="level2 page-columns page-full" data-number="9.1">
-<h2 data-number="9.1" class="anchored" data-anchor-id="problem-setting"><span class="header-section-number">9.1</span> Problem Setting</h2>
-<p>We are interested in estimating the following econometric model</p>
+<p>One of the most important ideas of the recent development of causal machine learning (CML) methods originate from <span class="citation" data-cites="Chernozhukov2018">Chernozhukov et al. (<a href="#ref-Chernozhukov2018" role="doc-biblioref">2018</a>)</span>, which proposed Double/Debiased ML methods. In this section, we go over those key ideas that are at the heart of many other important CML methods we will learn later. We then learn various models you can estimate using the R and Python <code>DoubleML</code> package <span class="citation" data-cites="DoubleML2021R DoubleML2022Python">(<a href="#ref-DoubleML2021R" role="doc-biblioref">P. Bach et al. 2021</a>; <a href="#ref-DoubleML2022Python" role="doc-biblioref">Philipp Bach et al. 2022</a>)</span>.</p>
+<section id="dml-the-basic-idea" class="level2 page-columns page-full" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="dml-the-basic-idea"><span class="header-section-number">9.1</span> DML: the basic idea</h2>
+<section id="problem-setting" class="level3 page-columns page-full" data-number="9.1.1">
+<h3 data-number="9.1.1" class="anchored" data-anchor-id="problem-setting"><span class="header-section-number">9.1.1</span> Problem Setting</h3>
+<p>Throughout this section, we are interested in estimating the following econometric model , which is called a partially line regression model (PLR).</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
-<p>We follow the notations of <span class="citation" data-cites="Chernozhukov2018">Chernozhukov et al. (<a href="#ref-Chernozhukov2018" role="doc-biblioref">2018</a>)</span>.</p>
+<p>We try to follow the notations of <span class="citation" data-cites="Chernozhukov2018">Chernozhukov et al. (<a href="#ref-Chernozhukov2018" role="doc-biblioref">2018</a>)</span> as much as possible.</p>
 </div></div><p><span class="math display">\[
 \begin{aligned}
 y = \theta d + g_0(X) + \mu \\
 d = m_0(X) + \eta
 \end{aligned}
 \]</span></p>
-<p>Your sole interest is in estimating <span class="math inline">\(\theta\)</span>: the impact of the treatment (<span class="math inline">\(d\)</span>). <span class="math inline">\(g_0(X)\)</span> is the impact of a collection of variables <span class="math inline">\(X\)</span>. <span class="math inline">\(m_0(X)\)</span> expresses how <span class="math inline">\(X\)</span> affects the treatment status, <span class="math inline">\(d\)</span>. <span class="math inline">\(d\)</span> may be binary or continuous. The key assumptions here are <span class="math inline">\(E[\mu|X]\)</span> and <span class="math inline">\(E[\eta|X]\)</span>……. That is…</p>
-<p>Note that the treatment effect is assumed to be constant irrespective of the value of <span class="math inline">\(X\)</span>. So, the treatment effect is not heterogeneous. We will cover heterogeneous treatment effect estimation later.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>Partially linear regression model is a class of models where some of the variables are linear in parameter (here, <span class="math inline">\(\theta d\)</span>) and the rest of the variables are modeled non-parametrically (here, <span class="math inline">\(g_0(X)\)</span>).</p>
+</div></div><p>Your sole interest is in estimating <span class="math inline">\(\theta\)</span>: the impact of the treatment (<span class="math inline">\(d\)</span>). <span class="math inline">\(g_0(X)\)</span> is the impact of a collection of variables <span class="math inline">\(X\)</span>. <span class="math inline">\(m_0(X)\)</span> expresses how <span class="math inline">\(X\)</span> affects the treatment status, <span class="math inline">\(d\)</span>. <span class="math inline">\(d\)</span> may be binary or continuous. $</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Assumptions on the error terms</strong></p>
+<ul>
+<li><span class="math inline">\(E[\mu|D,X] = 0\)</span></li>
+<li><span class="math inline">\(E[\eta|X] = 0\)</span></li>
+</ul>
+</div>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The treatment effect is assumed to be constant irrespective of the value of <span class="math inline">\(X\)</span>. So, the treatment effect is not heterogeneous. We will cover heterogeneous treatment effect estimation later.</p>
+</div>
+</div>
 <div class="callout-tip callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -434,8 +470,8 @@ Tip
 </div>
 </div>
 </section>
-<section id="sec-dml-naive" class="level2 page-columns page-full" data-number="9.2">
-<h2 data-number="9.2" class="anchored" data-anchor-id="sec-dml-naive"><span class="header-section-number">9.2</span> A naive approach and regularization bias</h2>
+<section id="sec-dml-naive" class="level3 page-columns page-full" data-number="9.1.2">
+<h3 data-number="9.1.2" class="anchored" data-anchor-id="sec-dml-naive"><span class="header-section-number">9.1.2</span> A naive approach</h3>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p><strong>Packages to load for replication</strong></p>
@@ -453,7 +489,32 @@ Tip
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ranger)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div></div><p>One way to estimate <span class="math inline">\(\theta\)</span> follows the following steps:</p>
+</div></div><p>Consider the estimating equation of interest below.</p>
+<p><span id="eq-model-naive"><span class="math display">\[
+\begin{aligned}
+y = \theta d + g_0(X) + \mu
+\end{aligned}
+\tag{9.1}\]</span></span></p>
+<p>Subtracting <span class="math inline">\(g_0(x)\)</span> from both sides,</p>
+<p><span class="math display">\[
+\begin{aligned}
+y - g_0(x) = \theta d + \mu
+\end{aligned}
+\]</span></p>
+<p>So, if we know <span class="math inline">\(g_0(X)\)</span>, then we can simply regress <span class="math inline">\(y - g_0(x)\)</span> on <span class="math inline">\(d\)</span>. Of course, we do not know <span class="math inline">\(g_0(X)\)</span>, so we need to estimate <span class="math inline">\(g_0(x)\)</span>. Let <span class="math inline">\(\hat{g}_0(x)\)</span> denote <span class="math inline">\(g_0(x)\)</span> estimated by any appropriate machine learning method. Then, we can regress <span class="math inline">\(y - \hat{g}_0(x)\)</span> on <span class="math inline">\(d\)</span> to estimate <span class="math inline">\(\theta\)</span> using OLS. Mathematically, it can be written as follows:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\hat{\theta} = (\frac{1}{n}\sum_{i=1}^N d_i d_i)^{-1}\frac{1}{n}\sum_{i=1}^N d_i (y_i - \hat{g}_0(X_i))
+\end{aligned}
+\]</span></p>
+<p>Now, subtracting <span class="math inline">\(\hat{g}_0(x)\)</span> from both sides of <a href="#eq-model-naive">Equation&nbsp;<span>9.1</span></a>,</p>
+<p><span class="math display">\[
+\begin{aligned}
+y - \hat{g}_0(x) = \theta d + (g_0(x) - \hat{g}_0(x) + \mu)
+\end{aligned}
+\]</span></p>
+<p>So, as long as <span class="math inline">\(d\)</span> is not correlated with <span class="math inline">\(g_0(x) - \hat{g}_0(x) + \mu\)</span>, then the regression of <span class="math inline">\(y - \hat{g}_0(x)\)</span> on <span class="math inline">\(d\)</span> should work. Unfortunately, this approach turns out to be naive and suffer from bias in general <span class="citation" data-cites="Chernozhukov2018">(<a href="#ref-Chernozhukov2018" role="doc-biblioref">Chernozhukov et al. 2018</a>)</span>.</p>
+<p>As a way to implement this naive approach, consider the following procedures.</p>
 <ul>
 <li>Step 1: Estimate <span class="math inline">\(g_0(X)\)</span> and then subtract the fitted value of <span class="math inline">\(g_0(X)\)</span> from <span class="math inline">\(y\)</span>.
 <ul>
@@ -463,32 +524,31 @@ Tip
 \begin{aligned}
 \hat{\theta}_{init} = (\frac{1}{n}\sum_{i=1}^N \tilde{d}_i \tilde{d}_i)^{-1}\frac{1}{n}\sum_{i=1}^N \tilde{d}_i (y_i - \hat{l}_0(X_i))
 \end{aligned}
-\tag{9.1}\]</span></span></li>
+\tag{9.2}\]</span></span></li>
 <li>Step 1.4: Regress <span class="math inline">\(y_i - \hat{\theta}_{init}d\)</span> on <span class="math inline">\(X\)</span> to estimate <span class="math inline">\(g_0(X)\)</span> and call it <span class="math inline">\(\hat{g}_0(X)\)</span>.</li>
 </ul></li>
-<li>Step 2: Regress <span class="math inline">\(y - \hat{g}_0(X)\)</span> on <span class="math inline">\(d\)</span>. Or equivalently, use the following formula <span id="eq-theta-partial"><span class="math display">\[
+<li>Step 2: Regress <span class="math inline">\(y - \hat{g}_0(X)\)</span> on <span class="math inline">\(d\)</span> using OLS. Or equivalently, use the following formula <span id="eq-theta-partial"><span class="math display">\[
 \begin{aligned}
   \hat{\theta} = (\frac{1}{n}\sum_{i=1}^N d_i d_i)^{-1}\frac{1}{n}\sum_{i=1}^N d_i (y_i - \hat{g}_0(X_i))
 \end{aligned}
-\tag{9.2}\]</span></span></li>
+\tag{9.3}\]</span></span></li>
 </ul>
-<p>As it will turn out, this procedure suffers from the so-called regularization and over-fitting bias <span class="citation" data-cites="Chernozhukov2018">(<a href="#ref-Chernozhukov2018" role="doc-biblioref">Chernozhukov et al. 2018</a>)</span>.</p>
 <p>To demonstrate the bias problem, we work on the following data generating process used in <a href="https://docs.doubleml.org/stable/guide/basics.html">the user guide for the DoubleML package</a>.</p>
 <p><span class="math display">\[
 \begin{aligned}
-y_i = 0.5 d_i + x_{i,1} + \frac{1}{4}\cdot\frac{exp(x_{i,3})}{1 + exp(x_{i,3})} + \mu_i \\
-d_i = \frac{exp(x_{i,1})}{1 + exp(x_{i,1})} + \frac{1}{4}\cdot x_{i,3}+ \eta_i
+y_i = 0.5 d_i  + \frac{exp(x_{i,1})}{1 + exp(x_{i,1})} + \frac{1}{4}\cdot x_{i,3} + \mu_i \\
+d_i = x_{i,1} + \frac{1}{4}\cdot\frac{exp(x_{i,3})}{1 + exp(x_{i,3})} \eta_i
 \end{aligned}
 \]</span></p>
-<p>where <span class="math inline">\(\mu_i \sim N(0, 1)\)</span> and <span class="math inline">\(\eta_i \sim N(0, 1)\)</span> (So, no endogeneity problem). In this data generating process, <span class="math inline">\(d\)</span> is not binary and its effect on <span class="math inline">\(y\)</span> is assumed to be linear.</p>
+<p>where <span class="math inline">\(\mu_i \sim N(0, 1)\)</span> and <span class="math inline">\(\eta_i \sim N(0, 1)\)</span>. The error terms (<span class="math inline">\(\mu_i\)</span> and <span class="math inline">\(\eta_i\)</span>) are independent. In this data generating process, <span class="math inline">\(d\)</span> is continuous (not binary) and its effect on <span class="math inline">\(y\)</span> is assumed to be linear.</p>
 <p>We use the <code>gen_data()</code> function (defined on the right), which is a slightly generalized version of the <code>make_plr_CCDDHNR2018()</code> function from the <code>DoubleML</code> package.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p><code>gen_data()</code> allows you to specify <span class="math inline">\(g_0(X)\)</span> and <span class="math inline">\(m_0(X)\)</span> unlike <code>make_plr_CCDDHNR2018()</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>gen_data <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">m_formula =</span> <span class="fu">formula</span>(<span class="sc">~</span> <span class="fu">I</span>(<span class="fu">exp</span>(x1)<span class="sc">/</span>(<span class="dv">1</span><span class="sc">+</span><span class="fu">exp</span>(x1))) <span class="sc">+</span> <span class="fu">I</span>(x3<span class="sc">/</span><span class="dv">4</span>)), <span class="co"># formula that defines m(x)</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">g_formula =</span> <span class="fu">formula</span>(<span class="sc">~</span> x1 <span class="sc">+</span> <span class="fu">I</span>(<span class="fu">exp</span>(x3)<span class="sc">/</span>(<span class="dv">1</span><span class="sc">+</span><span class="fu">exp</span>(x3))<span class="sc">/</span><span class="dv">4</span>)), <span class="co"># formula that defines g(x)</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">g_formula =</span> <span class="fu">formula</span>(<span class="sc">~</span> <span class="fu">I</span>(<span class="fu">exp</span>(x1)<span class="sc">/</span>(<span class="dv">1</span><span class="sc">+</span><span class="fu">exp</span>(x1))) <span class="sc">+</span> <span class="fu">I</span>(x3<span class="sc">/</span><span class="dv">4</span>)), <span class="co"># formula that defines m(x)</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">m_formula =</span> <span class="fu">formula</span>(<span class="sc">~</span> x1 <span class="sc">+</span> <span class="fu">I</span>(<span class="fu">exp</span>(x3)<span class="sc">/</span>(<span class="dv">1</span><span class="sc">+</span><span class="fu">exp</span>(x3))<span class="sc">/</span><span class="dv">4</span>)), <span class="co"># formula that defines g(x)</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">te_formula =</span> <span class="fu">formula</span>(<span class="sc">~</span> <span class="fu">I</span>(<span class="fl">0.5</span><span class="sc">*</span>d)), <span class="co"># formula that defines theta(x) * t</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_obs =</span> <span class="dv">500</span>, </span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_vars =</span> <span class="dv">20</span>, </span>
@@ -532,7 +592,7 @@ d_i = \frac{exp(x_{i,1})}{1 + exp(x_{i,1})} + \frac{1}{4}\cdot x_{i,3}+ \eta_i
 <span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div></div><div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2893434</span>)</span>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">782394</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>training_data <span class="ot">&lt;-</span> <span class="fu">gen_data</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -541,35 +601,35 @@ d_i = \frac{exp(x_{i,1})}{1 + exp(x_{i,1})} + \frac{1}{4}\cdot x_{i,3}+ \eta_i
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(training_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Classes 'data.table' and 'data.frame':  500 obs. of  24 variables:
- $ x1 : num  0.867 0.435 -0.454 0.282 0.361 ...
- $ x2 : num  0.338 1.197 0.461 0.977 0.111 ...
- $ x3 : num  0.302 1.872 -0.202 1.189 0.584 ...
- $ x4 : num  0.7643 0.93275 -0.08757 0.44677 0.00945 ...
- $ x5 : num  0.641 1.793 0.294 0.257 0.54 ...
- $ x6 : num  0.403 1.028 1.272 -0.104 -0.327 ...
- $ x7 : num  0.335 2.096 0.631 0.428 -1.161 ...
- $ x8 : num  -0.732 3.224 0.81 1.915 -1.882 ...
- $ x9 : num  -1.172 2.838 0.186 2.378 -1.156 ...
- $ x10: num  -1.216 3.058 -1.299 1.938 -0.075 ...
- $ x11: num  -0.8736 1.2757 -1.2655 2.0184 -0.0257 ...
- $ x12: num  0.841 -0.294 -0.537 1.463 -0.547 ...
- $ x13: num  0.805 -0.335 -0.834 1.875 -0.82 ...
- $ x14: num  0.336 0.851 -0.903 1.648 -1.375 ...
- $ x15: num  -0.175 -1.104 -0.196 1.174 -1.435 ...
- $ x16: num  -1.3271 -0.6673 -0.1669 0.0313 -0.8977 ...
- $ x17: num  -0.518 -0.49 -0.755 0.226 0.248 ...
- $ x18: num  0.335 -0.592 -0.433 0.486 -0.446 ...
- $ x19: num  0.839 -1.647 -1.352 -0.152 -0.446 ...
- $ x20: num  -0.0674 -2.1706 -2.148 -0.8532 -0.5553 ...
- $ d  : num  1.011 0.321 0.452 2.083 1.26 ...
- $ g  : num  1.01 0.652 -0.341 0.474 0.522 ...
- $ te : num  0.506 0.16 0.226 1.042 0.63 ...
- $ y  : num  3.331 -0.185 -1.008 3.386 1.815 ...
+ $ x1 : num  -0.364 1.115 0.733 1.882 0.479 ...
+ $ x2 : num  -0.5296 0.1056 -0.0411 1.0817 0.6851 ...
+ $ x3 : num  -0.6156 1.0599 0.0799 0.4634 0.1374 ...
+ $ x4 : num  -0.352 0.987 0.805 1.24 1.404 ...
+ $ x5 : num  -0.723 0.547 1.85 0.574 0.501 ...
+ $ x6 : num  -1.366 1.275 2.695 0.526 1.395 ...
+ $ x7 : num  -0.9908 0.7295 1.1006 0.0523 0.3603 ...
+ $ x8 : num  -0.3203 0.4991 0.7414 -0.0727 -0.4202 ...
+ $ x9 : num  0.313 0.347 0.796 -1.268 -0.128 ...
+ $ x10: num  0.2812 -0.6702 0.9771 0.0751 0.2713 ...
+ $ x11: num  0.0656 -0.6435 1.5061 -0.8429 1.4138 ...
+ $ x12: num  -0.383 0.825 2.299 -0.642 0.859 ...
+ $ x13: num  0.7852 -0.0489 0.3969 0.1613 0.299 ...
+ $ x14: num  -0.869 -0.27 0.264 0.787 -0.44 ...
+ $ x15: num  -0.92172 0.00569 0.04343 0.7545 0.20734 ...
+ $ x16: num  -2.062 -0.898 0.655 0.995 1.561 ...
+ $ x17: num  -2.325 0.187 -0.114 0.89 0.947 ...
+ $ x18: num  -1.1131 -0.3046 -0.0297 0.1187 0.2166 ...
+ $ x19: num  -0.83 -0.7797 -0.2592 0.9764 -0.0221 ...
+ $ x20: num  -0.577 -1.162 1.126 0.693 1.119 ...
+ $ d  : num  -0.683 0.622 -1.909 -0.517 0.816 ...
+ $ g  : num  0.256 1.018 0.695 0.984 0.652 ...
+ $ te : num  -0.342 0.311 -0.955 -0.259 0.408 ...
+ $ y  : num  -0.0511 0.4342 0.7377 1.5015 1.5488 ...
  - attr(*, ".internal.selfref")=&lt;externalptr&gt; </code></pre>
 </div>
 </div>
-<section id="step-1" class="level3 page-columns page-full" data-number="9.2.1">
-<h3 data-number="9.2.1" class="anchored" data-anchor-id="step-1"><span class="header-section-number">9.2.1</span> Step 1</h3>
+<section id="step-1" class="level4 page-columns page-full" data-number="9.1.2.1">
+<h4 data-number="9.1.2.1" class="anchored" data-anchor-id="step-1"><span class="header-section-number">9.1.2.1</span> Step 1</h4>
 <p>Let’s now work on Step 1. We estimate <span class="math inline">\(g_0(X)\)</span> using random forest (RF). As described above, this is a four-step process.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
@@ -631,7 +691,7 @@ d_i = \frac{exp(x_{i,1})}{1 + exp(x_{i,1})} + \frac{1}{4}\cdot x_{i,3}+ \eta_i
 <p><img src="C01-dml_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-</div></div><p><strong>Step 1.3</strong>: Get an initial estimate of <span class="math inline">\(\theta\)</span> using <a href="#eq-partial-out">Equation&nbsp;<span>9.1</span></a>.</p>
+</div></div><p><strong>Step 1.3</strong>: Get an initial estimate of <span class="math inline">\(\theta\)</span> using <a href="#eq-partial-out">Equation&nbsp;<span>9.2</span></a>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1.2</span></span>
@@ -683,20 +743,20 @@ d_i = \frac{exp(x_{i,1})}{1 + exp(x_{i,1})} + \frac{1}{4}\cdot x_{i,3}+ \eta_i
 </div>
 </div>
 </section>
-<section id="step-2" class="level3 page-columns page-full" data-number="9.2.2">
-<h3 data-number="9.2.2" class="anchored" data-anchor-id="step-2"><span class="header-section-number">9.2.2</span> Step 2</h3>
-<p>Finally, we regress <span class="math inline">\(y - \hat{g}_0(X)\)</span> on <span class="math inline">\(d\)</span> (or equivalently using <a href="#eq-theta-partial">Equation&nbsp;<span>9.2</span></a>).</p>
+<section id="step-2" class="level4" data-number="9.1.2.2">
+<h4 data-number="9.1.2.2" class="anchored" data-anchor-id="step-2"><span class="header-section-number">9.1.2.2</span> Step 2</h4>
+<p>Finally, we regress <span class="math inline">\(y - \hat{g}_0(X)\)</span> on <span class="math inline">\(d\)</span> (or equivalently using <a href="#eq-theta-partial">Equation&nbsp;<span>9.3</span></a>).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>theta_hat <span class="ot">&lt;-</span> <span class="fu">lm</span>(y_less_g <span class="sc">~</span> d, <span class="at">data =</span> training_data)<span class="sc">$</span>coefficient[<span class="st">"d"</span>]</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        d 
-0.5454263 </code></pre>
+0.5372165 </code></pre>
 </div>
 </div>
 <p>So, in this instance, we get an estimate of <span class="math inline">\(\theta\)</span> that is a bit lower than the true value of <span class="math inline">\(\theta\)</span>. Let’s repeat this process many times to see how this procedure performs on average.</p>
-<div class="cell">
+<div class="cell" data-hash="C01-dml_cache/html/fig-naive_129ccc14135cfc04346125fa35e06c36">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>fit_m0 <span class="ot">&lt;-</span> <span class="cf">function</span>(training_data, <span class="at">mtry =</span> <span class="dv">10</span>) {</span>
@@ -828,7 +888,7 @@ d_i = \frac{exp(x_{i,1})}{1 + exp(x_{i,1})} + \frac{1}{4}\cdot x_{i,3}+ \eta_i
 <span id="cb14-127"><a href="#cb14-127" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the results</span></span>
 <span id="cb14-128"><a href="#cb14-128" aria-hidden="true" tabindex="-1"></a><span class="co">#===================================</span></span>
 <span id="cb14-129"><a href="#cb14-129" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(theta_hats_apr1) <span class="sc">+</span></span>
-<span id="cb14-130"><a href="#cb14-130" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x =</span> theta), <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb14-130"><a href="#cb14-130" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x =</span> theta), <span class="at">color =</span> <span class="st">"grey"</span>, <span class="at">fill =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
 <span id="cb14-131"><a href="#cb14-131" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
 <span id="cb14-132"><a href="#cb14-132" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="fu">aes</span>(<span class="at">xintercept =</span> <span class="fl">0.5</span>,<span class="at">color =</span> <span class="st">"True Value"</span>)) <span class="sc">+</span></span>
 <span id="cb14-133"><a href="#cb14-133" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="fu">aes</span>(<span class="at">xintercept =</span> theta_hats_apr1[, <span class="fu">mean</span>(theta)], <span class="at">color =</span> <span class="st">"Mean of the Estimates"</span>)) <span class="sc">+</span></span>
@@ -848,7 +908,7 @@ d_i = \frac{exp(x_{i,1})}{1 + exp(x_{i,1})} + \frac{1}{4}\cdot x_{i,3}+ \eta_i
 </div>
 </div>
 </div>
-<p><a href="#fig-naive">Figure&nbsp;<span>9.2</span></a> shows the histogram of <span class="math inline">\(\hat{\theta}\)</span> from 500 simulations. You can see that this procedure has led to consistent underestimation of the treatment effect. There are two sources of bias in this approach: regularization and over-fitting bias.</p>
+<p><a href="#fig-naive">Figure&nbsp;<span>9.2</span></a> shows the histogram of <span class="math inline">\(\hat{\theta}\)</span> from 500 simulations. You can see that this procedure has led to consistent underestimation of the treatment effect (mean value of <span class="math inline">\(\hat{\theta}\)</span> is 0.468). There are two sources of bias in this approach: regularization and over-fitting bias.</p>
 <div class="callout-note callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -866,17 +926,23 @@ Note
 </div>
 </div>
 <p>Regularization bias is termed so because bias in estimating <span class="math inline">\(g_0(X)\)</span> can occur when some form of regularization is implemented (e.g., lasso). However, its name is slightly misleading because <span class="math inline">\(g_0(X)\)</span> cannot be estimated without bias even without any regularization in general. This is because the estimation of initial <span class="math inline">\(\theta\)</span> (in Step 1.3) is biased, which comes from the fact that <span class="math inline">\(m_0(X)\)</span> is correlated with <span class="math inline">\(g_0(X)\)</span> through <span class="math inline">\(X\)</span>.</p>
+<!-- ::: {.column-margin}
+Another (unofficial) implementation of $g_0(X)$ estimation is to just use $\hat{l}_0(X_i)$ as $\hat{g}_0(X_i)$ ([a blog post](https://www.r-bloggers.com/2017/06/cross-fitting-double-machine-learning-estimator/)) and then use the following formula.
 
-<div class="no-row-height column-margin column-container"><div class="">
-<p>Another (unofficial) implementation of <span class="math inline">\(g_0(X)\)</span> estimation is to just use <span class="math inline">\(\hat{l}_0(X_i)\)</span> as <span class="math inline">\(\hat{g}_0(X_i)\)</span> (<a href="https://www.r-bloggers.com/2017/06/cross-fitting-double-machine-learning-estimator/">a blog post</a>) and then use the following formula.</p>
-<p><span class="math display">\[
+
+
+$$
 \begin{aligned}
   \hat{\theta} = (\frac{1}{n}\sum_{i=1}^N d_i d_i)^{-1}\frac{1}{n}\sum_{i=1}^N d_i (y_i - \hat{l}_0(X_i))
 \end{aligned}
-\]</span></p>
-<p><span class="math inline">\(\hat{\theta}\)</span> is biased because <span class="math inline">\(\hat{l}_0(X_i)\)</span> is a biased estimator of <span class="math inline">\(\hat{g}_0(X_i)\)</span> when <span class="math inline">\(m_0(X)\)</span> and <span class="math inline">\(g_0(X)\)</span> are correlated. The point here is that, <span class="math inline">\(g_0(X)\)</span> is hard to estimate without bias irrespective of whether any regularization happens or not.</p>
-</div></div><p>However, if the treatment is independent, then, <span class="math inline">\(g_0(X)\)</span> can be estimated well and this approach works well except it still suffers from over-fitting bias. <a href="#fig-apr1-indep">Figure&nbsp;<span>9.3</span></a> shows that the distribution of <span class="math inline">\(\hat{\theta}\)</span> when <span class="math inline">\(m_0(X)\)</span> is independent of <span class="math inline">\(g_0(X)\)</span> and the RF with the same hyper-parameters are used. While regularization can lead to bias in the estimation of <span class="math inline">\(g_0(X)\)</span>, regularization is not the only source of bias.</p>
-<div class="cell">
+$$
+
+
+
+$\hat{\theta}$ is biased because $\hat{l}_0(X_i)$ is a biased estimator of $\hat{g}_0(X_i)$ when $m_0(X)$ and $g_0(X)$ are correlated. The point here is that, $g_0(X)$ is hard to estimate without bias irrespective of whether any regularization happens or not.
+::: -->
+<p>However, if the treatment is independent, then, <span class="math inline">\(g_0(X)\)</span> can be estimated well and this approach works well except it still suffers from over-fitting bias. <a href="#fig-apr1-indep">Figure&nbsp;<span>9.3</span></a> shows that the distribution of <span class="math inline">\(\hat{\theta}\)</span> when <span class="math inline">\(m_0(X)\)</span> is independent of <span class="math inline">\(g_0(X)\)</span> and the RF with the same hyper-parameters are used. While regularization can lead to bias in the estimation of <span class="math inline">\(g_0(X)\)</span>, regularization is not the only source of bias.</p>
+<div class="cell" data-hash="C01-dml_cache/html/fig-apr1-indep_f6d5d2558242afbb1e198a0aadba7a46">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>run_sim_naive <span class="ot">&lt;-</span> <span class="cf">function</span>(i){</span>
@@ -916,7 +982,7 @@ Note
 <span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the results</span></span>
 <span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a><span class="co">#===================================</span></span>
 <span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(theta_hats_apr1_indep) <span class="sc">+</span></span>
-<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x =</span> theta), <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x =</span> theta), <span class="at">color =</span> <span class="st">"grey"</span>, <span class="at">fill =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
 <span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
 <span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="fu">aes</span>(<span class="at">xintercept =</span> <span class="fl">0.5</span>,<span class="at">color =</span> <span class="st">"True Value"</span>)) <span class="sc">+</span></span>
 <span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="fu">aes</span>(<span class="at">xintercept =</span> theta_hats_apr1_indep[, <span class="fu">mean</span>(theta)], <span class="at">color =</span> <span class="st">"Mean of the Estimates"</span>)) <span class="sc">+</span></span>
@@ -938,8 +1004,8 @@ Note
 </div>
 </section>
 </section>
-<section id="overcoming-the-regularization-bias" class="level2 page-columns page-full" data-number="9.3">
-<h2 data-number="9.3" class="anchored" data-anchor-id="overcoming-the-regularization-bias"><span class="header-section-number">9.3</span> Overcoming the regularization bias</h2>
+<section id="overcoming-the-regularization-bias" class="level3 page-columns page-full" data-number="9.1.3">
+<h3 data-number="9.1.3" class="anchored" data-anchor-id="overcoming-the-regularization-bias"><span class="header-section-number">9.1.3</span> Overcoming the regularization bias</h3>
 <p>Regularization bias can be overcome by double-debiasing (orthogonalizing both <span class="math inline">\(d\)</span> and <span class="math inline">\(y\)</span>). Specifically,</p>
 <ul>
 <li>Step 1: Estimate <span class="math inline">\(g_0(X)\)</span> and then subtract the fitted value of <span class="math inline">\(g_0(X)\)</span> from <span class="math inline">\(y\)</span></li>
@@ -969,11 +1035,11 @@ Note
 <span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>theta_hat <span class="ot">&lt;-</span> training_data[, <span class="fu">sum</span>(d_less_m <span class="sc">*</span> y_less_g) <span class="sc">/</span> <span class="fu">sum</span>(d_less_m <span class="sc">*</span> d)]</span>
 <span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.5168418</code></pre>
+<pre><code>[1] 0.5325107</code></pre>
 </div>
 </div>
 <p>Now, let’s repeat this 500 times.</p>
-<div class="cell">
+<div class="cell" data-hash="C01-dml_cache/html/fig-dd_2945fcf559fd312ad8ebcee214a75904">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>run_sim_dereg <span class="ot">&lt;-</span> <span class="cf">function</span>(i)</span>
@@ -1009,7 +1075,7 @@ Note
 <span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>(<span class="at">theta =</span> .)</span>
 <span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(theta_hats_apr2) <span class="sc">+</span></span>
-<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x =</span> theta), <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x =</span> theta), <span class="at">color =</span> <span class="st">"grey"</span>, <span class="at">fill =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
 <span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
 <span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="fu">aes</span>(<span class="at">xintercept =</span> <span class="fl">0.5</span>,<span class="at">color =</span> <span class="st">"True Value"</span>)) <span class="sc">+</span></span>
 <span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="fu">aes</span>(<span class="at">xintercept =</span> theta_hats_apr2[, <span class="fu">mean</span>(theta)], <span class="at">color =</span> <span class="st">"Mean of the Estimates"</span>)) <span class="sc">+</span></span>
@@ -1029,10 +1095,10 @@ Note
 </div>
 </div>
 </div>
-<p><a href="#fig-dd">Figure&nbsp;<span>9.4</span></a> shows the distribution of <span class="math inline">\(\hat{\theta}\)</span>, which is centered about <span class="math inline">\(0.49\)</span>. The current approach still suffers from the so-called over-fitting bias<span class="citation" data-cites="Chernozhukov2018">(<a href="#ref-Chernozhukov2018" role="doc-biblioref">Chernozhukov et al. 2018</a>)</span>. Let’s look at how we can overcome this bias next.</p>
+<p><a href="#fig-dd">Figure&nbsp;<span>9.4</span></a> shows the distribution of <span class="math inline">\(\hat{\theta}\)</span>, which is centered about <span class="math inline">\(0.478\)</span>. The current approach still suffers from the so-called over-fitting bias<span class="citation" data-cites="Chernozhukov2018">(<a href="#ref-Chernozhukov2018" role="doc-biblioref">Chernozhukov et al. 2018</a>)</span>. Let’s look at how we can overcome this bias next.</p>
 </section>
-<section id="sec-cf" class="level2 page-columns page-full" data-number="9.4">
-<h2 data-number="9.4" class="anchored" data-anchor-id="sec-cf"><span class="header-section-number">9.4</span> Overcoming the over-fitting bias</h2>
+<section id="sec-cf" class="level3 page-columns page-full" data-number="9.1.4">
+<h3 data-number="9.1.4" class="anchored" data-anchor-id="sec-cf"><span class="header-section-number">9.1.4</span> Overcoming the over-fitting bias</h3>
 <p>Over-fitting bias can be overcome by cross-fitting. First, the training data is split into <span class="math inline">\(K\)</span>-folds just like K-fold cross-validation. Let’s denote them as <span class="math inline">\(I_1, \dots, I_k\)</span>. For example, for <span class="math inline">\(I_1\)</span>, the following steps are taken (<a href="#fig-cross-fitting">Figure&nbsp;<span>9.5</span></a> provides a visual illustration):</p>
 <ul>
 <li>Step 1: Estimate <span class="math inline">\(\hat{g}_0(x)\)</span> and <span class="math inline">\(\hat{m}_0(x)\)</span> using the data from the other folds (<span class="math inline">\(I_2, \dots, I_K\)</span>).</li>
@@ -1043,7 +1109,7 @@ Note
 \begin{aligned}
 \hat{\theta} = (\frac{1}{n}\sum_{i=1}^N \tilde{d}_i d_i)^{-1}\frac{1}{n}\sum_{i=1}^N \tilde{d}_i (y_i - \hat{g}_0(X_i))
 \end{aligned}
-\tag{9.3}\]</span></span></p>
+\tag{9.4}\]</span></span></p>
 <p>This process is repeated for all the <span class="math inline">\(K\)</span> folds, and then the the final estimate of <span class="math inline">\(\hat{\theta}\)</span> is obtained as the average of <span class="math inline">\(\hat{\theta}\)</span>s.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
@@ -1173,13 +1239,13 @@ Note
 <span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== orthogonalize d ===#</span></span>
 <span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  .[, d_tilde <span class="sc">:</span><span class="er">=</span> d <span class="sc">-</span> m_0_hat]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Then, <span class="math inline">\(\hat{\theta}\)</span> is obtained for this fold using <a href="#eq-iv-score">Equation&nbsp;<span>9.3</span></a>.</p>
+<p>Then, <span class="math inline">\(\hat{\theta}\)</span> is obtained for this fold using <a href="#eq-iv-score">Equation&nbsp;<span>9.4</span></a>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>theta_hat <span class="ot">&lt;-</span> data_orth[, <span class="fu">sum</span>(d_tilde <span class="sc">*</span> y_tilde) <span class="sc">/</span> <span class="fu">sum</span>(d_tilde <span class="sc">*</span> d)]</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.5480196</code></pre>
+<pre><code>[1] 0.5486855</code></pre>
 </div>
 </div>
 <p>We can repeat this for all the folds (<code>cross_fit()</code> which finds <span class="math inline">\(\hat{\theta}\)</span> for a particular fold is defined on the side).</p>
@@ -1241,7 +1307,7 @@ Note
 <span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>() <span class="co"># average them</span></span>
 <span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.5031857</code></pre>
+<pre><code>[1] 0.5247844</code></pre>
 </div>
 </div>
 <p>Okay, now that we understand the steps of this approach, let’s repeat this many times (<code>get_theta_cf()</code> that finds <span class="math inline">\(\hat{\theta}\)</span> by cross-fitting is defined on the side).</p>
@@ -1261,7 +1327,7 @@ Note
 <span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(theta_hat)</span>
 <span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div></div><div class="cell">
+</div></div><div class="cell" data-hash="C01-dml_cache/html/fig-cf-debiased_80e2bdd7dd7f0848047825d099f877ad">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>theta_hats_cf <span class="ot">&lt;-</span></span>
@@ -1280,7 +1346,7 @@ Note
 <span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a><span class="co">#=== visualize the results ===#</span></span>
 <span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x =</span> theta_hats_cf), <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x =</span> theta_hats_cf), <span class="at">color =</span> <span class="st">"grey"</span>, <span class="at">fill =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
 <span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
 <span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="fu">aes</span>(<span class="at">xintercept =</span> <span class="fl">0.5</span>,<span class="at">color =</span> <span class="st">"True Value"</span>)) <span class="sc">+</span></span>
 <span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="fu">aes</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(theta_hats_cf), <span class="at">color =</span> <span class="st">"Mean of the Estimates"</span>)) <span class="sc">+</span></span>
@@ -1300,7 +1366,7 @@ Note
 </div>
 </div>
 </div>
-<p><a href="#fig-cf-debiased">Figure&nbsp;<span>9.6</span></a> shows the distribution of <span class="math inline">\(\hat{\theta}\)</span> with double-debiasing and cross-fitting. It is slightly biased in this instance (mean is 0.513), but the average <span class="math inline">\(\hat{\theta}\)</span> is very close to the true parameter.</p>
+<p><a href="#fig-cf-debiased">Figure&nbsp;<span>9.6</span></a> shows the distribution of <span class="math inline">\(\hat{\theta}\)</span> with double-debiasing and cross-fitting. It is slightly biased in this instance (mean is 0.502), but the average <span class="math inline">\(\hat{\theta}\)</span> is very close to the true parameter.</p>
 <div class="callout-important callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1312,24 +1378,137 @@ Important
 </div>
 <div class="callout-body-container callout-body">
 <ul>
-<li><p>Double-debiasing (double orthogonalization) can help overcome the bias in <span class="math inline">\(\hat{\theta}\)</span> that comes from the bias in estimating <span class="math inline">\(g_0(X)\)</span>.</p></li>
-<li><p>Cross-fitting can help overcome the bias from estimating all of <span class="math inline">\(g_0(X)\)</span>, <span class="math inline">\(m_0(X)\)</span>, and <span class="math inline">\(\theta\)</span> using the same data.</p></li>
+<li><p>Double/debiased (double orthogonalization) can help overcome the bias in <span class="math inline">\(\hat{\theta}\)</span> that comes from the bias in estimating <span class="math inline">\(g_0(X)\)</span>.</p></li>
+<li><p>Cross-fitting can help overcome the bias from estimating <span class="math inline">\(g_0(X)\)</span>, <span class="math inline">\(m_0(X)\)</span>, and <span class="math inline">\(\theta\)</span> using the same data.</p></li>
 </ul>
 </div>
 </div>
 </section>
-<section id="implementation" class="level2" data-number="9.5">
-<h2 data-number="9.5" class="anchored" data-anchor-id="implementation"><span class="header-section-number">9.5</span> Implementation</h2>
 </section>
-<section id="what-if-the-unconfoundedness-assumption-does-not-hold" class="level2" data-number="9.6">
-<h2 data-number="9.6" class="anchored" data-anchor-id="what-if-the-unconfoundedness-assumption-does-not-hold"><span class="header-section-number">9.6</span> What if the unconfoundedness assumption does not hold?</h2>
+<section id="models-and-implementation-by-doubleml" class="level2 page-columns page-full" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="models-and-implementation-by-doubleml"><span class="header-section-number">9.2</span> Models and implementation by <code>DoubleML</code></h2>
+<p>In R, <code>DoubleML</code> is built on top of <code>mlr3</code>, which uses <code>R6</code> classes provided by the <code>R6</code> package. Since <code>R6</code> implements encapsulated object-oriented programming like Python, <code>DoubleML</code> in R and Python work in a very similar manner. Here, we will use R for demonstrations.</p>
+<section id="a-note-on-method-of-moment-and-score-function" class="level3 page-columns page-full" data-number="9.2.1">
+<h3 data-number="9.2.1" class="anchored" data-anchor-id="a-note-on-method-of-moment-and-score-function"><span class="header-section-number">9.2.1</span> A note on method of moment and score function</h3>
+<p>DML approaches implemented by <code>DoubleML</code> are method of moment estimators. Method of moment starts from a moment condition that are derived from the assumptions and then solve their empirical version with respect to the parameters of interest to obtain estimates. It is best to look at examples.</p>
+<p>For example, OLS can be considered as an method of moment estimator. Consider the following model,</p>
+<p><span class="math display">\[
+\begin{aligned}
+y = \beta_0 + \beta_1 x + \mu
+\end{aligned}
+\]</span></p>
+<p>where <span class="math inline">\(X\)</span> is a collection of variables. The moment conditions for OLS are</p>
+<p><span class="math display">\[
+\begin{aligned}
+E[(y - \beta_0 - \beta_1 x)\times 1] = 0 \\
+E[(y - \beta_0 - \beta_1 x)\times x] = 0
+\end{aligned}
+\]</span></p>
+<p>What motivated the moment conditions are the assumptions of <span class="math inline">\(E[\mu\times 1] = 0\)</span> and <span class="math inline">\(E[\mu\times x] = 0\)</span> (mean conditional independence). Functions inside expectation (<span class="math inline">\(E[]\)</span>) in moment conditions are called <span style="color:red"> score functions</span>. So, here, <span class="math inline">\(y - \beta_0 - \beta_1 x\)</span> and <span class="math inline">\((y - \beta_0 - \beta_1 x)\times x\)</span> are the score functions.</p>
+<p>The empirical version of the moment conditions replaces the expected value of the score function with the sample mean of the score functions.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>Sample mean of the statistics of interest is a good estimator of the expected value of the statistics of interest.</p>
+</div></div><p><span class="math display">\[
+\begin{aligned}
+\frac{\sum_{i=1}^N (y_i - \beta_0 - \beta_1 x_i)}{N} = 0 \\
+\frac{\sum_{i=1}^N (y_i - \beta_0 - \beta_1 x_i) x_i}{N} = 0
+\end{aligned}
+\]</span></p>
+<p>You can remove <span class="math inline">\(N\)</span> by multiplying both sides by <span class="math inline">\(N\)</span> and get</p>
+<p><span class="math display">\[
+\begin{aligned}
+\sum_{i=1}^N (y_i - \beta_0 - \beta_1 x_i) = 0 \\
+\sum_{i=1}^N (y_i - \beta_0 - \beta_1 x_i) x_i = 0
+\end{aligned}
+\]</span></p>
+<p>Yes, these are actually the first order conditions of minimizing sum of the squared residuals. By solving theses equations, you can obtain OLS estimates.</p>
+<p>For brevity, we will use matrix notation hereafter. For example, let <span class="math inline">\(X\)</span> denote a matrix of the intercept and <span class="math inline">\(x\)</span> values with each row representing a single observation. Then, the empirical moment conditions can be written as follows:</p>
+<p><span class="math display">\[
+\begin{aligned}
+(y - X\beta)X'= 0
+\end{aligned}
+\]</span></p>
+<p>where <span class="math inline">\(\beta = \{\beta_0, \beta_1\}\)</span> is a 2 by 1 matrix. Solving this with respect to <span class="math inline">\(\beta\)</span>,</p>
+<p><span class="math display">\[
+\begin{aligned}
+\hat{\beta}_{OLS} = (X'X)^{-1}X'y
+\end{aligned}
+\]</span></p>
+<p>Now consider instrumental variable estimation with instruments <span class="math inline">\(\textbf{z} = \{z_1, z_2, \dots, z_K\}\)</span> (both included and excluded instruments). Under the assumption of <span class="math inline">\(E[\mu\cdot z_k]=0\)</span> <span class="math inline">\(^{\forall} k = 1, \dots, K\)</span>, which is derived from zero conditional mean assumption of <span class="math inline">\(E[\mu|Z] = 0\)</span>. Then the moment conditions are</p>
+<p><span class="math display">\[
+\begin{aligned}
+E[(y-X\beta)z_1] &amp; = 0 \\
+E[(y-X\beta)z_2] &amp; = 0 \\
+\vdots &amp; \\
+E[(y-X\beta)z_K] &amp; = 0 \\
+\end{aligned}
+\]</span></p>
+<p>The empirical moment conditions in matrix form are</p>
+<p><span class="math display">\[
+\begin{aligned}
+(y-X\beta)Z' = 0
+\end{aligned}
+\]</span></p>
+<p>Solving the equation with respect to <span class="math inline">\(\beta\)</span>,</p>
+<p><span class="math display">\[
+\begin{aligned}
+\hat{\beta}_{IV} = (Z'X)^{-1}Z'Y = 0
+\end{aligned}
+\]</span></p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>You will also see (localized) moment conditions and score functions in GRF (<a href="E02-grf.html"><span>Chapter&nbsp;12</span></a>).</p>
+</div>
+</div>
 </section>
-<section id="suggested-exercises" class="level2" data-number="9.7">
-<h2 data-number="9.7" class="anchored" data-anchor-id="suggested-exercises"><span class="header-section-number">9.7</span> Suggested Exercises</h2>
+<section id="partially-linear-model" class="level3" data-number="9.2.2">
+<h3 data-number="9.2.2" class="anchored" data-anchor-id="partially-linear-model"><span class="header-section-number">9.2.2</span> Partially linear model</h3>
+<p><span class="math display">\[
+\begin{aligned}
+y = \theta d + g_0(X) + \mu \\
+d = m_0(X) + \eta
+\end{aligned}
+\]</span></p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Assumptions on the error terms</strong></p>
+<ul>
+<li><span class="math inline">\(E[\mu|D,X] = 0\)</span></li>
+<li><span class="math inline">\(E[\eta|X] = 0\)</span></li>
+</ul>
+</div>
+</div>
+</section>
+</section>
+<section id="suggested-exercises" class="level2" data-number="9.3">
+<h2 data-number="9.3" class="anchored" data-anchor-id="suggested-exercises"><span class="header-section-number">9.3</span> Suggested Exercises</h2>
 </section>
 <section id="references" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
 <div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-DoubleML2021R" class="csl-entry" role="doc-biblioentry">
+Bach, P., V. Chernozhukov, M. S. Kurz, and M. Spindler. 2021. <span>“<span>DoubleML</span> – <span>A</span>n Object-Oriented Implementation of Double Machine Learning in <span>R</span>.”</span> <a href="https://arxiv.org/abs/2103.09603">https://arxiv.org/abs/2103.09603</a>.
+</div>
+<div id="ref-DoubleML2022Python" class="csl-entry" role="doc-biblioentry">
+Bach, Philipp, Victor Chernozhukov, Malte S. Kurz, and Martin Spindler. 2022. <span>“<span>DoubleML</span> – <span>A</span>n Object-Oriented Implementation of Double Machine Learning in <span>P</span>ython.”</span> <em>Journal of Machine Learning Research</em> 23 (53): 1–6. <a href="http://jmlr.org/papers/v23/21-0862.html">http://jmlr.org/papers/v23/21-0862.html</a>.
+</div>
 <div id="ref-Chernozhukov2018" class="csl-entry" role="doc-biblioentry">
 Chernozhukov, Victor, Denis Chetverikov, Mert Demirer, Esther Duflo, Christian Hansen, Whitney Newey, and James Robins. 2018. <span>“<span class="nocase">Double/debiased machine learning for treatment and structural parameters</span>.”</span> <em>The Econometrics Journal</em> 21 (1): C1–68. <a href="https://doi.org/10.1111/ectj.12097">https://doi.org/10.1111/ectj.12097</a>.
 </div>

@@ -78,6 +78,25 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 
@@ -356,7 +375,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#tree-updating-in-xgb-general" id="toc-tree-updating-in-xgb-general" class="nav-link active" data-scroll-target="#tree-updating-in-xgb-general"> <span class="header-section-number">8.1</span> Tree updating in XGB (general)</a></li>
+  <li><a href="#tree-updating-in-xgb-general-case" id="toc-tree-updating-in-xgb-general-case" class="nav-link active" data-scroll-target="#tree-updating-in-xgb-general-case"> <span class="header-section-number">8.1</span> Tree updating in XGB (general case)</a></li>
   <li><a href="#tree-updating-in-xgb-regression" id="toc-tree-updating-in-xgb-regression" class="nav-link" data-scroll-target="#tree-updating-in-xgb-regression"> <span class="header-section-number">8.2</span> Tree updating in XGB (regression)</a></li>
   <li><a href="#illustration-of-xgb-for-regression" id="toc-illustration-of-xgb-for-regression" class="nav-link" data-scroll-target="#illustration-of-xgb-for-regression"> <span class="header-section-number">8.3</span> Illustration of XGB for regression</a></li>
   <li><a href="#implementation" id="toc-implementation" class="nav-link" data-scroll-target="#implementation"> <span class="header-section-number">8.4</span> Implementation</a></li>
@@ -383,21 +402,58 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
-<p>Extreme gradient boosting (XGB) is a variant of gradient boosting that has been extremely popular due to its superb performance. The basic concept is the same as the gradient boosting algorithm described above, however, it has its own way of building a tree, which is more mindful of avoiding over-fitting trees.</p>
-<section id="tree-updating-in-xgb-general" class="level2 page-columns page-full" data-number="8.1">
-<h2 data-number="8.1" class="anchored" data-anchor-id="tree-updating-in-xgb-general"><span class="header-section-number">8.1</span> Tree updating in XGB (general)</h2>
-<p>Let <span class="math inline">\(f_{i,b}(x_i)\)</span> be the prediction for the <span class="math inline">\(i\)</span>th observation at the <span class="math inline">\(b\)</span>-th iteration. Further, let <span class="math inline">\(w_t(x_i)\)</span> is the term that is added to <span class="math inline">\(f_{i,b}(x_i)\)</span> to obtain <span class="math inline">\(f_{i,b+1}(x_i)\)</span>. In XGB, <span class="math inline">\(w_t(x_i)\)</span> is such that it minimizes the following objective:</p>
+<p>Extreme gradient boosting (XGB) has been extremely popular due to its superb performance <span class="citation" data-cites="chen2016xgboost">(<a href="#ref-chen2016xgboost" role="doc-biblioref">Chen and Guestrin 2016</a>)</span>. It is a variant of gradient boosting and follows the same steps as gradient boosting covered in <span class="quarto-unresolved-ref">?sec-brf</span>. However, it has it has its own way of building a tree, which is more mindful of avoiding over-fitting trees.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>Set <span class="math inline">\(f_0(X_i) = \frac{\sum_{i=1}^N y_i}{N}\)</span> for all <span class="math inline">\(i = 1, \dots, N\)</span></li>
+<li>For b = 1 to B,</li>
+</ol>
+<ol type="i">
+<li>For <span class="math inline">\(i = 1, \dots, N\)</span>, calculate <span class="math display">\[
+    r_{i,b} =  (y_i - f_{b-1}(X_i))
+    \]</span></li>
+<li><span style="color:blue"> Build a tree XGB-way </span></li>
+<li>Update <span class="math inline">\(f_{b-1}(X_i)\)</span> to <span class="math inline">\(f_{b}(X_i)\)</span></li>
+</ol>
+<ol start="3" type="1">
+<li>Finally, <span class="math inline">\(\hat{f}(X_i) = f_B(X_i)\)</span></li>
+</ol>
+</div>
+</div>
+<p>XGB can be implemented by the <code>XGBoost</code> package (for both R and Python). They have several different ways of build trees (Step 2.ii). While we discuss only a variant of the available algorithms in this chapter, understanding of the general idea of XGB can still be gained.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>See <a href="https://xgboost.readthedocs.io/en/stable/treemethod.html">here</a> for various tree building algorithms.</p>
+</div></div><section id="tree-updating-in-xgb-general-case" class="level2 page-columns page-full" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="tree-updating-in-xgb-general-case"><span class="header-section-number">8.1</span> Tree updating in XGB (general case)</h2>
+<p>Let <span class="math inline">\(f_{i,b}(x_i)\)</span> be the prediction for the <span class="math inline">\(i\)</span>th observation at the <span class="math inline">\(b\)</span>-th iteration. Further, let <span class="math inline">\(I_j\)</span> denote a set of observations that belong to leaf <span class="math inline">\(j\)</span> (<span class="math inline">\(j = 1, \dots, J\)</span>) of the tree that is built at Step 2.ii. Then, at Step 2.iii, <span class="math inline">\(f_{i,b-1}(x_i)\)</span> is updated to <span class="math inline">\(f_{i,b}(x_i)\)</span> according to the following:</p>
+<p><span class="math display">\[
+\begin{aligned}
+f_{i,b}(x_i) = f_{i,b-1}(x_i) + \eta w_j(x_i)
+\end{aligned}
+\]</span></p>
+<p>Ideally, it would be great to find <span class="math inline">\(w_j(x_i)\)</span> is such that it minimizes the following objective:</p>
 <p><span id="eq-obj"><span class="math display">\[
-\Psi_t = \sum_{i=1}^N [L(y_i, f_{i,b}(x_i) + w_t(x_i))] + \Omega(w_t)
+\Psi = \sum_{i=1}^N [L(y_i, f_{i,b}(x_i) + w_j(x_i))] + \Omega(w_j)
 \tag{8.1}\]</span></span></p>
-<p>where <span class="math inline">\(L()\)</span> is the user-specified loss-function that is differentiable and <span class="math inline">\(\Omega(w_t)\)</span> is the regularization term. Instead of <a href="#eq-obj">Equation&nbsp;<span>8.1</span></a>, XGB uses the second order Taylor expansion of <span class="math inline">\(L()\)</span> about <span class="math inline">\(w\)</span><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
+<p>where <span class="math inline">\(L()\)</span> is the user-specified loss-function that is differentiable and <span class="math inline">\(\Omega(w_j)\)</span> is the regularization term. Instead of <a href="#eq-obj">Equation&nbsp;<span>8.1</span></a>, XGB uses the second order Taylor expansion of <span class="math inline">\(L()\)</span> about <span class="math inline">\(w\)</span><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
 <p><span id="eq-obj-taylor"><span class="math display">\[
-\tilde{\Psi}_t = \sum_{i=1}^N [L(y_i, f_{i,b}(x_i)) + g_i w_t(x_i) + \frac{1}{2}h_i w_t(x_i)^2] + \Omega(w_t)
+\tilde{\Psi} = \sum_{i=1}^N [L(y_i, f_{i,b}(x_i)) + g_i w_j(x_i) + \frac{1}{2}h_i w_j(x_i)^2] + \Omega(w_j)
 \tag{8.2}\]</span></span></p>
 <p>where <span class="math inline">\(g_i = \frac{\partial L(y_i, p_i)}{\partial p_i}\)</span> (first-order derivative) and <span class="math inline">\(h_i = \frac{\partial^2 L(y_i, p_i)}{\partial p_i^2}\)</span> (second-order derivative). Since <span class="math inline">\(L(y_i, f_{i,b}(x_i))\)</span> is just a constant, we can safely remove it from the objective function, which leads to</p>
 <p><span id="eq-obj-taylor-final"><span class="math display">\[
-\tilde{\Psi}_t = \sum_{i=1}^N [g_i w_t(x_i) + \frac{1}{2}h_i w_t(x_i)^2] + \Omega(w_t)
+\tilde{\Psi}_t = \sum_{i=1}^N [g_i w_j(x_i) + \frac{1}{2}h_i w_j(x_i)^2] + \Omega(w_j)
 \tag{8.3}\]</span></span></p>
+<p>Suppose the L2 norm is used and <span class="math inline">\(\Omega(w_j) = \frac{1}{2}\lambda\sum_{j=1}^J w_j^2\)</span>.</p>
 <p>Let <span class="math inline">\(I_j\)</span> denote a set of observations that belong to leaf <span class="math inline">\(j\)</span> (<span class="math inline">\(j = 1, \dots, J\)</span>). Then, <a href="#eq-obj-taylor-final">Equation&nbsp;<span>8.3</span></a> is written as follows:</p>
 <p><span id="eq-obj-taylor-tree"><span class="math display">\[
 \tilde{\Psi}_t = \sum_{j=1}^J\huge[\normalsize (\sum_{i\in I_j}g_i)w_j + \frac{1}{2}(\sum_{i\in I_j}h_i + \lambda)w_j^2 \huge]\normalsize + \gamma J
@@ -424,9 +480,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>For rotational convenience, we call <span class="math inline">\(\frac{(\sum_{i\in I_j}g_i)^2}{\sum_{i\in I_j}h_i + \lambda}\)</span> quality score and denote it by <span class="math inline">\(Q_j\)</span> (<span style="color:red"> Q</span>uality score for leaf <span class="math inline">\(j\)</span>).</p>
 <p>We could find the best tree structure by finding <span class="math inline">\(w_j^*(q)\)</span> according to <a href="#eq-obj-taylor-tree">Equation&nbsp;<span>8.4</span></a> and calculate <span class="math inline">\(\tilde{\Psi}_t(q)^*\)</span> according to <a href="#eq-minimized-obj">Equation&nbsp;<span>8.6</span></a> for each of all the possible tree structures, and then pick the tree structure q(x) that has the lowest <span class="math inline">\(\tilde{\Psi}_t(q)^*\)</span>.</p>
 <p>However, it is impossible to consider all possible tree structures practically. So, a greedy (myopic) approach that starts from a single leaf and iteratively splits leaves is used instead.</p>
-<p>Consider splitting an existing leaf <span class="math inline">\(s\)</span> (where in the tree it may be located) into two leaves <span class="math inline">\(L\)</span> and <span class="math inline">\(R\)</span> when there are <span class="math inline">\(J\)</span> existing leaves. Then, we find <span class="math inline">\(w_j^*\)</span> and calculate <span class="math inline">\(\tilde{\Psi}_t(q)^*\)</span> for each leaf, and the resulting minimized objective is</p>
+<p>Consider splitting an existing leaf <span class="math inline">\(p\)</span> (where in the tree it may be located) into two leaves <span class="math inline">\(L\)</span> and <span class="math inline">\(R\)</span> according to splitting rule <span class="math inline">\(s\)</span> when there are <span class="math inline">\(J\)</span> existing leaves. Then, the resulting minimized objective is</p>
 <p><span class="math display">\[
--\frac{1}{2} \huge[\normalsize Q_L + Q_R + \Gamma \huge]\normalsize + \gamma(J+1)
+-\frac{1}{2} \huge[\normalsize Q_L(s) + Q_R(s) + \Gamma \huge]\normalsize + \gamma(J+1)
 \]</span></p>
 <p>where <span class="math inline">\(\Gamma\)</span> is the sum of quality scores for all the leaves except <span class="math inline">\(L\)</span> and <span class="math inline">\(R\)</span>.</p>
 
@@ -436,22 +492,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 \]</span></p>
 </div></div><p>The minimized objective before splitting is</p>
 <p><span class="math display">\[
--\frac{1}{2} \huge[\normalsize Q_s + \Gamma \huge]\normalsize + \gamma J
+-\frac{1}{2} \huge[\normalsize Q_p + \Gamma \huge]\normalsize + \gamma J
 \]</span></p>
 <p>So, the <span style="color:blue">reduction </span> in loss after the split is</p>
 <p><span class="math display">\[
-G(s, L, R) = \frac{1}{2} \huge[\normalsize Q_L + Q_R - Q_s \huge]\normalsize - \gamma
+G(s,p) = \frac{1}{2} \huge[\normalsize Q_L(s) + Q_R(s) - Q_p \huge]\normalsize - \gamma
 \]</span></p>
-<p>Let’s call <span class="math inline">\(G(s, L, R)\)</span> simply a gain (of the split).</p>
+<p>Let’s call <span class="math inline">\(G(s, p)\)</span> simply a gain of split parent node <span class="math inline">\(p\)</span> using splitting rule <span class="math inline">\(s\)</span>.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p>A more positive value of gain (<span class="math inline">\(G(s, L, R)\)</span>) means a more successful split.</p>
-</div></div><p>We can try many different patterns of <span class="math inline">\(I_L\)</span> and <span class="math inline">\(I_R\)</span> (how to split tree <span class="math inline">\(s\)</span>), calculate the gain for each of them and pick the split that has the highest gain.</p>
+</div></div><p>We calculate the gain for all the possible splits of <span class="math inline">\(p\)</span> and pick the split that has the highest gain.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p>Different patterns of <span class="math inline">\(I_L\)</span> and <span class="math inline">\(I_R\)</span> arise from different variable-cutpoint combinations</p>
-</div></div><p>If the highest gain is negative, then the leaf under consideration for splitting is not split.</p>
-<p>Once the best tree is chosen (the tree that has the highest gain among the ones investigated), then we update our prediction based on <span class="math inline">\(w^*\)</span> of the tree. For observation <span class="math inline">\(i\)</span> that belongs to leaf <span class="math inline">\(j\)</span> of the tree,</p>
+</div></div><p>If the highest gain is negative, then leaf <span class="math inline">\(p\)</span> is not split.</p>
+<p>Once the best tree is built, then we update our prediction based on <span class="math inline">\(w^*\)</span> of the terminal nodes of the tree. For observation <span class="math inline">\(i\)</span> that belongs to leaf <span class="math inline">\(j\)</span> of the tree,</p>
 <p><span id="eq-update"><span class="math display">\[
 \begin{aligned}
 f_{i,b} = f_{i,b-1} + \eta \cdot w_j^*
@@ -459,32 +515,72 @@ f_{i,b} = f_{i,b-1} + \eta \cdot w_j^*
 \tag{8.7}\]</span></span></p>
 <p>where <span class="math inline">\(\eta\)</span> is the learning rate.</p>
 </section>
-<section id="tree-updating-in-xgb-regression" class="level2" data-number="8.2">
+<section id="tree-updating-in-xgb-regression" class="level2 page-columns page-full" data-number="8.2">
 <h2 data-number="8.2" class="anchored" data-anchor-id="tree-updating-in-xgb-regression"><span class="header-section-number">8.2</span> Tree updating in XGB (regression)</h2>
 <p>We now make the general tree updating algorithm specific to regression problems, where the loss function is squared error: <span class="math inline">\(L(y_i, p_i) = \frac{1}{2}(y_i - p_i)^2\)</span>, where <span class="math inline">\(p_i\)</span> is the predicted value for <span class="math inline">\(i\)</span>.</p>
 <!-- We first set the mean of $y$ as the predicted value for all the observations and denote it by $y_0$.  -->
 <p>First, let’s find <span class="math inline">\(g_i\)</span> and <span class="math inline">\(h_i\)</span> for <span class="math inline">\(L(y_i, p_i) = \frac{1}{2}(y_i - p_i)^2\)</span>.</p>
-<p><span class="math display">\[
+<p><span id="eq-g"><span class="math display">\[
 \begin{aligned}
 g_i = \frac{\partial L(y_i, p_i)}{\partial p_i}  = -(y_i - p_i)\\
+\end{aligned}
+\tag{8.8}\]</span></span></p>
+<p><span id="eq-h"><span class="math display">\[
+\begin{aligned}
 h_i = \frac{\partial^2 L(y_i, p_i)}{\partial p_i^2} = 1 \\
 \end{aligned}
-\]</span></p>
+\tag{8.9}\]</span></span></p>
 <p>So, <span class="math inline">\(g_i\)</span> is simply the negative of the residual for <span class="math inline">\(i\)</span>.</p>
 <p>Now, suppose you are at iteration <span class="math inline">\(b\)</span> and the predicted value for <span class="math inline">\(i\)</span> is denoted as <span class="math inline">\(f_{i,b}(x_i)\)</span>. Further, let <span class="math inline">\(r_{i,b}\)</span> denote the residual (<span class="math inline">\(y_i - f_{i,b}(x_i)\)</span>).</p>
-<p>Plugging these into <a href="#eq-foc-leaf">Equation&nbsp;<span>8.5</span></a>,</p>
-<p><span id="eq-w-reg"><span class="math display">\[
+<p>Given this, here is how a tree is built at iteration <span class="math inline">\(b\)</span>.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Steps 2.ii and 2.iii</strong> of the XGB algorithm:</p>
+<ol type="1">
+<li>For a given splitting rule (<span class="math inline">\(s\)</span>) among all the possible splits (denoted as leaves <span class="math inline">\(L\)</span> and <span class="math inline">\(R\)</span>) of parent node <span class="math inline">\(p\)</span>, calculate the quality score (<span class="math inline">\(Q\)</span>) and then gain (<span class="math inline">\(G\)</span>):</li>
+</ol>
+<p><span class="math display">\[
+Q_j(s) = \frac{(\sum_{i\in I_j(s)}r_{i,b})^2}{N_j + \lambda}, \;\; j = \{L, R\}
+\]</span></p>
+<p><span class="math display">\[
+\begin{aligned}
+G(s) = \frac{1}{2}[Q_L(s) + Q_R(s) - Q_p] - \gamma
+\end{aligned}
+\]</span></p>
+<p>where <span class="math inline">\(Q_p\)</span> is the quality score of the parent node.</p>
+<ol start="2" type="1">
+<li><p>Find the splitting rule that produces the highest gain. If the highest gain is positive, then split the parent node according to the associated splitting rule, otherwise do not split the parent node.</p></li>
+<li><p>Repeat 1 and 2 until no further splits are possible.</p></li>
+<li><p>For each observation, calculate <span class="math inline">\(w^*\)</span>. For all the observations that belong to leaf <span class="math inline">\(j\)</span>, <span class="math inline">\(w^*\)</span> can be obtained as follows (plugging <a href="#eq-h">Equation&nbsp;<span>8.9</span></a> and <a href="#eq-g">Equation&nbsp;<span>8.8</span></a> into <a href="#eq-foc-leaf">Equation&nbsp;<span>8.5</span></a>)</p></li>
+</ol>
+<p><span class="math display">\[
 \begin{aligned}
 w_j^* &amp; = \frac{\sum_{i\in I_j}r_{i,b}}{\sum_{i\in I_j}1 + \lambda} \\
       &amp; = \frac{\sum_{i\in I_j}r_{i,b}}{N_j + \lambda}
 \end{aligned}
-\tag{8.8}\]</span></span></p>
+\]</span></p>
+
+<ol start="5" type="1">
+<li>Update the prediction for each observation according to</li>
+</ol>
+<p><span class="math display">\[
+\begin{aligned}
+f_{i,b} = f_{i,b-1} + \eta \cdot w_j^*
+\end{aligned}
+\]</span></p>
+</div>
+</div>
+<div class="no-row-height column-margin column-container"><div class="callout-margin-content">
 <p>That is, for a given leaf <span class="math inline">\(j\)</span>, the optimal predicted value (<span class="math inline">\(w_j^*\)</span>) is the sum of the residuals of all the observations in leaf <span class="math inline">\(j\)</span> divided by the number of observations in leaf <span class="math inline">\(j\)</span> plus <span class="math inline">\(\lambda\)</span>. When <span class="math inline">\(\lambda = 0\)</span>, the optimal predicted value (<span class="math inline">\(w_j^*\)</span>) is simply the mean of the residuals.</p>
-<p>The quality score for leaf <span class="math inline">\(j\)</span> is then,</p>
-<p><span id="eq-q-reg"><span class="math display">\[
-Q_j = \frac{(\sum_{i\in I_j}r_{i,b})^2}{N_j + \lambda}
-\tag{8.9}\]</span></span></p>
-</section>
+</div></div></section>
 <section id="illustration-of-xgb-for-regression" class="level2 page-columns page-full" data-number="8.3">
 <h2 data-number="8.3" class="anchored" data-anchor-id="illustration-of-xgb-for-regression"><span class="header-section-number">8.3</span> Illustration of XGB for regression</h2>
 
@@ -603,8 +699,8 @@ Q_j = \frac{(\sum_{i\in I_j}r_{i,b})^2}{N_j + \lambda}
 <span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="htmlwidget-f6cdbbd2045c7ebcc625" style="width:100%;height:464px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-f6cdbbd2045c7ebcc625">{"x":{"diagram":"\ndigraph {\n  graph [ranksep = 0.2]\n  node [shape = box]\n    T1R [label = \"L: -9\"]\n    T1L [label = \"R: 1 , 2 , 6\"]\n    T0 [label = \"-9, 1 , 2 , 6\"]\n  edge [minlen = 2]\n    T0->T1L\n    T0->T1R\n  { rank = same; T1R; T1L}\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-8800553aa10b3ef0257a" style="width:100%;height:464px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-8800553aa10b3ef0257a">{"x":{"diagram":"\ndigraph {\n  graph [ranksep = 0.2]\n  node [shape = box]\n    T1R [label = \"L: -9\"]\n    T1L [label = \"R: 1 , 2 , 6\"]\n    T0 [label = \"-9, 1 , 2 , 6\"]\n  edge [minlen = 2]\n    T0->T1L\n    T0->T1R\n  { rank = same; T1R; T1L}\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </div></div><p>Let’s split the data.</p>
@@ -628,7 +724,7 @@ Q_j = \frac{(\sum_{i\in I_j}r_{i,b})^2}{N_j + \lambda}
 3: 12 8     6</code></pre>
 </div>
 </div>
-<p>Using <a href="#eq-w-reg">Equation&nbsp;<span>8.8</span></a>,</p>
+<p>Using <span class="quarto-unresolved-ref">?eq-w-reg</span>,</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p><span class="math inline">\(w_j^* = \frac{\sum_{i\in I_j}r_{i,b}}{N_j + \lambda}\)</span></p>
@@ -642,7 +738,7 @@ w_L^* &amp; = -9 / (1 + 1) = -4.5 \\
 w_R^* &amp; = 1 + 2 + 6 / (3 + 1) = 2.25
 \end{aligned}
 \]</span></p>
-<p>Using <a href="#eq-q-reg">Equation&nbsp;<span>8.9</span></a>, the quality scores for the leaves are</p>
+<p>Using <span class="quarto-unresolved-ref">?eq-q-reg</span>, the quality scores for the leaves are</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p><span class="math inline">\(Q_j = \frac{(\sum_{i\in I_j}r_{i,b})^2}{N_j + \lambda}\)</span></p>
@@ -675,8 +771,8 @@ w_R^* &amp; = 1 + 2 + 6 / (3 + 1) = 2.25
 <span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="htmlwidget-745b6c6bb09064672962" style="width:100%;height:464px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-745b6c6bb09064672962">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box]\n      T1R [label = \"L: -9 \n Q score = 40.5\"]\n      T1L [label = \"R: 1 , 2 , 6 \n Q score = 20.25\"]\n      T0 [label = \"-9, 1 , 2 , 6\"]\n    edge [minlen = 2]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-fec2cedf3ff90c5080d3" style="width:100%;height:464px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-fec2cedf3ff90c5080d3">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box]\n      T1R [label = \"L: -9 \n Q score = 40.5\"]\n      T1L [label = \"R: 1 , 2 , 6 \n Q score = 20.25\"]\n      T0 [label = \"-9, 1 , 2 , 6\"]\n    edge [minlen = 2]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </div></div><p><span class="math display">\[
@@ -768,14 +864,14 @@ G_1 = \frac{40.5 + 20.25 - 0}{2} - 10 = 20.375
 <span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="htmlwidget-b2e2bc1bf949cc97703f" style="width:100%;height:464px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-b2e2bc1bf949cc97703f">{"x":{"diagram":"\n    digraph {\n      graph [ranksep = 0.2]\n      node [shape = box]\n        T1R [label = \"L: -9, 1 \n Q score = 21.33\"]\n        T1L [label = \"R: 2 , 6 \n Q score = 21.33\"]\n        T0 [label = \"-9, 1 , 2 , 6\"]\n      edge [minlen = 2]\n        T0->T1L\n        T0->T1R\n      { rank = same; T1R; T1L}\n    }\n    ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-13df0d08e1a00e4fba3e" style="width:100%;height:464px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-13df0d08e1a00e4fba3e">{"x":{"diagram":"\n    digraph {\n      graph [ranksep = 0.2]\n      node [shape = box]\n        T1R [label = \"L: -9, 1 \n Q score = 21.33\"]\n        T1L [label = \"R: 2 , 6 \n Q score = 21.33\"]\n        T0 [label = \"-9, 1 , 2 , 6\"]\n      edge [minlen = 2]\n        T0->T1L\n        T0->T1R\n      { rank = same; T1R; T1L}\n    }\n    ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </div></div><p><span class="math display">\[
 \begin{aligned}
-q_L^* &amp; = (-9)^2 / (2 + 1) = 21.33 \\
-q_R^* &amp; = (1 + 2 + 6)^2 / (2 + 1) = 21.33
+q_L^* &amp; = (-9 + 1)^2 / (2 + 1) = 21.33 \\
+q_R^* &amp; = (2 + 6)^2 / (2 + 1) = 21.33
 \end{aligned}
 \]</span></p>
 <p><span class="math display">\[
@@ -824,14 +920,14 @@ G_2 = \frac{21.33 + 21.33 - 0}{2} - 10 = 11.3333333
 <span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="htmlwidget-284dbf87904530619a0b" style="width:100%;height:464px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-284dbf87904530619a0b">{"x":{"diagram":"\n    digraph {\n      graph [ranksep = 0.2]\n      node [shape = box]\n        T1R [label = \"L: -9, 1, 2 \n Q score = 9\"]\n        T1L [label = \"R: 6 \n Q score = 18\"]\n        T0 [label = \"-9, 1 , 2 , 6\"]\n      edge [minlen = 2]\n        T0->T1L\n        T0->T1R\n      { rank = same; T1R; T1L}\n    }\n    ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-2649d488aa45ce9744c1" style="width:100%;height:464px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-2649d488aa45ce9744c1">{"x":{"diagram":"\n    digraph {\n      graph [ranksep = 0.2]\n      node [shape = box]\n        T1R [label = \"L: -9, 1, 2 \n Q score = 9\"]\n        T1L [label = \"R: 6 \n Q score = 18\"]\n        T0 [label = \"-9, 1 , 2 , 6\"]\n      edge [minlen = 2]\n        T0->T1L\n        T0->T1R\n      { rank = same; T1R; T1L}\n    }\n    ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </div></div><p><span class="math display">\[
 \begin{aligned}
-q_L^* &amp; = (-9)^2 / (1 + 1) = 9 \\
-q_R^* &amp; = (1 + 2 + 6)^2 / (3 + 1) = 18
+q_L^* &amp; = (-9+1+2)^2 / (3 + 1) = 9 \\
+q_R^* &amp; = (6)^2 / (1 + 1) = 18
 \end{aligned}
 \]</span></p>
 <p><span class="math display">\[
@@ -900,8 +996,8 @@ Note
 <span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="htmlwidget-a94998cac72655d962c8" style="width:100%;height:325px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-a94998cac72655d962c8">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box, width = 0.3, height = 0.15, fontsize = 3, fixedsize = TRUE, penwidth = 0.2]\n      T1R [label = \"L: -9 \n w* = -4.5\"]\n      T1L [label = \"R: 1 , 2 , 6 \n w* = 2.25\"]\n      T0 [label = \"-9, 1 , 2 , 6\"]\n    edge [penwidth = 0.2, arrowsize = 0.3, len = 0.3]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-54e58644ab29d1b5f92c" style="width:100%;height:325px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-54e58644ab29d1b5f92c">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box, width = 0.3, height = 0.15, fontsize = 3, fixedsize = TRUE, penwidth = 0.2]\n      T1R [label = \"L: -9 \n w* = -4.5\"]\n      T1L [label = \"R: 1 , 2 , 6 \n w* = 2.25\"]\n      T0 [label = \"-9, 1 , 2 , 6\"]\n    edge [penwidth = 0.2, arrowsize = 0.3, len = 0.3]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>We now use <span class="math inline">\(w^*\)</span> from this tree to update our prediction according to <a href="#eq-update">Equation&nbsp;<span>8.7</span></a>.</p>
@@ -1029,8 +1125,8 @@ f_{i = 4,b = 1} = 6 + 0.3 \times 2.25 = 6.68
 <span id="cb45-23"><a href="#cb45-23" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb45-24"><a href="#cb45-24" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="htmlwidget-6dffb150e0c9b7decec4" style="width:100%;height:464px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-6dffb150e0c9b7decec4">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box, width = 0.4, height = 0.15, fontsize = 3, fixedsize = TRUE, penwidth = 0.2]\n      T1R [label = \"L: -8.18 \n w* = -3.83\"]\n      T1L [label = \"R: 0.71 , 1.71 , 5.71 \n w* = 1.74\"]\n      T0 [label = \"-8.18, 0.71 , 1.71 , 5.71\"]\n    edge [penwidth = 0.2, arrowsize = 0.3, len = 0.3]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-dfa86f815a1ea4228230" style="width:100%;height:464px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-dfa86f815a1ea4228230">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box, width = 0.4, height = 0.15, fontsize = 3, fixedsize = TRUE, penwidth = 0.2]\n      T1R [label = \"L: -8.18 \n w* = -3.83\"]\n      T1L [label = \"R: 0.71 , 1.71 , 5.71 \n w* = 1.74\"]\n      T0 [label = \"-8.18, 0.71 , 1.71 , 5.71\"]\n    edge [penwidth = 0.2, arrowsize = 0.3, len = 0.3]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>Let’s now update our predictions.</p>
@@ -1156,6 +1252,11 @@ Tip
 </ul>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-chen2016xgboost" class="csl-entry" role="doc-biblioentry">
+Chen, Tianqi, and Carlos Guestrin. 2016. <span>“Xgboost: A Scalable Tree Boosting System.”</span> In <em>Proceedings of the 22nd Acm Sigkdd International Conference on Knowledge Discovery and Data Mining</em>, 785–94.
+</div>
+</div>
 </section>
 <section class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr>

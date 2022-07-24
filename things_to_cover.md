@@ -24,6 +24,7 @@
 + [x] Tree
 + [x] Random forest
 + [x] Boosted Regression Forest 
++ [ ] XGBoost
 + Neural Networks (NA)
 + Deep Learning (NA)
 

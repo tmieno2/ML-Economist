@@ -1,13 +1,17 @@
 # Double Machine Learning {#sec-dml}
 
-One of the most important ideas of the recent development of causal machine learning (CML) methods originate from @Chernozhukov2018, which proposed Double/Debiased ML methods. In this section, we go over those key ideas that are the heart of many other important CML methods we will learn later. 
+One of the most important ideas of the recent development of causal machine learning (CML) methods originate from @Chernozhukov2018, which proposed Double/Debiased ML methods. In this section, we go over those key ideas that are at the heart of many other important CML methods we will learn later. We then learn various models you can estimate using the R and Python `DoubleML` package [@DoubleML2021R; @DoubleML2022Python].
 
-## Problem Setting
 
-We are interested in estimating the following econometric model
+## DML: the basic idea
+
+### Problem Setting
+
+Throughout this section, we are interested in estimating the following econometric model
+, which is called a partially line regression model (PLR).
 
 :::{.column-margin}
-We follow the notations of @Chernozhukov2018.
+We try to follow the notations of @Chernozhukov2018 as much as possible.
 :::
 
 $$
@@ -15,18 +19,32 @@ $$
 y = \theta d + g_0(X) + \mu \\
 d = m_0(X) + \eta
 \end{aligned}
-$$
+$$ 
 
-Your sole interest is in estimating $\theta$: the impact of the treatment ($d$). $g_0(X)$ is the impact of a collection of variables $X$. $m_0(X)$ expresses how $X$ affects the treatment status, $d$. $d$ may be binary or continuous. The key assumptions here are $E[\mu|X]$ and $E[\eta|X]$....... That is...
+::: {.column-margin}
+Partially linear regression model is a class of models where some of the variables are linear in parameter (here, $\theta d$) and the rest of the variables are modeled non-parametrically (here, $g_0(X)$).
+:::
 
-Note that the treatment effect is assumed to be constant irrespective of the value of $X$. So, the treatment effect is not heterogeneous. We will cover heterogeneous treatment effect estimation later.
+Your sole interest is in estimating $\theta$: the impact of the treatment ($d$). $g_0(X)$ is the impact of a collection of variables $X$. $m_0(X)$ expresses how $X$ affects the treatment status, $d$. $d$ may be binary or continuous. $
+
+:::{.callout-note}
+
+**Assumptions on the error terms**
+
++ $E[\mu|D,X] = 0$
++ $E[\eta|X] = 0$
+
+:::
+
+:::{.callout-note}
+The treatment effect is assumed to be constant irrespective of the value of $X$. So, the treatment effect is not heterogeneous. We will cover heterogeneous treatment effect estimation later.
+:::
 
 :::{.callout-tip}
 $g_0(X)$ and $m_0(X)$ are called nuisance functions because we are not interested in understanding them. We are only interested in **controlling for** them to estimate $\theta$ accurately. 
 :::
 
-
-## A naive approach and regularization bias {#sec-dml-naive}
+### A naive approach {#sec-dml-naive}
 
 ::: {.column-margin}
 **Packages to load for replication**
@@ -65,7 +83,42 @@ library(ranger)
 ```
 :::
 
-One way to estimate $\theta$ follows the following steps:
+
+Consider the estimating equation of interest below.
+
+$$
+\begin{aligned}
+y = \theta d + g_0(X) + \mu
+\end{aligned}
+$$ {#eq-model-naive}
+
+Subtracting $g_0(x)$ from both sides,
+
+$$
+\begin{aligned}
+y - g_0(x) = \theta d + \mu
+\end{aligned}
+$$
+
+So, if we know $g_0(X)$, then we can simply regress $y - g_0(x)$ on $d$. Of course, we do not know $g_0(X)$, so we need to estimate $g_0(x)$. Let $\hat{g}_0(x)$ denote $g_0(x)$ estimated by any appropriate machine learning method. Then, we can regress $y - \hat{g}_0(x)$ on $d$ to estimate $\theta$ using OLS. Mathematically, it can be written as follows:
+
+$$
+\begin{aligned}
+\hat{\theta} = (\frac{1}{n}\sum_{i=1}^N d_i d_i)^{-1}\frac{1}{n}\sum_{i=1}^N d_i (y_i - \hat{g}_0(X_i))
+\end{aligned}
+$$
+
+Now, subtracting $\hat{g}_0(x)$ from both sides of @eq-model-naive,
+
+$$
+\begin{aligned}
+y - \hat{g}_0(x) = \theta d + (g_0(x) - \hat{g}_0(x) + \mu)
+\end{aligned}
+$$
+
+So, as long as $d$ is not correlated with $g_0(x) - \hat{g}_0(x) + \mu$, then the regression of $y - \hat{g}_0(x)$ on $d$ should work. Unfortunately, this approach turns out to be naive and suffer from bias in general [@Chernozhukov2018].
+
+As a way to implement this naive approach, consider the following procedures.
 
 + Step 1: Estimate $g_0(X)$ and then subtract the fitted value of $g_0(X)$ from $y$.
   * Step 1.1: Regress $y$ on $X$ to estimate $E[y|X]$ and call it $\hat{l}_0(x)$ 
@@ -77,25 +130,23 @@ One way to estimate $\theta$ follows the following steps:
   \end{aligned} 
   $$ {#eq-partial-out}
   * Step 1.4: Regress $y_i - \hat{\theta}_{init}d$ on $X$ to estimate $g_0(X)$ and call it $\hat{g}_0(X)$.
-+ Step 2: Regress $y - \hat{g}_0(X)$ on $d$. Or equivalently, use the following formula 
++ Step 2: Regress $y - \hat{g}_0(X)$ on $d$ using OLS. Or equivalently, use the following formula 
   $$
   \begin{aligned}
     \hat{\theta} = (\frac{1}{n}\sum_{i=1}^N d_i d_i)^{-1}\frac{1}{n}\sum_{i=1}^N d_i (y_i - \hat{g}_0(X_i))
   \end{aligned}
   $$ {#eq-theta-partial}
 
-As it will turn out, this procedure suffers from the so-called regularization and over-fitting bias [@Chernozhukov2018].
-
 To demonstrate the bias problem, we work on the following data generating process used in [the user guide for the DoubleML package](https://docs.doubleml.org/stable/guide/basics.html).
 
 $$
 \begin{aligned}
-y_i = 0.5 d_i + x_{i,1} + \frac{1}{4}\cdot\frac{exp(x_{i,3})}{1 + exp(x_{i,3})} + \mu_i \\
-d_i = \frac{exp(x_{i,1})}{1 + exp(x_{i,1})} + \frac{1}{4}\cdot x_{i,3}+ \eta_i
+y_i = 0.5 d_i  + \frac{exp(x_{i,1})}{1 + exp(x_{i,1})} + \frac{1}{4}\cdot x_{i,3} + \mu_i \\
+d_i = x_{i,1} + \frac{1}{4}\cdot\frac{exp(x_{i,3})}{1 + exp(x_{i,3})} \eta_i
 \end{aligned}
 $$
 
-where $\mu_i \sim N(0, 1)$ and $\eta_i \sim N(0, 1)$ (So, no endogeneity problem). In this data generating process, $d$ is not binary and its effect on $y$ is assumed to be linear. 
+where $\mu_i \sim N(0, 1)$ and $\eta_i \sim N(0, 1)$. The error terms ($\mu_i$ and $\eta_i$) are independent. In this data generating process, $d$ is continuous (not binary) and its effect on $y$ is assumed to be linear. 
 
 We use the `gen_data()` function (defined on the right), which is a slightly generalized version of the `make_plr_CCDDHNR2018()` function from the `DoubleML` package.
 
@@ -104,8 +155,8 @@ We use the `gen_data()` function (defined on the right), which is a slightly gen
 
 ```{r}
 gen_data <- function(
-  m_formula = formula(~ I(exp(x1)/(1+exp(x1))) + I(x3/4)), # formula that defines m(x)
-  g_formula = formula(~ x1 + I(exp(x3)/(1+exp(x3))/4)), # formula that defines g(x)
+  g_formula = formula(~ I(exp(x1)/(1+exp(x1))) + I(x3/4)), # formula that defines m(x)
+  m_formula = formula(~ x1 + I(exp(x3)/(1+exp(x3))/4)), # formula that defines g(x)
   te_formula = formula(~ I(0.5*d)), # formula that defines theta(x) * t
   n_obs = 500, 
   n_vars = 20, 
@@ -152,7 +203,7 @@ gen_data <- function(
 
 
 ```{r}
-set.seed(2893434)
+set.seed(782394)
 
 training_data <- gen_data()
 ```
@@ -179,7 +230,7 @@ It has 20 `x` variables (for $X$) along with `d` (treatment) and `y` (dependent 
 str(training_data)
 ```
 
-### Step 1
+#### Step 1
 
 Let's now work on Step 1. We estimate $g_0(X)$ using random forest (RF). As described above, this is a four-step process.
 
@@ -296,7 +347,7 @@ ggplot(training_data) +
   coord_equal()
 ```
 
-### Step 2
+#### Step 2
 
 Finally, we regress $y - \hat{g}_0(X)$ on $d$ (or equivalently using @eq-theta-partial).
 
@@ -313,6 +364,7 @@ So, in this instance, we get an estimate of $\theta$ that is a bit lower than th
 #| fig-cap: Simulation results of the naive procedure
 #| label: fig-naive
 #| warning: false
+#| cache: true 
 
 fit_m0 <- function(training_data, mtry = 10) {
 
@@ -443,7 +495,7 @@ theta_hats_apr1 <-
 # Plot the results
 #===================================
 ggplot(theta_hats_apr1) +
-  geom_histogram(aes(x = theta), color = "white") +
+  geom_histogram(aes(x = theta), color = "grey", fill = "white") +
   theme_bw() + 
   geom_vline(aes(xintercept = 0.5,color = "True Value")) +
   geom_vline(aes(xintercept = theta_hats_apr1[, mean(theta)], color = "Mean of the Estimates")) +
@@ -455,7 +507,7 @@ ggplot(theta_hats_apr1) +
   theme(legend.position = "bottom")
 ```
 
-@fig-naive shows the histogram of $\hat{\theta}$ from 500 simulations. You can see that this procedure has led to consistent underestimation of the treatment effect. There are two sources of bias in this approach: regularization and over-fitting bias. 
+@fig-naive shows the histogram of $\hat{\theta}$ from 500 simulations. You can see that this procedure has led to consistent underestimation of the treatment effect (mean value of $\hat{\theta}$ is `r theta_hats_apr1[, round(mean(theta), digits = 3)]`). There are two sources of bias in this approach: regularization and over-fitting bias. 
 
 :::{.callout-note}
 
@@ -466,7 +518,7 @@ ggplot(theta_hats_apr1) +
 
 Regularization bias is termed so because bias in estimating $g_0(X)$ can occur when some form of regularization is implemented (e.g., lasso). However, its name is slightly misleading because $g_0(X)$ cannot be estimated without bias even without any regularization in general. This is because the estimation of initial $\theta$ (in Step 1.3) is biased, which comes from the fact that $m_0(X)$ is correlated with $g_0(X)$ through $X$. 
 
-::: {.column-margin}
+<!-- ::: {.column-margin}
 Another (unofficial) implementation of $g_0(X)$ estimation is to just use $\hat{l}_0(X_i)$ as $\hat{g}_0(X_i)$ ([a blog post](https://www.r-bloggers.com/2017/06/cross-fitting-double-machine-learning-estimator/)) and then use the following formula.
 
 $$
@@ -476,7 +528,7 @@ $$
 $$
 
 $\hat{\theta}$ is biased because $\hat{l}_0(X_i)$ is a biased estimator of $\hat{g}_0(X_i)$ when $m_0(X)$ and $g_0(X)$ are correlated. The point here is that, $g_0(X)$ is hard to estimate without bias irrespective of whether any regularization happens or not.
-:::
+::: -->
 
 However, if the treatment is independent, then, $g_0(X)$ can be estimated well and this approach works well except it still suffers from over-fitting bias. @fig-apr1-indep shows that the distribution of $\hat{\theta}$ when $m_0(X)$ is independent of $g_0(X)$ and the RF with the same hyper-parameters are used. While regularization can lead to bias in the estimation of $g_0(X)$, regularization is not the only source of bias. 
 
@@ -485,6 +537,7 @@ However, if the treatment is independent, then, $g_0(X)$ can be estimated well a
 #| label: fig-apr1-indep
 #| code-fold: true
 #| warning: false
+#| cache: true 
 
 run_sim_naive <- function(i){
 
@@ -523,7 +576,7 @@ theta_hats_apr1_indep <-
 # Plot the results
 #===================================
 ggplot(theta_hats_apr1_indep) +
-  geom_histogram(aes(x = theta), color = "white") +
+  geom_histogram(aes(x = theta), color = "grey", fill = "white") +
   theme_bw() + 
   geom_vline(aes(xintercept = 0.5,color = "True Value")) +
   geom_vline(aes(xintercept = theta_hats_apr1_indep[, mean(theta)], color = "Mean of the Estimates")) +
@@ -535,7 +588,7 @@ ggplot(theta_hats_apr1_indep) +
   theme(legend.position = "bottom")
 ```
 
-## Overcoming the regularization bias
+### Overcoming the regularization bias
 
 Regularization bias can be overcome by double-debiasing (orthogonalizing both $d$ and $y$). Specifically, 
 
@@ -579,6 +632,7 @@ Now, let's repeat this 500 times.
 #| fig-cap: Simulation results of double-debiased approach
 #| label: fig-dd
 #| warning: false
+#| cache: true 
 
 run_sim_dereg <- function(i)
 {
@@ -613,7 +667,7 @@ theta_hats_apr2 <-
   data.table(theta = .)
 
 ggplot(theta_hats_apr2) +
-  geom_histogram(aes(x = theta), color = "white") +
+  geom_histogram(aes(x = theta), color = "grey", fill = "white") +
   theme_bw() + 
   geom_vline(aes(xintercept = 0.5,color = "True Value")) +
   geom_vline(aes(xintercept = theta_hats_apr2[, mean(theta)], color = "Mean of the Estimates")) +
@@ -626,9 +680,9 @@ ggplot(theta_hats_apr2) +
 
 ```
 
-@fig-dd shows the distribution of $\hat{\theta}$, which is centered about $`r round(theta_hats_apr2[, mean(theta)], digits = 2)`$. The current approach still suffers from the so-called over-fitting bias[@Chernozhukov2018]. Let's look at how we can overcome this bias next.
+@fig-dd shows the distribution of $\hat{\theta}$, which is centered about $`r round(theta_hats_apr2[, mean(theta)], digits = 3)`$. The current approach still suffers from the so-called over-fitting bias[@Chernozhukov2018]. Let's look at how we can overcome this bias next.
 
-## Overcoming the over-fitting bias {#sec-cf}
+### Overcoming the over-fitting bias {#sec-cf}
 
 Over-fitting bias can be overcome by cross-fitting. First, the training data is split into $K$-folds just like K-fold cross-validation. Let's denote them as $I_1, \dots, I_k$. For example, for $I_1$, the following steps are taken (@fig-cross-fitting provides a visual illustration):
 
@@ -643,7 +697,6 @@ $$
 $$ {#eq-iv-score}
 
 This process is repeated for all the $K$ folds, and then the the final estimate of $\hat{\theta}$ is obtained as the average of $\hat{\theta}$s.
-
 
 ::: {.column-margin}
 You can implement repeated K-fold cross-fitting using the `DoublML` package, which is not demonstrated here as it is very much similar in concept to repeated K-fold CV explained in @sec-cross-validation.
@@ -872,6 +925,7 @@ get_theta_cf <- function(data_folds, mtry_l = 12, mtry_m = 10, mtry_g = 12){
 #| label: fig-cf-debiased
 #| code-fold: true
 #| warning: false
+#| cache: true 
 
 theta_hats_cf <-
   mclapply(
@@ -889,7 +943,7 @@ theta_hats_cf <-
 
 #=== visualize the results ===#
 ggplot() +
-  geom_histogram(aes(x = theta_hats_cf), color = "white") +
+  geom_histogram(aes(x = theta_hats_cf), color = "grey", fill = "white") +
   theme_bw() + 
   geom_vline(aes(xintercept = 0.5,color = "True Value")) +
   geom_vline(aes(xintercept = mean(theta_hats_cf), color = "Mean of the Estimates")) +
@@ -905,18 +959,133 @@ ggplot() +
 
 :::{.callout-important}
 
-+ Double-debiasing (double orthogonalization) can help overcome the bias in $\hat{\theta}$ that comes from the bias in estimating $g_0(X)$.
++ Double/debiased (double orthogonalization) can help overcome the bias in $\hat{\theta}$ that comes from the bias in estimating $g_0(X)$.
 
-+ Cross-fitting can help overcome the bias from estimating all of $g_0(X)$, $m_0(X)$, and $\theta$ using the same data.
++ Cross-fitting can help overcome the bias from estimating $g_0(X)$, $m_0(X)$, and $\theta$ using the same data.
+
+:::
+
+## Models and implementation by `DoubleML`
+
+In R, `DoubleML` is built on top of `mlr3`, which uses `R6` classes provided by the `R6` package. Since `R6` implements encapsulated object-oriented programming like Python, `DoubleML` in R and Python work in a very similar manner. Here, we will use R for demonstrations.
+
+### A note on method of moment and score function
+
+DML approaches implemented by `DoubleML` are method of moment estimators. Method of moment starts from a moment condition that are derived from the assumptions and then solve their empirical version with respect to the parameters of interest to obtain estimates. It is best to look at examples. 
+
+For example, OLS can be considered as an method of moment estimator. Consider the following model,
+
+$$
+\begin{aligned}
+y = \beta_0 + \beta_1 x + \mu
+\end{aligned}
+$$
+
+where $X$ is a collection of variables. The moment conditions for OLS are
+
+$$
+\begin{aligned}
+E[(y - \beta_0 - \beta_1 x)\times 1] = 0 \\
+E[(y - \beta_0 - \beta_1 x)\times x] = 0 
+\end{aligned}
+$$
+
+What motivated the moment conditions are the assumptions of $E[\mu\times 1] = 0$ and $E[\mu\times x] = 0$ (mean conditional independence). Functions inside expectation ($E[]$) in moment conditions are called <span style="color:red"> score functions</span>. So, here, $y - \beta_0 - \beta_1 x$ and $(y - \beta_0 - \beta_1 x)\times x$ are the score functions.
+
+The empirical version of the moment conditions replaces the expected value of the score function with the sample mean of the score functions. 
+
+::: {.column-margin}
+Sample mean of the statistics of interest is a good estimator of the expected value of the statistics of interest.
+:::
+
+$$
+\begin{aligned}
+\frac{\sum_{i=1}^N (y_i - \beta_0 - \beta_1 x_i)}{N} = 0 \\
+\frac{\sum_{i=1}^N (y_i - \beta_0 - \beta_1 x_i) x_i}{N} = 0
+\end{aligned}
+$$
+
+You can remove $N$ by multiplying both sides by $N$ and get
+
+$$
+\begin{aligned}
+\sum_{i=1}^N (y_i - \beta_0 - \beta_1 x_i) = 0 \\
+\sum_{i=1}^N (y_i - \beta_0 - \beta_1 x_i) x_i = 0
+\end{aligned}
+$$
+
+Yes, these are actually the first order conditions of minimizing sum of the squared residuals. By solving theses equations, you can obtain OLS estimates. 
+
+For brevity, we will use matrix notation hereafter. For example, let $X$ denote a matrix of the intercept and $x$ values with each row representing a single observation. Then, the empirical moment conditions can be written as follows:
+
+$$
+\begin{aligned}
+(y - X\beta)X'= 0
+\end{aligned}
+$$
+
+where $\beta = \{\beta_0, \beta_1\}$ is a 2 by 1 matrix. Solving this with respect to $\beta$, 
+
+$$
+\begin{aligned}
+\hat{\beta}_{OLS} = (X'X)^{-1}X'y
+\end{aligned}
+$$
+
+Now consider instrumental variable estimation with instruments $\textbf{z} = \{z_1, z_2, \dots, z_K\}$ (both included and excluded instruments). Under the assumption of $E[\mu\cdot z_k]=0$ $^{\forall} k = 1, \dots, K$, which is derived from zero conditional mean assumption of $E[\mu|Z] = 0$. Then the moment conditions are 
+
+$$
+\begin{aligned}
+E[(y-X\beta)z_1] & = 0 \\
+E[(y-X\beta)z_2] & = 0 \\
+\vdots & \\
+E[(y-X\beta)z_K] & = 0 \\
+\end{aligned}
+$$
+
+The empirical moment conditions in matrix form are
+
+$$
+\begin{aligned}
+(y-X\beta)Z' = 0
+\end{aligned}
+$$
+
+Solving the equation with respect to $\beta$,
+
+$$
+\begin{aligned}
+\hat{\beta}_{IV} = (Z'X)^{-1}Z'Y = 0
+\end{aligned}
+$$
+
+:::{.callout-tip}
+You will also see (localized) moment conditions and score functions in GRF (@sec-grf).
+:::
+
+
+### Partially linear model
+
+$$
+\begin{aligned}
+y = \theta d + g_0(X) + \mu \\
+d = m_0(X) + \eta
+\end{aligned}
+$$ 
+
+:::{.callout-note}
+
+**Assumptions on the error terms**
+
++ $E[\mu|D,X] = 0$
++ $E[\eta|X] = 0$
 
 :::
 
 
-## Implementation
 
 
 
-## What if the unconfoundedness assumption does not hold?
 
 
 
