@@ -1,6 +1,6 @@
 # Why can't we just do this?
 
-Suppose you are interested in estimating the effect ($\theta$) of a treatment ($T$) in the model represented by the following equation:
+Suppose you are interested in estimating the effect of a treatment ($T$) in the model represented by the following equation:
 
 $$
 \begin{aligned}
@@ -8,11 +8,11 @@ y = f(T, X) +  \mu \\
 \end{aligned}
 $$
 
-A very natural approach to estimate treatment effect seems to simply train ML models (e.g., random forest) to estimate $f(T, X)$ by regressing $y$ on $T$ and $X$ (treating $T$ as just one of the covariates along with $X$). Let $\hat{f}(T, X)$ denote the trained model based on any ML method. If $T$ is binary, then we can simply estimate its treatment effect conditional on $X$ by the following:
+A very natural approach to estimate treatment effect seems to simply train ML models (e.g., random forest) to estimate $f(T, X)$ by regressing $y$ on $T$ and $X$ (treating $T$ as just one of the covariates along with $X$), and then derive the effect of $T$ bsed on the trained model. Let $\hat{f}(T, X)$ denote the trained model using any ML method. If $T$ is binary, then we can simply estimate its treatment effect conditional on $X$ by the following:
 
 $$
 \begin{aligned}
-\theta(X) = \hat{f}(T=0, X) - \hat{f}(T=0, X)
+\theta(X) = \hat{f}(T=1, X) - \hat{f}(T=0, X)
 \end{aligned}
 $$ 
 
@@ -24,13 +24,13 @@ $$
 \end{aligned}
 $$ 
 
-This approach actually has a name and it is called S-leaner. Indeed, many many empirical studies in many scientific fields (not so much in economic) have used (and have been using) this approach for causal inference. So, can't we just use this approach for every single causal inference task?
+This approach actually has a name and it is called S-leaner. <span style="color:blue"> Indeed, lots of empirical studies in many scientific fields (not so much in economic) have used (and have been using) this approach for causal inference</span>. So, can't we just use this approach for every single causal inference task?
 
 ::: {.column-margin}
 Many of these studies actually are not aware of the distinctions between prediction and causal inference.
 :::
 
-Unfortunately, S-leaner is inappropriate in many circumstances. Let's see the performance of S-leaner using MC simulations. As a competitor, we also run causal forest (CF), one of the CML methods we will learn later (@sec-cf-orf). You do not need to understand how CF works here. You just need to know that it is a method that can estimate heterogeneous treatment effects at this point. 
+Unfortunately, S-leaner is inappropriate in many circumstances. Let's see the performance of S-leaner using simple simulations. As a competitor, we also run causal forest (CF), one of the CML methods we will learn later (@sec-cf-orf). You do not need to understand how CF works here. You just need to know that it is a method that can estimate heterogeneous treatment effects at this point. 
 
 As an example, consider the following data generating process:
 
@@ -102,7 +102,7 @@ We implement S-learner and then causal forest.
 
 ```{r}
 #--------------------------
-# S-learner
+# S-learner with RF
 #--------------------------
 rf_trained <-
   ranger(
@@ -183,9 +183,9 @@ g_sp / g_hist
 ```
 
 
-As you can see, the S-learner is not bad. It looks like the estimated treatment effects are unbiased (of course, we cannot really tell since we just run a single simulation). So, is CF. However, the biggest difference between the two is the accuracy of treatment effect estimation. CF is clearly much more efficient than S-learner in this particular case. 
+As you can see, S-learner is okay. It looks like the estimated treatment effects are unbiased (of course, we cannot really tell since we just run a single simulation). So, is CF. However, the biggest difference between the two is the accuracy of treatment effect estimation. CF is clearly much more efficient than S-learner in this particular case. 
 
-Now, let's change the data generating process slightly. Specifically, we will use $\alpha = 10$ instead of $\alpha = 2$ so that $g(X) = \textcolor{red}{10} [x_1^2 + log(x_2+1) + 2\cdot x_1 x_2]$. This means that the nuisance function $g(X)$ has a much larger share of the variation in $y$ compared to the previous case. The simulation results for this data generating process are presented in @fig-true-est-te-2.
+Now, let's change the data generating process a bit. Specifically, we will use $\alpha = 10$ instead of $\alpha = 2$ so that $g(X) = \textcolor{red}{10} [x_1^2 + log(x_2+1) + 2\cdot x_1 x_2]$. This means that the nuisance function $g(X)$ has a much larger share of the variation in $y$ compared to the previous case. The simulation results for this data generating process are presented in @fig-true-est-te-2.
 
 
 ::: {.column-margin}
@@ -269,7 +269,7 @@ g_hist <-
 g_sp / g_hist
 ```
 
-Now, this is very interesting. S-leaner is clearly biased (Repeat this many times to confirm this trend is indeed consistent. It is consistent.). S-leaner heavily underestimates the treatment effects. However, causal forest is virtually unaffected. It is almost as if RF does not really care about what $\theta(X)$ looks like. Remember that RF is trained to minimize sum of squared residuals. So, it is only natural that they will try to build trees that explain $g(X)$ better by paying much more attention to $g(X)$ as $g(X)$ is much more important in explaining the variations in $y$ compared to the first case. On the other hand, CF estimate $g(X)$ using random forest, but then it removes $g(X)$ out of the equation and focus on estimating $\theta(X)$ (very very roughly speaking. see @sec-cf-orf fore more details). This is an example where the differences in their algorithms can make a critical difference in the ability to estimate treatment effects.
+Now, this is very interesting. S-leaner is clearly biased (Repeat this many times to confirm this trend is indeed consistent. It is consistent.). S-leaner heavily underestimates the treatment effects. However, causal forest is virtually unaffected. It is almost as if RF does not really care about what $\theta(X)$ looks like. Remember that RF is trained to minimize sum of squared residuals. So, it is only natural that they will try to build trees that explain $g(X)$ better by "paying much more attention" to $g(X)$ as $g(X)$ is much more important in explaining the variations in $y$ compared to the first case. On the other hand, CF estimate $g(X)$ using random forest, but then it removes $g(X)$ out of the equation and focus on estimating $\theta(X)$ (very very roughly speaking. see @sec-cf-orf fore more details). This is an example where the differences in their algorithms can make a critical difference in the ability to estimate treatment effects.
 
 ::: {.column-margin}
 Causal forest implemented by the `grf` package uses random forest for the first-stage estimations of $E[T|X]$ and $E[Y|X]$.

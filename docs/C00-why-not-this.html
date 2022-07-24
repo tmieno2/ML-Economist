@@ -374,16 +374,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
-<p>Suppose you are interested in estimating the effect (<span class="math inline">\(\theta\)</span>) of a treatment (<span class="math inline">\(T\)</span>) in the model represented by the following equation:</p>
+<p>Suppose you are interested in estimating the effect of a treatment (<span class="math inline">\(T\)</span>) in the model represented by the following equation:</p>
 <p><span class="math display">\[
 \begin{aligned}
 y = f(T, X) +  \mu \\
 \end{aligned}
 \]</span></p>
-<p>A very natural approach to estimate treatment effect seems to simply train ML models (e.g., random forest) to estimate <span class="math inline">\(f(T, X)\)</span> by regressing <span class="math inline">\(y\)</span> on <span class="math inline">\(T\)</span> and <span class="math inline">\(X\)</span> (treating <span class="math inline">\(T\)</span> as just one of the covariates along with <span class="math inline">\(X\)</span>). Let <span class="math inline">\(\hat{f}(T, X)\)</span> denote the trained model based on any ML method. If <span class="math inline">\(T\)</span> is binary, then we can simply estimate its treatment effect conditional on <span class="math inline">\(X\)</span> by the following:</p>
+<p>A very natural approach to estimate treatment effect seems to simply train ML models (e.g., random forest) to estimate <span class="math inline">\(f(T, X)\)</span> by regressing <span class="math inline">\(y\)</span> on <span class="math inline">\(T\)</span> and <span class="math inline">\(X\)</span> (treating <span class="math inline">\(T\)</span> as just one of the covariates along with <span class="math inline">\(X\)</span>), and then derive the effect of <span class="math inline">\(T\)</span> bsed on the trained model. Let <span class="math inline">\(\hat{f}(T, X)\)</span> denote the trained model using any ML method. If <span class="math inline">\(T\)</span> is binary, then we can simply estimate its treatment effect conditional on <span class="math inline">\(X\)</span> by the following:</p>
 <p><span class="math display">\[
 \begin{aligned}
-\theta(X) = \hat{f}(T=0, X) - \hat{f}(T=0, X)
+\theta(X) = \hat{f}(T=1, X) - \hat{f}(T=0, X)
 \end{aligned}
 \]</span></p>
 <p>where <span class="math inline">\(\theta(X)\)</span> denotes the impact of <span class="math inline">\(T\)</span> conditional on <span class="math inline">\(X\)</span>. If <span class="math inline">\(T\)</span> is continuous, then the impact of changing the vale of <span class="math inline">\(T\)</span> from <span class="math inline">\(a\)</span> to <span class="math inline">\(b\)</span> is simply</p>
@@ -392,11 +392,11 @@ y = f(T, X) +  \mu \\
 \theta(X)_{a \rightarrow b} = \hat{f}(T=b, X) - \hat{f}(T=a, X)
 \end{aligned}
 \]</span></p>
-<p>This approach actually has a name and it is called S-leaner. Indeed, many many empirical studies in many scientific fields (not so much in economic) have used (and have been using) this approach for causal inference. So, can’t we just use this approach for every single causal inference task?</p>
+<p>This approach actually has a name and it is called S-leaner. <span style="color:blue"> Indeed, lots of empirical studies in many scientific fields (not so much in economic) have used (and have been using) this approach for causal inference</span>. So, can’t we just use this approach for every single causal inference task?</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p>Many of these studies actually are not aware of the distinctions between prediction and causal inference.</p>
-</div></div><p>Unfortunately, S-leaner is inappropriate in many circumstances. Let’s see the performance of S-leaner using MC simulations. As a competitor, we also run causal forest (CF), one of the CML methods we will learn later (<span class="quarto-unresolved-ref">?sec-cf-orf</span>). You do not need to understand how CF works here. You just need to know that it is a method that can estimate heterogeneous treatment effects at this point.</p>
+</div></div><p>Unfortunately, S-leaner is inappropriate in many circumstances. Let’s see the performance of S-leaner using simple simulations. As a competitor, we also run causal forest (CF), one of the CML methods we will learn later (<span class="quarto-unresolved-ref">?sec-cf-orf</span>). You do not need to understand how CF works here. You just need to know that it is a method that can estimate heterogeneous treatment effects at this point.</p>
 <p>As an example, consider the following data generating process:</p>
 <p><span class="math display">\[
 \begin{aligned}
@@ -445,7 +445,7 @@ g(X) &amp; = \alpha \cdot [x_1^2 + log(x_2+1) + 2\cdot x_1*x_2]
 <p>We implement S-learner and then causal forest.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># S-learner</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># S-learner with RF</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>rf_trained <span class="ot">&lt;-</span></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ranger</span>(</span>
@@ -528,8 +528,8 @@ g(X) &amp; = \alpha \cdot [x_1^2 + log(x_2+1) + 2\cdot x_1*x_2]
 </div>
 </div>
 </div>
-<p>As you can see, the S-learner is not bad. It looks like the estimated treatment effects are unbiased (of course, we cannot really tell since we just run a single simulation). So, is CF. However, the biggest difference between the two is the accuracy of treatment effect estimation. CF is clearly much more efficient than S-learner in this particular case.</p>
-<p>Now, let’s change the data generating process slightly. Specifically, we will use <span class="math inline">\(\alpha = 10\)</span> instead of <span class="math inline">\(\alpha = 2\)</span> so that <span class="math inline">\(g(X) = \textcolor{red}{10} [x_1^2 + log(x_2+1) + 2\cdot x_1 x_2]\)</span>. This means that the nuisance function <span class="math inline">\(g(X)\)</span> has a much larger share of the variation in <span class="math inline">\(y\)</span> compared to the previous case. The simulation results for this data generating process are presented in <a href="#fig-true-est-te-2">Figure&nbsp;<span>9.2</span></a>.</p>
+<p>As you can see, S-learner is okay. It looks like the estimated treatment effects are unbiased (of course, we cannot really tell since we just run a single simulation). So, is CF. However, the biggest difference between the two is the accuracy of treatment effect estimation. CF is clearly much more efficient than S-learner in this particular case.</p>
+<p>Now, let’s change the data generating process a bit. Specifically, we will use <span class="math inline">\(\alpha = 10\)</span> instead of <span class="math inline">\(\alpha = 2\)</span> so that <span class="math inline">\(g(X) = \textcolor{red}{10} [x_1^2 + log(x_2+1) + 2\cdot x_1 x_2]\)</span>. This means that the nuisance function <span class="math inline">\(g(X)\)</span> has a much larger share of the variation in <span class="math inline">\(y\)</span> compared to the previous case. The simulation results for this data generating process are presented in <a href="#fig-true-est-te-2">Figure&nbsp;<span>9.2</span></a>.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p><span class="math inline">\(g(X)\)</span> is nuisance in the sense that we do not care about estimating <span class="math inline">\(g(X)\)</span> itself. Rather, we just want to control for it.</p>
@@ -613,7 +613,7 @@ g(X) &amp; = \alpha \cdot [x_1^2 + log(x_2+1) + 2\cdot x_1*x_2]
 </div>
 </div>
 </div>
-<p>Now, this is very interesting. S-leaner is clearly biased (Repeat this many times to confirm this trend is indeed consistent. It is consistent.). S-leaner heavily underestimates the treatment effects. However, causal forest is virtually unaffected. It is almost as if RF does not really care about what <span class="math inline">\(\theta(X)\)</span> looks like. Remember that RF is trained to minimize sum of squared residuals. So, it is only natural that they will try to build trees that explain <span class="math inline">\(g(X)\)</span> better by paying much more attention to <span class="math inline">\(g(X)\)</span> as <span class="math inline">\(g(X)\)</span> is much more important in explaining the variations in <span class="math inline">\(y\)</span> compared to the first case. On the other hand, CF estimate <span class="math inline">\(g(X)\)</span> using random forest, but then it removes <span class="math inline">\(g(X)\)</span> out of the equation and focus on estimating <span class="math inline">\(\theta(X)\)</span> (very very roughly speaking. see <span class="quarto-unresolved-ref">?sec-cf-orf</span> fore more details). This is an example where the differences in their algorithms can make a critical difference in the ability to estimate treatment effects.</p>
+<p>Now, this is very interesting. S-leaner is clearly biased (Repeat this many times to confirm this trend is indeed consistent. It is consistent.). S-leaner heavily underestimates the treatment effects. However, causal forest is virtually unaffected. It is almost as if RF does not really care about what <span class="math inline">\(\theta(X)\)</span> looks like. Remember that RF is trained to minimize sum of squared residuals. So, it is only natural that they will try to build trees that explain <span class="math inline">\(g(X)\)</span> better by “paying much more attention” to <span class="math inline">\(g(X)\)</span> as <span class="math inline">\(g(X)\)</span> is much more important in explaining the variations in <span class="math inline">\(y\)</span> compared to the first case. On the other hand, CF estimate <span class="math inline">\(g(X)\)</span> using random forest, but then it removes <span class="math inline">\(g(X)\)</span> out of the equation and focus on estimating <span class="math inline">\(\theta(X)\)</span> (very very roughly speaking. see <span class="quarto-unresolved-ref">?sec-cf-orf</span> fore more details). This is an example where the differences in their algorithms can make a critical difference in the ability to estimate treatment effects.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p>Causal forest implemented by the <code>grf</code> package uses random forest for the first-stage estimations of <span class="math inline">\(E[T|X]\)</span> and <span class="math inline">\(E[Y|X]\)</span>.</p>
