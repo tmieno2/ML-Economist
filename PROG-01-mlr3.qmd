@@ -1,4 +1,4 @@
-# Machine Learning with `mlr3` in R
+# Machine Learning with `mlr3` in R {#sec-mlr3}
 
 
 The `mlr3` package is an R package that makes it easy for you to implement standard machine learning procedures (e.g., training, prediction, cross-validation) in a unified framework. It is similar to the Python scikit-learn package. In this section, we cover the basic use cases of the `mlr3` package accompanied by an real-world example at the end. The authors of the package is currently writing a [book](https://mlr3book.mlr-org.com/02-basics-learners.html) on how to use it. Materials covered in this section is basically a condensed (and far less comprehensive) version of the book. Yet, they should still be sufficient for the majority of ML tasks you typically implement in practice.
@@ -678,7 +678,7 @@ data <-
 )
 ```
 
-The dependent variable is `re78` ($Y$), which is real annual earnings in 1978 (after treatment). The treatment variable of interest is `treat` ($T$), which is `TRUE` a person had gone through a training, `FALSE` otherwise. The features that are included as potential drivers of the heterogeneity in the impact of `treat` on `re78` is `age`, `educ`, `ethn`, and `married` ($X$). Note that the focus of this section is just showcasing the use of `mlr3` and no attention is paid to potential endogeneity problems. 
+The dependent variable is `re78` ($Y$), which is real annual earnings in 1978 (after treatment). The treatment variable of interest is `treat` ($T$), which is `TRUE` if a person had gone through a training, `FALSE` otherwise. The features that are included as potential drivers of the heterogeneity in the impact of `treat` on `re78` is `age`, `educ`, `ethn`, and `married` ($X$). Note that the focus of this section is just showcasing the use of `mlr3` and no attention is paid to potential endogeneity problems. 
 
 ### First stage
 

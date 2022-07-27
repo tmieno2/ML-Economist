@@ -50,9 +50,6 @@ quarto::quarto_render(here::here("LectureNotes/C01-dml.qmd"))
 # === het te ===#
 quarto::quarto_render(here::here("LectureNotes/C02-het-te.qmd"))
 
-# === grf ===#
-quarto::quarto_render(here::here("LectureNotes/C04-grf.qmd"))
-
 # === cf ===#
 quarto::quarto_render(here::here("LectureNotes/C03-cf-orf.qmd"))
 
@@ -77,10 +74,15 @@ quarto::quarto_render(here::here("LectureNotes/PROG-02-reticulate.qmd"))
 #=== model selection ===#
 quarto::quarto_render(here::here("LectureNotes/PROG-03-model-selection-prediction.qmd"))
 
+
+
 #/*=================================================*/
 #' # Extensions
 #/*=================================================*/
 quarto::quarto_render(here::here("LectureNotes/E01-spatial-cv.qmd"))
+
+#=== grf ===#
+quarto::quarto_render(here::here("LectureNotes/E02-grf.qmd"))
 
 #/*=================================================*/
 #' # Appendix

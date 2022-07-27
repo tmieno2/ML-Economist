@@ -388,6 +388,7 @@ div.csl-indent {
   <li><a href="#random-forest-rf" id="toc-random-forest-rf" class="nav-link" data-scroll-target="#random-forest-rf"> <span class="header-section-number">6.2.2</span> Random Forest (RF)</a></li>
   </ul></li>
   <li><a href="#implementation" id="toc-implementation" class="nav-link" data-scroll-target="#implementation"> <span class="header-section-number">6.3</span> Implementation</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/P01-random-forest.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
@@ -410,6 +411,36 @@ div.csl-indent {
 
 </header>
 
+<p>The main goal of this chapter is to learn random forest (RF) for regression. RF is first conceived by <span class="citation" data-cites="breiman2001random">Breiman (<a href="#ref-breiman2001random" role="doc-biblioref">2001</a>)</span>, and it has been one of the most popular machine learning methods. It also has been an inspiration to many other ML methods including extreme gradient boosting <span class="citation" data-cites="Chen_2016">(<a href="#ref-Chen_2016" role="doc-biblioref">Chen and Guestrin 2016</a>)</span>, generalized random forest <span class="citation" data-cites="athey2019generalized">(<a href="#ref-athey2019generalized" role="doc-biblioref">Athey, Tibshirani, and Wager 2019</a>)</span>.</p>
+<p>We first start with understanding how a regression tree is built, which is the foundation of all the forest-based ML methods. We then learn how random forest is built as an extension of a regression tree and how to train it.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+What you will learn
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Regression tree
+<ul>
+<li>How regression tree is built (algorithm)</li>
+</ul></li>
+<li>Random forest
+<ul>
+<li>How random forest is built
+<ul>
+<li>bagging (bootstrap averaging)</li>
+<li>random variable selection for splitting</li>
+</ul></li>
+<li>How out-of-bag prediction works</li>
+<li>How to train RF using R</li>
+</ul></li>
+</ul>
+</div>
+</div>
 <section id="sec-rt" class="level2 page-columns page-full" data-number="6.1">
 <h2 data-number="6.1" class="anchored" data-anchor-id="sec-rt"><span class="header-section-number">6.1</span> Regression tree</h2>
 
@@ -440,14 +471,31 @@ div.csl-indent {
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">control =</span> <span class="fu">rpart.control</span>(<span class="at">minsplit =</span> <span class="dv">200</span>)</span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">fancyRpartPlot</span>(simple_tree)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">fancyRpartPlot</span>(simple_tree, <span class="at">digits =</span> <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="P01-random-forest_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>Here is how you read the figure. At the first node, all the observations belong to it (<span class="math inline">\(n=353\)</span>) and the estimate of <code>lsalary</code> is 13. Now, the whole datasets are split into two based on the criteria of whether <code>hits</code> is less than <code>262</code> or not. If yes, then such observations will be grouped into the node with “2” on top (the leftmost node), and the estimated <code>lsalary</code> for all the observations in that group (<span class="math inline">\(n = 132\)</span>) is 12. If no, then such observations will be grouped into the node with “3” on top, and the estimated <code>lsalary</code> for all the observations in that group (<span class="math inline">\(n = 221\)</span>) is 14. This node is further split into two groups based on whether <code>runsyr</code> is less than 44 or not. For those observations with <code>runsyr</code> <span class="math inline">\(&lt; 44\)</span> (second node a the bottom), estimated <code>lsalary</code> is 14. For those with <code>runsyr</code> <span class="math inline">\(&gt;= 44\)</span> (rightmost node at the bottom), estimated <code>lsalary</code> is 15. The nodes that do not have any further bifurcations below are called terminal nodes or leafs.</p>
-<p>As illustrated in the figure above, a regression tree splits the data into groups based on the value of explanatory variables, and all the observations in the same group will be assigned the same estimate (the sample average of the dependent variable of the group).</p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Terminology alert
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><span style="color:blue">node </span>: a group of observations represented by a green box</li>
+<li><span style="color:blue">root node</span>: first node to which all the observations belong</li>
+<li><span style="color:blue">leaf</span> or <span style="color:blue"> terminal node</span>: A node that is not split into more nodes</li>
+</ul>
+</div>
+</div>
+<p>Here is how you read the figure. At the first (root) node, all the observations belong to it (<span class="math inline">\(n=353\)</span>) and the estimate of <code>lsalary</code> is <span class="math inline">\(13.49\)</span>, which is simply the sample average of <code>lsalary</code>. Now, the whole dataset is split into two groups (nodes) based on the criteria of whether <code>hits</code> is less than <code>262</code> or not. If yes, then such observations will be grouped into the node with “2” on top (the leftmost node), and the estimated <code>lsalary</code> for all the observations in that group (<span class="math inline">\(n = 132\)</span>) is <span class="math inline">\(12.35\)</span>, which is the sample average of <code>lsalary</code> of the <span class="math inline">\(132\)</span> observations in the group. If no, then such observations will be grouped into the node with “3” on top, and the estimated <code>lsalary</code> for all the observations in that group (<span class="math inline">\(n = 221\)</span>) is <span class="math inline">\(14.17\)</span>. This node is further split into two groups based on whether <code>runsyr</code> is less than <span class="math inline">\(44\)</span> or not. For those observations with <code>runsyr</code> <span class="math inline">\(&lt; 44\)</span> (second node at the bottom), estimated <code>lsalary</code> is <span class="math inline">\(13.58\)</span>. For those with <code>runsyr</code> <span class="math inline">\(&gt;= 44\)</span> (rightmost node at the bottom), estimated <code>lsalary</code> is <span class="math inline">\(14.56\)</span>.</p>
+<p>As illustrated in the figure above, a regression tree splits the data into groups based on the value of explanatory variables, and all the observations in the same group will be assigned the same estimate, which isthe sample average of the dependent variable of the group.</p>
 <div class="callout-tip callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -475,20 +523,20 @@ Tip
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(</span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"text"</span>, </span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="dv">44</span>, <span class="at">y =</span> <span class="dv">111</span>, </span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">label =</span> <span class="st">"Region 2"</span>, </span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="dv">75</span>, <span class="at">y =</span> <span class="dv">100</span>, </span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">label =</span> <span class="st">"Region (Node) 2"</span>, </span>
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"red"</span></span>
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
 <span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(</span>
 <span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"text"</span>, </span>
 <span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="dv">22</span>, <span class="at">y =</span> <span class="dv">1500</span>, </span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">label =</span> <span class="st">"Region 6"</span>, </span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">label =</span> <span class="st">"Region (Node) 6"</span>, </span>
 <span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"red"</span></span>
 <span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
 <span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(</span>
 <span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">"text"</span>, </span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="dv">75</span>, <span class="at">y =</span> <span class="dv">1500</span>, </span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">label =</span> <span class="st">"Region 7"</span>, </span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="dv">90</span>, <span class="at">y =</span> <span class="dv">1500</span>, </span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">label =</span> <span class="st">"Region (Node) 7"</span>, </span>
 <span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"red"</span></span>
 <span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -496,18 +544,21 @@ Tip
 <p><img src="P01-random-forest_files/figure-html/viz-tree-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>The mechanism called recursive binary splitting is used to split the predictor space like the example above. Suppose you have K explanatory variables (<span class="math inline">\(X_1, \dots, X_K\)</span>). Further, let <span class="math inline">\(c\)</span> denote the threshold that splits the sample into two regions such that {<span class="math inline">\(X|X_k &lt; c\)</span>} and {<span class="math inline">\(X|X_k \geq c\)</span>}.</p>
+<p>An algorithm called recursive binary splitting is used to split the predictor space like the example above. Suppose you have K explanatory variables (<span class="math inline">\(X_1, \dots, X_K\)</span>). Further, let <span class="math inline">\(c\)</span> denote the threshold that splits the sample into two regions such that {<span class="math inline">\(X|X_k &lt; c\)</span>} and {<span class="math inline">\(X|X_k \geq c\)</span>}.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p>{<span class="math inline">\(X|X_k &lt; c\)</span>} means observations that satisfy the condition stated right to the vertical bar (|). Here, it means all the observations for which its <span class="math inline">\(X_k\)</span> value is less than <span class="math inline">\(c\)</span>.</p>
 </div></div><ul>
-<li>Step 1: For each of the explanatory variables (<span class="math inline">\(X_1\)</span> through <span class="math inline">\(X_K\)</span>), find all the threshold values that result in unique splits.</li>
-<li>Step 2: For each of the explanatory variables (<span class="math inline">\(X_1\)</span> through <span class="math inline">\(X_K\)</span>), go through all the threshold values and then find the threshold value that leads to the lowest sum of the squared residuals.</li>
-<li>Step 3: Among all the splits (as many as the number of explanatory variables), pick the variable-threshold combination that leads to the lowest sum of the squared residuals.</li>
+<li>Step 1: For each of the covariates (<span class="math inline">\(X_1\)</span> through <span class="math inline">\(X_K\)</span>), find all the threshold values that result in <span style="color:blue"> unique</span> splits.</li>
+<li>Step 2: For each of the covariate-threshold combinations, calculate the sum of the squared residuals of its resulting split, and find the threshold value with the lowest sum of the squared residuals by covariate.</li>
+<li>Step 3: Among all the best splits by covariate (as many as the number of explanatory variables), pick the variable-threshold combination that leads to the lowest sum of the squared residuals.</li>
 </ul>
-<p>The data is then split according to the chosen criteria and then the same process is repeated for each of the branches, ad infinitum until the user-specified stopping criteria is met. This way of splitting is called a <strong>greedy</strong> (or I would call it myopic or shortsighted) approach because the split happens to minimize the immediate RSS without considering the implication of the split for the later splits.</p>
-<p>Let’s try to write this process (an inefficient version) for the first split from the beginning node using the <code>mlb1</code> data as an illustration based on a simple grid search to find the optimal thresholds (Step 1).</p>
-<div class="cell">
+<p>The data is then split according to the chosen criteria and then the same process is repeated for each of the branches, ad infinitum until the user-specified stopping criteria is met. This way of splitting is called a <strong>greedy</strong> (or I would call it myopic or shortsighted) approach because the split is sought to minimize the immediate RSS without considering the implication of the split for the later splits.</p>
+<p>Let’s try to write this process for the first split from the beginning node using the <code>mlb1</code> data as an illustration based on a simple grid search to find the optimal thresholds (Step 1).</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>Note that the R codes here are deliberately inefficient as they focus on illustrating the process.</p>
+</div></div><div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== get data ===#</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(wooldridge)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(mlb1)</span>
@@ -555,7 +606,7 @@ Tip
 </div>
 </div>
 </div>
-<p>For each value in <code>value_seq</code>, we find the RSS. For example, for the 50th value in <code>value_seq</code> (the red line in <a href="#fig-thre">Figure&nbsp;<span>6.1</span></a>),</p>
+<p>For each value in <code>value_seq</code>, we find RSS. For example, for the 50th value in <code>value_seq</code> (the red line in <a href="#fig-thre">Figure&nbsp;<span>6.1</span></a>),</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">copy</span>(mlb1_dt) <span class="sc">%&gt;%</span> </span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== find the mean of lsalary by whether hruns is less than the threshold or not ===#</span></span>
@@ -582,7 +633,7 @@ Tip
 </div>
 </div>
 <p>This means <code>value_seq[50]</code> (49.5) is a better threshold than <code>value_seq[70]</code> (79.5).</p>
-<p>Okay, let’s consider all the candidate values, not just 50th and 70th, and then pick the best.</p>
+<p>Okay, let’s consider all the candidate threshold values now, not just 50th and 70th, and then pick the best.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>get_rss <span class="ot">&lt;-</span> <span class="cf">function</span>(i, var_name, value_seq, data)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>{</span>
@@ -642,7 +693,7 @@ Tip
 </div>
 </div>
 <p>Okay, so, the best threshold for <code>hruns</code> is 27.5</p>
-<p>Suppose we are considering only five explanatory variables in building a regression tree: <code>hruns</code>, <code>years</code>, <code>rbisyr</code>, <code>allstar</code>, <code>runsyr</code>, <code>hits</code>, and <code>bavg</code>. We do the same operation we did for <code>hruns</code> for all the variables.</p>
+<p>Suppose we are considering only five explanatory variables in building a regression tree: <code>hruns</code>, <code>years</code>, <code>rbisyr</code>, <code>allstar</code>, <code>runsyr</code>, <code>hits</code>, and <code>bavg</code>. We do the same operations we did for <code>hruns</code> for all the variables.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>get_rss_by_var <span class="ot">&lt;-</span> <span class="cf">function</span>(var_name, data)</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>{</span>
@@ -732,7 +783,7 @@ Tip
 \textcolor{red}{\max}_r \frac{(\sum_{i\in C_1(r)} Y_i)^2}{N_1} + \frac{(\sum_{i\in C_2(r)} Y_i)^2}{N_2}
 \end{aligned}
 \tag{6.3}\]</span></span></p>
-<p>Note that it is much more computationally efficient to solve this maximization problem than the RSS minimization problem (<a href="#eq-rss-min">Equation&nbsp;<span>6.1</span></a>). In the RSS minimization problem, for each split, you calculate the mean, subtract it from <span class="math inline">\(Y_i\)</span> for all the observations, square them and sum them. On the other hand, in the similarity maximization problem, you can simply sum <span class="math inline">\(Y_i\)</span> and then square it for each split. So, programatically, tree building is done using <a href="#eq-max-score">Equation&nbsp;<span>6.3</span></a>. You can also see the use of <a href="#eq-max-score">Equation&nbsp;<span>6.3</span></a> in the extreme gradient boosting algorithm (<a href="P03-xgb.html"><span>Chapter&nbsp;8</span></a>) and also in the implementation of GRF (<a href="E02-grf.html"><span>Chapter&nbsp;13</span></a>).</p>
+<p>Note that it is much more computationally efficient to solve this maximization problem than the RSS minimization problem (<a href="#eq-rss-min">Equation&nbsp;<span>6.1</span></a>). In the RSS minimization problem, for each split, you calculate the mean, subtract it from <span class="math inline">\(Y_i\)</span> for all the observations, square them and sum them. On the other hand, in the similarity score maximization problem, you can simply sum <span class="math inline">\(Y_i\)</span> and then square it for each split. So, programatically, tree building is done using <a href="#eq-max-score">Equation&nbsp;<span>6.3</span></a>. You can also see the use of <a href="#eq-max-score">Equation&nbsp;<span>6.3</span></a> in the extreme gradient boosting algorithm (<a href="P03-xgb.html"><span>Chapter&nbsp;8</span></a>) and also in the implementation of GRF (<a href="E02-grf.html"><span>Chapter&nbsp;13</span></a>).</p>
 </section>
 <section id="training-a-regression-tree-in-r" class="level3" data-number="6.1.3">
 <h3 data-number="6.1.3" class="anchored" data-anchor-id="training-a-regression-tree-in-r"><span class="header-section-number">6.1.3</span> Training a regression tree in R</h3>
@@ -895,7 +946,7 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 <span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(x_1, x_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -0.0006986194</code></pre>
+<pre><code>[1] -0.01435116</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== second approach (positively correlated) ===#</span></span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>x_1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
@@ -903,7 +954,7 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 <span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(x_1, x_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.5129135</code></pre>
+<pre><code>[1] 0.4866894</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== third approach (negatively correlated) ===#</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>x_1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
@@ -911,7 +962,7 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 <span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(x_1, x_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -0.7887378</code></pre>
+<pre><code>[1] -0.8064211</code></pre>
 </div>
 </div>
 <p>The following function runs a single iteration of estimating <span class="math inline">\(E[x]\)</span> using the four approaches.</p>
@@ -956,7 +1007,7 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_alpha</span>(<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   alpha_hat_0 alpha_hat_1 alpha_hat_2 alpha_hat_3
-1:  -0.6073258  0.03891651     1.69275 -0.03403354</code></pre>
+1:   -2.003685  -0.3840659   0.9828713  -0.4342051</code></pre>
 </div>
 </div>
 <p>Repeating this many times,</p>
@@ -1097,7 +1148,7 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 </div>
 </div>
 <p>Hmm, the estimates look very similar. Actually, that is not just of the observations with <code>id == 1</code>. This is because the trained trees are very similar for many reasons, and the trees are highly “positively” correlated with each other. From our very simple experiment above, we know that the power of bagging is not very high when that is the case.</p>
-<p>RF introduces additional uncertainty to the process to make trees less correlated with each other (<em>decorrelate</em> trees). Specifically, for any leave of any tree, they consider only a randomly select subset of the explanatory variables when deciding how to split a leave. A typical choice of the number of variables considered at each split is <span class="math inline">\(\sqrt{K}\)</span>, where <span class="math inline">\(K\)</span> is the number of the explanatory variables specified by the user. In the naive example above, all <span class="math inline">\(K\)</span> variables are considered for all the split decisions of all the trees. Some variables are more influential than others and they get to be picked as the splitting variable at similar places, which can result in highly correlated trees. Instead, RF gives other variables a chance, which helps decorrelate the trees. This means that the tree we build in RF is not deterministic. Depending on which variables are selected for consideration in splitting, the tree will be different even if you use the same bootstrapped dataset.</p>
+<p>RF introduces additional uncertainty to the process to make trees less correlated with each other (<em>decorrelate</em> trees). Specifically, for any leave of any tree, they consider only a randomly select subset of the explanatory variables when deciding how to split a leave. A typical choice of the number of variables considered at each split is <span class="math inline">\(\sqrt{K}\)</span>, where <span class="math inline">\(K\)</span> is the number of the included explanatory variables. In the naive example above, all <span class="math inline">\(K\)</span> variables are considered for all the split decisions of all the trees. Some variables are more influential than others and they get to be picked as the splitting variable at similar places, which can result in highly correlated trees. Instead, RF gives other variables a chance, which helps decorrelate the trees. This means that the tree we build in RF is not deterministic. Depending on which variables are selected for consideration in splitting, the tree will be different even if you use the same bootstrapped dataset.</p>
 <p>Let’s code the process of building a tree for RF. We first bootstrap a dataset.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>n_obs <span class="ot">&lt;-</span> <span class="fu">nrow</span>(mlb1_dt)</span>
@@ -1165,11 +1216,8 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 </section>
 <section id="implementation" class="level2 page-columns page-full" data-number="6.3">
 <h2 data-number="6.3" class="anchored" data-anchor-id="implementation"><span class="header-section-number">6.3</span> Implementation</h2>
-<p>We can use <code>ranger()</code> from the <code>ranger</code> package to train an RF model.</p>
-
-<div class="no-row-height column-margin column-container"><div class="">
-<p>Another compelling R package for RF is the <code>randomForest</code> package.</p>
-</div></div><p>The <code>ranger()</code> function has many options you can specify that determine how trees are built. Here are some of the important ones (see <a href="https://cran.r-project.org/web/packages/ranger/ranger.pdf">here</a> for the complete description of the hyper-parameters.):</p>
+<p>We can use <code>ranger()</code> from the <code>ranger</code> package to train an RF model. Another commonly used R package for RF is the <code>randomForest</code> package. However, <code>ranger()</code> is much faster.</p>
+<p>The <code>ranger()</code> function has many options you can specify that determine how trees are built. Here are some of the important ones (see <a href="https://cran.r-project.org/web/packages/ranger/ranger.pdf">here</a> for the complete description of the hyper-parameters.):</p>
 <ul>
 <li><code>mtry</code>: the number of variables considered in each split (default is the square root of the total numbers of explanatory variables rounded down.)</li>
 <li><code>num.trees</code>: the number of tree to be built (default is 500)</li>
@@ -1177,7 +1225,10 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 <li><code>replace</code>: where sample with or without replacement when bootstrapping samples (default is <code>TRUE</code>)</li>
 <li><code>sample.fraction</code>: the fraction of the entire observations that are used in each tree (default is 1 if sampling with replacement, 0.632 if sampling without replacement)</li>
 </ul>
-<p>Let’s try fitting an RF with <code>ranger()</code> with the default parameters.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>By setting <code>replace = FALSE</code>, you will only use a fraction (randomly selected) of the entire sample in building each tree. This is an alternative to the algorithm discussed earlier, which uses bootstrapped (sample with replacement) dataset to build each tree.</p>
+</div></div><p>Let’s try fitting an RF with <code>ranger()</code> with the default parameters.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== load the package ===#</span></span>
 <span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ranger)</span>
@@ -1223,7 +1274,7 @@ R squared (OOB):                  0.7308852 </code></pre>
 </div>
 </div>
 <p>So, only <span class="math inline">\(65\%\)</span> of the rows from the original data (<code>mlb1_dt</code>) in this bootstrapped sample (many duplicates of the original observations). The observations that are NOT included in the bootstrapped sample is called out-of-bag observations. This provides a great opportunity to estimate test MSE while training an RF model! For a given regression tree, you can apply it to the out-of-bag samples to calculate MSE. You can repeat this for all the trees and average the MSEs, effectively conducting cross-validation. When the number of trees is large enough, OOB MSE is almost equivalent to MSE from LOOCV <span class="citation" data-cites="james2013introduction">(<a href="#ref-james2013introduction" role="doc-biblioref">James et al., n.d.</a>)</span>. This means that we can tune hyper-parameters by comparing OOB MSEs under different sets of hyper-parameter values.</p>
-<p>You can use a simple grid-search to find the best hyper-parameter values. Grid-search is simply a brute-force optimization methods that goes through all the combinations of hyper-parameters and see which combination comes at the top. The computational intensity of grid-search depends on how many hyper-parameters you want to vary and how many values you would like to look at for each of the hyper-parameters. Here, let’s tune <code>mtry</code>, <code>min.node.size</code>, and <code>sample.fraction</code>.</p>
+<p>You can use a simple grid-search to find the best hyper-parameter values. Grid-search is simply a brute-force optimization methods that goes through a set of combinations of hyper-parameters and see which combination comes at the top. The computational intensity of grid-search depends on how many hyper-parameters you want to vary and how many values you would like to look at for each of the hyper-parameters. Here, let’s tune <code>mtry</code>, <code>min.node.size</code>, and <code>sample.fraction</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== define set of values you want to look at ===#</span></span>
 <span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>mtry_seq <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">7</span>)</span>
@@ -1341,13 +1392,38 @@ R squared (OOB):                  0.7308852 </code></pre>
 1:    2             5             0.5 0.3601237</code></pre>
 </div>
 </div>
-
-
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The same cross-validation procedure can be done with less coding effort using the <code>mlr3</code> framework (see <a href="PROG-01-mlr3.html"><span>Chapter&nbsp;14</span></a>).</p>
+</div>
+</div>
+</section>
+<section id="references" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
 <div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-athey2019generalized" class="csl-entry" role="doc-biblioentry">
+Athey, Susan, Julie Tibshirani, and Stefan Wager. 2019. <span>“Generalized Random Forests.”</span> <em>The Annals of Statistics</em> 47 (2): 1148–78.
+</div>
+<div id="ref-breiman2001random" class="csl-entry" role="doc-biblioentry">
+Breiman, Leo. 2001. <span>“Random Forests.”</span> <em>Machine Learning</em> 45 (1): 5–32.
+</div>
+<div id="ref-Chen_2016" class="csl-entry" role="doc-biblioentry">
+Chen, Tianqi, and Carlos Guestrin. 2016. <span>“<span>XGBoost</span>.”</span> In <em>Proceedings of the 22nd <span>ACM</span> <span>SIGKDD</span> International Conference on Knowledge Discovery and Data Mining</em>. <span>ACM</span>. <a href="https://doi.org/10.1145/2939672.2939785">https://doi.org/10.1145/2939672.2939785</a>.
+</div>
 <div id="ref-james2013introduction" class="csl-entry" role="doc-biblioentry">
 James, Gareth, Daniela Witten, Trevor Hastie, and Robert Tibshirani. n.d. <em>An Introduction to Statistical Learning</em>. Vol. 112. Springer.
 </div>
 </div>
+
+
 </section>
 
 </main> <!-- /main -->

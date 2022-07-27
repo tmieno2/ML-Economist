@@ -2,13 +2,37 @@
 
 One of the most important ideas of the recent development of causal machine learning (CML) methods originate from @Chernozhukov2018, which proposed Double/Debiased ML methods. In this section, we go over those key ideas that are at the heart of many other important CML methods we will learn later. We then learn various models you can estimate using the R and Python `DoubleML` package [@DoubleML2021R; @DoubleML2022Python].
 
+:::{.callout-important}
+
+## What you will learn
+
++ How double/debiased machine learning works 
+  * avoiding regularlization bias through orthogonalization
+  * avoiding over-fitting bias through cross-fitting
++ Mechanics of DML
+  * method of moment
+  * score function
+  * cross-fitting
++ How to estimate ATE under conditional unconfoundedness using `DoubleMLPLR()` and under confoundedness using `DoubleMLPLIV()`.
+
+:::
+
+:::{.callout-tip}
+
+## Preferable background knowledge
+
++ how to use `mlr3` (see @sec-mlr3)
++ idea of method of moment
++ causal diagram 
+
+:::
 
 ## DML: the basic idea
 
 ### Problem Setting
 
 Throughout this section, we are interested in estimating the following econometric model
-, which is called a partially line regression model (PLR).
+, which is called a partially linear regression model (PLR).
 
 :::{.column-margin}
 We try to follow the notations of @Chernozhukov2018 as much as possible.
@@ -29,7 +53,7 @@ Your sole interest is in estimating $\theta$: the impact of the treatment ($d$).
 
 :::{.callout-note}
 
-**Assumptions on the error terms**
+## Assumptions on the error terms
 
 + $E[\mu|D,X] = 0$
 + $E[\eta|X] = 0$
@@ -41,7 +65,10 @@ The treatment effect is assumed to be constant irrespective of the value of $X$.
 :::
 
 :::{.callout-tip}
-$g_0(X)$ and $m_0(X)$ are called nuisance functions because we are not interested in understanding them. We are only interested in **controlling for** them to estimate $\theta$ accurately. 
+
+## Terminology alert
+
+$g_0(X)$ and $m_0(X)$ are called <span style="color:blue"> nuisance functions </span>because knowing them is not the ultimate goal. We are only interested in **controlling for** them to estimate $\theta$ accurately. 
 :::
 
 ### A naive approach {#sec-dml-naive}
@@ -144,7 +171,7 @@ $$
 y_i = 0.5 d_i  + \frac{exp(x_{i,1})}{1 + exp(x_{i,1})} + \frac{1}{4}\cdot x_{i,3} + \mu_i \\
 d_i = x_{i,1} + \frac{1}{4}\cdot\frac{exp(x_{i,3})}{1 + exp(x_{i,3})} \eta_i
 \end{aligned}
-$$
+$$ {#eq-simple-synthetic}
 
 where $\mu_i \sim N(0, 1)$ and $\eta_i \sim N(0, 1)$. The error terms ($\mu_i$ and $\eta_i$) are independent. In this data generating process, $d$ is continuous (not binary) and its effect on $y$ is assumed to be linear. 
 
@@ -224,7 +251,7 @@ for (i_rep in seq_len(n_rep)) {
 }
 ```
 
-It has 20 `x` variables (for $X$) along with `d` (treatment) and `y` (dependent variable). Only `x1` and `x3` are the relevant variables and the rest of $X$ are irrelevant. 
+It has 20 `x` variables (for $X$) along with `d` (treatment) and `y` (dependent variable). Only `x1` and `x3` are the relevant variables. The rest of $X$ do not play any role in explaining either $Y$ or $d$. However, they are correlated with `x1` and `x3` and interfere with estimating the nuisance functions.
 
 ```{r}
 str(training_data)
@@ -516,7 +543,9 @@ ggplot(theta_hats_apr1) +
 
 :::
 
-Regularization bias is termed so because bias in estimating $g_0(X)$ can occur when some form of regularization is implemented (e.g., lasso). However, its name is slightly misleading because $g_0(X)$ cannot be estimated without bias even without any regularization in general. This is because the estimation of initial $\theta$ (in Step 1.3) is biased, which comes from the fact that $m_0(X)$ is correlated with $g_0(X)$ through $X$. 
+Regularization bias is termed so because bias in estimating $g_0(X)$ can occur when some form of regularization is implemented (e.g., lasso). 
+
+<!-- However, its name is slightly misleading because $g_0(X)$ cannot be estimated without bias even without any regularization in general. This is because the estimation of initial $\theta$ (in Step 1.3) is biased, which comes from the fact that $m_0(X)$ is correlated with $g_0(X)$ through $X$.  -->
 
 <!-- ::: {.column-margin}
 Another (unofficial) implementation of $g_0(X)$ estimation is to just use $\hat{l}_0(X_i)$ as $\hat{g}_0(X_i)$ ([a blog post](https://www.r-bloggers.com/2017/06/cross-fitting-double-machine-learning-estimator/)) and then use the following formula.
@@ -530,9 +559,9 @@ $$
 $\hat{\theta}$ is biased because $\hat{l}_0(X_i)$ is a biased estimator of $\hat{g}_0(X_i)$ when $m_0(X)$ and $g_0(X)$ are correlated. The point here is that, $g_0(X)$ is hard to estimate without bias irrespective of whether any regularization happens or not.
 ::: -->
 
-However, if the treatment is independent, then, $g_0(X)$ can be estimated well and this approach works well except it still suffers from over-fitting bias. @fig-apr1-indep shows that the distribution of $\hat{\theta}$ when $m_0(X)$ is independent of $g_0(X)$ and the RF with the same hyper-parameters are used. While regularization can lead to bias in the estimation of $g_0(X)$, regularization is not the only source of bias. 
+<!-- However, if the treatment is independent, then, $g_0(X)$ can be estimated well and this approach works well except it still suffers from over-fitting bias. @fig-apr1-indep shows that the distribution of $\hat{\theta}$ when $m_0(X)$ is independent of $g_0(X)$ and the RF with the same hyper-parameters are used. While regularization can lead to bias in the estimation of $g_0(X)$, regularization is not the only source of bias.  -->
 
-```{r}
+<!-- ```{r}
 #| fig-cap: Performance of approach 1 when the treatment status is independent
 #| label: fig-apr1-indep
 #| code-fold: true
@@ -586,7 +615,7 @@ ggplot(theta_hats_apr1_indep) +
   ) +
   guides(color = guide_legend(nrow = 1, byrow = TRUE)) +
   theme(legend.position = "bottom")
-```
+``` -->
 
 ### Overcoming the regularization bias
 
@@ -967,7 +996,7 @@ ggplot() +
 
 ## Models and implementation by `DoubleML`
 
-In R, `DoubleML` is built on top of `mlr3`, which uses `R6` classes provided by the `R6` package. Since `R6` implements encapsulated object-oriented programming like Python, `DoubleML` in R and Python work in a very similar manner. Here, we will use R for demonstrations.
+In R, `DoubleML` is built on top of `mlr3`, which uses `R6` classes provided by the `R6` package. Since `R6` implements encapsulated object-oriented programming like Python, `DoubleML` in R and Python work in a very similar manner. Here, we will use R for demonstrations. 
 
 ### A note on method of moment and score function
 
@@ -1063,7 +1092,6 @@ $$
 You will also see (localized) moment conditions and score functions in GRF (@sec-grf).
 :::
 
-
 ### Partially linear model
 
 $$
@@ -1071,7 +1099,7 @@ $$
 y = \theta d + g_0(X) + \mu \\
 d = m_0(X) + \eta
 \end{aligned}
-$$ 
+$$ {#eq-plr}
 
 :::{.callout-note}
 
@@ -1079,14 +1107,259 @@ $$
 
 + $E[\mu|D,X] = 0$
 + $E[\eta|X] = 0$
++ $E[\eta\cdot \mu|D, X] = 0$
 
 :::
 
+```{r}
+#| code-fold: true
+
+DiagrammeR::grViz(
+  paste0(
+  "
+  digraph {
+    graph [layout = circo, ranksep = 0.5]
+
+    node [shape = box]
+      Y [label = 'Y']
+      u [label = '\U03BC']
+
+    node [shape = box]
+      X [label = 'X']
+      T [label = 'T']
+      v [label = '\U03B7']
+
+    edge [minlen = 2]
+      {v, X}->T
+      {X, T}->Y
+      u->Y
+  }
+  "
+  )
+)
+
+```
 
 
+There are two ways to estimate $\theta$ using `DoublMLPLR()`. They differ in how their score functions are defined. You pick either one of the two:
+
++ `partialling-out`: $[Y - l(X) - \theta(D-m(X))][D-m(X)]$
++ `IV-type`: $[Y - \theta D - g(X)][D-m(X)]$
+
+Since $g(X)$ and $m(X)$ themselves appear in the data generating process (@eq-plr), it is clear what  they are. However, it is not immediately clear what $l(X)$ represents. $l(X)$ refers to $E[Y|X]$.
+
+$$
+\begin{aligned}
+l(X) = E[Y|X] & = E[\theta d + g_0(X) + \mu] \\
+              & = \theta E[d|X] + E[g_0(X)] + E[\mu|X] \\
+              & = \theta m_0(X) + g_0(X) \;\; \mbox{(by the assumptions on the error terms)}\\
+\end{aligned}
+$$
+
+Given this, the scores functions can be rewritten as:
+
++ `partialling-out`: $\mu\cdot \eta$
++ `IV-type`: $\mu\cdot \eta$
+
+Therefore, the two score functions are actually identical in meaning, but represented by different terms, which result in different equations to calculate $\hat{\theta}$. Here are how $\theta$ is identified for the two scores functions:
+
+**`partialling-out`**
+$$
+\begin{aligned}
+E\large(\normalsize[Y - l(X) - \theta(D-m(X))][D-m(X)]\large)\normalsize = 0 \\
+\theta = \frac{E[(Y - l(X))(D-m(X))]}{E[(D-m(X))(D-m(X))]}
+\end{aligned}
+$$
+
+The empirical analog of this moment condition is
+
+$$
+\begin{aligned}
+\hat{\theta} = \frac{\sum_{i=1}^N (Y_i - l(X_i))(D_i-m(X_i))}{\sum_{i=1}^N (D_i-m(X_i))(D_i-m(X_i))}
+\end{aligned}
+$$
+
+**`IV-type`**
+
+$$
+\begin{aligned}
+\hat{\theta} = \frac{\sum_{i=1}^N (Y_i - g(X_i))(D_i-m(X_i))}{\sum_{i=1}^N D_i(D_i-m(X_i))}
+\end{aligned}
+$$
+
+::: {.column-margin}
+$D_i-m(X_i)$ is acting like an instrument.
+:::
+
+The choice of the score function results in different steps to estimate $\theta$ and what you need to supply to `DoublMLPLR()`. $g_0(X)$ is estimated in several steps (see @sec-dml-naive) as it needs to remove the effect of $\theta D$ before estimating only $g_0(X)$. $l_0(X)$, however, is estimated by simply regressing $Y$ on $X$. In running `DoublMLPLR()`, there are three key options:
+
++ `ml_l`: ML method to use to estimate $l(X)$
++ `ml_m`: ML method to use to estimate $m(X)$
++ `ml_g`: ML method to use to estimate $g(X)$
+
+When `partialling-out` is selected, you need to specify `ml_l`  and `ml_m`. However, you do not need to specify the `ml_g`. When `IV-type` is used you need to specify all three. This is because estimating `g(X)` involves first estimating `l(X)` (see @sec-dml-naive). So, the `partialling-out` option requires a smaller number of steps and easier to specify for the user. 
+
+Let's implement `DoublMLPLR()` using a synthetic dataset that follows the DGP represented by @eq-simple-synthetic. We can use `make_plr_CCDDHNR2018()` to create such a dataset.
+
+```{r}
+(
+data <- 
+  make_plr_CCDDHNR2018(
+    alpha = 0.5, 
+    n_obs = 500, 
+    dim_x = 20, 
+    return_type = 'data.table'
+  )
+)
+```
+
+Note that the treatment variable is continuous in this dataset.
+
+We first need to create a `DoubleMLData` object from the train data using `DoubleMLData$new()`. Specify the dependent variable using the `y_col` option and the treatment variable(s) by `d_cols`. The rest of the variables in the dataset provided will be regarded as covariates.
+
+```{r}
+(
+obj_dml_data <- 
+  DoubleMLData$new(
+    data, 
+    y_col = "y", 
+    d_cols = "d"
+  )
+)
+```
+
+Now, let's specify `ml_l`, `ml_m`, and `ml_g`. The `DoubleML` follows `mlr3` (see @sec-mlr3 for how to use `mlr3`).
+
+```{r}
+(
+ml_l <- 
+  lrn(
+    "regr.ranger",
+    num.trees = 500, 
+    mtry = 15, 
+    min.node.size = 5
+  )
+)
+
+```
+
+Let's use the same ML method for `ml_m` and `ml_g` (you can use any appropriate ML methods). We can simply use the `clone()` method to replicate `ml_l`.
+
+```{r}
+ml_m <- ml_l$clone()
+ml_g <- ml_l$clone()
+```
+
+We now set up the `DoubleMLPLR` estimator by providing a `DoubleMLData` and ML methods. By default, `score` is set to `"partialling out"`, so we do not need to provide `ml_g`. The `apply_cross_fitting` option is set to `TRUE` by default.
+
+```{r}
+dml_plr_obj <- DoubleMLPLR$new(obj_dml_data, ml_l, ml_m)
+```
+
+We can fit the model by invoking `fit()` on `dml_plr_obj`.
+
+```{r}
+dml_plr_obj$fit()
+```
+
+See the results with `print()`. You can see $\hat{\theta}$ at the bottom.
+
+```{r}
+print(dml_plr_obj)
+```
+
+If you are using `IV-type`, then you need to provide `ml_g` as well like below.
+
+```{r}
+#=== set up ===#
+dml_plr_obj_iv <- 
+  DoubleMLPLR$new(
+    obj_dml_data, 
+    ml_l, 
+    ml_m, 
+    ml_g,
+    score = "IV-type"
+  )
+
+#=== fit ===#
+dml_plr_obj_iv$fit()
+
+#=== print the results ===#
+print(dml_plr_obj_iv)
+```
 
 
+### Partially linear IV model
 
+When using observational data, it is rarely the case that conditional unconfoundedness of the treatment is satisfied. In such a case, you may want to consider a DML-IV approach implemented by `DoubleMLPLIV()`. Just like IV for linear models, finding the right instrument is critical for the DML-IV approach to be consistent.
+
+$$
+\begin{aligned}
+y = \theta d + g_0(X) + \mu \\
+Z = m_0(X) + \varepsilon \\
+d = r_0(X) + \eta
+\end{aligned}
+$$ {#eq-plr}
+
+When $\varspsilon$ and $\mu$ are correlated, `DoubleMLPLR()` is inconsistent. However, as long as the following assumptions are satisfied, `DoubleMLPLIV()` is consistent.
+
+:::{.callout-note}
+
+**Assumptions on the error terms**
+
++ $E[\mu|Z,X] = 0$
++ $E[\varepsilon|X] = 0$
++ $E[\varepsilon\cdot \mu|Z, X] = 0$
+
+:::
+
+Here is the causal diagram for the partially linear model of interest. As you can see, the treatment variable $T$ is confounded as $\mu$ affects both $Y$ and $T$ (through $\eta$). 
+
+```{r}
+#| code-fold: true
+
+DiagrammeR::grViz(
+  paste0(
+  "
+  digraph {
+    graph [ranksep = 0.6]
+    node [shape = box]
+      Y [label = 'Y']
+      X [label = 'X']
+      T [label = 'T']
+      Z [label = 'Z']
+      varep [label = '\U03B5']
+      mu [label = '\U03BC']
+      eta [label = '\U03B7']
+    edge [minlen = 2]
+      X->Y
+      T->Y
+      Z->T
+      X->T
+      X->Z
+      varep->Z
+      mu->{Y, eta}
+      eta->{T, mu}
+    { rank = same; Y; Z; varep}
+    { rank = same; X; T; mu}
+  }
+  "
+  )
+)
+```
+
+Just like `DoublMLPLR()`, there are two ways to estimate $\theta$ using `DoublMLPLIV()`. The two score functions are:
+
++ `partialling-out`: $[Y - l(X) - \theta(D-r(X))][Z-m(X)]$
++ `IV-type`: $[Y - \theta D - g(X)][Z-m(X)]$
+
+, where $r(X) = E[D|X]$. So, $r(X)$ is the same as $m(X)$ in the partially line model case. $m(X)$ represents $E[Z|X]$ in the IV model.
+
+Let $\tilde{Z}$, $\tilde{D}$, $\tilde{Y}_l$, and $\tilde{Y}_g$ denote $Z-m(X)$, $D-r(X)$, $Y-l(X)$, and $Y-g(X)$, respectively.
+
++ `partialling-out`: $\theta = (\tilde{Z}'\tilde{D})^{-1}\tilde{Z}\tilde{Y}_l$
+
++ `IV-type`: $\theta = (\tilde{Z}'D)^{-1}\tilde{Z}\tilde{Y}_g$
 
 
 ## Suggested Exercises

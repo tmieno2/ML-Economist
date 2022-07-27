@@ -1,5 +1,23 @@
 # Random Forest {#sec-rf}
 
+The main goal of this chapter is to learn random forest (RF) for regression. RF is first conceived by @breiman2001random, and it has been one of the most popular machine learning methods. It also has been an inspiration to many other ML methods including extreme gradient boosting [@Chen_2016], generalized random forest [@athey2019generalized].
+
+We first start with understanding how a regression tree is built, which is the foundation of all the forest-based ML methods. We then learn how random forest is built as an extension of a regression tree and how to train it.
+
+:::{.callout-note}
+
+## What you will learn
+
++ Regression tree
+  * How regression tree is built (algorithm)
++ Random forest
+  * How random forest is built
+    - bagging (bootstrap averaging)
+    - random variable selection for splitting
+  * How out-of-bag prediction works
+  * How to train RF using R
+
+:::
 
 ## Regression tree {#sec-rt}
 
@@ -48,12 +66,22 @@ simple_tree <-
     control = rpart.control(minsplit = 200)
   )
 
-fancyRpartPlot(simple_tree)
+fancyRpartPlot(simple_tree, digits = 4)
 ```
 
-Here is how you read the figure. At the first node, all the observations belong to it ($n=353$) and the estimate of `lsalary` is 13. Now, the whole datasets are split into two based on the criteria of whether `hits` is less than `262` or not. If yes, then such observations will be grouped into the node with "2" on top (the leftmost node), and the estimated `lsalary` for all the observations in that group ($n = 132$) is 12. If no, then such observations will be grouped into the node with "3" on top, and the estimated `lsalary` for all the observations in that group ($n = 221$) is 14. This node is further split into two groups based on whether `runsyr` is less than 44 or not. For those observations with `runsyr` $< 44$ (second node a the bottom), estimated `lsalary` is 14. For those with `runsyr` $>= 44$ (rightmost node at the bottom), estimated `lsalary` is 15. The nodes that do not have any further bifurcations below are called terminal nodes or leafs. 
+:::{.callout-tip}
 
-As illustrated in the figure above, a regression tree splits the data into groups based on the value of explanatory variables, and all the observations in the same group will be assigned the same estimate (the sample average of the dependent variable of the group). 
+## Terminology alert
+
++ <span style="color:blue">node </span>: a group of observations represented by a green box
++ <span style="color:blue">root node</span>: first node to which all the observations belong
++ <span style="color:blue">leaf</span> or <span style="color:blue"> terminal node</span>: A node that is not split into more nodes
+
+::: 
+
+Here is how you read the figure. At the first (root) node, all the observations belong to it ($n=353$) and the estimate of `lsalary` is $13.49$, which is simply the sample average of `lsalary`. Now, the whole dataset is split into two groups (nodes) based on the criteria of whether `hits` is less than `262` or not. If yes, then such observations will be grouped into the node with "2" on top (the leftmost node), and the estimated `lsalary` for all the observations in that group ($n = 132$) is $12.35$, which is the sample average of `lsalary` of the $132$ observations in the group. If no, then such observations will be grouped into the node with "3" on top, and the estimated `lsalary` for all the observations in that group ($n = 221$) is $14.17$. This node is further split into two groups based on whether `runsyr` is less than $44$ or not. For those observations with `runsyr` $< 44$ (second node at the bottom), estimated `lsalary` is $13.58$. For those with `runsyr` $>= 44$ (rightmost node at the bottom), estimated `lsalary` is $14.56$. 
+
+As illustrated in the figure above, a regression tree splits the data into groups based on the value of explanatory variables, and all the observations in the same group will be assigned the same estimate, which isthe sample average of the dependent variable of the group. 
 
 :::{.callout-tip}
 The estimated value of $Y$ (the dependent variable) for $X = x$ is the average of $Y$ from all the observations that belong to the same terminal node (leaf) as $X = x$.
@@ -74,37 +102,41 @@ ggplot(mlb1) +
   ) +
   annotate(
     "text", 
-    x = 44, y = 111, 
-    label = "Region 2", 
+    x = 75, y = 100, 
+    label = "Region (Node) 2", 
     color = "red"
   ) +
   annotate(
     "text", 
     x = 22, y = 1500, 
-    label = "Region 6", 
+    label = "Region (Node) 6", 
     color = "red"
   ) +
   annotate(
     "text", 
-    x = 75, y = 1500, 
-    label = "Region 7", 
+    x = 90, y = 1500, 
+    label = "Region (Node) 7", 
     color = "red"
   )
 ```
 
-The mechanism called recursive binary splitting is used to split the predictor space like the example above. Suppose you have K explanatory variables ($X_1, \dots, X_K$). Further, let $c$ denote the threshold that splits the sample into two regions such that \{$X|X_k < c$\} and \{$X|X_k \geq c$\}.
+An algorithm called recursive binary splitting is used to split the predictor space like the example above. Suppose you have K explanatory variables ($X_1, \dots, X_K$). Further, let $c$ denote the threshold that splits the sample into two regions such that \{$X|X_k < c$\} and \{$X|X_k \geq c$\}.
 
 ::: {.column-margin}
 \{$X|X_k < c$\} means observations that satisfy the condition stated right to the vertical bar (|). Here, it means all the observations for which its $X_k$ value is less than $c$.
 :::
 
-+ Step 1: For each of the explanatory variables ($X_1$ through $X_K$), find all the threshold values that result in unique splits.
-+ Step 2: For each of the explanatory variables ($X_1$ through $X_K$), go through all the threshold values and then find the threshold value that leads to the lowest sum of the squared residuals. 
-+ Step 3: Among all the splits (as many as the number of explanatory variables), pick the variable-threshold combination that leads to the lowest sum of the squared residuals.
++ Step 1: For each of the covariates ($X_1$ through $X_K$), find all the threshold values that result in <span style="color:blue"> unique</span> splits.
++ Step 2: For each of the covariate-threshold combinations, calculate the sum of the squared residuals of its resulting split, and find the threshold value with the lowest sum of the squared residuals by covariate. 
++ Step 3: Among all the best splits by covariate (as many as the number of explanatory variables), pick the variable-threshold combination that leads to the lowest sum of the squared residuals.
 
-The data is then split according to the chosen criteria and then the same process is repeated for each of the branches, ad infinitum until the user-specified stopping criteria is met. This way of splitting is called a **greedy** (or I would call it myopic or shortsighted) approach because the split happens to minimize the immediate RSS without considering the implication of the split for the later splits. 
+The data is then split according to the chosen criteria and then the same process is repeated for each of the branches, ad infinitum until the user-specified stopping criteria is met. This way of splitting is called a **greedy** (or I would call it myopic or shortsighted) approach because the split is sought to minimize the immediate RSS without considering the implication of the split for the later splits. 
 
-Let's try to write this process (an inefficient version) for the first split from the beginning node using the `mlb1` data as an illustration based on a simple grid search to find the optimal thresholds (Step 1). 
+Let's try to write this process for the first split from the beginning node using the `mlb1` data as an illustration based on a simple grid search to find the optimal thresholds (Step 1). 
+
+::: {.column-margin}
+Note that the R codes here are deliberately inefficient as they focus on illustrating the process.
+:::
 
 ```{r set-up-data}
 #=== get data ===#
@@ -153,7 +185,7 @@ ggplot(mlb1_dt) +
 
 ```
 
-For each value in `value_seq`, we find the RSS. For example, for the 50th value in `value_seq` (the red line in @fig-thre),
+For each value in `value_seq`, we find RSS. For example, for the 50th value in `value_seq` (the red line in @fig-thre),
 
 ```{r}
 copy(mlb1_dt) %>% 
@@ -179,7 +211,7 @@ copy(mlb1_dt) %>%
 
 This means `value_seq[50]` (`r value_seq[50]`) is a better threshold than `value_seq[70]` (`r value_seq[70]`).
 
-Okay, let's consider all the candidate values, not just 50th and 70th, and then pick the best.
+Okay, let's consider all the candidate threshold values now, not just 50th and 70th, and then pick the best.
 
 ```{r}
 get_rss <- function(i, var_name, value_seq, data)
@@ -224,7 +256,7 @@ rss_value[which.min(rss), ]
 
 Okay, so, the best threshold for `hruns` is `r round(rss_value[which.min(rss), var_value], digits = 3)`
 
-Suppose we are considering only five explanatory variables in building a regression tree: `hruns`, `years`, `rbisyr`, `allstar`, `runsyr`, `hits`, and `bavg`. We do the same operation we did for `hruns` for all the variables. 
+Suppose we are considering only five explanatory variables in building a regression tree: `hruns`, `years`, `rbisyr`, `allstar`, `runsyr`, `hits`, and `bavg`. We do the same operations we did for `hruns` for all the variables. 
 
 ```{r}
 get_rss_by_var <- function(var_name, data)
@@ -320,7 +352,7 @@ $$
 \end{aligned}
 $$ {#eq-max-score}
 
-Note that it is much more computationally efficient to solve this maximization problem than the RSS minimization problem (@eq-rss-min). In the RSS minimization problem, for each split, you calculate the mean, subtract it from $Y_i$ for all the observations, square them and sum them. On the other hand, in the similarity maximization problem, you can simply sum $Y_i$ and then square it for each split. So, programatically, tree building is done using @eq-max-score. You can also see the use of @eq-max-score in the extreme gradient boosting algorithm (@sec-xgb) and also in the implementation of GRF (@sec-grf).
+Note that it is much more computationally efficient to solve this maximization problem than the RSS minimization problem (@eq-rss-min). In the RSS minimization problem, for each split, you calculate the mean, subtract it from $Y_i$ for all the observations, square them and sum them. On the other hand, in the similarity score maximization problem, you can simply sum $Y_i$ and then square it for each split. So, programatically, tree building is done using @eq-max-score. You can also see the use of @eq-max-score in the extreme gradient boosting algorithm (@sec-xgb) and also in the implementation of GRF (@sec-grf).
 
 
 ### Training a regression tree in R
@@ -640,7 +672,7 @@ y_estimates[id == 1, ]
 
 Hmm, the estimates look very similar. Actually, that is not just of the observations with `id == 1`. This is because the trained trees are very similar for many reasons, and the trees are highly "positively" correlated with each other. From our very simple experiment above, we know that the power of bagging is not very high when that is the case. 
 
-RF introduces additional uncertainty to the process to make trees less correlated with each other (*decorrelate* trees). Specifically, for any leave of any tree, they consider only a randomly select subset of the explanatory variables when deciding how to split a leave. A typical choice of the number of variables considered at each split is $\sqrt{K}$, where $K$ is the number of the explanatory variables specified by the user. In the naive example above, all $K$ variables are considered for all the split decisions of all the trees. Some variables are more influential than others and they get to be picked as the splitting variable at similar places, which can result in highly correlated trees. Instead, RF gives other variables a chance, which helps decorrelate the trees. This means that the tree we build in RF is not deterministic. Depending on which variables are selected for consideration in splitting, the tree will be different even if you use the same bootstrapped dataset.
+RF introduces additional uncertainty to the process to make trees less correlated with each other (*decorrelate* trees). Specifically, for any leave of any tree, they consider only a randomly select subset of the explanatory variables when deciding how to split a leave. A typical choice of the number of variables considered at each split is $\sqrt{K}$, where $K$ is the number of the included explanatory variables. In the naive example above, all $K$ variables are considered for all the split decisions of all the trees. Some variables are more influential than others and they get to be picked as the splitting variable at similar places, which can result in highly correlated trees. Instead, RF gives other variables a chance, which helps decorrelate the trees. This means that the tree we build in RF is not deterministic. Depending on which variables are selected for consideration in splitting, the tree will be different even if you use the same bootstrapped dataset.
 
 Let's code the process of building a tree for RF. We first bootstrap a dataset. 
 
@@ -705,11 +737,7 @@ By the way, if we were to use all the variables instead of just these three, the
 
 ## Implementation
 
-We can use `ranger()` from the `ranger` package to train an RF model. 
-
-::: {.column-margin}
-Another compelling R package for RF is the `randomForest` package.
-:::
+We can use `ranger()` from the `ranger` package to train an RF model. Another commonly used R package for RF is the `randomForest` package. However, `ranger()` is much faster. 
 
 The `ranger()` function has many options you can specify that determine how trees are built. Here are some of the important ones (see [here](https://cran.r-project.org/web/packages/ranger/ranger.pdf) for the complete description of the hyper-parameters.):
 
@@ -718,6 +746,10 @@ The `ranger()` function has many options you can specify that determine how tree
 + `min.node.size`: minimum number of observations in each node (default varies based on the the type of analysis)
 + `replace`: where sample with or without replacement when bootstrapping samples (default is `TRUE`)
 + `sample.fraction`: the fraction of the entire observations that are used in each tree (default is 1 if sampling with replacement, 0.632 if sampling without replacement)
+
+::: {.column-margin}
+By setting `replace = FALSE`, you will only use a fraction (randomly selected) of the entire sample in building each tree. This is an alternative to the algorithm discussed earlier, which uses bootstrapped (sample with replacement) dataset to build each tree. 
+:::
 
 Let's try fitting an RF with `ranger()` with the default parameters.
 
@@ -735,7 +767,6 @@ rf_fit <-
 )
 ```
 
-
 ::: {.column-margin}
 Since we have many trees, it is no longer possible to have a nice graphical representation of the trained RF model like we did with a regression tree.
 :::
@@ -752,7 +783,7 @@ mlb1_dt[, id %in% unique(boot_data$id)] %>% mean()
 
 So, only $65\%$ of the rows from the original data (`mlb1_dt`) in this bootstrapped sample (many duplicates of the original observations). The observations that are NOT included in the bootstrapped sample is called out-of-bag observations. This provides a great opportunity to estimate test MSE while training an RF model! For a given regression tree, you can apply it to the out-of-bag samples to calculate MSE. You can repeat this for all the trees and average the MSEs, effectively conducting cross-validation. When the number of trees is large enough, OOB MSE is almost equivalent to MSE from LOOCV [@james2013introduction]. This means that we can tune hyper-parameters by comparing OOB MSEs under different sets of hyper-parameter values.
 
-You can use a simple grid-search to find the best hyper-parameter values. Grid-search is simply a brute-force optimization methods that goes through all the combinations of hyper-parameters and see which combination comes at the top. The computational intensity of grid-search depends on how many hyper-parameters you want to vary and how many values you would like to look at for each of the hyper-parameters. Here, let's tune `mtry`, `min.node.size`, and `sample.fraction`.
+You can use a simple grid-search to find the best hyper-parameter values. Grid-search is simply a brute-force optimization methods that goes through a set of combinations of hyper-parameters and see which combination comes at the top. The computational intensity of grid-search depends on how many hyper-parameters you want to vary and how many values you would like to look at for each of the hyper-parameters. Here, let's tune `mtry`, `min.node.size`, and `sample.fraction`.
 
 ```{r}
 #=== define set of values you want to look at ===#
@@ -810,9 +841,13 @@ So, the best choice among the ones tried is:
 parameters[which.min(oob_mse), ]
 ```
 
+:::{.callout-tip}
+The same cross-validation procedure can be done with less coding effort using the `mlr3` framework (see @sec-mlr3). 
+:::
 
+## References {.unnumbered}
 
-
+<div id="refs"></div>
 
 
 

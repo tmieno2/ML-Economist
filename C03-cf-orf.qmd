@@ -1,6 +1,28 @@
 # Forest-based CATE Estimators {#sec-cf-orf}
 
-In @sec-het-dml, we saw a special case of R-leaner/DML where the final model is a linear-in-parameter model. Here, we learn two methods that estimate CATE non-parametrically: causal forest and orthogonal forest.
+In @sec-het-dml, we saw a special case of R-learner/DML where the final model is a linear-in-parameter model. Here, we learn two methods that estimate CATE non-parametrically: causal forest [@athey2019generalized] and orthogonal forest [@oprescu2019orthogonal].
+
+## Model
+
+The heterogeneous treatment effect model of interest in this chapter is the same as the one in @sec-het-dml.
+
+$$
+\begin{aligned}
+Y & = \theta(X)\cdot T + g(X, W) + \varepsilon \\
+T & = f(X, W) + \eta 
+\end{aligned}
+$$ {#eq-model-het-te}
+
++ $Y$: dependent variable
++ $T$: treatment variable (can be either binary dummy or continuous)
++ $X$: collection of variables that affect Y indirectly through the treatment ($\theta(X)\cdot T$) and directly ($g(X, W)$) independent of the treatment
++ $W$: collection of variables that affect directly ($g(X, W)$) independent of the treatment, but not through the treatment
+
+Here are the key assumptions:
+
++ $E[\varepsilon|X, W] = 0$
++ $E[\eta|X, W] = 0$
++ $E[\eta\cdot\varepsilon|X, W] = 0$
 
 ## Causal Forest
 
@@ -10,16 +32,35 @@ Causal Forest (CF) (as implemented by the R `grf` package or python `econml` pac
 See @sec-grf for a brief description of what GRF is. 
 :::
 
-Causal Forest can be useful in estimating heterogeneous treatment effects when they are complex and/or non-linear functions of attributes (heterogeneity drivers) and it is hard to represent them using linear models.
+Causal Forest can be useful in estimating heterogeneous treatment effects when they are complex and/or non-linear functions of attributes (heterogeneity drivers) and it is hard to represent them using linear-in-parameter models.
 
-### Mechanics
+### Understanding mechanics with illustrations
+
+::: {.column-margin}
+**Packages to load for replication**
+
+```{r}
+#| include: false
+
+library(data.table)
+library(tidyverse)
+library(grf)
+```
+
+```{r}
+#| eval: false
+library(data.table)
+library(tidyverse)
+library(grf)
+```
+:::
+
 
 Let $\hat{f}(X_i,W_i)$ and $\hat{g}(X_i,W_i)$ denote the estimation of $E[Y|X,W]$ and $E[T|X,W]$, respectively. Further, let $\hat{\tilde{Y_i}}$ and $\hat{\tilde{T_i}}$ denote $Y_i - \hat{f}(X_i,W_i)$ and $T_i - \hat{g}(X_i,W_i)$, respectively.
 
 ::: {.column-margin}
-CF can be implemented using the R `grf` package or python `econml` package. Both of them implements CF as an R-learner. However, the original causal forest proposed in @wager_estimation_2018 does not follow an R-leaner procedure.
+CF can be implemented using the R `grf` package or python `econml` package. Both of them implements CF as an R-learner. However, the original causal forest proposed in @wager_estimation_2018 does not follow an R-learner procedure.
 :::
-
 
 Then, CF estimates $\theta(X)$ at $X = x$ by solving the following equation:
 
@@ -27,9 +68,125 @@ $$
 \begin{aligned}
 \hat{\theta}(x) = argmin_{\theta}\;\;\sum_{i=1}^N \alpha_i(X_i)[\hat{\tilde{Y_i}} - \theta\cdot \hat{\tilde{T_i}}]^2
 \end{aligned}
+$$ {#eq-solve-cf}
+
+where $\alpha_i(X_i)$ is the weight given to each $i$. $\alpha_i(X_i)$ is determined based on the trees trained based on the pseudo outcomes that are defined specifically for causal forest estimation. Suppose you built $T$ trees and let $\eta_{i,t}(X)$ be 1 if observation $i$ belongs to the same leaf as $X$ in tree t. Then, 
+
+$$
+\begin{aligned}
+\alpha_i(X) = \frac{1}{T}\sum_{t=1}^T\frac{\eta_{i,t}(X)}{\sum_{i=1}^N\eta_{i,t}(X)}
+\end{aligned}
+$$ {#eq-weight-cf}
+
+So, the weight give to observation $i$ is higher if observation $i$ belongs to the same leaf as the evaluation point $X$ in more trees. 
+
+It is useful to see a simple example to understand this procedure. Let's use a simple toy data generating process for this.
+
+$$
+\begin{aligned}
+y = (x_1 + \frac{1}{x_2}) \cdot T + e
+\end{aligned}
 $$
 
-where $\alpha_i(X_i)$ is the weight given to each $i$. $\alpha_i(X_i)$ is found using random forest based on a causal criterion. 
+where all the variables on the right hand side are independent of one another.
+
+```{r}
+set.seed(293)
+N <- 1000
+
+(
+data <-
+  data.table(
+    x1 = rnorm(N),
+    x2 = runif(N) + 1,
+    e = rnorm(N), # error term
+    T = runif(N) > 0.5 # treatment that is independent
+  ) %>% 
+  .[, y := (x1 + 1/x2)*T + e]
+)
+```
+
+After training a causal forest model, we have trees like the ones shown in @fig-cf-trees, which shows only the first and last of the $2000$ trees are. Trees are made intentionally shallow to make discussions simpler.
+
+```{r}
+#| fig-cap: Example trees built in causal forest estimation
+#| label: fig-cf-trees 
+#| code-fold: true
+#| fig-subcap: 
+#|   - "Tree 1"
+#|   - "Tree 2000"
+#| layout-ncol: 2 
+
+cf_trained <-
+  causal_forest(
+    X = data[, .(x1, x2)],
+    Y = data[, y],
+    W = data[, T],
+    min.node.size = 30
+  )
+
+get_tree(cf_trained, 1) %>% plot()
+# get_tree(cf_trained, 2000) %>% plot()
+# these plots do not accept subcaps, so manually importing figures
+
+knitr::include_graphics("figures/Tree_1.png")
+knitr::include_graphics("figures/Tree_2.png")
+```
+
+You probably noticed that the total number of samples in the leaves is only $250$ instead of $1000$, which is the total number of observations in `data`. When causal forest was trained on this dataset, only half of the entire sample are randomly selected for building each tree (due to the default setting of `sample.fraction = 0.5`). The halved sample is further split into two groups, each containing $250$ observations (due to the default setting of `honest.fraction = 0.5`). Let's call them $J_1$ and $J_2$. Then, $J_1$ is used to train a tree to find the splitting rules. For example, $x1 \leq -0.09$ is the splitting rule for Tree 1. Once the splitting rules are determined (tree building process is complete), then $J_1$ is "vacated" (or thrown out) from the tree. Then, $J_2$ "repopulate" the tree nodes. That is, the statistics presented in the left and right nodes (`avg_Y` and `avg_W`) are based on the samples in $J_2$, not $J_1$ which was used to determine the splitting rules. We can take a look at individual trees to see what happened.
+
+
+```{r}
+a_tree <- get_tree(cf_trained, 1)
+```
+
+`drawn_samples` attribute of the tree contains row indices that are selected randomly for this tree.
+
+```{r}
+a_tree$drawn_samples
+```
+
+As you can see, there are 500 samples. Accessing `nodes` attribute will give you the splitting rules for the tree built and which samples are in what node.
+
+```{r}
+(
+nodes <- a_tree$nodes
+)
+```
+
+`nodes` is a list of three elements (one root node and two terminal nodes). The `samples` attribute gives you row indices of the samples that belong to the terminal node. 
+
+```{r}
+nodes[[2]]$samples
+nodes[[3]]$samples
+```
+
+These are from $J_2$. That is, they were not used in finding the splitting rule of $x1 \leq -0.09$. They were populating the terminal nodes following the splitting rule. The difference in `a_tree$drawn_samples` and the combinatio of `nodes[[2]]$samples` and `nodes[[3]]$samples` is $J_1$.
+
+```{r}
+J2_rows <- c(nodes[[2]]$samples, nodes[[3]]$samples)
+J1_J2_rows <- a_tree$drawn_samples
+
+(
+J1_rows <- J1_J2_rows[J1_J2_rows %in% J2_rows]
+)
+```
+
+As you can see, there are 250 samples in $J_1$.
+
+Suppose you are interested in predicting $\hat{\theta}$ at $X_0 = \{x_1 = 0.5, x_2 = 0.5\}$. For a given tree, we give 1 to the observations that belong to the same leaf as $X_0 = \{x_1 = 0.5, x_2 = 0.5\}$. For example, for the first tree, $X_0$ belongs to the right leaf because $x1 = 0.5 > -0.09$. So, we give 1 to all those in the right leaf and 0 to those in the left leaf. 
+
+```{r}
+#=== define eta for tree 1  ===#
+data[, eta_t1 := 0] # first set eat to 0 for all
+data[J2_rows & x1 > -0.09, eta_t1 := 1] # replace eta with 1 if in J2 and x1 > -0.09
+
+#=== see the data ===#
+data
+```
+
+We repeat this for all the trees and use @eq-weight-cf to calculate the weights for the individual observations. Then, @eq-solve-cf with the weights is solved to calculate $\hat{\theta}(X_0)$.
+
 
 Unlike the DML approaches we saw in @sec-het-dml that uses a linear model as the final model, CF does not assume any functional form for how $X$ affects $\theta$ as you can see from the above minimization problem. As mentioned earlier, CF is a special case of GRF (discussed in @sec-grf), so CF is a local non-parametric regression.
 
@@ -37,51 +194,198 @@ Unlike the DML approaches we saw in @sec-het-dml that uses a linear model as the
 CF is consistent only if the conditional unconfoundedness is satisfied. 
 :::
 
-In other words, all potential variables that simultaneously affect the treatment decision and the outcome (confounders) are observed and included in the model. This is a very hard condition to satisfy using empirical data. An important exception is of course a randomized controlled trials. 
+In other words, all potential variables that simultaneously affect the treatment decision and the outcome (confounders) are observed and included in the model. This is a very hard condition to satisfy using empirical data. An important exception is of course a randomized controlled trial. 
 
 
 ### Implementation 
 
 We can use the `causal_forest()` function from the `grf` package to train a CF model in R. In Python, you can use `CausalForestDML()` from the `econml` package or `GRFForestRegressor` from the `skgrf` package.
 
-As of now, there are some notable differences between `grf` and `econml` are. 
+
+As of now, there are some notable differences between `grf` and `econml`. 
 
 :::{.callout-tip}
+
+## Some differences between the `grf` and `econml` implementation of causal forest
+
 + While `grf` support clustering, `econml` does not.
+
 + It is easy to modify the first stage estimations in `econml`. `grf` uses random forest by default for them. If you would like to try other ML methods, then you need to write a code to predict $Y - E[Y|X, W]$ and $T - E[T|X, W]$ with your choice of ML methods yourself (see @sec-mlr3-in-action for an example code to do this).
-+ `grf` doe not cross-fit in the first-stage estimation. Rather, it uses out-of-bag prediction from the trained random forest models, which avoids over-fitting (Note that the motivation behind cross-fitting in DML is to avoid over-fitting bias in the second stage estimation. See @sec-dml).
+
++ `grf` does not cross-fit in the first-stage estimation. Rather, it uses out-of-bag prediction from the trained random forest models, which avoids over-fitting (Note that the motivation behind cross-fitting in DML is to avoid over-fitting bias in the second stage estimation. See @sec-dml).
+
++ `grf` does not make distinctions between $X$ and $W$.
+
 :::
 
 
-::: {.panel-tabset}
+```{r}
+#=== load the Treatment dataset ===#
+data("Treatment", package = "Ecdat")
 
-## R
+#=== convert to a data.table ===#
+(
+data <- 
+  data.table(Treatment) %>% 
+  #=== create an id variable ===#
+  .[, id := 1:.N]
+)
+```
+
+Here are the variables in this dataset that we use.
+
++ `re78` ($Y$): real annual earnings in 1978 (after the treatment)
++ `treat` ($T$): `TRUE` if a person had gone through a training, `FALSE` otherwise. 
+
+$X$ includes
+
++ `re74`: real annual earnings in 1978 (after the treatment)
++ `age`: age
++ `educ`: education in years
++ `ethn`: one of "other", "black", "hispanic"
++ `married`: married or not
+
+`grf::causal_forest()` takes only numeric values for $X$. So, we will one-hot encode `ethn`, which is a factor variable.
 
 ```{r}
+(
+data_trt <- mltools::one_hot(data)
+)
+```
 
-grf::causal_forest(
+We now have `ethn_black`, `ethn_hispanic`, and `ethn_other` from `ethn`. The model we are estimating is as follows:
 
+$$
+\begin{aligned}
+re78 & = \theta(age, re74, educ, ethn\_hipanic, ethn\_black, married)\cdot treat + g(age, re74, educ, ethn\_hipanic, ethn\_black, married) + \varepsilon \\
+treat & = f(age, re74, educ, ethn\_hipanic, ethn\_black, married) + \eta
+\end{aligned}
+$$
+
+:::{.callout-warning}
+Note that we are paying no attention to the potential endogeneity problem here. This is just a demonstration and the results are likely to be biased. We will look at instrumental forest later in @sec-cf-extension, which is consistent under confoundedness as long as you can find appropriate external instruments.
+:::
+
+```{r}
+cf_trained <-
+  grf::causal_forest(
+    X = data_trt[, .(age, re74, educ, ethn_hispanic, ethn_black, married)] %>% as.matrix(),
+    Y = data_trt[, re78],
+    W = data_trt[, treat]
+  )
+```
+
+You can look at individual trees using the `get_tree()` function. Let's take a look at the fifth one and plot (there are total of $2,000$ trees, which is the default number of trees).
+
+```{r}
+get_tree(cf_trained, 5) %>% plot()
+```
+
+
+
+
+```{r}
+grf::variable_importance(cf_trained)
+```
+
+Unlike linear-in-parameter model, there are no coefficients that can immediately tell us how influential each of $X$ is in driving the treatment effect heterogeneity. One way to see the impact a variable is to change the variable of interest while the value of the rest of $X$ is fixed. For example, for the given observed value of $X$ except `age`, and then vary the value of `age` to see how `age` affects the treatment effect. We can do this for all the observations and then can get a good picture of how the treatment effect varies across individuals at different values of `age`. 
+
+Let's first create a sequence of `age` values at which $\hat{\theta}$ is predicted. 
+
+```{r}
+age_seq <-
+  data.table(
+    age = data_trt[, seq(min(age), max(age), length = 30)]
+  )
+```
+
+We then create a dataset where every single individual (observation) in the original data `data_trt` to have all the age values in `age_seq` while the value of the rest of $X$ fixed at their own values.
+
+::: {.column-margin}
+Confirm what `reshape::expand.grid.df` does with this simple example.
+
+```{r}
+reshape::expand.grid.df(
+  data.table(a = c(1, 2, 3)), # first data set
+  data.table(b = c(1, 2), c = c("a", "b")) # second data set
+)
+```
+:::
+
+```{r}
+data_te <- 
+  reshape::expand.grid.df(
+    age_seq, 
+    data_trt[, .(re74, educ, ethn_hispanic, ethn_black, married, id)]
+  ) %>% 
+  data.table()
+```
+
+Now, we can use `predict()` function to predict $\hat{\theta}$ with their standard error estimates (by adding `estimate.variance = TRUE`).
+
+```{r}
+(
+theta_hat_with_se <- 
+  predict(cf_trained, newdata = dplyr::select(data_te, -id), estimate.variance = TRUE) %>% 
+  data.table() %>% 
+  .[, se := sqrt(variance.estimates)] %>% 
+  setnames("predictions", "theta_hat") %>% 
+  .[, .(theta_hat, se)]
 )
 
 ```
 
-## Python
+@fig-ind-3 shows the impact of `age` on treatment effect for the first three individuals of `data_trt`. For example, if an individual that has the identical values for $X$ except `age` and also this person is 40 years old, then the treatment effect of the training program would be about $1,000. Standard errors are fairly large and treatment effects are not statistically significantly different from 0 at any value of `age` for all three individuals. The impact of `age` seems to be very similar for all the individuals. However, you can see shifts in $\hat{\theta}$ among them. Those shifts are due to the differences in other covariates. 
 
-```{python}
-from econml import 
+```{r}
+#| fig-cap: Estimated treatment effect for the first three individuals at different values of the age variable
+#| label: fig-ind-3
+plot_data <- cbind(data_te, theta_hat_with_se)
+
+ggplot(plot_data[id %in% 1:3, ]) +
+  geom_line(aes(y = theta_hat, x = age)) +
+  geom_ribbon(
+    aes(
+      ymin = theta_hat - 1.96 * se, 
+      ymax = theta_hat + 1.96 * se, 
+      x = age
+    ),
+    fill = "blue",
+    alpha = 0.4
+  ) +
+  facet_grid(. ~ id) +
+  theme_bw()
+
 ```
 
-:::
+@fig-all-box shows the box-plot of treatment effects for all the individuals. Note that variations observed at each `age` value is due to heterogeneity in treatment effect driven by covariates other than `age`. It looks like the three individuals looked at are exceptions. For the majority of individuals, the estimated treatment effects are negative at any value of `age`.
 
+```{r}
+#| fig-cap: Box-plot of the estimated treatment effects from all the individuals at different values of the age variable 
+#| label: fig-all-box
 
-### Empirical example
+ggplot(plot_data) +
+  geom_boxplot(aes(y = theta_hat, x = factor(round(age, digits = 2)))) +
+  theme_bw() +
+  xlab("Age") +
+  ylab("Estimated treatment effect") +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 90)
+  )
 
+```
+
+You can easily repeat this analysis for other covariates to see their impacts as well.
 
 
 ## Orthogonal Random Forest
 
 
 
+## References {.unnumbered}
+
+<div id="refs"></div>
 
 
 

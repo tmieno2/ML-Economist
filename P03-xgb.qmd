@@ -38,7 +38,7 @@ $$
 \Psi = \sum_{i=1}^N [L(y_i, f_{i,b}(x_i) + w_j(x_i))] + \Omega(w_j)
 $$ {#eq-obj}
 
-where $L()$ is the user-specified loss-function that is differentiable and $\Omega(w_j)$ is the regularization term. Instead of @eq-obj, XGB uses the second order Taylor expansion of $L()$ about $w$^[This helps for some of the commonly used loss functions]. 
+where $L()$ is the user-specified loss-function that is differentiable and $\Omega(w_j)$ is the regularization term. However, solving this minimization problem exactly can be too complicated depending on the loss function specification. Instead of @eq-obj, XGB uses the second order Taylor expansion of $L()$ about $w$^[This helps for some of the commonly used loss functions]. 
 
 $$
 \tilde{\Psi} = \sum_{i=1}^N [L(y_i, f_{i,b}(x_i)) + g_i w_j(x_i) + \frac{1}{2}h_i w_j(x_i)^2] + \Omega(w_j)

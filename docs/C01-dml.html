@@ -148,6 +148,10 @@ div.csl-indent {
 
   gtag('config', 'G-45VKT2HZSL');
 </script>
+<script src="site_libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<script src="site_libs/viz-1.8.2/viz.js"></script>
+<link href="site_libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet">
+<script src="site_libs/grViz-binding-1.0.9/grViz.js"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
@@ -387,6 +391,7 @@ div.csl-indent {
   <ul class="collapse">
   <li><a href="#a-note-on-method-of-moment-and-score-function" id="toc-a-note-on-method-of-moment-and-score-function" class="nav-link" data-scroll-target="#a-note-on-method-of-moment-and-score-function"> <span class="header-section-number">10.2.1</span> A note on method of moment and score function</a></li>
   <li><a href="#partially-linear-model" id="toc-partially-linear-model" class="nav-link" data-scroll-target="#partially-linear-model"> <span class="header-section-number">10.2.2</span> Partially linear model</a></li>
+  <li><a href="#partially-linear-iv-model" id="toc-partially-linear-iv-model" class="nav-link" data-scroll-target="#partially-linear-iv-model"> <span class="header-section-number">10.2.3</span> Partially linear IV model</a></li>
   </ul></li>
   <li><a href="#suggested-exercises" id="toc-suggested-exercises" class="nav-link" data-scroll-target="#suggested-exercises"> <span class="header-section-number">10.3</span> Suggested Exercises</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
@@ -413,11 +418,54 @@ div.csl-indent {
 </header>
 
 <p>One of the most important ideas of the recent development of causal machine learning (CML) methods originate from <span class="citation" data-cites="Chernozhukov2018">Chernozhukov et al. (<a href="#ref-Chernozhukov2018" role="doc-biblioref">2018</a>)</span>, which proposed Double/Debiased ML methods. In this section, we go over those key ideas that are at the heart of many other important CML methods we will learn later. We then learn various models you can estimate using the R and Python <code>DoubleML</code> package <span class="citation" data-cites="DoubleML2021R DoubleML2022Python">(<a href="#ref-DoubleML2021R" role="doc-biblioref">P. Bach et al. 2021</a>; <a href="#ref-DoubleML2022Python" role="doc-biblioref">Philipp Bach et al. 2022</a>)</span>.</p>
+<div class="callout-important callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+What you will learn
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>How double/debiased machine learning works
+<ul>
+<li>avoiding regularlization bias through orthogonalization</li>
+<li>avoiding over-fitting bias through cross-fitting</li>
+</ul></li>
+<li>Mechanics of DML
+<ul>
+<li>method of moment</li>
+<li>score function</li>
+<li>cross-fitting</li>
+</ul></li>
+<li>How to estimate ATE under conditional unconfoundedness using <code>DoubleMLPLR()</code> and under confoundedness using <code>DoubleMLPLIV()</code>.</li>
+</ul>
+</div>
+</div>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Preferable background knowledge
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>how to use <code>mlr3</code> (see <a href="PROG-01-mlr3.html"><span>Chapter&nbsp;14</span></a>)</li>
+<li>idea of method of moment</li>
+<li>causal diagram</li>
+</ul>
+</div>
+</div>
 <section id="dml-the-basic-idea" class="level2 page-columns page-full" data-number="10.1">
 <h2 data-number="10.1" class="anchored" data-anchor-id="dml-the-basic-idea"><span class="header-section-number">10.1</span> DML: the basic idea</h2>
 <section id="problem-setting" class="level3 page-columns page-full" data-number="10.1.1">
 <h3 data-number="10.1.1" class="anchored" data-anchor-id="problem-setting"><span class="header-section-number">10.1.1</span> Problem Setting</h3>
-<p>Throughout this section, we are interested in estimating the following econometric model , which is called a partially line regression model (PLR).</p>
+<p>Throughout this section, we are interested in estimating the following econometric model , which is called a partially linear regression model (PLR).</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p>We try to follow the notations of <span class="citation" data-cites="Chernozhukov2018">Chernozhukov et al. (<a href="#ref-Chernozhukov2018" role="doc-biblioref">2018</a>)</span> as much as possible.</p>
@@ -437,11 +485,10 @@ d = m_0(X) + \eta
 <i class="callout-icon"></i>
 </div>
 <div class="callout-caption-container flex-fill">
-Note
+Assumptions on the error terms
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Assumptions on the error terms</strong></p>
 <ul>
 <li><span class="math inline">\(E[\mu|D,X] = 0\)</span></li>
 <li><span class="math inline">\(E[\eta|X] = 0\)</span></li>
@@ -467,11 +514,11 @@ Note
 <i class="callout-icon"></i>
 </div>
 <div class="callout-caption-container flex-fill">
-Tip
+Terminology alert
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><span class="math inline">\(g_0(X)\)</span> and <span class="math inline">\(m_0(X)\)</span> are called nuisance functions because we are not interested in understanding them. We are only interested in <strong>controlling for</strong> them to estimate <span class="math inline">\(\theta\)</span> accurately.</p>
+<p><span class="math inline">\(g_0(X)\)</span> and <span class="math inline">\(m_0(X)\)</span> are called <span style="color:blue"> nuisance functions </span>because knowing them is not the ultimate goal. We are only interested in <strong>controlling for</strong> them to estimate <span class="math inline">\(\theta\)</span> accurately.</p>
 </div>
 </div>
 </section>
@@ -539,12 +586,12 @@ y - \hat{g}_0(x) = \theta d + (g_0(x) - \hat{g}_0(x) + \mu)
 \tag{10.3}\]</span></span></li>
 </ul>
 <p>To demonstrate the bias problem, we work on the following data generating process used in <a href="https://docs.doubleml.org/stable/guide/basics.html">the user guide for the DoubleML package</a>.</p>
-<p><span class="math display">\[
+<p><span id="eq-simple-synthetic"><span class="math display">\[
 \begin{aligned}
 y_i = 0.5 d_i  + \frac{exp(x_{i,1})}{1 + exp(x_{i,1})} + \frac{1}{4}\cdot x_{i,3} + \mu_i \\
 d_i = x_{i,1} + \frac{1}{4}\cdot\frac{exp(x_{i,3})}{1 + exp(x_{i,3})} \eta_i
 \end{aligned}
-\]</span></p>
+\tag{10.4}\]</span></span></p>
 <p>where <span class="math inline">\(\mu_i \sim N(0, 1)\)</span> and <span class="math inline">\(\eta_i \sim N(0, 1)\)</span>. The error terms (<span class="math inline">\(\mu_i\)</span> and <span class="math inline">\(\eta_i\)</span>) are independent. In this data generating process, <span class="math inline">\(d\)</span> is continuous (not binary) and its effect on <span class="math inline">\(y\)</span> is assumed to be linear.</p>
 <p>We use the <code>gen_data()</code> function (defined on the right), which is a slightly generalized version of the <code>make_plr_CCDDHNR2018()</code> function from the <code>DoubleML</code> package.</p>
 
@@ -601,7 +648,7 @@ d_i = x_{i,1} + \frac{1}{4}\cdot\frac{exp(x_{i,3})}{1 + exp(x_{i,3})} \eta_i
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>training_data <span class="ot">&lt;-</span> <span class="fu">gen_data</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>It has 20 <code>x</code> variables (for <span class="math inline">\(X\)</span>) along with <code>d</code> (treatment) and <code>y</code> (dependent variable). Only <code>x1</code> and <code>x3</code> are the relevant variables and the rest of <span class="math inline">\(X\)</span> are irrelevant.</p>
+<p>It has 20 <code>x</code> variables (for <span class="math inline">\(X\)</span>) along with <code>d</code> (treatment) and <code>y</code> (dependent variable). Only <code>x1</code> and <code>x3</code> are the relevant variables. The rest of <span class="math inline">\(X\)</span> do not play any role in explaining either <span class="math inline">\(Y\)</span> or <span class="math inline">\(d\)</span>. However, they are correlated with <code>x1</code> and <code>x3</code> and interfere with estimating the nuisance functions.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(training_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -930,7 +977,8 @@ Note
 </ul>
 </div>
 </div>
-<p>Regularization bias is termed so because bias in estimating <span class="math inline">\(g_0(X)\)</span> can occur when some form of regularization is implemented (e.g., lasso). However, its name is slightly misleading because <span class="math inline">\(g_0(X)\)</span> cannot be estimated without bias even without any regularization in general. This is because the estimation of initial <span class="math inline">\(\theta\)</span> (in Step 1.3) is biased, which comes from the fact that <span class="math inline">\(m_0(X)\)</span> is correlated with <span class="math inline">\(g_0(X)\)</span> through <span class="math inline">\(X\)</span>.</p>
+<p>Regularization bias is termed so because bias in estimating <span class="math inline">\(g_0(X)\)</span> can occur when some form of regularization is implemented (e.g., lasso).</p>
+<!-- However, its name is slightly misleading because $g_0(X)$ cannot be estimated without bias even without any regularization in general. This is because the estimation of initial $\theta$ (in Step 1.3) is biased, which comes from the fact that $m_0(X)$ is correlated with $g_0(X)$ through $X$.  -->
 <!-- ::: {.column-margin}
 Another (unofficial) implementation of $g_0(X)$ estimation is to just use $\hat{l}_0(X_i)$ as $\hat{g}_0(X_i)$ ([a blog post](https://www.r-bloggers.com/2017/06/cross-fitting-double-machine-learning-estimator/)) and then use the following formula.
 
@@ -946,67 +994,63 @@ $$
 
 $\hat{\theta}$ is biased because $\hat{l}_0(X_i)$ is a biased estimator of $\hat{g}_0(X_i)$ when $m_0(X)$ and $g_0(X)$ are correlated. The point here is that, $g_0(X)$ is hard to estimate without bias irrespective of whether any regularization happens or not.
 ::: -->
-<p>However, if the treatment is independent, then, <span class="math inline">\(g_0(X)\)</span> can be estimated well and this approach works well except it still suffers from over-fitting bias. <a href="#fig-apr1-indep">Figure&nbsp;<span>10.3</span></a> shows that the distribution of <span class="math inline">\(\hat{\theta}\)</span> when <span class="math inline">\(m_0(X)\)</span> is independent of <span class="math inline">\(g_0(X)\)</span> and the RF with the same hyper-parameters are used. While regularization can lead to bias in the estimation of <span class="math inline">\(g_0(X)\)</span>, regularization is not the only source of bias.</p>
-<div class="cell" data-hash="C01-dml_cache/html/fig-apr1-indep_f6d5d2558242afbb1e198a0aadba7a46">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>run_sim_naive <span class="ot">&lt;-</span> <span class="cf">function</span>(i){</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  training_data <span class="ot">&lt;-</span> <span class="fu">gen_data</span>(<span class="at">m_formula =</span> <span class="st">"independent"</span>)</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  rf_fitted_m0 <span class="ot">&lt;-</span> <span class="fu">fit_m0</span>(training_data)</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  rf_fitted_g0 <span class="ot">&lt;-</span> <span class="fu">fit_g0</span>(training_data, rf_fitted_m0)</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># rf_fitted_g0 &lt;- fit_l0(training_data)</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  g0_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(rf_fitted_g0, <span class="at">data =</span> training_data)<span class="sc">$</span>predictions</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== create y - g0 ===#</span></span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  training_data[, y_less_g <span class="sc">:</span><span class="er">=</span> y <span class="sc">-</span> g0_hat]</span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  theta_hat <span class="ot">&lt;-</span> <span class="fu">lm</span>(y_less_g <span class="sc">~</span> d, <span class="at">data =</span> training_data)<span class="sc">$</span>coefficient[<span class="st">"d"</span>]</span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># theta_hat &lt;- training_data[, sum(d * y_less_g) / sum(d * d)]</span></span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(theta_hat)</span>
-<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a><span class="co">#===================================</span></span>
-<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Repeat MC simulations 500 times</span></span>
-<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a><span class="co">#===================================</span></span>
-<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>theta_hats_apr1_indep <span class="ot">&lt;-</span></span>
-<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mclapply</span>(</span>
-<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span><span class="sc">:</span><span class="dv">500</span>,</span>
-<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>    run_sim_naive,</span>
-<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">mc.cores =</span> <span class="fu">detectCores</span>() <span class="sc">/</span> <span class="dv">4</span> <span class="sc">*</span> <span class="dv">3</span></span>
-<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unlist</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>(<span class="at">theta =</span> .)</span>
-<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a><span class="co">#===================================</span></span>
-<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the results</span></span>
-<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a><span class="co">#===================================</span></span>
-<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(theta_hats_apr1_indep) <span class="sc">+</span></span>
-<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x =</span> theta), <span class="at">color =</span> <span class="st">"grey"</span>, <span class="at">fill =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
-<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
-<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="fu">aes</span>(<span class="at">xintercept =</span> <span class="fl">0.5</span>,<span class="at">color =</span> <span class="st">"True Value"</span>)) <span class="sc">+</span></span>
-<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="fu">aes</span>(<span class="at">xintercept =</span> theta_hats_apr1_indep[, <span class="fu">mean</span>(theta)], <span class="at">color =</span> <span class="st">"Mean of the Estimates"</span>)) <span class="sc">+</span></span>
-<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(</span>
-<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"True Value"</span> <span class="ot">=</span> <span class="st">"red"</span>, <span class="st">"Mean of the Estimates"</span> <span class="ot">=</span> <span class="st">"blue"</span>),</span>
-<span id="cb15-44"><a href="#cb15-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">""</span></span>
-<span id="cb15-45"><a href="#cb15-45" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb15-46"><a href="#cb15-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">nrow =</span> <span class="dv">1</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)) <span class="sc">+</span></span>
-<span id="cb15-47"><a href="#cb15-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div id="fig-apr1-indep" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="C01-dml_files/figure-html/fig-apr1-indep-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 10.3: Performance of approach 1 when the treatment status is independent</figcaption><p></p>
-</figure>
-</div>
-</div>
-</div>
+<!-- However, if the treatment is independent, then, $g_0(X)$ can be estimated well and this approach works well except it still suffers from over-fitting bias. @fig-apr1-indep shows that the distribution of $\hat{\theta}$ when $m_0(X)$ is independent of $g_0(X)$ and the RF with the same hyper-parameters are used. While regularization can lead to bias in the estimation of $g_0(X)$, regularization is not the only source of bias.  -->
+
+<!-- ```{r}
+#| fig-cap: Performance of approach 1 when the treatment status is independent
+#| label: fig-apr1-indep
+#| code-fold: true
+#| warning: false
+#| cache: true 
+
+run_sim_naive <- function(i){
+
+  training_data <- gen_data(m_formula = "independent")
+
+  rf_fitted_m0 <- fit_m0(training_data)
+  rf_fitted_g0 <- fit_g0(training_data, rf_fitted_m0)
+  # rf_fitted_g0 <- fit_l0(training_data)
+
+  g0_hat <- predict(rf_fitted_g0, data = training_data)$predictions
+
+  #=== create y - g0 ===#
+  training_data[, y_less_g := y - g0_hat]
+
+  theta_hat <- lm(y_less_g ~ d, data = training_data)$coefficient["d"]
+
+  # theta_hat <- training_data[, sum(d * y_less_g) / sum(d * d)]
+
+  return(theta_hat)
+
+}
+
+#===================================
+# Repeat MC simulations 500 times
+#===================================
+theta_hats_apr1_indep <-
+  mclapply(
+    1:500,
+    run_sim_naive,
+    mc.cores = detectCores() / 4 * 3
+  ) %>% 
+  unlist() %>% 
+  data.table(theta = .)
+
+#===================================
+# Plot the results
+#===================================
+ggplot(theta_hats_apr1_indep) +
+  geom_histogram(aes(x = theta), color = "grey", fill = "white") +
+  theme_bw() + 
+  geom_vline(aes(xintercept = 0.5,color = "True Value")) +
+  geom_vline(aes(xintercept = theta_hats_apr1_indep[, mean(theta)], color = "Mean of the Estimates")) +
+  scale_color_manual(
+    values = c("True Value" = "red", "Mean of the Estimates" = "blue"),
+    name = ""
+  ) +
+  guides(color = guide_legend(nrow = 1, byrow = TRUE)) +
+  theme(legend.position = "bottom")
+``` -->
 </section>
 </section>
 <section id="overcoming-the-regularization-bias" class="level3 page-columns page-full" data-number="10.1.3">
@@ -1025,20 +1069,19 @@ $\hat{\theta}$ is biased because $\hat{l}_0(X_i)$ is a biased estimator of $\hat
 <p>The key difference from the previous approach is that this approach uses <strong>IV-like</strong> formula, where <span class="math inline">\(\tilde{d}\)</span> is acting like an instrument.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
-<p>For <span class="math inline">\(y = X\beta + \mu\)</span> with instruments <span class="math inline">\(Z\)</span>, the IV estimator is</p>
-<p><span class="math display">\[
+<p>For <span class="math inline">\(y = X\beta + \mu\)</span> with instruments <span class="math inline">\(Z\)</span>, the IV estimator is <span class="math display">\[
 \begin{aligned}
 \hat{\beta} = (Z'X)^{-1}Z'y
 \end{aligned}
 \]</span></p>
 </div></div><p>We have done Steps 1 and 2 already in the previous approach. So,</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 3</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>(</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>theta_hat <span class="ot">&lt;-</span> training_data[, <span class="fu">sum</span>(d_less_m <span class="sc">*</span> y_less_g) <span class="sc">/</span> <span class="fu">sum</span>(d_less_m <span class="sc">*</span> d)]</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 3</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>theta_hat <span class="ot">&lt;-</span> training_data[, <span class="fu">sum</span>(d_less_m <span class="sc">*</span> y_less_g) <span class="sc">/</span> <span class="fu">sum</span>(d_less_m <span class="sc">*</span> d)]</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.5325107</code></pre>
 </div>
@@ -1047,64 +1090,64 @@ $\hat{\theta}$ is biased because $\hat{l}_0(X_i)$ is a biased estimator of $\hat
 <div class="cell" data-hash="C01-dml_cache/html/fig-dd_2945fcf559fd312ad8ebcee214a75904">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>run_sim_dereg <span class="ot">&lt;-</span> <span class="cf">function</span>(i)</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>{</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  training_data <span class="ot">&lt;-</span> <span class="fu">gen_data</span>()</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># training_data &lt;- data[[i]] %&gt;% data.table</span></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  rf_fitted_m0 <span class="ot">&lt;-</span> <span class="fu">fit_m0</span>(training_data)</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  m0_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(rf_fitted_m0, <span class="at">data =</span> training_data)<span class="sc">$</span>predictions</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== create d - m0_hat ===#</span></span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  training_data[, d_less_m <span class="sc">:</span><span class="er">=</span> d <span class="sc">-</span> m0_hat]</span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== get g0_hat ===#</span></span>
-<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>  rf_fitted_g0 <span class="ot">&lt;-</span> <span class="fu">fit_g0</span>(training_data, rf_fitted_m0)</span>
-<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  g0_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(rf_fitted_g0, <span class="at">data =</span> training_data)<span class="sc">$</span>predictions</span>
-<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== create y - g0 ===#</span></span>
-<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>  training_data[, y_less_g <span class="sc">:</span><span class="er">=</span> y <span class="sc">-</span> g0_hat]</span>
-<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>  theta_hat <span class="ot">&lt;-</span> training_data[, <span class="fu">sum</span>(d_less_m <span class="sc">*</span> y_less_g) <span class="sc">/</span> <span class="fu">sum</span>(d_less_m <span class="sc">*</span> d)]</span>
-<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(theta_hat)</span>
-<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>theta_hats_apr2 <span class="ot">&lt;-</span></span>
-<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mclapply</span>(</span>
-<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span><span class="sc">:</span><span class="dv">500</span>,</span>
-<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) <span class="fu">run_sim_dereg</span>(x),</span>
-<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">mc.cores =</span> <span class="fu">detectCores</span>() <span class="sc">/</span> <span class="dv">4</span> <span class="sc">*</span> <span class="dv">3</span></span>
-<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unlist</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>(<span class="at">theta =</span> .)</span>
-<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(theta_hats_apr2) <span class="sc">+</span></span>
-<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x =</span> theta), <span class="at">color =</span> <span class="st">"grey"</span>, <span class="at">fill =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
-<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
-<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="fu">aes</span>(<span class="at">xintercept =</span> <span class="fl">0.5</span>,<span class="at">color =</span> <span class="st">"True Value"</span>)) <span class="sc">+</span></span>
-<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="fu">aes</span>(<span class="at">xintercept =</span> theta_hats_apr2[, <span class="fu">mean</span>(theta)], <span class="at">color =</span> <span class="st">"Mean of the Estimates"</span>)) <span class="sc">+</span></span>
-<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(</span>
-<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"True Value"</span> <span class="ot">=</span> <span class="st">"red"</span>, <span class="st">"Mean of the Estimates"</span> <span class="ot">=</span> <span class="st">"blue"</span>),</span>
-<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">""</span></span>
-<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">nrow =</span> <span class="dv">1</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)) <span class="sc">+</span></span>
-<span id="cb18-43"><a href="#cb18-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>run_sim_dereg <span class="ot">&lt;-</span> <span class="cf">function</span>(i)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  training_data <span class="ot">&lt;-</span> <span class="fu">gen_data</span>()</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># training_data &lt;- data[[i]] %&gt;% data.table</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  rf_fitted_m0 <span class="ot">&lt;-</span> <span class="fu">fit_m0</span>(training_data)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  m0_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(rf_fitted_m0, <span class="at">data =</span> training_data)<span class="sc">$</span>predictions</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== create d - m0_hat ===#</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  training_data[, d_less_m <span class="sc">:</span><span class="er">=</span> d <span class="sc">-</span> m0_hat]</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== get g0_hat ===#</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  rf_fitted_g0 <span class="ot">&lt;-</span> <span class="fu">fit_g0</span>(training_data, rf_fitted_m0)</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>  g0_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(rf_fitted_g0, <span class="at">data =</span> training_data)<span class="sc">$</span>predictions</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== create y - g0 ===#</span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>  training_data[, y_less_g <span class="sc">:</span><span class="er">=</span> y <span class="sc">-</span> g0_hat]</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>  theta_hat <span class="ot">&lt;-</span> training_data[, <span class="fu">sum</span>(d_less_m <span class="sc">*</span> y_less_g) <span class="sc">/</span> <span class="fu">sum</span>(d_less_m <span class="sc">*</span> d)]</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(theta_hat)</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>theta_hats_apr2 <span class="ot">&lt;-</span></span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mclapply</span>(</span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span><span class="sc">:</span><span class="dv">500</span>,</span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) <span class="fu">run_sim_dereg</span>(x),</span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">mc.cores =</span> <span class="fu">detectCores</span>() <span class="sc">/</span> <span class="dv">4</span> <span class="sc">*</span> <span class="dv">3</span></span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unlist</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>(<span class="at">theta =</span> .)</span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(theta_hats_apr2) <span class="sc">+</span></span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x =</span> theta), <span class="at">color =</span> <span class="st">"grey"</span>, <span class="at">fill =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="fu">aes</span>(<span class="at">xintercept =</span> <span class="fl">0.5</span>,<span class="at">color =</span> <span class="st">"True Value"</span>)) <span class="sc">+</span></span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="fu">aes</span>(<span class="at">xintercept =</span> theta_hats_apr2[, <span class="fu">mean</span>(theta)], <span class="at">color =</span> <span class="st">"Mean of the Estimates"</span>)) <span class="sc">+</span></span>
+<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(</span>
+<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"True Value"</span> <span class="ot">=</span> <span class="st">"red"</span>, <span class="st">"Mean of the Estimates"</span> <span class="ot">=</span> <span class="st">"blue"</span>),</span>
+<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">""</span></span>
+<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">nrow =</span> <span class="dv">1</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)) <span class="sc">+</span></span>
+<span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-dd" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="C01-dml_files/figure-html/fig-dd-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 10.4: Simulation results of double-debiased approach</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 10.3: Simulation results of double-debiased approach</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-<p><a href="#fig-dd">Figure&nbsp;<span>10.4</span></a> shows the distribution of <span class="math inline">\(\hat{\theta}\)</span>, which is centered about <span class="math inline">\(0.478\)</span>. The current approach still suffers from the so-called over-fitting bias<span class="citation" data-cites="Chernozhukov2018">(<a href="#ref-Chernozhukov2018" role="doc-biblioref">Chernozhukov et al. 2018</a>)</span>. Let’s look at how we can overcome this bias next.</p>
+<p><a href="#fig-dd">Figure&nbsp;<span>10.3</span></a> shows the distribution of <span class="math inline">\(\hat{\theta}\)</span>, which is centered about <span class="math inline">\(0.478\)</span>. The current approach still suffers from the so-called over-fitting bias<span class="citation" data-cites="Chernozhukov2018">(<a href="#ref-Chernozhukov2018" role="doc-biblioref">Chernozhukov et al. 2018</a>)</span>. Let’s look at how we can overcome this bias next.</p>
 </section>
 <section id="sec-cf" class="level3 page-columns page-full" data-number="10.1.4">
 <h3 data-number="10.1.4" class="anchored" data-anchor-id="sec-cf"><span class="header-section-number">10.1.4</span> Overcoming the over-fitting bias</h3>
-<p>Over-fitting bias can be overcome by cross-fitting. First, the training data is split into <span class="math inline">\(K\)</span>-folds just like K-fold cross-validation. Let’s denote them as <span class="math inline">\(I_1, \dots, I_k\)</span>. For example, for <span class="math inline">\(I_1\)</span>, the following steps are taken (<a href="#fig-cross-fitting">Figure&nbsp;<span>10.5</span></a> provides a visual illustration):</p>
+<p>Over-fitting bias can be overcome by cross-fitting. First, the training data is split into <span class="math inline">\(K\)</span>-folds just like K-fold cross-validation. Let’s denote them as <span class="math inline">\(I_1, \dots, I_k\)</span>. For example, for <span class="math inline">\(I_1\)</span>, the following steps are taken (<a href="#fig-cross-fitting">Figure&nbsp;<span>10.4</span></a> provides a visual illustration):</p>
 <ul>
 <li>Step 1: Estimate <span class="math inline">\(\hat{g}_0(x)\)</span> and <span class="math inline">\(\hat{m}_0(x)\)</span> using the data from the other folds (<span class="math inline">\(I_2, \dots, I_K\)</span>).</li>
 <li>Step 2: Estimate <span class="math inline">\(\hat{g}_0(x_i)\)</span> and <span class="math inline">\(\hat{m}_0(x_i)\)</span> for each <span class="math inline">\(i \in I_1\)</span> and calculate <span class="math inline">\(\tilde{y}_i = y_i - \hat{g}_0(x_i)\)</span> and <span class="math inline">\(\tilde{d}_i = d_i - \hat{m}_0(x_i)\)</span>.</li>
@@ -1114,7 +1157,7 @@ $\hat{\theta}$ is biased because $\hat{l}_0(X_i)$ is a biased estimator of $\hat
 \begin{aligned}
 \hat{\theta} = (\frac{1}{n}\sum_{i=1}^N \tilde{d}_i d_i)^{-1}\frac{1}{n}\sum_{i=1}^N \tilde{d}_i (y_i - \hat{g}_0(X_i))
 \end{aligned}
-\tag{10.4}\]</span></span></p>
+\tag{10.5}\]</span></span></p>
 <p>This process is repeated for all the <span class="math inline">\(K\)</span> folds, and then the the final estimate of <span class="math inline">\(\hat{\theta}\)</span> is obtained as the average of <span class="math inline">\(\hat{\theta}\)</span>s.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
@@ -1122,76 +1165,76 @@ $\hat{\theta}$ is biased because $\hat{l}_0(X_i)$ is a biased estimator of $\hat
 </div></div><div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== fold 1 ===#</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rect</span>(</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">xmin =</span> <span class="dv">0</span>, <span class="at">xmax =</span> <span class="dv">10</span>, <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="dv">2</span>),</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"grey"</span>,</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"black"</span>,</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">1.2</span></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rect</span>(</span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">xmin =</span> <span class="dv">0</span>, <span class="at">xmax =</span> <span class="fl">2.5</span>, <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="dv">2</span>),</span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"black"</span></span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== fold 2 ===#</span></span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rect</span>(</span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">xmin =</span> <span class="dv">0</span>, <span class="at">xmax =</span> <span class="dv">10</span>, <span class="at">ymin =</span> <span class="fl">2.2</span>, <span class="at">ymax =</span> <span class="fl">4.2</span>),</span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"grey"</span>,</span>
-<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"black"</span>,</span>
-<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">1.2</span></span>
-<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rect</span>(</span>
-<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">xmin =</span> <span class="fl">2.5</span>, <span class="at">xmax =</span> <span class="dv">5</span>, <span class="at">ymin =</span> <span class="fl">2.2</span>, <span class="at">ymax =</span> <span class="fl">4.2</span>),</span>
-<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"black"</span></span>
-<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== fold 3 ===#</span></span>
-<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rect</span>(</span>
-<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">xmin =</span> <span class="dv">0</span>, <span class="at">xmax =</span> <span class="dv">10</span>, <span class="at">ymin =</span> <span class="fl">4.4</span>, <span class="at">ymax =</span> <span class="fl">6.4</span>),</span>
-<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"grey"</span>,</span>
-<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"black"</span>,</span>
-<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">1.2</span></span>
-<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rect</span>(</span>
-<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">xmin =</span> <span class="dv">5</span>, <span class="at">xmax =</span> <span class="fl">7.5</span>, <span class="at">ymin =</span> <span class="fl">4.4</span>, <span class="at">ymax =</span> <span class="fl">6.4</span>),</span>
-<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"black"</span></span>
-<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== fold 4 ===#</span></span>
-<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rect</span>(</span>
-<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">xmin =</span> <span class="dv">0</span>, <span class="at">xmax =</span> <span class="dv">10</span>, <span class="at">ymin =</span> <span class="fl">6.6</span>, <span class="at">ymax =</span> <span class="fl">8.6</span>),</span>
-<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"grey"</span>,</span>
-<span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"black"</span>,</span>
-<span id="cb19-40"><a href="#cb19-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">1.2</span></span>
-<span id="cb19-41"><a href="#cb19-41" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb19-42"><a href="#cb19-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rect</span>(</span>
-<span id="cb19-43"><a href="#cb19-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">xmin =</span> <span class="fl">7.5</span>, <span class="at">xmax =</span> <span class="dv">10</span>, <span class="at">ymin =</span> <span class="fl">6.6</span>, <span class="at">ymax =</span> <span class="fl">8.6</span>),</span>
-<span id="cb19-44"><a href="#cb19-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"black"</span></span>
-<span id="cb19-45"><a href="#cb19-45" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb19-46"><a href="#cb19-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_brace</span>(<span class="fu">aes</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">7.4</span>), <span class="fu">c</span>(<span class="fl">8.7</span>, <span class="fl">9.2</span>)), <span class="at">inherit.data=</span>F) <span class="sc">+</span></span>
-<span id="cb19-47"><a href="#cb19-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(</span>
-<span id="cb19-48"><a href="#cb19-48" aria-hidden="true" tabindex="-1"></a>    <span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">3.5</span>, <span class="at">y =</span> <span class="fl">9.7</span>, <span class="at">parse =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb19-49"><a href="#cb19-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">label =</span> <span class="st">"'Find ' * hat(g)[0](x) * ' and ' * hat(m)[0](x) * ' from this data.'"</span>,</span>
-<span id="cb19-50"><a href="#cb19-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">6</span></span>
-<span id="cb19-51"><a href="#cb19-51" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb19-52"><a href="#cb19-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_curve</span>(</span>
-<span id="cb19-53"><a href="#cb19-53" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> <span class="fl">2.2</span>, <span class="at">xend =</span> <span class="fl">8.5</span>, <span class="at">y =</span> <span class="fl">10.3</span>, <span class="at">yend =</span> <span class="fl">8.8</span>),</span>
-<span id="cb19-54"><a href="#cb19-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.03</span>, <span class="st">"npc"</span>)),</span>
-<span id="cb19-55"><a href="#cb19-55" aria-hidden="true" tabindex="-1"></a>    <span class="at">curvature =</span> <span class="sc">-</span><span class="fl">0.3</span></span>
-<span id="cb19-56"><a href="#cb19-56" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb19-57"><a href="#cb19-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_curve</span>(</span>
-<span id="cb19-58"><a href="#cb19-58" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> <span class="fl">3.4</span>, <span class="at">xend =</span> <span class="dv">8</span>, <span class="at">y =</span> <span class="fl">10.3</span>, <span class="at">yend =</span> <span class="fl">8.8</span>),</span>
-<span id="cb19-59"><a href="#cb19-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.03</span>, <span class="st">"npc"</span>)),</span>
-<span id="cb19-60"><a href="#cb19-60" aria-hidden="true" tabindex="-1"></a>    <span class="at">curvature =</span> <span class="sc">-</span><span class="fl">0.3</span></span>
-<span id="cb19-61"><a href="#cb19-61" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb19-62"><a href="#cb19-62" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="cn">NA</span>, <span class="dv">11</span>) <span class="sc">+</span></span>
-<span id="cb19-63"><a href="#cb19-63" aria-hidden="true" tabindex="-1"></a>  <span class="co"># coord_equal() +</span></span>
-<span id="cb19-64"><a href="#cb19-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== fold 1 ===#</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rect</span>(</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">xmin =</span> <span class="dv">0</span>, <span class="at">xmax =</span> <span class="dv">10</span>, <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="dv">2</span>),</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"grey"</span>,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"black"</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">1.2</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rect</span>(</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">xmin =</span> <span class="dv">0</span>, <span class="at">xmax =</span> <span class="fl">2.5</span>, <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="dv">2</span>),</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"black"</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== fold 2 ===#</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rect</span>(</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">xmin =</span> <span class="dv">0</span>, <span class="at">xmax =</span> <span class="dv">10</span>, <span class="at">ymin =</span> <span class="fl">2.2</span>, <span class="at">ymax =</span> <span class="fl">4.2</span>),</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"grey"</span>,</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"black"</span>,</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">1.2</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rect</span>(</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">xmin =</span> <span class="fl">2.5</span>, <span class="at">xmax =</span> <span class="dv">5</span>, <span class="at">ymin =</span> <span class="fl">2.2</span>, <span class="at">ymax =</span> <span class="fl">4.2</span>),</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"black"</span></span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== fold 3 ===#</span></span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rect</span>(</span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">xmin =</span> <span class="dv">0</span>, <span class="at">xmax =</span> <span class="dv">10</span>, <span class="at">ymin =</span> <span class="fl">4.4</span>, <span class="at">ymax =</span> <span class="fl">6.4</span>),</span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"grey"</span>,</span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"black"</span>,</span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">1.2</span></span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rect</span>(</span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">xmin =</span> <span class="dv">5</span>, <span class="at">xmax =</span> <span class="fl">7.5</span>, <span class="at">ymin =</span> <span class="fl">4.4</span>, <span class="at">ymax =</span> <span class="fl">6.4</span>),</span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"black"</span></span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== fold 4 ===#</span></span>
+<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rect</span>(</span>
+<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">xmin =</span> <span class="dv">0</span>, <span class="at">xmax =</span> <span class="dv">10</span>, <span class="at">ymin =</span> <span class="fl">6.6</span>, <span class="at">ymax =</span> <span class="fl">8.6</span>),</span>
+<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"grey"</span>,</span>
+<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"black"</span>,</span>
+<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">1.2</span></span>
+<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rect</span>(</span>
+<span id="cb18-43"><a href="#cb18-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">xmin =</span> <span class="fl">7.5</span>, <span class="at">xmax =</span> <span class="dv">10</span>, <span class="at">ymin =</span> <span class="fl">6.6</span>, <span class="at">ymax =</span> <span class="fl">8.6</span>),</span>
+<span id="cb18-44"><a href="#cb18-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"black"</span></span>
+<span id="cb18-45"><a href="#cb18-45" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb18-46"><a href="#cb18-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_brace</span>(<span class="fu">aes</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">7.4</span>), <span class="fu">c</span>(<span class="fl">8.7</span>, <span class="fl">9.2</span>)), <span class="at">inherit.data=</span>F) <span class="sc">+</span></span>
+<span id="cb18-47"><a href="#cb18-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(</span>
+<span id="cb18-48"><a href="#cb18-48" aria-hidden="true" tabindex="-1"></a>    <span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">3.5</span>, <span class="at">y =</span> <span class="fl">9.7</span>, <span class="at">parse =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb18-49"><a href="#cb18-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">label =</span> <span class="st">"'Find ' * hat(g)[0](x) * ' and ' * hat(m)[0](x) * ' from this data.'"</span>,</span>
+<span id="cb18-50"><a href="#cb18-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">6</span></span>
+<span id="cb18-51"><a href="#cb18-51" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb18-52"><a href="#cb18-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_curve</span>(</span>
+<span id="cb18-53"><a href="#cb18-53" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> <span class="fl">2.2</span>, <span class="at">xend =</span> <span class="fl">8.5</span>, <span class="at">y =</span> <span class="fl">10.3</span>, <span class="at">yend =</span> <span class="fl">8.8</span>),</span>
+<span id="cb18-54"><a href="#cb18-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.03</span>, <span class="st">"npc"</span>)),</span>
+<span id="cb18-55"><a href="#cb18-55" aria-hidden="true" tabindex="-1"></a>    <span class="at">curvature =</span> <span class="sc">-</span><span class="fl">0.3</span></span>
+<span id="cb18-56"><a href="#cb18-56" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb18-57"><a href="#cb18-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_curve</span>(</span>
+<span id="cb18-58"><a href="#cb18-58" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> <span class="fl">3.4</span>, <span class="at">xend =</span> <span class="dv">8</span>, <span class="at">y =</span> <span class="fl">10.3</span>, <span class="at">yend =</span> <span class="fl">8.8</span>),</span>
+<span id="cb18-59"><a href="#cb18-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.03</span>, <span class="st">"npc"</span>)),</span>
+<span id="cb18-60"><a href="#cb18-60" aria-hidden="true" tabindex="-1"></a>    <span class="at">curvature =</span> <span class="sc">-</span><span class="fl">0.3</span></span>
+<span id="cb18-61"><a href="#cb18-61" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb18-62"><a href="#cb18-62" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="cn">NA</span>, <span class="dv">11</span>) <span class="sc">+</span></span>
+<span id="cb18-63"><a href="#cb18-63" aria-hidden="true" tabindex="-1"></a>  <span class="co"># coord_equal() +</span></span>
+<span id="cb18-64"><a href="#cb18-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-cross-fitting" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="C01-dml_files/figure-html/fig-cross-fitting-1.png" class="img-fluid figure-img" width="864"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 10.5: Illustration of cross-fitting</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 10.4: Illustration of cross-fitting</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -1201,9 +1244,9 @@ $\hat{\theta}$ is biased because $\hat{l}_0(X_i)$ is a biased estimator of $\hat
 <div class="no-row-height column-margin column-container"><div class="">
 <p><span class="math inline">\(K\)</span> does not have to be 2.</p>
 </div></div><div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>(</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>data_folds <span class="ot">&lt;-</span> rsample<span class="sc">::</span><span class="fu">vfold_cv</span>(training_data, <span class="at">v =</span> <span class="dv">2</span>)</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>data_folds <span class="ot">&lt;-</span> rsample<span class="sc">::</span><span class="fu">vfold_cv</span>(training_data, <span class="at">v =</span> <span class="dv">2</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#  2-fold cross-validation 
 # A tibble: 2 × 2
@@ -1215,40 +1258,40 @@ $\hat{\theta}$ is biased because $\hat{l}_0(X_i)$ is a biased estimator of $\hat
 </div>
 <p>Let’s cross-fit for fold 1.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>split_1 <span class="ot">&lt;-</span> data_folds[<span class="dv">1</span>, ]</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co">#=== data for estimating g_0  and m_0 ===#</span></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>data_train <span class="ot">&lt;-</span> <span class="fu">analysis</span>(split_1<span class="sc">$</span>splits[[<span class="dv">1</span>]]) </span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="co">#=== data for which g_0(x_i) and m_0(x_i) are calculated ===#</span></span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>data_target <span class="ot">&lt;-</span> <span class="fu">assessment</span>(split_1<span class="sc">$</span>splits[[<span class="dv">1</span>]]) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>split_1 <span class="ot">&lt;-</span> data_folds[<span class="dv">1</span>, ]</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co">#=== data for estimating g_0  and m_0 ===#</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>data_train <span class="ot">&lt;-</span> <span class="fu">analysis</span>(split_1<span class="sc">$</span>splits[[<span class="dv">1</span>]]) </span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co">#=== data for which g_0(x_i) and m_0(x_i) are calculated ===#</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>data_target <span class="ot">&lt;-</span> <span class="fu">assessment</span>(split_1<span class="sc">$</span>splits[[<span class="dv">1</span>]]) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>First, we fit <span class="math inline">\(\hat{g}_0(x)\)</span> and <span class="math inline">\(\hat{m}_0(x)\)</span> using the data from the other folds.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== m0 ===#</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>m_rf_fit <span class="ot">&lt;-</span> <span class="fu">fit_m0</span>(data_train)</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co">#=== g0 ===#</span></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>g_rf_fit <span class="ot">&lt;-</span> <span class="fu">fit_g0</span>(data_train, m_rf_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== m0 ===#</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>m_rf_fit <span class="ot">&lt;-</span> <span class="fu">fit_m0</span>(data_train)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co">#=== g0 ===#</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>g_rf_fit <span class="ot">&lt;-</span> <span class="fu">fit_g0</span>(data_train, m_rf_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Next, we predict <span class="math inline">\(\hat{g}_0(x_i)\)</span> and <span class="math inline">\(\hat{m}_0(x_i)\)</span> for each <span class="math inline">\(i\)</span> of fold 1 (the target dataset) and calculate <span class="math inline">\(\tilde{y}_i = y_i - \hat{g}_0(x_i)\)</span> and <span class="math inline">\(\tilde{d}_i = d_i - \hat{m}_0(x_i)\)</span>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>data_orth <span class="ot">&lt;-</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  data_target <span class="sc">%&gt;%</span> </span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== prediction of g_0(x_i) ===#</span></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  .[, g_0_hat <span class="sc">:</span><span class="er">=</span> <span class="fu">predict</span>(g_rf_fit, <span class="at">data =</span> .)<span class="sc">$</span>predictions] <span class="sc">%&gt;%</span> </span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== orthogonalize y ===#</span></span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  .[, y_tilde <span class="sc">:</span><span class="er">=</span> y <span class="sc">-</span> g_0_hat] <span class="sc">%&gt;%</span> </span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== prediction of m_0(x_i) ===#</span></span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  .[, m_0_hat <span class="sc">:</span><span class="er">=</span> <span class="fu">predict</span>(m_rf_fit, <span class="at">data =</span> .)<span class="sc">$</span>predictions] <span class="sc">%&gt;%</span> </span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== orthogonalize d ===#</span></span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  .[, d_tilde <span class="sc">:</span><span class="er">=</span> d <span class="sc">-</span> m_0_hat]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>data_orth <span class="ot">&lt;-</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  data_target <span class="sc">%&gt;%</span> </span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== prediction of g_0(x_i) ===#</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  .[, g_0_hat <span class="sc">:</span><span class="er">=</span> <span class="fu">predict</span>(g_rf_fit, <span class="at">data =</span> .)<span class="sc">$</span>predictions] <span class="sc">%&gt;%</span> </span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== orthogonalize y ===#</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  .[, y_tilde <span class="sc">:</span><span class="er">=</span> y <span class="sc">-</span> g_0_hat] <span class="sc">%&gt;%</span> </span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== prediction of m_0(x_i) ===#</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  .[, m_0_hat <span class="sc">:</span><span class="er">=</span> <span class="fu">predict</span>(m_rf_fit, <span class="at">data =</span> .)<span class="sc">$</span>predictions] <span class="sc">%&gt;%</span> </span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== orthogonalize d ===#</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  .[, d_tilde <span class="sc">:</span><span class="er">=</span> d <span class="sc">-</span> m_0_hat]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Then, <span class="math inline">\(\hat{\theta}\)</span> is obtained for this fold using <a href="#eq-iv-score">Equation&nbsp;<span>10.4</span></a>.</p>
+<p>Then, <span class="math inline">\(\hat{\theta}\)</span> is obtained for this fold using <a href="#eq-iv-score">Equation&nbsp;<span>10.5</span></a>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>(</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>theta_hat <span class="ot">&lt;-</span> data_orth[, <span class="fu">sum</span>(d_tilde <span class="sc">*</span> y_tilde) <span class="sc">/</span> <span class="fu">sum</span>(d_tilde <span class="sc">*</span> d)]</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>theta_hat <span class="ot">&lt;-</span> data_orth[, <span class="fu">sum</span>(d_tilde <span class="sc">*</span> y_tilde) <span class="sc">/</span> <span class="fu">sum</span>(d_tilde <span class="sc">*</span> d)]</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.5486855</code></pre>
 </div>
@@ -1257,60 +1300,60 @@ $\hat{\theta}$ is biased because $\hat{l}_0(X_i)$ is a biased estimator of $\hat
 
 <div class="no-row-height column-margin column-container"><div class="">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>cross_fit <span class="ot">&lt;-</span> <span class="cf">function</span>(i, data_folds, <span class="at">mtry_l =</span> <span class="dv">12</span>, <span class="at">mtry_m =</span> <span class="dv">10</span>, <span class="at">mtry_g =</span> <span class="dv">12</span>)</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>{</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#--------------------------</span></span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Prepare data</span></span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#--------------------------</span></span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== ith split ===#</span></span>
-<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  working_split <span class="ot">&lt;-</span> data_folds[i, ]</span>
-<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== data for estimating g_0  and m_0 ===#</span></span>
-<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>  data_train <span class="ot">&lt;-</span> <span class="fu">analysis</span>(working_split<span class="sc">$</span>splits[[<span class="dv">1</span>]]) </span>
-<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== data for which g_0(x_i) and m_0(x_i) are calculated ===#</span></span>
-<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>  data_target <span class="ot">&lt;-</span> <span class="fu">assessment</span>(working_split<span class="sc">$</span>splits[[<span class="dv">1</span>]]) </span>
-<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>  <span class="co">#--------------------------</span></span>
-<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Fit g0 and m0</span></span>
-<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>  <span class="co">#--------------------------</span></span>
-<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== m0 ===#</span></span>
-<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>  m_rf_fit <span class="ot">&lt;-</span> <span class="fu">fit_m0</span>(data_train, mtry_m)</span>
-<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== g0 ===#</span></span>
-<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a>  g_rf_fit <span class="ot">&lt;-</span> <span class="fu">fit_g0</span>(data_train, m_rf_fit, mtry_l, mtry_g)</span>
-<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a>  <span class="co">#--------------------------</span></span>
-<span id="cb27-26"><a href="#cb27-26" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get y_tilde and d_tilde</span></span>
-<span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a>  <span class="co">#--------------------------</span></span>
-<span id="cb27-28"><a href="#cb27-28" aria-hidden="true" tabindex="-1"></a>  data_orth <span class="ot">&lt;-</span></span>
-<span id="cb27-29"><a href="#cb27-29" aria-hidden="true" tabindex="-1"></a>    data_target <span class="sc">%&gt;%</span> </span>
-<span id="cb27-30"><a href="#cb27-30" aria-hidden="true" tabindex="-1"></a>    <span class="co">#=== prediction of g_0(x_i) ===#</span></span>
-<span id="cb27-31"><a href="#cb27-31" aria-hidden="true" tabindex="-1"></a>    .[, g_0_hat <span class="sc">:</span><span class="er">=</span> <span class="fu">predict</span>(g_rf_fit, <span class="at">data =</span> .)<span class="sc">$</span>predictions] <span class="sc">%&gt;%</span> </span>
-<span id="cb27-32"><a href="#cb27-32" aria-hidden="true" tabindex="-1"></a>    <span class="co">#=== orthogonalize y ===#</span></span>
-<span id="cb27-33"><a href="#cb27-33" aria-hidden="true" tabindex="-1"></a>    .[, y_tilde <span class="sc">:</span><span class="er">=</span> y <span class="sc">-</span> g_0_hat] <span class="sc">%&gt;%</span> </span>
-<span id="cb27-34"><a href="#cb27-34" aria-hidden="true" tabindex="-1"></a>    <span class="co">#=== prediction of m_0(x_i) ===#</span></span>
-<span id="cb27-35"><a href="#cb27-35" aria-hidden="true" tabindex="-1"></a>    .[, m_0_hat <span class="sc">:</span><span class="er">=</span> <span class="fu">predict</span>(m_rf_fit, <span class="at">data =</span> .)<span class="sc">$</span>predictions] <span class="sc">%&gt;%</span> </span>
-<span id="cb27-36"><a href="#cb27-36" aria-hidden="true" tabindex="-1"></a>    <span class="co">#=== orthogonalize d ===#</span></span>
-<span id="cb27-37"><a href="#cb27-37" aria-hidden="true" tabindex="-1"></a>    .[, d_tilde <span class="sc">:</span><span class="er">=</span> d <span class="sc">-</span> m_0_hat] <span class="sc">%&gt;%</span> </span>
-<span id="cb27-38"><a href="#cb27-38" aria-hidden="true" tabindex="-1"></a>    .[, .(y_tilde, d_tilde, d)]</span>
-<span id="cb27-39"><a href="#cb27-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-40"><a href="#cb27-40" aria-hidden="true" tabindex="-1"></a>  theta_cf <span class="ot">&lt;-</span> data_orth[, <span class="fu">sum</span>(d_tilde <span class="sc">*</span> y_tilde) <span class="sc">/</span> <span class="fu">sum</span>(d_tilde <span class="sc">*</span> d)]</span>
-<span id="cb27-41"><a href="#cb27-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-42"><a href="#cb27-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(theta_cf)</span>
-<span id="cb27-43"><a href="#cb27-43" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>cross_fit <span class="ot">&lt;-</span> <span class="cf">function</span>(i, data_folds, <span class="at">mtry_l =</span> <span class="dv">12</span>, <span class="at">mtry_m =</span> <span class="dv">10</span>, <span class="at">mtry_g =</span> <span class="dv">12</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#--------------------------</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Prepare data</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#--------------------------</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== ith split ===#</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  working_split <span class="ot">&lt;-</span> data_folds[i, ]</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== data for estimating g_0  and m_0 ===#</span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>  data_train <span class="ot">&lt;-</span> <span class="fu">analysis</span>(working_split<span class="sc">$</span>splits[[<span class="dv">1</span>]]) </span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== data for which g_0(x_i) and m_0(x_i) are calculated ===#</span></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>  data_target <span class="ot">&lt;-</span> <span class="fu">assessment</span>(working_split<span class="sc">$</span>splits[[<span class="dv">1</span>]]) </span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>  <span class="co">#--------------------------</span></span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Fit g0 and m0</span></span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>  <span class="co">#--------------------------</span></span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== m0 ===#</span></span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>  m_rf_fit <span class="ot">&lt;-</span> <span class="fu">fit_m0</span>(data_train, mtry_m)</span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== g0 ===#</span></span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a>  g_rf_fit <span class="ot">&lt;-</span> <span class="fu">fit_g0</span>(data_train, m_rf_fit, mtry_l, mtry_g)</span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a>  <span class="co">#--------------------------</span></span>
+<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get y_tilde and d_tilde</span></span>
+<span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a>  <span class="co">#--------------------------</span></span>
+<span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a>  data_orth <span class="ot">&lt;-</span></span>
+<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a>    data_target <span class="sc">%&gt;%</span> </span>
+<span id="cb26-30"><a href="#cb26-30" aria-hidden="true" tabindex="-1"></a>    <span class="co">#=== prediction of g_0(x_i) ===#</span></span>
+<span id="cb26-31"><a href="#cb26-31" aria-hidden="true" tabindex="-1"></a>    .[, g_0_hat <span class="sc">:</span><span class="er">=</span> <span class="fu">predict</span>(g_rf_fit, <span class="at">data =</span> .)<span class="sc">$</span>predictions] <span class="sc">%&gt;%</span> </span>
+<span id="cb26-32"><a href="#cb26-32" aria-hidden="true" tabindex="-1"></a>    <span class="co">#=== orthogonalize y ===#</span></span>
+<span id="cb26-33"><a href="#cb26-33" aria-hidden="true" tabindex="-1"></a>    .[, y_tilde <span class="sc">:</span><span class="er">=</span> y <span class="sc">-</span> g_0_hat] <span class="sc">%&gt;%</span> </span>
+<span id="cb26-34"><a href="#cb26-34" aria-hidden="true" tabindex="-1"></a>    <span class="co">#=== prediction of m_0(x_i) ===#</span></span>
+<span id="cb26-35"><a href="#cb26-35" aria-hidden="true" tabindex="-1"></a>    .[, m_0_hat <span class="sc">:</span><span class="er">=</span> <span class="fu">predict</span>(m_rf_fit, <span class="at">data =</span> .)<span class="sc">$</span>predictions] <span class="sc">%&gt;%</span> </span>
+<span id="cb26-36"><a href="#cb26-36" aria-hidden="true" tabindex="-1"></a>    <span class="co">#=== orthogonalize d ===#</span></span>
+<span id="cb26-37"><a href="#cb26-37" aria-hidden="true" tabindex="-1"></a>    .[, d_tilde <span class="sc">:</span><span class="er">=</span> d <span class="sc">-</span> m_0_hat] <span class="sc">%&gt;%</span> </span>
+<span id="cb26-38"><a href="#cb26-38" aria-hidden="true" tabindex="-1"></a>    .[, .(y_tilde, d_tilde, d)]</span>
+<span id="cb26-39"><a href="#cb26-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-40"><a href="#cb26-40" aria-hidden="true" tabindex="-1"></a>  theta_cf <span class="ot">&lt;-</span> data_orth[, <span class="fu">sum</span>(d_tilde <span class="sc">*</span> y_tilde) <span class="sc">/</span> <span class="fu">sum</span>(d_tilde <span class="sc">*</span> d)]</span>
+<span id="cb26-41"><a href="#cb26-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-42"><a href="#cb26-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(theta_cf)</span>
+<span id="cb26-43"><a href="#cb26-43" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div></div><div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>(</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>theta_hat <span class="ot">&lt;-</span> </span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">seq_len</span>(<span class="fu">nrow</span>(data_folds)), <span class="co"># loop over folds</span></span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) <span class="fu">cross_fit</span>(x, data_folds) <span class="co"># get theta_hat</span></span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unlist</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>() <span class="co"># average them</span></span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>theta_hat <span class="ot">&lt;-</span> </span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">seq_len</span>(<span class="fu">nrow</span>(data_folds)), <span class="co"># loop over folds</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) <span class="fu">cross_fit</span>(x, data_folds) <span class="co"># get theta_hat</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unlist</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>() <span class="co"># average them</span></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.5247844</code></pre>
 </div>
@@ -1319,59 +1362,59 @@ $\hat{\theta}$ is biased because $\hat{l}_0(X_i)$ is a biased estimator of $\hat
 
 <div class="no-row-height column-margin column-container"><div class="">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>get_theta_cf <span class="ot">&lt;-</span> <span class="cf">function</span>(data_folds, <span class="at">mtry_l =</span> <span class="dv">12</span>, <span class="at">mtry_m =</span> <span class="dv">10</span>, <span class="at">mtry_g =</span> <span class="dv">12</span>){</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  theta_hat <span class="ot">&lt;-</span> </span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lapply</span>(</span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">seq_len</span>(<span class="fu">nrow</span>(data_folds)),</span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>      <span class="cf">function</span>(x) <span class="fu">cross_fit</span>(x, data_folds, mtry_l, mtry_m, mtry_g)</span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unlist</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mean</span>()</span>
-<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(theta_hat)</span>
-<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>get_theta_cf <span class="ot">&lt;-</span> <span class="cf">function</span>(data_folds, <span class="at">mtry_l =</span> <span class="dv">12</span>, <span class="at">mtry_m =</span> <span class="dv">10</span>, <span class="at">mtry_g =</span> <span class="dv">12</span>){</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  theta_hat <span class="ot">&lt;-</span> </span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lapply</span>(</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">seq_len</span>(<span class="fu">nrow</span>(data_folds)),</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>      <span class="cf">function</span>(x) <span class="fu">cross_fit</span>(x, data_folds, mtry_l, mtry_m, mtry_g)</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unlist</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mean</span>()</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(theta_hat)</span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div></div><div class="cell" data-hash="C01-dml_cache/html/fig-cf-debiased_80e2bdd7dd7f0848047825d099f877ad">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>theta_hats_cf <span class="ot">&lt;-</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mclapply</span>(</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span><span class="sc">:</span><span class="dv">500</span>,</span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) {</span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">print</span>(x)</span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>      training_data <span class="ot">&lt;-</span> <span class="fu">gen_data</span>()</span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>      data_folds <span class="ot">&lt;-</span> rsample<span class="sc">::</span><span class="fu">vfold_cv</span>(training_data, <span class="at">v =</span> <span class="dv">2</span>)</span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>      theta_hat <span class="ot">&lt;-</span>  <span class="fu">get_theta_cf</span>(data_folds)</span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(theta_hat)</span>
-<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>    },</span>
-<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">mc.cores =</span> <span class="fu">detectCores</span>() <span class="sc">*</span> <span class="dv">3</span> <span class="sc">/</span> <span class="dv">4</span></span>
-<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unlist</span>()</span>
-<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a><span class="co">#=== visualize the results ===#</span></span>
-<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x =</span> theta_hats_cf), <span class="at">color =</span> <span class="st">"grey"</span>, <span class="at">fill =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
-<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
-<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="fu">aes</span>(<span class="at">xintercept =</span> <span class="fl">0.5</span>,<span class="at">color =</span> <span class="st">"True Value"</span>)) <span class="sc">+</span></span>
-<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="fu">aes</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(theta_hats_cf), <span class="at">color =</span> <span class="st">"Mean of the Estimates"</span>)) <span class="sc">+</span></span>
-<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(</span>
-<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"True Value"</span> <span class="ot">=</span> <span class="st">"red"</span>, <span class="st">"Mean of the Estimates"</span> <span class="ot">=</span> <span class="st">"blue"</span>),</span>
-<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">""</span></span>
-<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">nrow =</span> <span class="dv">1</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)) <span class="sc">+</span></span>
-<span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>theta_hats_cf <span class="ot">&lt;-</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mclapply</span>(</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span><span class="sc">:</span><span class="dv">500</span>,</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) {</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">print</span>(x)</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>      training_data <span class="ot">&lt;-</span> <span class="fu">gen_data</span>()</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>      data_folds <span class="ot">&lt;-</span> rsample<span class="sc">::</span><span class="fu">vfold_cv</span>(training_data, <span class="at">v =</span> <span class="dv">2</span>)</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>      theta_hat <span class="ot">&lt;-</span>  <span class="fu">get_theta_cf</span>(data_folds)</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(theta_hat)</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">mc.cores =</span> <span class="fu">detectCores</span>() <span class="sc">*</span> <span class="dv">3</span> <span class="sc">/</span> <span class="dv">4</span></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unlist</span>()</span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a><span class="co">#=== visualize the results ===#</span></span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x =</span> theta_hats_cf), <span class="at">color =</span> <span class="st">"grey"</span>, <span class="at">fill =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="fu">aes</span>(<span class="at">xintercept =</span> <span class="fl">0.5</span>,<span class="at">color =</span> <span class="st">"True Value"</span>)) <span class="sc">+</span></span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="fu">aes</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(theta_hats_cf), <span class="at">color =</span> <span class="st">"Mean of the Estimates"</span>)) <span class="sc">+</span></span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(</span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"True Value"</span> <span class="ot">=</span> <span class="st">"red"</span>, <span class="st">"Mean of the Estimates"</span> <span class="ot">=</span> <span class="st">"blue"</span>),</span>
+<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">""</span></span>
+<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">nrow =</span> <span class="dv">1</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)) <span class="sc">+</span></span>
+<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-cf-debiased" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="C01-dml_files/figure-html/fig-cf-debiased-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 10.6: The distribution of treatment effect estimated by the double-debiased approach with cross-fitting</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 10.5: The distribution of treatment effect estimated by the double-debiased approach with cross-fitting</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-<p><a href="#fig-cf-debiased">Figure&nbsp;<span>10.6</span></a> shows the distribution of <span class="math inline">\(\hat{\theta}\)</span> with double-debiasing and cross-fitting. It is slightly biased in this instance (mean is 0.502), but the average <span class="math inline">\(\hat{\theta}\)</span> is very close to the true parameter.</p>
+<p><a href="#fig-cf-debiased">Figure&nbsp;<span>10.5</span></a> shows the distribution of <span class="math inline">\(\hat{\theta}\)</span> with double-debiasing and cross-fitting. It is slightly biased in this instance (mean is 0.502), but the average <span class="math inline">\(\hat{\theta}\)</span> is very close to the true parameter.</p>
 <div class="callout-important callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1475,14 +1518,14 @@ Tip
 </div>
 </div>
 </section>
-<section id="partially-linear-model" class="level3" data-number="10.2.2">
+<section id="partially-linear-model" class="level3 page-columns page-full" data-number="10.2.2">
 <h3 data-number="10.2.2" class="anchored" data-anchor-id="partially-linear-model"><span class="header-section-number">10.2.2</span> Partially linear model</h3>
-<p><span class="math display">\[
+<p><span id="eq-plr"><span class="math display">\[
 \begin{aligned}
 y = \theta d + g_0(X) + \mu \\
 d = m_0(X) + \eta
 \end{aligned}
-\]</span></p>
+\tag{10.6}\]</span></span></p>
 <div class="callout-note callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1497,9 +1540,401 @@ Note
 <ul>
 <li><span class="math inline">\(E[\mu|D,X] = 0\)</span></li>
 <li><span class="math inline">\(E[\eta|X] = 0\)</span></li>
+<li><span class="math inline">\(E[\eta\cdot \mu|D, X] = 0\)</span></li>
 </ul>
 </div>
 </div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>DiagrammeR<span class="sc">::</span><span class="fu">grViz</span>(</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="st">  digraph {</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="st">    graph [layout = circo, ranksep = 0.5]</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="st">    node [shape = box]</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a><span class="st">      Y [label = 'Y']</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a><span class="st">      u [label = '\U03BC']</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a><span class="st">    node [shape = box]</span></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a><span class="st">      X [label = 'X']</span></span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a><span class="st">      T [label = 'T']</span></span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a><span class="st">      v [label = '\U03B7']</span></span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a><span class="st">    edge [minlen = 2]</span></span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a><span class="st">      {v, X}-&gt;T</span></span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a><span class="st">      {X, T}-&gt;Y</span></span>
+<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a><span class="st">      u-&gt;Y</span></span>
+<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a><span class="st">  }</span></span>
+<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a><span class="st">  "</span></span>
+<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="htmlwidget-6513000584a4d02624c3" style="width:100%;height:464px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-6513000584a4d02624c3">{"x":{"diagram":"\n  digraph {\n    graph [layout = circo, ranksep = 0.5]\n\n    node [shape = box]\n      Y [label = \"Y\"]\n      u [label = \"μ\"]\n\n    node [shape = box]\n      X [label = \"X\"]\n      T [label = \"T\"]\n      v [label = \"η\"]\n\n    edge [minlen = 2]\n      {v, X}->T\n      {X, T}->Y\n      u->Y\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<p>There are two ways to estimate <span class="math inline">\(\theta\)</span> using <code>DoublMLPLR()</code>. They differ in how their score functions are defined. You pick either one of the two:</p>
+<ul>
+<li><code>partialling-out</code>: <span class="math inline">\([Y - l(X) - \theta(D-m(X))][D-m(X)]\)</span></li>
+<li><code>IV-type</code>: <span class="math inline">\([Y - \theta D - g(X)][D-m(X)]\)</span></li>
+</ul>
+<p>Since <span class="math inline">\(g(X)\)</span> and <span class="math inline">\(m(X)\)</span> themselves appear in the data generating process (<a href="#eq-plr">Equation&nbsp;<span>10.7</span></a>), it is clear what they are. However, it is not immediately clear what <span class="math inline">\(l(X)\)</span> represents. <span class="math inline">\(l(X)\)</span> refers to <span class="math inline">\(E[Y|X]\)</span>.</p>
+<p><span class="math display">\[
+\begin{aligned}
+l(X) = E[Y|X] &amp; = E[\theta d + g_0(X) + \mu] \\
+              &amp; = \theta E[d|X] + E[g_0(X)] + E[\mu|X] \\
+              &amp; = \theta m_0(X) + g_0(X) \;\; \mbox{(by the assumptions on the error terms)}\\
+\end{aligned}
+\]</span></p>
+<p>Given this, the scores functions can be rewritten as:</p>
+<ul>
+<li><code>partialling-out</code>: <span class="math inline">\(\mu\cdot \eta\)</span></li>
+<li><code>IV-type</code>: <span class="math inline">\(\mu\cdot \eta\)</span></li>
+</ul>
+<p>Therefore, the two score functions are actually identical in meaning, but represented by different terms, which result in different equations to calculate <span class="math inline">\(\hat{\theta}\)</span>. Here are how <span class="math inline">\(\theta\)</span> is identified for the two scores functions:</p>
+<p><strong><code>partialling-out</code></strong></p>
+<p><span class="math display">\[
+\begin{aligned}
+E\large(\normalsize[Y - l(X) - \theta(D-m(X))][D-m(X)]\large)\normalsize = 0 \\
+\theta = \frac{E[(Y - l(X))(D-m(X))]}{E[(D-m(X))(D-m(X))]}
+\end{aligned}
+\]</span></p>
+<p>The empirical analog of this moment condition is</p>
+<p><span class="math display">\[
+\begin{aligned}
+\hat{\theta} = \frac{\sum_{i=1}^N (Y_i - l(X_i))(D_i-m(X_i))}{\sum_{i=1}^N (D_i-m(X_i))(D_i-m(X_i))}
+\end{aligned}
+\]</span></p>
+<p><strong><code>IV-type</code></strong></p>
+<p><span class="math display">\[
+\begin{aligned}
+\hat{\theta} = \frac{\sum_{i=1}^N (Y_i - g(X_i))(D_i-m(X_i))}{\sum_{i=1}^N D_i(D_i-m(X_i))}
+\end{aligned}
+\]</span></p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><span class="math inline">\(D_i-m(X_i)\)</span> is acting like an instrument.</p>
+</div></div><p>The choice of the score function results in different steps to estimate <span class="math inline">\(\theta\)</span> and what you need to supply to <code>DoublMLPLR()</code>. <span class="math inline">\(g_0(X)\)</span> is estimated in several steps (see <a href="#sec-dml-naive"><span>Section&nbsp;10.1.2</span></a>) as it needs to remove the effect of <span class="math inline">\(\theta D\)</span> before estimating only <span class="math inline">\(g_0(X)\)</span>. <span class="math inline">\(l_0(X)\)</span>, however, is estimated by simply regressing <span class="math inline">\(Y\)</span> on <span class="math inline">\(X\)</span>. In running <code>DoublMLPLR()</code>, there are three key options:</p>
+<ul>
+<li><code>ml_l</code>: ML method to use to estimate <span class="math inline">\(l(X)\)</span></li>
+<li><code>ml_m</code>: ML method to use to estimate <span class="math inline">\(m(X)\)</span></li>
+<li><code>ml_g</code>: ML method to use to estimate <span class="math inline">\(g(X)\)</span></li>
+</ul>
+<p>When <code>partialling-out</code> is selected, you need to specify <code>ml_l</code> and <code>ml_m</code>. However, you do not need to specify the <code>ml_g</code>. When <code>IV-type</code> is used you need to specify all three. This is because estimating <code>g(X)</code> involves first estimating <code>l(X)</code> (see <a href="#sec-dml-naive"><span>Section&nbsp;10.1.2</span></a>). So, the <code>partialling-out</code> option requires a smaller number of steps and easier to specify for the user.</p>
+<p>Let’s implement <code>DoublMLPLR()</code> using a synthetic dataset that follows the DGP represented by <a href="#eq-simple-synthetic">Equation&nbsp;<span>10.4</span></a>. We can use <code>make_plr_CCDDHNR2018()</code> to create such a dataset.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> </span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">make_plr_CCDDHNR2018</span>(</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.5</span>, </span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_obs =</span> <span class="dv">500</span>, </span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">dim_x =</span> <span class="dv">20</span>, </span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">return_type =</span> <span class="st">'data.table'</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             X1          X2          X3         X4           X5         X6
+  1:  1.2440476  1.64639297  0.71131792  0.4783044  0.008239645  0.4533324
+  2:  0.9023502  0.15267901  0.01064853  0.2088653 -0.305263506  0.7158397
+  3: -1.9637574 -1.87906651 -0.67356583 -0.5550050  0.029957814  0.5359109
+  4: -1.9718906 -0.82930335 -1.11817257 -1.6561757 -1.853304959 -0.5511951
+  5: -1.0273249 -0.69520796 -1.62652575 -0.8325634 -0.769455086  0.7121183
+ ---                                                                      
+496: -0.5828880  0.03691634 -0.09796938 -0.2660888  0.256374614  0.8409559
+497:  0.1310249 -0.04537018 -0.63309501 -1.9887410 -0.511560500 -0.6410372
+498:  0.6988148  1.18801352  1.40573962  1.7227378  0.135727751 -0.9089638
+499:  0.9334815  0.53835718  0.63176578  0.6217877  0.949987407  1.3972804
+500: -1.8301636 -0.48985250  0.28928829  0.2081408  0.289517934  0.1162203
+             X7          X8         X9         X10        X11        X12
+  1:  0.2998599  0.08169994 -0.3034012 -0.41817280 -0.1684357 -0.5818317
+  2:  0.4535326  0.39097316 -0.1131795 -0.32836997 -0.4328069  0.3964901
+  3:  1.9876844  0.32706905 -0.3247179 -0.95800870 -0.6582622 -0.8564451
+  4: -1.1271986  0.01316699 -0.6730823 -0.27714289 -0.4080058  0.2292704
+  5:  0.9164861  0.25645093  0.8497441  1.43501126  1.0167186 -0.1490919
+ ---                                                                    
+496:  1.9224220 -0.36454764  0.5100894  0.56865912  1.2143600  1.4910141
+497: -0.3887281  0.19720732 -0.2633226 -0.36455774 -0.6915640  0.1428711
+498: -0.4677247  0.09132417  1.3396831  0.12893152  0.5207629  0.3854993
+499:  1.4887376  1.83162991  1.0472136  1.52179830  1.8261050  2.2777564
+500:  1.2296010  0.99825727  1.2843710 -0.08255473 -0.2282313 -0.4273543
+            X13        X14        X15        X16        X17        X18
+  1:  0.6359233  0.6519038  0.8225963  1.4501328  1.3638703  2.3590094
+  2:  0.4119444  0.8873855  0.4601086  0.8426136  1.1745062  1.0474801
+  3: -1.7953205 -2.7288900 -1.8070682 -2.3540323 -1.0996324 -0.4669641
+  4:  0.6332562 -1.5151797 -0.5069169 -0.3316435 -0.5820351 -1.1698090
+  5:  0.3762819  0.2109936  1.5015694  0.7507966  0.4815073  0.4143088
+ ---                                                                  
+496:  0.7537537  0.5242330  1.0652588  2.2025996  1.3431624  0.4493184
+497: -0.5253672  0.1851662  0.1890410 -1.1936561 -2.0104705 -1.6484655
+498:  0.3943351 -1.0036494  0.2384225 -0.1725888  0.8901573  0.3837909
+499:  3.3185716  1.9115865  1.6692008  0.3438597 -0.1976231  0.3944083
+500:  0.5623116  0.8880912  1.5738437  1.2236440  1.8337886  2.8762545
+             X19        X20          y          d
+  1:  2.15034400  1.9143797  1.8599237  1.2501768
+  2:  0.94456253 -0.4795718  2.3923080  2.1841305
+  3: -0.06033539  0.5126436 -0.9123374 -1.4574737
+  4: -1.12264600 -0.3507258 -1.7675132 -2.9801900
+  5:  0.08113000 -1.6986236 -1.7201920 -0.8987789
+ ---                                             
+496: -0.17389979  0.7992646  0.2055072 -1.3320553
+497: -2.00535182 -0.9286602 -0.2724589 -1.6061591
+498:  1.25943944  0.5382165  0.4598890  0.4722447
+499: -0.67025460 -0.4495312  0.4208797  0.4633706
+500:  1.44951329  0.3391455 -1.7206897 -3.5137542</code></pre>
+</div>
+</div>
+<p>Note that the treatment variable is continuous in this dataset.</p>
+<p>We first need to create a <code>DoubleMLData</code> object from the train data using <code>DoubleMLData$new()</code>. Specify the dependent variable using the <code>y_col</code> option and the treatment variable(s) by <code>d_cols</code>. The rest of the variables in the dataset provided will be regarded as covariates.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>obj_dml_data <span class="ot">&lt;-</span> </span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  DoubleMLData<span class="sc">$</span><span class="fu">new</span>(</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    data, </span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">y_col =</span> <span class="st">"y"</span>, </span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">d_cols =</span> <span class="st">"d"</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>================= DoubleMLData Object ==================
+
+
+------------------ Data summary      ------------------
+Outcome variable: y
+Treatment variable(s): d
+Covariates: X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13, X14, X15, X16, X17, X18, X19, X20
+Instrument(s): 
+No. Observations: 500</code></pre>
+</div>
+</div>
+<p>Now, let’s specify <code>ml_l</code>, <code>ml_m</code>, and <code>ml_g</code>. The <code>DoubleML</code> follows <code>mlr3</code> (see <a href="PROG-01-mlr3.html"><span>Chapter&nbsp;14</span></a> for how to use <code>mlr3</code>).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>ml_l <span class="ot">&lt;-</span> </span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lrn</span>(</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"regr.ranger"</span>,</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">num.trees =</span> <span class="dv">500</span>, </span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">mtry =</span> <span class="dv">15</span>, </span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">min.node.size =</span> <span class="dv">5</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;LearnerRegrRanger:regr.ranger&gt;
+* Model: -
+* Parameters: num.threads=1, num.trees=500, mtry=15, min.node.size=5
+* Packages: mlr3, mlr3learners, ranger
+* Predict Type: response
+* Feature types: logical, integer, numeric, character, factor, ordered
+* Properties: hotstart_backward, importance, oob_error, weights</code></pre>
+</div>
+</div>
+<p>Let’s use the same ML method for <code>ml_m</code> and <code>ml_g</code> (you can use any appropriate ML methods). We can simply use the <code>clone()</code> method to replicate <code>ml_l</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>ml_m <span class="ot">&lt;-</span> ml_l<span class="sc">$</span><span class="fu">clone</span>()</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>ml_g <span class="ot">&lt;-</span> ml_l<span class="sc">$</span><span class="fu">clone</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We now set up the <code>DoubleMLPLR</code> estimator by providing a <code>DoubleMLData</code> and ML methods. By default, <code>score</code> is set to <code>"partialling out"</code>, so we do not need to provide <code>ml_g</code>. The <code>apply_cross_fitting</code> option is set to <code>TRUE</code> by default.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>dml_plr_obj <span class="ot">&lt;-</span> DoubleMLPLR<span class="sc">$</span><span class="fu">new</span>(obj_dml_data, ml_l, ml_m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can fit the model by invoking <code>fit()</code> on <code>dml_plr_obj</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>dml_plr_obj<span class="sc">$</span><span class="fu">fit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>INFO  [12:46:08.331] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 5/5) 
+INFO  [12:46:08.811] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 3/5) 
+INFO  [12:46:09.270] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 1/5) 
+INFO  [12:46:09.717] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 2/5) 
+INFO  [12:46:10.172] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 4/5) 
+INFO  [12:46:10.917] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 1/5) 
+INFO  [12:46:11.381] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 4/5) 
+INFO  [12:46:11.840] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 3/5) 
+INFO  [12:46:12.302] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 5/5) 
+INFO  [12:46:12.763] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 2/5) </code></pre>
+</div>
+</div>
+<p>See the results with <code>print()</code>. You can see <span class="math inline">\(\hat{\theta}\)</span> at the bottom.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(dml_plr_obj)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>================= DoubleMLPLR Object ==================
+
+
+------------------ Data summary      ------------------
+Outcome variable: y
+Treatment variable(s): d
+Covariates: X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13, X14, X15, X16, X17, X18, X19, X20
+Instrument(s): 
+No. Observations: 500
+
+------------------ Score &amp; algorithm ------------------
+Score function: partialling out
+DML algorithm: dml2
+
+------------------ Machine learner   ------------------
+ml_l: regr.ranger
+ml_m: regr.ranger
+
+------------------ Resampling        ------------------
+No. folds: 5
+No. repeated sample splits: 1
+Apply cross-fitting: TRUE
+
+------------------ Fit summary       ------------------
+ Estimates and significance testing of the effect of target variables
+  Estimate. Std. Error t value Pr(&gt;|t|)    
+d   0.52331    0.04536   11.54   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>If you are using <code>IV-type</code>, then you need to provide <code>ml_g</code> as well like below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== set up ===#</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>dml_plr_obj_iv <span class="ot">&lt;-</span> </span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  DoubleMLPLR<span class="sc">$</span><span class="fu">new</span>(</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>    obj_dml_data, </span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>    ml_l, </span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>    ml_m, </span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>    ml_g,</span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">score =</span> <span class="st">"IV-type"</span></span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a><span class="co">#=== fit ===#</span></span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a>dml_plr_obj_iv<span class="sc">$</span><span class="fu">fit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>INFO  [12:46:13.402] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 2/5) 
+INFO  [12:46:13.864] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 4/5) 
+INFO  [12:46:14.320] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 1/5) 
+INFO  [12:46:14.767] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 3/5) 
+INFO  [12:46:15.228] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 5/5) 
+INFO  [12:46:15.838] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 1/5) 
+INFO  [12:46:16.295] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 5/5) 
+INFO  [12:46:16.757] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 4/5) 
+INFO  [12:46:17.206] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 2/5) 
+INFO  [12:46:17.653] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 3/5) 
+INFO  [12:46:18.264] [mlr3] Applying learner 'regr.ranger' on task 'nuis_g' (iter 5/5) 
+INFO  [12:46:18.724] [mlr3] Applying learner 'regr.ranger' on task 'nuis_g' (iter 4/5) 
+INFO  [12:46:19.192] [mlr3] Applying learner 'regr.ranger' on task 'nuis_g' (iter 3/5) 
+INFO  [12:46:19.661] [mlr3] Applying learner 'regr.ranger' on task 'nuis_g' (iter 2/5) 
+INFO  [12:46:20.126] [mlr3] Applying learner 'regr.ranger' on task 'nuis_g' (iter 1/5) </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== print the results ===#</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(dml_plr_obj_iv)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>================= DoubleMLPLR Object ==================
+
+
+------------------ Data summary      ------------------
+Outcome variable: y
+Treatment variable(s): d
+Covariates: X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13, X14, X15, X16, X17, X18, X19, X20
+Instrument(s): 
+No. Observations: 500
+
+------------------ Score &amp; algorithm ------------------
+Score function: IV-type
+DML algorithm: dml2
+
+------------------ Machine learner   ------------------
+ml_l: regr.ranger
+ml_m: regr.ranger
+ml_g: regr.ranger
+
+------------------ Resampling        ------------------
+No. folds: 5
+No. repeated sample splits: 1
+Apply cross-fitting: TRUE
+
+------------------ Fit summary       ------------------
+ Estimates and significance testing of the effect of target variables
+  Estimate. Std. Error t value Pr(&gt;|t|)    
+d   0.54946    0.04565   12.04   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</section>
+<section id="partially-linear-iv-model" class="level3" data-number="10.2.3">
+<h3 data-number="10.2.3" class="anchored" data-anchor-id="partially-linear-iv-model"><span class="header-section-number">10.2.3</span> Partially linear IV model</h3>
+<p>When using observational data, it is rarely the case that conditional unconfoundedness of the treatment is satisfied. In such a case, you may want to consider a DML-IV approach implemented by <code>DoubleMLPLIV()</code>. Just like IV for linear models, finding the right instrument is critical for the DML-IV approach to be consistent.</p>
+<p><span id="eq-plr"><span class="math display">\[
+\begin{aligned}
+y = \theta d + g_0(X) + \mu \\
+Z = m_0(X) + \varepsilon \\
+d = r_0(X) + \eta
+\end{aligned}
+\tag{10.7}\]</span></span></p>
+<p>When <span class="math inline">\(\varspsilon\)</span> and <span class="math inline">\(\mu\)</span> are correlated, <code>DoubleMLPLR()</code> is inconsistent. However, as long as the following assumptions are satisfied, <code>DoubleMLPLIV()</code> is consistent.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Assumptions on the error terms</strong></p>
+<ul>
+<li><span class="math inline">\(E[\mu|Z,X] = 0\)</span></li>
+<li><span class="math inline">\(E[\varepsilon|X] = 0\)</span></li>
+<li><span class="math inline">\(E[\varepsilon\cdot \mu|Z, X] = 0\)</span></li>
+</ul>
+</div>
+</div>
+<p>Here is the causal diagram for the partially linear model of interest. As you can see, the treatment variable <span class="math inline">\(T\)</span> is confounded as <span class="math inline">\(\mu\)</span> affects both <span class="math inline">\(Y\)</span> and <span class="math inline">\(T\)</span> (through <span class="math inline">\(\eta\)</span>).</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>DiagrammeR<span class="sc">::</span><span class="fu">grViz</span>(</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"</span></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a><span class="st">  digraph {</span></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="st">    graph [ranksep = 0.6]</span></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a><span class="st">    node [shape = box]</span></span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a><span class="st">      Y [label = 'Y']</span></span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a><span class="st">      X [label = 'X']</span></span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a><span class="st">      T [label = 'T']</span></span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a><span class="st">      Z [label = 'Z']</span></span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a><span class="st">      varep [label = '\U03B5']</span></span>
+<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a><span class="st">      mu [label = '\U03BC']</span></span>
+<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a><span class="st">      eta [label = '\U03B7']</span></span>
+<span id="cb48-14"><a href="#cb48-14" aria-hidden="true" tabindex="-1"></a><span class="st">    edge [minlen = 2]</span></span>
+<span id="cb48-15"><a href="#cb48-15" aria-hidden="true" tabindex="-1"></a><span class="st">      X-&gt;Y</span></span>
+<span id="cb48-16"><a href="#cb48-16" aria-hidden="true" tabindex="-1"></a><span class="st">      T-&gt;Y</span></span>
+<span id="cb48-17"><a href="#cb48-17" aria-hidden="true" tabindex="-1"></a><span class="st">      Z-&gt;T</span></span>
+<span id="cb48-18"><a href="#cb48-18" aria-hidden="true" tabindex="-1"></a><span class="st">      X-&gt;T</span></span>
+<span id="cb48-19"><a href="#cb48-19" aria-hidden="true" tabindex="-1"></a><span class="st">      X-&gt;Z</span></span>
+<span id="cb48-20"><a href="#cb48-20" aria-hidden="true" tabindex="-1"></a><span class="st">      varep-&gt;Z</span></span>
+<span id="cb48-21"><a href="#cb48-21" aria-hidden="true" tabindex="-1"></a><span class="st">      mu-&gt;{Y, eta}</span></span>
+<span id="cb48-22"><a href="#cb48-22" aria-hidden="true" tabindex="-1"></a><span class="st">      eta-&gt;{T, mu}</span></span>
+<span id="cb48-23"><a href="#cb48-23" aria-hidden="true" tabindex="-1"></a><span class="st">    { rank = same; Y; Z; varep}</span></span>
+<span id="cb48-24"><a href="#cb48-24" aria-hidden="true" tabindex="-1"></a><span class="st">    { rank = same; X; T; mu}</span></span>
+<span id="cb48-25"><a href="#cb48-25" aria-hidden="true" tabindex="-1"></a><span class="st">  }</span></span>
+<span id="cb48-26"><a href="#cb48-26" aria-hidden="true" tabindex="-1"></a><span class="st">  "</span></span>
+<span id="cb48-27"><a href="#cb48-27" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb48-28"><a href="#cb48-28" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="htmlwidget-1c291c2394a95241a846" style="width:100%;height:464px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1c291c2394a95241a846">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.6]\n    node [shape = box]\n      Y [label = \"Y\"]\n      X [label = \"X\"]\n      T [label = \"T\"]\n      Z [label = \"Z\"]\n      varep [label = \"ε\"]\n      mu [label = \"μ\"]\n      eta [label = \"η\"]\n    edge [minlen = 2]\n      X->Y\n      T->Y\n      Z->T\n      X->T\n      X->Z\n      varep->Z\n      mu->{Y, eta}\n      eta->{T, mu}\n    { rank = same; Y; Z; varep}\n    { rank = same; X; T; mu}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<p>Just like <code>DoublMLPLR()</code>, there are two ways to estimate <span class="math inline">\(\theta\)</span> using <code>DoublMLPLIV()</code>. The two score functions are:</p>
+<ul>
+<li><code>partialling-out</code>: <span class="math inline">\([Y - l(X) - \theta(D-r(X))][Z-m(X)]\)</span></li>
+<li><code>IV-type</code>: <span class="math inline">\([Y - \theta D - g(X)][Z-m(X)]\)</span></li>
+</ul>
+<p>, where <span class="math inline">\(r(X) = E[D|X]\)</span>. So, <span class="math inline">\(r(X)\)</span> is the same as <span class="math inline">\(m(X)\)</span> in the partially line model case. <span class="math inline">\(m(X)\)</span> represents <span class="math inline">\(E[Z|X]\)</span> in the IV model.</p>
+<p>Let <span class="math inline">\(\tilde{Z}\)</span>, <span class="math inline">\(\tilde{D}\)</span>, <span class="math inline">\(\tilde{Y}_l\)</span>, and <span class="math inline">\(\tilde{Y}_g\)</span> denote <span class="math inline">\(Z-m(X)\)</span>, <span class="math inline">\(D-r(X)\)</span>, <span class="math inline">\(Y-l(X)\)</span>, and <span class="math inline">\(Y-g(X)\)</span>, respectively.</p>
+<ul>
+<li><p><code>partialling-out</code>: <span class="math inline">\(\theta = (\tilde{Z}'\tilde{D})^{-1}\tilde{Z}\tilde{Y}_l\)</span></p></li>
+<li><p><code>IV-type</code>: <span class="math inline">\(\theta = (\tilde{Z}'D)^{-1}\tilde{Z}\tilde{Y}_g\)</span></p></li>
+</ul>
 </section>
 </section>
 <section id="suggested-exercises" class="level2" data-number="10.3">
