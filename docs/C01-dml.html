@@ -369,6 +369,11 @@ div.csl-indent {
   <a href="./A01-mc-simulation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Monte Carlo (MC) Simulation</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./A02-method-of-moment.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Primer on method of moment</span></a>
+  </div>
+</li>
     </ul>
   </li>
     </ul>
@@ -383,15 +388,14 @@ div.csl-indent {
   <li><a href="#dml-the-basic-idea" id="toc-dml-the-basic-idea" class="nav-link active" data-scroll-target="#dml-the-basic-idea"> <span class="header-section-number">10.1</span> DML: the basic idea</a>
   <ul class="collapse">
   <li><a href="#problem-setting" id="toc-problem-setting" class="nav-link" data-scroll-target="#problem-setting"> <span class="header-section-number">10.1.1</span> Problem Setting</a></li>
-  <li><a href="#sec-dml-naive" id="toc-sec-dml-naive" class="nav-link" data-scroll-target="#sec-dml-naive"> <span class="header-section-number">10.1.2</span> A naive approach</a></li>
+  <li><a href="#sec-dml-naive" id="toc-sec-dml-naive" class="nav-link" data-scroll-target="#sec-dml-naive"> <span class="header-section-number">10.1.2</span> An intuitive, yet naive approach</a></li>
   <li><a href="#overcoming-the-regularization-bias" id="toc-overcoming-the-regularization-bias" class="nav-link" data-scroll-target="#overcoming-the-regularization-bias"> <span class="header-section-number">10.1.3</span> Overcoming the regularization bias</a></li>
   <li><a href="#sec-cf" id="toc-sec-cf" class="nav-link" data-scroll-target="#sec-cf"> <span class="header-section-number">10.1.4</span> Overcoming the over-fitting bias</a></li>
   </ul></li>
   <li><a href="#models-and-implementation-by-doubleml" id="toc-models-and-implementation-by-doubleml" class="nav-link" data-scroll-target="#models-and-implementation-by-doubleml"> <span class="header-section-number">10.2</span> Models and implementation by <code>DoubleML</code></a>
   <ul class="collapse">
-  <li><a href="#a-note-on-method-of-moment-and-score-function" id="toc-a-note-on-method-of-moment-and-score-function" class="nav-link" data-scroll-target="#a-note-on-method-of-moment-and-score-function"> <span class="header-section-number">10.2.1</span> A note on method of moment and score function</a></li>
-  <li><a href="#partially-linear-model" id="toc-partially-linear-model" class="nav-link" data-scroll-target="#partially-linear-model"> <span class="header-section-number">10.2.2</span> Partially linear model</a></li>
-  <li><a href="#partially-linear-iv-model" id="toc-partially-linear-iv-model" class="nav-link" data-scroll-target="#partially-linear-iv-model"> <span class="header-section-number">10.2.3</span> Partially linear IV model</a></li>
+  <li><a href="#partially-linear-model" id="toc-partially-linear-model" class="nav-link" data-scroll-target="#partially-linear-model"> <span class="header-section-number">10.2.1</span> Partially linear model</a></li>
+  <li><a href="#partially-linear-iv-model" id="toc-partially-linear-iv-model" class="nav-link" data-scroll-target="#partially-linear-iv-model"> <span class="header-section-number">10.2.2</span> Partially linear IV model</a></li>
   </ul></li>
   <li><a href="#suggested-exercises" id="toc-suggested-exercises" class="nav-link" data-scroll-target="#suggested-exercises"> <span class="header-section-number">10.3</span> Suggested Exercises</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
@@ -523,7 +527,7 @@ Terminology alert
 </div>
 </section>
 <section id="sec-dml-naive" class="level3 page-columns page-full" data-number="10.1.2">
-<h3 data-number="10.1.2" class="anchored" data-anchor-id="sec-dml-naive"><span class="header-section-number">10.1.2</span> A naive approach</h3>
+<h3 data-number="10.1.2" class="anchored" data-anchor-id="sec-dml-naive"><span class="header-section-number">10.1.2</span> An intuitive, yet naive approach</h3>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p><strong>Packages to load for replication</strong></p>
@@ -1162,7 +1166,8 @@ ggplot(theta_hats_apr1_indep) +
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p>You can implement repeated K-fold cross-fitting using the <code>DoublML</code> package, which is not demonstrated here as it is very much similar in concept to repeated K-fold CV explained in <a href="B03-cross-validation.html"><span>Chapter&nbsp;3</span></a>.</p>
-</div></div><div class="cell">
+</div></div><p><span style="color:blue"> talk about <code>algorithm_2</code> </span></p>
+<div class="cell">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
@@ -1436,90 +1441,8 @@ Important
 <section id="models-and-implementation-by-doubleml" class="level2 page-columns page-full" data-number="10.2">
 <h2 data-number="10.2" class="anchored" data-anchor-id="models-and-implementation-by-doubleml"><span class="header-section-number">10.2</span> Models and implementation by <code>DoubleML</code></h2>
 <p>In R, <code>DoubleML</code> is built on top of <code>mlr3</code>, which uses <code>R6</code> classes provided by the <code>R6</code> package. Since <code>R6</code> implements encapsulated object-oriented programming like Python, <code>DoubleML</code> in R and Python work in a very similar manner. Here, we will use R for demonstrations.</p>
-<section id="a-note-on-method-of-moment-and-score-function" class="level3 page-columns page-full" data-number="10.2.1">
-<h3 data-number="10.2.1" class="anchored" data-anchor-id="a-note-on-method-of-moment-and-score-function"><span class="header-section-number">10.2.1</span> A note on method of moment and score function</h3>
-<p>DML approaches implemented by <code>DoubleML</code> are method of moment estimators. Method of moment starts from a moment condition that are derived from the assumptions and then solve their empirical version with respect to the parameters of interest to obtain estimates. It is best to look at examples.</p>
-<p>For example, OLS can be considered as an method of moment estimator. Consider the following model,</p>
-<p><span class="math display">\[
-\begin{aligned}
-y = \beta_0 + \beta_1 x + \mu
-\end{aligned}
-\]</span></p>
-<p>where <span class="math inline">\(X\)</span> is a collection of variables. The moment conditions for OLS are</p>
-<p><span class="math display">\[
-\begin{aligned}
-E[(y - \beta_0 - \beta_1 x)\times 1] = 0 \\
-E[(y - \beta_0 - \beta_1 x)\times x] = 0
-\end{aligned}
-\]</span></p>
-<p>What motivated the moment conditions are the assumptions of <span class="math inline">\(E[\mu\times 1] = 0\)</span> and <span class="math inline">\(E[\mu\times x] = 0\)</span> (mean conditional independence). Functions inside expectation (<span class="math inline">\(E[]\)</span>) in moment conditions are called <span style="color:red"> score functions</span>. So, here, <span class="math inline">\(y - \beta_0 - \beta_1 x\)</span> and <span class="math inline">\((y - \beta_0 - \beta_1 x)\times x\)</span> are the score functions.</p>
-<p>The empirical version of the moment conditions replaces the expected value of the score function with the sample mean of the score functions.</p>
-
-<div class="no-row-height column-margin column-container"><div class="">
-<p>Sample mean of the statistics of interest is a good estimator of the expected value of the statistics of interest.</p>
-</div></div><p><span class="math display">\[
-\begin{aligned}
-\frac{\sum_{i=1}^N (y_i - \beta_0 - \beta_1 x_i)}{N} = 0 \\
-\frac{\sum_{i=1}^N (y_i - \beta_0 - \beta_1 x_i) x_i}{N} = 0
-\end{aligned}
-\]</span></p>
-<p>You can remove <span class="math inline">\(N\)</span> by multiplying both sides by <span class="math inline">\(N\)</span> and get</p>
-<p><span class="math display">\[
-\begin{aligned}
-\sum_{i=1}^N (y_i - \beta_0 - \beta_1 x_i) = 0 \\
-\sum_{i=1}^N (y_i - \beta_0 - \beta_1 x_i) x_i = 0
-\end{aligned}
-\]</span></p>
-<p>Yes, these are actually the first order conditions of minimizing sum of the squared residuals. By solving theses equations, you can obtain OLS estimates.</p>
-<p>For brevity, we will use matrix notation hereafter. For example, let <span class="math inline">\(X\)</span> denote a matrix of the intercept and <span class="math inline">\(x\)</span> values with each row representing a single observation. Then, the empirical moment conditions can be written as follows:</p>
-<p><span class="math display">\[
-\begin{aligned}
-(y - X\beta)X'= 0
-\end{aligned}
-\]</span></p>
-<p>where <span class="math inline">\(\beta = \{\beta_0, \beta_1\}\)</span> is a 2 by 1 matrix. Solving this with respect to <span class="math inline">\(\beta\)</span>,</p>
-<p><span class="math display">\[
-\begin{aligned}
-\hat{\beta}_{OLS} = (X'X)^{-1}X'y
-\end{aligned}
-\]</span></p>
-<p>Now consider instrumental variable estimation with instruments <span class="math inline">\(\textbf{z} = \{z_1, z_2, \dots, z_K\}\)</span> (both included and excluded instruments). Under the assumption of <span class="math inline">\(E[\mu\cdot z_k]=0\)</span> <span class="math inline">\(^{\forall} k = 1, \dots, K\)</span>, which is derived from zero conditional mean assumption of <span class="math inline">\(E[\mu|Z] = 0\)</span>. Then the moment conditions are</p>
-<p><span class="math display">\[
-\begin{aligned}
-E[(y-X\beta)z_1] &amp; = 0 \\
-E[(y-X\beta)z_2] &amp; = 0 \\
-\vdots &amp; \\
-E[(y-X\beta)z_K] &amp; = 0 \\
-\end{aligned}
-\]</span></p>
-<p>The empirical moment conditions in matrix form are</p>
-<p><span class="math display">\[
-\begin{aligned}
-(y-X\beta)Z' = 0
-\end{aligned}
-\]</span></p>
-<p>Solving the equation with respect to <span class="math inline">\(\beta\)</span>,</p>
-<p><span class="math display">\[
-\begin{aligned}
-\hat{\beta}_{IV} = (Z'X)^{-1}Z'Y = 0
-\end{aligned}
-\]</span></p>
-<div class="callout-tip callout callout-style-default callout-captioned">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-caption-container flex-fill">
-Tip
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>You will also see (localized) moment conditions and score functions in GRF (<a href="E02-grf.html"><span>Chapter&nbsp;13</span></a>).</p>
-</div>
-</div>
-</section>
-<section id="partially-linear-model" class="level3 page-columns page-full" data-number="10.2.2">
-<h3 data-number="10.2.2" class="anchored" data-anchor-id="partially-linear-model"><span class="header-section-number">10.2.2</span> Partially linear model</h3>
+<section id="partially-linear-model" class="level3 page-columns page-full" data-number="10.2.1">
+<h3 data-number="10.2.1" class="anchored" data-anchor-id="partially-linear-model"><span class="header-section-number">10.2.1</span> Partially linear model</h3>
 <p><span id="eq-plr"><span class="math display">\[
 \begin{aligned}
 y = \theta d + g_0(X) + \mu \\
@@ -1743,16 +1666,16 @@ No. Observations: 500</code></pre>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>dml_plr_obj<span class="sc">$</span><span class="fu">fit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>INFO  [12:46:08.331] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 5/5) 
-INFO  [12:46:08.811] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 3/5) 
-INFO  [12:46:09.270] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 1/5) 
-INFO  [12:46:09.717] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 2/5) 
-INFO  [12:46:10.172] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 4/5) 
-INFO  [12:46:10.917] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 1/5) 
-INFO  [12:46:11.381] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 4/5) 
-INFO  [12:46:11.840] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 3/5) 
-INFO  [12:46:12.302] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 5/5) 
-INFO  [12:46:12.763] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 2/5) </code></pre>
+<pre><code>INFO  [15:36:23.440] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 5/5) 
+INFO  [15:36:23.910] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 3/5) 
+INFO  [15:36:24.368] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 1/5) 
+INFO  [15:36:24.814] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 2/5) 
+INFO  [15:36:25.267] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 4/5) 
+INFO  [15:36:26.005] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 1/5) 
+INFO  [15:36:26.458] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 4/5) 
+INFO  [15:36:26.904] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 3/5) 
+INFO  [15:36:27.348] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 5/5) 
+INFO  [15:36:27.797] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 2/5) </code></pre>
 </div>
 </div>
 <p>See the results with <code>print()</code>. You can see <span class="math inline">\(\hat{\theta}\)</span> at the bottom.</p>
@@ -1805,21 +1728,21 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a><span class="co">#=== fit ===#</span></span>
 <span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a>dml_plr_obj_iv<span class="sc">$</span><span class="fu">fit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>INFO  [12:46:13.402] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 2/5) 
-INFO  [12:46:13.864] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 4/5) 
-INFO  [12:46:14.320] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 1/5) 
-INFO  [12:46:14.767] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 3/5) 
-INFO  [12:46:15.228] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 5/5) 
-INFO  [12:46:15.838] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 1/5) 
-INFO  [12:46:16.295] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 5/5) 
-INFO  [12:46:16.757] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 4/5) 
-INFO  [12:46:17.206] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 2/5) 
-INFO  [12:46:17.653] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 3/5) 
-INFO  [12:46:18.264] [mlr3] Applying learner 'regr.ranger' on task 'nuis_g' (iter 5/5) 
-INFO  [12:46:18.724] [mlr3] Applying learner 'regr.ranger' on task 'nuis_g' (iter 4/5) 
-INFO  [12:46:19.192] [mlr3] Applying learner 'regr.ranger' on task 'nuis_g' (iter 3/5) 
-INFO  [12:46:19.661] [mlr3] Applying learner 'regr.ranger' on task 'nuis_g' (iter 2/5) 
-INFO  [12:46:20.126] [mlr3] Applying learner 'regr.ranger' on task 'nuis_g' (iter 1/5) </code></pre>
+<pre><code>INFO  [15:36:28.431] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 2/5) 
+INFO  [15:36:28.899] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 4/5) 
+INFO  [15:36:29.375] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 1/5) 
+INFO  [15:36:29.825] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 3/5) 
+INFO  [15:36:30.284] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 5/5) 
+INFO  [15:36:30.895] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 1/5) 
+INFO  [15:36:31.339] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 5/5) 
+INFO  [15:36:31.790] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 4/5) 
+INFO  [15:36:32.237] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 2/5) 
+INFO  [15:36:32.683] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 3/5) 
+INFO  [15:36:33.289] [mlr3] Applying learner 'regr.ranger' on task 'nuis_g' (iter 5/5) 
+INFO  [15:36:33.750] [mlr3] Applying learner 'regr.ranger' on task 'nuis_g' (iter 4/5) 
+INFO  [15:36:34.216] [mlr3] Applying learner 'regr.ranger' on task 'nuis_g' (iter 3/5) 
+INFO  [15:36:34.686] [mlr3] Applying learner 'regr.ranger' on task 'nuis_g' (iter 2/5) 
+INFO  [15:36:35.148] [mlr3] Applying learner 'regr.ranger' on task 'nuis_g' (iter 1/5) </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== print the results ===#</span></span>
 <span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(dml_plr_obj_iv)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1857,8 +1780,8 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
 </section>
-<section id="partially-linear-iv-model" class="level3" data-number="10.2.3">
-<h3 data-number="10.2.3" class="anchored" data-anchor-id="partially-linear-iv-model"><span class="header-section-number">10.2.3</span> Partially linear IV model</h3>
+<section id="partially-linear-iv-model" class="level3" data-number="10.2.2">
+<h3 data-number="10.2.2" class="anchored" data-anchor-id="partially-linear-iv-model"><span class="header-section-number">10.2.2</span> Partially linear IV model</h3>
 <p>When using observational data, it is rarely the case that conditional unconfoundedness of the treatment is satisfied. In such a case, you may want to consider a DML-IV approach implemented by <code>DoubleMLPLIV()</code>. Just like IV for linear models, finding the right instrument is critical for the DML-IV approach to be consistent.</p>
 <p><span id="eq-plr"><span class="math display">\[
 \begin{aligned}

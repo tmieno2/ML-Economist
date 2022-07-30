@@ -697,7 +697,7 @@ ggplot(y_hat_h_various) +
 
 As you can see in @fig-fitted-curves-h, at $h = 2$, the fitted curve is extremely wiggly and over-fitted. Increasing the value of $h$ make the fitted curves smoother. Nobody uses NW estimator for any practical applications when the problem at hand is high-dimensional as it suffers from the curse of dimensionality. However, NW estimator is a great example to illustrate the importance of the choice of an arbitrary parameter (hyper-parameter). As discussed above, we will later look at cross-validation as a way to tune hyper-parameters.
 
-### Local linear regression
+### Local linear regression {#sec-local-reg}
 
 The NW estimator is a locally constant regression. You can see this from the fact that the NW estimator comes from solving the following minimization problem:
 

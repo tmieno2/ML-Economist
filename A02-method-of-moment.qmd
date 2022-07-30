@@ -1,0 +1,232 @@
+# Primer on method of moment
+
+Method of moment is a class of statistical methods that derive estimators from moment conditions. We will go over the basic concepts of method of moments here because it will help us understand how double machine learning methods.
+
+## Moments 
+
+Let's first review what moments are.
+
+:::{.callout-important}
+
+## Definition
+
+$n$th <span style="color:blue">raw </span>moment of a random variable $x$ (denoted as $\mu_n$) is defined as
+
+$$
+\begin{aligned}
+\mu_n = E[x^n]
+\end{aligned}
+$$
+
+$n$th <span style="color:blue">central </span>moment of a random variable $x$ (denoted as $\mu_n'$) is defined as
+
+$$
+\begin{aligned}
+\mu_n' = E[(x-\mu)^n]
+\end{aligned}
+$$
+
+:::
+
+The statistics that we use all the time, expected value and variance of $x$, are the 1st raw moment of $x$ and second central moment of $x$, respectively.
+
+$$
+\begin{aligned}
+\mu_1  & = E[x] \\
+\mu_2' & = E[(x-\mu_1)^2] 
+\end{aligned}
+$$
+
+<span style="color:blue">Sample analogs </span> of moments are defined as follows:
+
+:::{.callout-important}
+
+## Sample analog of moment conditions
+
+Suppose you have $N$ realized values of a random variable $x$ ($x_1, x_2, \dots, x_N$), then the sample analog of $n$th raw and central moments are 
+
+$$
+\begin{aligned}
+\mu_n = E[x^n] & \Rightarrow \frac{1}{n}\sum_{i=1}^N x_i^n \\
+\mu_n' = E[(x-\mu_1)^n] & \Rightarrow \frac{1}{n} \sum_{i=1}^N (x_i-\bar{x})^n
+\end{aligned}
+$$
+
+, respectively.
+
+:::
+
+<!-- 
+#/*----------------------------------*/
+#' ## Method of moments estimator
+#/*----------------------------------*/
+-->
+
+## Method of moments estimator
+
+In general, method of moments work like this.
+
+:::{.callout-important}
+
+## Method of moments in general
+
++ 1. For the given statistics of interest (say, $\theta$), write equations that define $\theta$ using moments either implicitly or explicitly.
++ 2. Replace the moment conditions with their sample analogs
++ 3. Solve for $\theta$
+
+:::
+
+It is best to see some examples to understand this better.
+
+### Simple example
+
+We would like to estimate the expected value of a random variable $x$.
+
+<span style="color:blue">Step 1</span>: In this example, the statistics of interest ($\theta$) is the expected value of a random variable $x$. The moment condition is simply
+
+$$
+\begin{aligned}
+\theta = E[x]
+\end{aligned}
+$$
+
+<span style="color:blue">Step 2</span>: The sample analog of $E[x]$ is $\frac{1}{n}\sum_{i=1}^N x_i$. So,
+
+$$
+\begin{aligned}
+\theta = \frac{1}{n}\sum_{i=1}^N x_i
+\end{aligned}
+$$
+
+<span style="color:blue">Step 3</span>: Well, the equation is already solve with respect to $\theta$.
+
+The method of moment estimator of the expected value of a random variable is sample mean ($\frac{1}{n}\sum_{i=1}^N x_i$).
+
+```{r}
+N <- 1000
+x <- rnorm(N)
+(
+theta_hat_mm <- mean(x)
+)
+```
+
+### Method of moments to estimate a linear-in-parameter model
+
+Now, let's look at an estimation task that is more familiar and relevant to our work: estimating the coefficients of a linear model. 
+
+Consider the following liner model.
+
+$$
+\begin{aligned}
+y = \alpha + \beta x + \mu
+\end{aligned}
+$$ {#eq-ols-model}
+
+By the assumption of zero conditional mean ($E[\mu|X] = 0$), where $X = \{1, x\}$ (the intercept and $x$), the following hold as the moment conditions for this problem:
+
+::: {.column-margin}
+$$
+\begin{aligned}
+E[\mu \cdot x] & = E_x[E_{\mu}[\mu \cdot x|x]] \\
+             & = E_x[xE_{\mu}[\mu|x]] \\
+             & = E_x[x\cdot 0] \;\; \mbox{(by the assumption)} \\
+             & = 0
+\end{aligned}
+$$
+
+:::
+
+$$
+\begin{aligned}
+E[\mu\cdot 1] & = 0\\
+E[\mu\cdot x] & = 0
+\end{aligned}
+$$ {#eq-mm-ols}
+
+From @eq-ols-model, we can see that $\mu = y - \alpha + \beta x$. Substituting this into @eq-mm-ols,
+
+$$
+\begin{aligned}
+E[(y - \alpha + \beta x)\cdot 1] & = 0\\
+E[(y - \alpha + \beta x)\cdot x] & = 0
+\end{aligned}
+$$ {#eq-mm-ols-detailed}
+
+:::{.callout-tip}
+
+## Terminology alert: <span style="color:blue"> Score function </span>
+
+Score function is a function of parameters to estimate inside $E[]$ of the moment conditions. $\Psi(\cdot)$ is often used to represent a score function.
+
+So, the score functions in @eq-mm-ols-detailed are 
+
++ $\Psi_1(\alpha, \beta) = y - \alpha + \beta x$
++ $\Psi_2(\alpha, \beta) = (y - \alpha + \beta x)\cdot x$
+
+for the first and second moment conditions.
+
+:::
+
+Now, the sample analogs of these moment conditions are,
+
+$$
+\begin{aligned}
+\sum_{i=1}^N(y_i - \alpha + \beta x_i) & = 0\\
+\sum_{i=1}^N(y_i - \alpha + \beta x_i)\cdot x_i & = 0
+\end{aligned}
+$$
+
+Do these look familiar to you? They should be because they are identical to the first order conditions of OLS. Solving the equations, 
+
+$$
+\begin{aligned}
+\hat{\alpha}_{mm} & = \frac{1}{N}\sum_{i=1}^N y_i \\
+\hat{\beta}_{mm} & = \frac{\sum_{i=1}^N (y_i-\bar{y})(x_i - \bar{x})}{\sum_{i=1}^N (x_i-\bar{x})^2} 
+\end{aligned}
+$$
+
+### Instrumental variable approach as a method of moment estimator
+
+Now, consider the following model,
+
+$$
+\begin{aligned}
+y = \alpha + \beta x + \mu
+\end{aligned}
+$$
+
+where $E[\mu|x] = f(x)$. So, $x$ is endogenous. Fortunately, we have found an external instrument $z$ such that $E[u|z] = 0$ and $z$ has explanatory power on $x$ ($z$ is not a weak instrument). According to these assumptions, we can write the following moment conditions:
+
+$$
+\begin{aligned}
+E[\mu\cdot 1] & = 0 \;\; \mbox{(w.r.t to the intercept)}\\
+E[\mu\cdot z] & = 0 
+\end{aligned}
+$$ {#eq-mm-iv}
+
+The key difference from the previous case is that we are not using $E[\mu\cdot x] = 0$ because we believe that this moment condition is not satisfied. Instead, we are using $E[\mu\cdot z] = 0$ because we believe this condition is satisfied. 
+
+Substituting $\mu = y - \alpha + \beta x$ into @eq-mm-iv,
+
+$$
+\begin{aligned}
+E[(y-\alpha + \beta x)\cdot 1] & = 0 \\
+E[(y-\alpha + \beta x)\cdot z] & = 0 
+\end{aligned}
+$$
+
+The sample analogs of these conditions are,
+
+$$
+\begin{aligned}
+\sum_{i=1}^N(y_i - \alpha + \beta x_i) & = 0\\
+\sum_{i=1}^N(y_i - \alpha + \beta x_i)\cdot z_i & = 0
+\end{aligned}
+$$
+
+Now, we can solve these conditions with respect to $\alpha$ and $\beta$, which are instrumental variable estimators.
+
+
+
+
+

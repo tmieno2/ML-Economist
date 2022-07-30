@@ -71,7 +71,7 @@ The treatment effect is assumed to be constant irrespective of the value of $X$.
 $g_0(X)$ and $m_0(X)$ are called <span style="color:blue"> nuisance functions </span>because knowing them is not the ultimate goal. We are only interested in **controlling for** them to estimate $\theta$ accurately. 
 :::
 
-### A naive approach {#sec-dml-naive}
+### An intuitive, yet naive approach {#sec-dml-naive}
 
 ::: {.column-margin}
 **Packages to load for replication**
@@ -731,6 +731,8 @@ This process is repeated for all the $K$ folds, and then the the final estimate 
 You can implement repeated K-fold cross-fitting using the `DoublML` package, which is not demonstrated here as it is very much similar in concept to repeated K-fold CV explained in @sec-cross-validation.
 :::
 
+<span style="color:blue"> talk about `algorithm_2` </span>
+
 ```{r}
 #| code-fold: true
 #| fig-width: 9
@@ -997,100 +999,6 @@ ggplot() +
 ## Models and implementation by `DoubleML`
 
 In R, `DoubleML` is built on top of `mlr3`, which uses `R6` classes provided by the `R6` package. Since `R6` implements encapsulated object-oriented programming like Python, `DoubleML` in R and Python work in a very similar manner. Here, we will use R for demonstrations. 
-
-### A note on method of moment and score function
-
-DML approaches implemented by `DoubleML` are method of moment estimators. Method of moment starts from a moment condition that are derived from the assumptions and then solve their empirical version with respect to the parameters of interest to obtain estimates. It is best to look at examples. 
-
-For example, OLS can be considered as an method of moment estimator. Consider the following model,
-
-$$
-\begin{aligned}
-y = \beta_0 + \beta_1 x + \mu
-\end{aligned}
-$$
-
-where $X$ is a collection of variables. The moment conditions for OLS are
-
-$$
-\begin{aligned}
-E[(y - \beta_0 - \beta_1 x)\times 1] = 0 \\
-E[(y - \beta_0 - \beta_1 x)\times x] = 0 
-\end{aligned}
-$$
-
-What motivated the moment conditions are the assumptions of $E[\mu\times 1] = 0$ and $E[\mu\times x] = 0$ (mean conditional independence). Functions inside expectation ($E[]$) in moment conditions are called <span style="color:red"> score functions</span>. So, here, $y - \beta_0 - \beta_1 x$ and $(y - \beta_0 - \beta_1 x)\times x$ are the score functions.
-
-The empirical version of the moment conditions replaces the expected value of the score function with the sample mean of the score functions. 
-
-::: {.column-margin}
-Sample mean of the statistics of interest is a good estimator of the expected value of the statistics of interest.
-:::
-
-$$
-\begin{aligned}
-\frac{\sum_{i=1}^N (y_i - \beta_0 - \beta_1 x_i)}{N} = 0 \\
-\frac{\sum_{i=1}^N (y_i - \beta_0 - \beta_1 x_i) x_i}{N} = 0
-\end{aligned}
-$$
-
-You can remove $N$ by multiplying both sides by $N$ and get
-
-$$
-\begin{aligned}
-\sum_{i=1}^N (y_i - \beta_0 - \beta_1 x_i) = 0 \\
-\sum_{i=1}^N (y_i - \beta_0 - \beta_1 x_i) x_i = 0
-\end{aligned}
-$$
-
-Yes, these are actually the first order conditions of minimizing sum of the squared residuals. By solving theses equations, you can obtain OLS estimates. 
-
-For brevity, we will use matrix notation hereafter. For example, let $X$ denote a matrix of the intercept and $x$ values with each row representing a single observation. Then, the empirical moment conditions can be written as follows:
-
-$$
-\begin{aligned}
-(y - X\beta)X'= 0
-\end{aligned}
-$$
-
-where $\beta = \{\beta_0, \beta_1\}$ is a 2 by 1 matrix. Solving this with respect to $\beta$, 
-
-$$
-\begin{aligned}
-\hat{\beta}_{OLS} = (X'X)^{-1}X'y
-\end{aligned}
-$$
-
-Now consider instrumental variable estimation with instruments $\textbf{z} = \{z_1, z_2, \dots, z_K\}$ (both included and excluded instruments). Under the assumption of $E[\mu\cdot z_k]=0$ $^{\forall} k = 1, \dots, K$, which is derived from zero conditional mean assumption of $E[\mu|Z] = 0$. Then the moment conditions are 
-
-$$
-\begin{aligned}
-E[(y-X\beta)z_1] & = 0 \\
-E[(y-X\beta)z_2] & = 0 \\
-\vdots & \\
-E[(y-X\beta)z_K] & = 0 \\
-\end{aligned}
-$$
-
-The empirical moment conditions in matrix form are
-
-$$
-\begin{aligned}
-(y-X\beta)Z' = 0
-\end{aligned}
-$$
-
-Solving the equation with respect to $\beta$,
-
-$$
-\begin{aligned}
-\hat{\beta}_{IV} = (Z'X)^{-1}Z'Y = 0
-\end{aligned}
-$$
-
-:::{.callout-tip}
-You will also see (localized) moment conditions and score functions in GRF (@sec-grf).
-:::
 
 ### Partially linear model
 

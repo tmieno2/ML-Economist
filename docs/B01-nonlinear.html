@@ -365,6 +365,11 @@ div.csl-indent {
   <a href="./A01-mc-simulation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Monte Carlo (MC) Simulation</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./A02-method-of-moment.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Primer on method of moment</span></a>
+  </div>
+</li>
     </ul>
   </li>
     </ul>
@@ -380,7 +385,7 @@ div.csl-indent {
   <li><a href="#sec-smoothing-splines" id="toc-sec-smoothing-splines" class="nav-link" data-scroll-target="#sec-smoothing-splines"> <span class="header-section-number">1.2</span> Smoothing Splines (semi-parametric)</a></li>
   <li><a href="#local-regression" id="toc-local-regression" class="nav-link" data-scroll-target="#local-regression"> <span class="header-section-number">1.3</span> Local Regression</a>
   <ul class="collapse">
-  <li><a href="#local-linear-regression" id="toc-local-linear-regression" class="nav-link" data-scroll-target="#local-linear-regression"> <span class="header-section-number">1.3.1</span> Local linear regression</a></li>
+  <li><a href="#sec-local-reg" id="toc-sec-local-reg" class="nav-link" data-scroll-target="#sec-local-reg"> <span class="header-section-number">1.3.1</span> Local linear regression</a></li>
   <li><a href="#k-nearest-neighbor" id="toc-k-nearest-neighbor" class="nav-link" data-scroll-target="#k-nearest-neighbor"> <span class="header-section-number">1.3.2</span> K-nearest neighbor</a></li>
   </ul></li>
   <li><a href="#efficiency-parametric-vs-non-parametric-methods" id="toc-efficiency-parametric-vs-non-parametric-methods" class="nav-link" data-scroll-target="#efficiency-parametric-vs-non-parametric-methods"> <span class="header-section-number">1.4</span> Efficiency: Parametric vs Non-parametric Methods</a>
@@ -987,8 +992,8 @@ Important
 </div>
 </div>
 <p>As you can see in <a href="#fig-fitted-curves-h">Figure&nbsp;<span>1.4</span></a>, at <span class="math inline">\(h = 2\)</span>, the fitted curve is extremely wiggly and over-fitted. Increasing the value of <span class="math inline">\(h\)</span> make the fitted curves smoother. Nobody uses NW estimator for any practical applications when the problem at hand is high-dimensional as it suffers from the curse of dimensionality. However, NW estimator is a great example to illustrate the importance of the choice of an arbitrary parameter (hyper-parameter). As discussed above, we will later look at cross-validation as a way to tune hyper-parameters.</p>
-<section id="local-linear-regression" class="level3" data-number="1.3.1">
-<h3 data-number="1.3.1" class="anchored" data-anchor-id="local-linear-regression"><span class="header-section-number">1.3.1</span> Local linear regression</h3>
+<section id="sec-local-reg" class="level3" data-number="1.3.1">
+<h3 data-number="1.3.1" class="anchored" data-anchor-id="sec-local-reg"><span class="header-section-number">1.3.1</span> Local linear regression</h3>
 <p>The NW estimator is a locally constant regression. You can see this from the fact that the NW estimator comes from solving the following minimization problem:</p>
 <p><span class="math display">\[
 \begin{aligned}

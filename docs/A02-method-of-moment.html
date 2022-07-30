@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Introduction to Machine Learning for Economists - Causal Machine Learning (CML) Methods</title>
+<title>Introduction to Machine Learning for Economists - Appendix B — Primer on method of moment</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -15,25 +15,69 @@ span.underline{text-decoration: underline;}
 div.column{display: inline-block; vertical-align: top; width: 50%;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
 }
-.hanging div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -44,8 +88,7 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./C00-why-not-this.html" rel="next">
-<link href="./P03-xgb.html" rel="prev">
+<link href="./A01-mc-simulation.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -96,7 +139,7 @@ div.csl-indent {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">Causal Machine Learning (CML) Methods</h1>
+      <h1 class="quarto-secondary-nav-title">Appendix B — Primer on method of moment</h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -218,7 +261,7 @@ div.csl-indent {
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
-        <a href="./C0P-causal-ml.html" class="sidebar-item-text sidebar-link active">Causal Machine Learning (CML) Methods</a>
+        <a href="./C0P-causal-ml.html" class="sidebar-item-text sidebar-link">Causal Machine Learning (CML) Methods</a>
       <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
@@ -304,7 +347,7 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./A02-method-of-moment.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Primer on method of moment</span></a>
+  <a href="./A02-method-of-moment.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Primer on method of moment</span></a>
   </div>
 </li>
     </ul>
@@ -318,17 +361,22 @@ div.csl-indent {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#what-is-cml" id="toc-what-is-cml" class="nav-link active" data-scroll-target="#what-is-cml">What is CML?</a></li>
-  <li><a href="#some-notes-on-cml" id="toc-some-notes-on-cml" class="nav-link" data-scroll-target="#some-notes-on-cml">Some notes on CML</a></li>
+  <li><a href="#moments" id="toc-moments" class="nav-link active" data-scroll-target="#moments"> <span class="header-section-number">B.1</span> Moments</a></li>
+  <li><a href="#method-of-moments-estimator" id="toc-method-of-moments-estimator" class="nav-link" data-scroll-target="#method-of-moments-estimator"> <span class="header-section-number">B.2</span> Method of moments estimator</a>
+  <ul class="collapse">
+  <li><a href="#simple-example" id="toc-simple-example" class="nav-link" data-scroll-target="#simple-example"> <span class="header-section-number">B.2.1</span> Simple example</a></li>
+  <li><a href="#method-of-moments-to-estimate-a-linear-in-parameter-model" id="toc-method-of-moments-to-estimate-a-linear-in-parameter-model" class="nav-link" data-scroll-target="#method-of-moments-to-estimate-a-linear-in-parameter-model"> <span class="header-section-number">B.2.2</span> Method of moments to estimate a linear-in-parameter model</a></li>
+  <li><a href="#instrumental-variable-approach-as-a-method-of-moment-estimator" id="toc-instrumental-variable-approach-as-a-method-of-moment-estimator" class="nav-link" data-scroll-target="#instrumental-variable-approach-as-a-method-of-moment-estimator"> <span class="header-section-number">B.2.3</span> Instrumental variable approach as a method of moment estimator</a></li>
+  </ul></li>
   </ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/C0P-causal-ml.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/A02-method-of-moment.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">Causal Machine Learning (CML) Methods</h1>
+<h1 class="title d-none d-lg-block">Appendix B — Primer on method of moment</h1>
 </div>
 
 
@@ -342,63 +390,224 @@ div.csl-indent {
 
 </header>
 
-<section id="what-is-cml" class="level2 page-columns page-full">
-<h2 class="anchored" data-anchor-id="what-is-cml">What is CML?</h2>
-<p>Unlike prediction-oriented machine learning (POML) methods, the focus of causal machine learning (CML) methods is to identify the treatment effect of a treatment (or small number of distinct treatments).</p>
-<p><span class="math display">\[
-TE(X) = \theta(X)\cdot T
-\]</span></p>
-<p><span class="math inline">\(\theta(X)\)</span> is the impact of the treatment when <span class="math inline">\(T\)</span> is binary and marginal impact of the treatment when <span class="math inline">\(T\)</span> is continuous. <span class="math inline">\(\theta(X)\)</span> is a function of attributes (<span class="math inline">\(X\)</span>), meaning that the impact of the treatment can vary (heterogeneous) based on the value of the attributes.</p>
-
-<div class="no-row-height column-margin column-container"><div class="">
-<p><span class="math inline">\(\theta(X) = \theta\)</span>, where <span class="math inline">\(\theta\)</span> is a constant, is a special case where the treatment effect is not a function of any observed features.</p>
-</div><div class="">
-<p><span class="math inline">\(T\)</span> may be continuous or discrete.</p>
-</div></div>
-<p>CML considers the following model (following <a href="https://econml.azurewebsites.net/spec/estimation/dml.html">the documentation of the <code>econml</code> Python package</a>)</p>
-<p><span class="math display">\[
-\begin{aligned}
-Y &amp; = \theta(X)\cdot T + g(X, W) + \varepsilon \\
-T &amp; = f(X, W) + \eta
-\end{aligned}
-\]</span></p>
-<p><span class="math inline">\(W\)</span> are the collection of attributes that affect <span class="math inline">\(Y\)</span> along with <span class="math inline">\(X\)</span> (represented by <span class="math inline">\(g(X, W)\)</span>), but not as drivers of the heterogeneity in the impact of the treatment. <span class="math inline">\(X\)</span> not just affects <span class="math inline">\(Y\)</span> as drivers of the heterogeneity in the impact of the treatment (<span class="math inline">\(\theta(X)\cdot T\)</span>), but also directly along with <span class="math inline">\(W\)</span>.</p>
-<p>Both <span class="math inline">\(X\)</span> and <span class="math inline">\(W\)</span> are potential confounders. While we do control for them (eliminating their influence) by partialing out <span class="math inline">\(f(X, W)\)</span> and <span class="math inline">\(g(X, W)\)</span>, the sole focus is on the estimation of <span class="math inline">\(\theta(X)\)</span>. This is in stark contrast to the focus of the ML methods we have seen in earlier sections, which primarily focuses on the accurate prediction of the <span style="color:blue"> level</span> of the dependent variable, rather than how the level of the dependent variable <span style="color:blue"> changes </span> when treated like CML methods.</p>
-<p>In this chapter, we first cover double-debiased machine learning (DML) method by <span class="citation" data-cites="Chernozhukov2018">Chernozhukov et al. (<a href="#ref-Chernozhukov2018" role="doc-biblioref">2018</a>)</span>, which many prominent CML methods follow. We then move on to discuss R-leaner, followed by causal forest and orthogonal forest.</p>
-</section>
-<section id="some-notes-on-cml" class="level2">
-<h2 class="anchored" data-anchor-id="some-notes-on-cml">Some notes on CML</h2>
+<p>Method of moment is a class of statistical methods that derive estimators from moment conditions. We will go over the basic concepts of method of moments here because it will help us understand how double machine learning methods.</p>
+<section id="moments" class="level2" data-number="B.1">
+<h2 data-number="B.1" class="anchored" data-anchor-id="moments"><span class="header-section-number">B.1</span> Moments</h2>
+<p>Let’s first review what moments are.</p>
 <div class="callout-important callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-caption-container flex-fill">
-Important
+Definition
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(n\)</span>th <span style="color:blue">raw </span>moment of a random variable <span class="math inline">\(x\)</span> (denoted as <span class="math inline">\(\mu_n\)</span>) is defined as</p>
+<p><span class="math display">\[
+\begin{aligned}
+\mu_n = E[x^n]
+\end{aligned}
+\]</span></p>
+<p><span class="math inline">\(n\)</span>th <span style="color:blue">central </span>moment of a random variable <span class="math inline">\(x\)</span> (denoted as <span class="math inline">\(\mu_n'\)</span>) is defined as</p>
+<p><span class="math display">\[
+\begin{aligned}
+\mu_n' = E[(x-\mu)^n]
+\end{aligned}
+\]</span></p>
+</div>
+</div>
+<p>The statistics that we use all the time, expected value and variance of <span class="math inline">\(x\)</span>, are the 1st raw moment of <span class="math inline">\(x\)</span> and second central moment of <span class="math inline">\(x\)</span>, respectively.</p>
+<p><span class="math display">\[
+\begin{aligned}
+\mu_1  &amp; = E[x] \\
+\mu_2' &amp; = E[(x-\mu_1)^2]
+\end{aligned}
+\]</span></p>
+<p><span style="color:blue">Sample analogs </span> of moments are defined as follows:</p>
+<div class="callout-important callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Sample analog of moment conditions
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Suppose you have <span class="math inline">\(N\)</span> realized values of a random variable <span class="math inline">\(x\)</span> (<span class="math inline">\(x_1, x_2, \dots, x_N\)</span>), then the sample analog of <span class="math inline">\(n\)</span>th raw and central moments are</p>
+<p><span class="math display">\[
+\begin{aligned}
+\mu_n = E[x^n] &amp; \Rightarrow \frac{1}{n}\sum_{i=1}^N x_i^n \\
+\mu_n' = E[(x-\mu_1)^n] &amp; \Rightarrow \frac{1}{n} \sum_{i=1}^N (x_i-\bar{x})^n
+\end{aligned}
+\]</span></p>
+<p>, respectively.</p>
+</div>
+</div>
+<!-- 
+#/*----------------------------------*/
+#' ## Method of moments estimator
+#/*----------------------------------*/
+-->
+</section>
+<section id="method-of-moments-estimator" class="level2 page-columns page-full" data-number="B.2">
+<h2 data-number="B.2" class="anchored" data-anchor-id="method-of-moments-estimator"><span class="header-section-number">B.2</span> Method of moments estimator</h2>
+<p>In general, method of moments work like this.</p>
+<div class="callout-important callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Method of moments in general
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <ul>
-<li><p>Point 1. The use of causal machine learning model does not guarantee you the estimate you got is indeed a causal effect.</p></li>
-<li><p>Point 2. Careful examinations of the underlying assumptions is necessary just like traditional causal inference methods.</p></li>
-<li><p>Point 3. CML is not a panacea at all. How can it be better than the traditional approaches?</p>
-<ul>
-<li>They may be able to capture complex non-linear interactions of variables without specifying how they interact</li>
-<li>They are robust to specification errors</li>
-<li>They can be less efficient to correctly specified (or well approximated) parametric models</li>
-</ul></li>
+<li><ol type="1">
+<li>For the given statistics of interest (say, <span class="math inline">\(\theta\)</span>), write equations that define <span class="math inline">\(\theta\)</span> using moments either implicitly or explicitly.</li>
+</ol></li>
+<li><ol start="2" type="1">
+<li>Replace the moment conditions with their sample analogs</li>
+</ol></li>
+<li><ol start="3" type="1">
+<li>Solve for <span class="math inline">\(\theta\)</span></li>
+</ol></li>
 </ul>
 </div>
 </div>
-<p>Point 1 is not just for CML, but for any statistical models in general. Any statistical model is just a mathematical manipulation of numbers. Model themselves have no ability to identify causal effects.</p>
-<p><span style="color:blue"> More on this later…. </span></p>
-
-
-<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
-<div id="ref-Chernozhukov2018" class="csl-entry" role="doc-biblioentry">
-Chernozhukov, Victor, Denis Chetverikov, Mert Demirer, Esther Duflo, Christian Hansen, Whitney Newey, and James Robins. 2018. <span>“<span class="nocase">Double/debiased machine learning for treatment and structural parameters</span>.”</span> <em>The Econometrics Journal</em> 21 (1): C1–68. <a href="https://doi.org/10.1111/ectj.12097">https://doi.org/10.1111/ectj.12097</a>.
+<p>It is best to see some examples to understand this better.</p>
+<section id="simple-example" class="level3" data-number="B.2.1">
+<h3 data-number="B.2.1" class="anchored" data-anchor-id="simple-example"><span class="header-section-number">B.2.1</span> Simple example</h3>
+<p>We would like to estimate the expected value of a random variable <span class="math inline">\(x\)</span>.</p>
+<p><span style="color:blue">Step 1</span>: In this example, the statistics of interest (<span class="math inline">\(\theta\)</span>) is the expected value of a random variable <span class="math inline">\(x\)</span>. The moment condition is simply</p>
+<p><span class="math display">\[
+\begin{aligned}
+\theta = E[x]
+\end{aligned}
+\]</span></p>
+<p><span style="color:blue">Step 2</span>: The sample analog of <span class="math inline">\(E[x]\)</span> is <span class="math inline">\(\frac{1}{n}\sum_{i=1}^N x_i\)</span>. So,</p>
+<p><span class="math display">\[
+\begin{aligned}
+\theta = \frac{1}{n}\sum_{i=1}^N x_i
+\end{aligned}
+\]</span></p>
+<p><span style="color:blue">Step 3</span>: Well, the equation is already solve with respect to <span class="math inline">\(\theta\)</span>.</p>
+<p>The method of moment estimator of the expected value of a random variable is sample mean (<span class="math inline">\(\frac{1}{n}\sum_{i=1}^N x_i\)</span>).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>theta_hat_mm <span class="ot">&lt;-</span> <span class="fu">mean</span>(x)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.03178333</code></pre>
 </div>
 </div>
+</section>
+<section id="method-of-moments-to-estimate-a-linear-in-parameter-model" class="level3 page-columns page-full" data-number="B.2.2">
+<h3 data-number="B.2.2" class="anchored" data-anchor-id="method-of-moments-to-estimate-a-linear-in-parameter-model"><span class="header-section-number">B.2.2</span> Method of moments to estimate a linear-in-parameter model</h3>
+<p>Now, let’s look at an estimation task that is more familiar and relevant to our work: estimating the coefficients of a linear model.</p>
+<p>Consider the following liner model.</p>
+<p><span id="eq-ols-model"><span class="math display">\[
+\begin{aligned}
+y = \alpha + \beta x + \mu
+\end{aligned}
+\tag{B.1}\]</span></span></p>
+<p>By the assumption of zero conditional mean (<span class="math inline">\(E[\mu|X] = 0\)</span>), where <span class="math inline">\(X = \{1, x\}\)</span> (the intercept and <span class="math inline">\(x\)</span>), the following hold as the moment conditions for this problem:</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><span class="math display">\[
+\begin{aligned}
+E[\mu \cdot x] &amp; = E_x[E_{\mu}[\mu \cdot x|x]] \\
+             &amp; = E_x[xE_{\mu}[\mu|x]] \\
+             &amp; = E_x[x\cdot 0] \;\; \mbox{(by the assumption)} \\
+             &amp; = 0
+\end{aligned}
+\]</span></p>
+</div></div><p><span id="eq-mm-ols"><span class="math display">\[
+\begin{aligned}
+E[\mu\cdot 1] &amp; = 0\\
+E[\mu\cdot x] &amp; = 0
+\end{aligned}
+\tag{B.2}\]</span></span></p>
+<p>From <a href="#eq-ols-model">Equation&nbsp;<span>B.1</span></a>, we can see that <span class="math inline">\(\mu = y - \alpha + \beta x\)</span>. Substituting this into <a href="#eq-mm-ols">Equation&nbsp;<span>B.2</span></a>,</p>
+<p><span id="eq-mm-ols-detailed"><span class="math display">\[
+\begin{aligned}
+E[(y - \alpha + \beta x)\cdot 1] &amp; = 0\\
+E[(y - \alpha + \beta x)\cdot x] &amp; = 0
+\end{aligned}
+\tag{B.3}\]</span></span></p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Terminology alert: <span style="color:blue"> Score function </span>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Score function is a function of parameters to estimate inside <span class="math inline">\(E[]\)</span> of the moment conditions. <span class="math inline">\(\Psi(\cdot)\)</span> is often used to represent a score function.</p>
+<p>So, the score functions in <a href="#eq-mm-ols-detailed">Equation&nbsp;<span>B.3</span></a> are</p>
+<ul>
+<li><span class="math inline">\(\Psi_1(\alpha, \beta) = y - \alpha + \beta x\)</span></li>
+<li><span class="math inline">\(\Psi_2(\alpha, \beta) = (y - \alpha + \beta x)\cdot x\)</span></li>
+</ul>
+<p>for the first and second moment conditions.</p>
+</div>
+</div>
+<p>Now, the sample analogs of these moment conditions are,</p>
+<p><span class="math display">\[
+\begin{aligned}
+\sum_{i=1}^N(y_i - \alpha + \beta x_i) &amp; = 0\\
+\sum_{i=1}^N(y_i - \alpha + \beta x_i)\cdot x_i &amp; = 0
+\end{aligned}
+\]</span></p>
+<p>Do these look familiar to you? They should be because they are identical to the first order conditions of OLS. Solving the equations,</p>
+<p><span class="math display">\[
+\begin{aligned}
+\hat{\alpha}_{mm} &amp; = \frac{1}{N}\sum_{i=1}^N y_i \\
+\hat{\beta}_{mm} &amp; = \frac{\sum_{i=1}^N (y_i-\bar{y})(x_i - \bar{x})}{\sum_{i=1}^N (x_i-\bar{x})^2}
+\end{aligned}
+\]</span></p>
+</section>
+<section id="instrumental-variable-approach-as-a-method-of-moment-estimator" class="level3" data-number="B.2.3">
+<h3 data-number="B.2.3" class="anchored" data-anchor-id="instrumental-variable-approach-as-a-method-of-moment-estimator"><span class="header-section-number">B.2.3</span> Instrumental variable approach as a method of moment estimator</h3>
+<p>Now, consider the following model,</p>
+<p><span class="math display">\[
+\begin{aligned}
+y = \alpha + \beta x + \mu
+\end{aligned}
+\]</span></p>
+<p>where <span class="math inline">\(E[\mu|x] = f(x)\)</span>. So, <span class="math inline">\(x\)</span> is endogenous. Fortunately, we have found an external instrument <span class="math inline">\(z\)</span> such that <span class="math inline">\(E[u|z] = 0\)</span> and <span class="math inline">\(z\)</span> has explanatory power on <span class="math inline">\(x\)</span> (<span class="math inline">\(z\)</span> is not a weak instrument). According to these assumptions, we can write the following moment conditions:</p>
+<p><span id="eq-mm-iv"><span class="math display">\[
+\begin{aligned}
+E[\mu\cdot 1] &amp; = 0 \;\; \mbox{(w.r.t to the intercept)}\\
+E[\mu\cdot z] &amp; = 0
+\end{aligned}
+\tag{B.4}\]</span></span></p>
+<p>The key difference from the previous case is that we are not using <span class="math inline">\(E[\mu\cdot x] = 0\)</span> because we believe that this moment condition is not satisfied. Instead, we are using <span class="math inline">\(E[\mu\cdot z] = 0\)</span> because we believe this condition is satisfied.</p>
+<p>Substituting <span class="math inline">\(\mu = y - \alpha + \beta x\)</span> into <a href="#eq-mm-iv">Equation&nbsp;<span>B.4</span></a>,</p>
+<p><span class="math display">\[
+\begin{aligned}
+E[(y-\alpha + \beta x)\cdot 1] &amp; = 0 \\
+E[(y-\alpha + \beta x)\cdot z] &amp; = 0
+\end{aligned}
+\]</span></p>
+<p>The sample analogs of these conditions are,</p>
+<p><span class="math display">\[
+\begin{aligned}
+\sum_{i=1}^N(y_i - \alpha + \beta x_i) &amp; = 0\\
+\sum_{i=1}^N(y_i - \alpha + \beta x_i)\cdot z_i &amp; = 0
+\end{aligned}
+\]</span></p>
+<p>Now, we can solve these conditions with respect to <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span>, which are instrumental variable estimators.</p>
+
+
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -483,14 +692,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./P03-xgb.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Extreme Gradient Boosting</span></span>
+      <a href="./A01-mc-simulation.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Monte Carlo (MC) Simulation</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./C00-why-not-this.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Why can’t we just do this?</span></span> <i class="bi bi-arrow-right-short"></i>
-      </a>
   </div>
 </nav>
 </div> <!-- /content -->

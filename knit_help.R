@@ -90,5 +90,8 @@ quarto::quarto_render(here::here("LectureNotes/E02-grf.qmd"))
 # === MC ===#
 quarto::quarto_render(here::here("LectureNotes/A01-mc-simulation.qmd"))
 
+# === MM ===#
+quarto::quarto_render(here::here("LectureNotes/A02-method-of-moment.qmd"))
+
 
 

@@ -2,6 +2,37 @@
 
 In @sec-het-dml, we saw a special case of R-learner/DML where the final model is a linear-in-parameter model. Here, we learn two methods that estimate CATE non-parametrically: causal forest [@athey2019generalized] and orthogonal forest [@oprescu2019orthogonal].
 
+:::{.callout-important}
+
+## What you will learn
+
++ Causal forest 
+  * Mechanics
+  * Hyper-parameter
+  * Predict heterogeneous treatment effects (CATE)
+  * Predict average treatment effects (ATE)
+  * Interpretation
++ Orthogonal forest 
+  * Differences from causal forest
+
+:::
+
+:::{.callout-tip}
+
+## Preferable background knowledge
+
++ DML/R-learner (@sec-het-dml)
++ GRF (@sec-grf)
+
+:::
+
+
+**Left to be added**
++ how variance is estimated
++ balance
++ ATE
++ linear correction with locally weighted linear regression
+
 ## Model
 
 The heterogeneous treatment effect model of interest in this chapter is the same as the one in @sec-het-dml.
@@ -18,7 +49,7 @@ $$ {#eq-model-het-te}
 + $X$: collection of variables that affect Y indirectly through the treatment ($\theta(X)\cdot T$) and directly ($g(X, W)$) independent of the treatment
 + $W$: collection of variables that affect directly ($g(X, W)$) independent of the treatment, but not through the treatment
 
-Here are the key assumptions:
+Causal forest and orthogonal random forest is consistent only if the following conditions fold.
 
 + $E[\varepsilon|X, W] = 0$
 + $E[\eta|X, W] = 0$
@@ -34,7 +65,7 @@ See @sec-grf for a brief description of what GRF is.
 
 Causal Forest can be useful in estimating heterogeneous treatment effects when they are complex and/or non-linear functions of attributes (heterogeneity drivers) and it is hard to represent them using linear-in-parameter models.
 
-### Understanding mechanics with illustrations
+### Understanding the basic mechanics with illustrations
 
 ::: {.column-margin}
 **Packages to load for replication**
@@ -62,23 +93,39 @@ Let $\hat{f}(X_i,W_i)$ and $\hat{g}(X_i,W_i)$ denote the estimation of $E[Y|X,W]
 CF can be implemented using the R `grf` package or python `econml` package. Both of them implements CF as an R-learner. However, the original causal forest proposed in @wager_estimation_2018 does not follow an R-learner procedure.
 :::
 
-Then, CF estimates $\theta(X)$ at $X = x$ by solving the following equation:
+Then, CF estimates $\theta(X)$ at $X = X_0$ by solving the following equation:
 
 $$
 \begin{aligned}
-\hat{\theta}(x) = argmin_{\theta}\;\;\sum_{i=1}^N \alpha_i(X_i)[\hat{\tilde{Y_i}} - \theta\cdot \hat{\tilde{T_i}}]^2
+\hat{\theta}(X_0) = argmin_{\theta}\;\;\sum_{i=1}^N \alpha_i(X_i, X_0)[\hat{\tilde{Y_i}} - \theta\cdot \hat{\tilde{T_i}}]^2
 \end{aligned}
 $$ {#eq-solve-cf}
 
-where $\alpha_i(X_i)$ is the weight given to each $i$. $\alpha_i(X_i)$ is determined based on the trees trained based on the pseudo outcomes that are defined specifically for causal forest estimation. Suppose you built $T$ trees and let $\eta_{i,t}(X)$ be 1 if observation $i$ belongs to the same leaf as $X$ in tree t. Then, 
+where $\alpha_i(X_i, X_0)$ is the weight given to each $i$. The F.O.C is 
 
 $$
 \begin{aligned}
-\alpha_i(X) = \frac{1}{T}\sum_{t=1}^T\frac{\eta_{i,t}(X)}{\sum_{i=1}^N\eta_{i,t}(X)}
+2 \cdot \sum_{i=1}^N \alpha_i(X_i, X_0)[\hat{\tilde{Y_i}} - \theta\cdot \hat{\tilde{T_i}}]\hat{\tilde{T_i}} = 0 
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+\hat{\theta}(X_0) = \frac{\sum_{i=1}^N\alpha_i(X_i, X_0)\cdot\hat{\tilde{Y}}_i\cdot \hat{\tilde{T}}_i}{\sum_{i=1}^N\alpha_i(X_i, X_0)\cdot\hat{\tilde{T}}_i\cdot \hat{\tilde{T}}_i}
+\end{aligned}
+$$ {#eq-theta-solution}
+
+Unlike the DML approaches we saw in @sec-het-dml that uses a linear model as the final model, CF does not assume any functional form for how $X$ affects $\theta$ as you can see from the above minimization problem. As mentioned earlier, CF is a special case of GRF (discussed in @sec-grf), so CF is also a local non-parametric regression (see @sec-local-reg for a brief discussion on local regression).
+
+$\alpha_i(X_i, X_0)$ is determined based on the trees trained based on the pseudo outcomes that are defined specifically for causal forest estimation. Suppose $T$ trees have been built and let $\eta_{i,t}(X_i, X_0)$ be 1 if observation $i$ belongs to the same leaf as $X_0$ in tree $t$. Then, 
+
+$$
+\begin{aligned}
+\alpha_i(X_i, X_0) = \frac{1}{T}\sum_{t=1}^T\frac{\eta_{i,t}(X_i, X_0)}{\sum_{i=1}^N\eta_{i,t}(X_i, X_0)}
 \end{aligned}
 $$ {#eq-weight-cf}
 
-So, the weight give to observation $i$ is higher if observation $i$ belongs to the same leaf as the evaluation point $X$ in more trees. 
+So, the weight given to observation $i$ is higher if observation $i$ belongs to the same leaf as the evaluation point $X_0$ in more trees. 
 
 It is useful to see a simple example to understand this procedure. Let's use a simple toy data generating process for this.
 
@@ -106,17 +153,13 @@ data <-
 )
 ```
 
-After training a causal forest model, we have trees like the ones shown in @fig-cf-trees, which shows only the first and last of the $2000$ trees are. Trees are made intentionally shallow to make discussions simpler.
+Now, we train a causal forest model on `data`. 
+
+:::{.callout-note}
+You do not need to know how `causal_forest()` works yet. We are using it just because accessing its elements makes it easy to illustrate how $\theta(X)$ is obtained.
+:::
 
 ```{r}
-#| fig-cap: Example trees built in causal forest estimation
-#| label: fig-cf-trees 
-#| code-fold: true
-#| fig-subcap: 
-#|   - "Tree 1"
-#|   - "Tree 2000"
-#| layout-ncol: 2 
-
 cf_trained <-
   causal_forest(
     X = data[, .(x1, x2)],
@@ -124,8 +167,20 @@ cf_trained <-
     W = data[, T],
     min.node.size = 30
   )
+```
 
-get_tree(cf_trained, 1) %>% plot()
+After training a causal forest model, we have trees like the ones shown in @fig-cf-trees, which shows only the first and last of the $2000$ trees are. Trees are made intentionally shallow to make discussions simpler.
+
+```{r}
+#| fig-cap: Example trees built in causal forest estimation
+#| label: fig-cf-trees 
+#| echo: false 
+#| fig-subcap: 
+#|   - "Tree 1"
+#|   - "Tree 2000"
+#| layout-ncol: 2 
+
+# get_tree(cf_trained, 10) %>% plot()
 # get_tree(cf_trained, 2000) %>% plot()
 # these plots do not accept subcaps, so manually importing figures
 
@@ -133,20 +188,24 @@ knitr::include_graphics("figures/Tree_1.png")
 knitr::include_graphics("figures/Tree_2.png")
 ```
 
-You probably noticed that the total number of samples in the leaves is only $250$ instead of $1000$, which is the total number of observations in `data`. When causal forest was trained on this dataset, only half of the entire sample are randomly selected for building each tree (due to the default setting of `sample.fraction = 0.5`). The halved sample is further split into two groups, each containing $250$ observations (due to the default setting of `honest.fraction = 0.5`). Let's call them $J_1$ and $J_2$. Then, $J_1$ is used to train a tree to find the splitting rules. For example, $x1 \leq -0.09$ is the splitting rule for Tree 1. Once the splitting rules are determined (tree building process is complete), then $J_1$ is "vacated" (or thrown out) from the tree. Then, $J_2$ "repopulate" the tree nodes. That is, the statistics presented in the left and right nodes (`avg_Y` and `avg_W`) are based on the samples in $J_2$, not $J_1$ which was used to determine the splitting rules. We can take a look at individual trees to see what happened.
+You probably noticed that the total number of samples in the leaves is only $250$ instead of $1000$, which is the total number of observations in `data`. When causal forest was trained on this dataset, only half of the entire sample are randomly selected for building each tree (due to the default setting of `sample.fraction = 0.5`). The halved sample is further split into two groups, each containing $250$ observations (due to the default setting of `honest.fraction = 0.5`). Let's call them $J_1$ and $J_2$. Then, $J_1$ is used to train a tree to find the splitting rules. For example, $x1 \leq -0.09$ is the splitting rule for Tree 1. Once the splitting rules are determined (tree building process is complete), then $J_1$ is "vacated" (or thrown out) from the tree. Then, $J_2$ "repopulate" the tree nodes. That is, the statistics presented in the left and right nodes (`avg_Y` and `avg_W`) are based on the samples in $J_2$, not $J_1$ which was used to determine the splitting rules. This process is called honest sampling and trees built based on honest sampling are called honest trees (see @sec-grf-honest for more details).
 
+Let's take a look at a tree to see what happened. We can use `get_tree()` to access individual trees from `cf_trained`. 
 
 ```{r}
+#=== get the first tree ===#
 a_tree <- get_tree(cf_trained, 1)
 ```
 
 `drawn_samples` attribute of the tree contains row indices that are selected randomly for this tree.
 
 ```{r}
-a_tree$drawn_samples
+head(a_tree$drawn_samples)
+
+length(a_tree$drawn_samples)
 ```
 
-As you can see, there are 500 samples. Accessing `nodes` attribute will give you the splitting rules for the tree built and which samples are in what node.
+As you can see, there are 500 samples. The rest of the observations were not used for this tree. Accessing `nodes` attribute will give you the splitting rules for the tree built and which samples are in what node.
 
 ```{r}
 (
@@ -161,7 +220,7 @@ nodes[[2]]$samples
 nodes[[3]]$samples
 ```
 
-These are from $J_2$. That is, they were not used in finding the splitting rule of $x1 \leq -0.09$. They were populating the terminal nodes following the splitting rule. The difference in `a_tree$drawn_samples` and the combinatio of `nodes[[2]]$samples` and `nodes[[3]]$samples` is $J_1$.
+These are from $J_2$. That is, they were not used in finding the splitting rule of $x1 \leq -0.09$. They were populating the terminal nodes by simply following the splitting rule. The difference in `a_tree$drawn_samples` and the combination of `nodes[[2]]$samples` and `nodes[[3]]$samples` is $J_1$.
 
 ```{r}
 J2_rows <- c(nodes[[2]]$samples, nodes[[3]]$samples)
@@ -174,30 +233,92 @@ J1_rows <- J1_J2_rows[J1_J2_rows %in% J2_rows]
 
 As you can see, there are 250 samples in $J_1$.
 
-Suppose you are interested in predicting $\hat{\theta}$ at $X_0 = \{x_1 = 0.5, x_2 = 0.5\}$. For a given tree, we give 1 to the observations that belong to the same leaf as $X_0 = \{x_1 = 0.5, x_2 = 0.5\}$. For example, for the first tree, $X_0$ belongs to the right leaf because $x1 = 0.5 > -0.09$. So, we give 1 to all those in the right leaf and 0 to those in the left leaf. 
+Suppose you are interested in predicting $\hat{\theta}$ at $X_0 = \{x_1 = 0.5, x_2 = 1.5\}$. For a given tree, we give 1 to the observations that belong to the same leaf as $X_0$. For example, for the first tree, $X_0$ belongs to the right leaf because $x1 = 0.5 > -0.09$ for $X_0$. 
 
 ```{r}
+X_0 <- data.table(x1 = 0.5, x2 = 1.5)
+(
+which_tree_is_X0_in <- get_leaf_node(a_tree, X_0)
+)
+```
+
+So, we give $1/N_t(X_0)$ to all those in the right leaf (the third node in `nodes`) and 0 to those in the left leaf, where $N_t(X_0)$ is the number of observations that belong to the same leaf as $X_0$.
+
+```{r}
+#=== which row numbers in the same leaf as X_0? ===#
+rows_1 <- nodes[[which_tree_is_X0_in]]$samples
+
 #=== define eta for tree 1  ===#
-data[, eta_t1 := 0] # first set eat to 0 for all
-data[J2_rows & x1 > -0.09, eta_t1 := 1] # replace eta with 1 if in J2 and x1 > -0.09
+data[, eta_t1 := 0] # first set eta to 0 for all
+data[rows_1, eta_t1 := 1 / length(rows_1)] # replace eta with 1 if in the right node
 
 #=== see the data ===#
 data
 ```
 
-We repeat this for all the trees and use @eq-weight-cf to calculate the weights for the individual observations. Then, @eq-solve-cf with the weights is solved to calculate $\hat{\theta}(X_0)$.
+We repeat this for all the trees and use @eq-weight-cf to calculate the weights for the individual observations. The following function gets $eta_{i,t}(X_i, X_0)$ for a given tree for all the observations.
 
+```{r}
 
-Unlike the DML approaches we saw in @sec-het-dml that uses a linear model as the final model, CF does not assume any functional form for how $X$ affects $\theta$ as you can see from the above minimization problem. As mentioned earlier, CF is a special case of GRF (discussed in @sec-grf), so CF is a local non-parametric regression.
+get_eta <- function(t, X_0) {
 
-:::{.callout-important}
-CF is consistent only if the conditional unconfoundedness is satisfied. 
-:::
+  w_tree <- get_tree(cf_trained, t)
+  which_tree_is_X0_in <- get_leaf_node(w_tree, X_0)
+  rows <- w_tree$nodes[[which_tree_is_X0_in]]$samples
+  eta_data <- 
+    data.table(
+      row_id = seq_len(nrow(data)),
+      eta = rep(0, nrow(data))
+    ) %>% 
+    .[rows, eta := 1 / length(rows)]
 
-In other words, all potential variables that simultaneously affect the treatment decision and the outcome (confounders) are observed and included in the model. This is a very hard condition to satisfy using empirical data. An important exception is of course a randomized controlled trial. 
+  return(eta_data)
+}
 
+```
 
-### Implementation 
+We apply `get_eta()` for each of the 2000 trees.
+
+```{r}
+(
+eta_all <-
+  lapply(
+    1:2000,
+    function(x) get_eta(x, X_0)
+  ) %>% 
+  rbindlist(idcol = "t")
+)
+```
+
+Calculate the mean of $\eta_{i,t}$ by `row_id` (observation).
+
+```{r}
+(
+weights <- 
+  eta_all %>% 
+  .[, .(weight = mean(eta)), by = row_id]
+)
+```
+
+Here is the observations that was given the highest and lowest weights.
+
+```{r}
+data_with_wights <- cbind(data, weights)
+
+#=== highest (1st) and lowest (2nd) ===#
+data_with_wights[weight %in% c(max(weight), min(weight)), ]
+```
+
+Then, we can use @eq-theta-solution to calculate $\hat{\theta}(X_0)$.
+
+```{r}
+(
+theta_X0 <- sum(data_with_wights[, weight * (T-cf_trained$W.hat) * (y-cf_trained$Y.hat)]) / sum(data_with_wights[, weight * (T-cf_trained$W.hat)^2])
+)
+
+```
+
+### Training a causal forest
 
 We can use the `causal_forest()` function from the `grf` package to train a CF model in R. In Python, you can use `CausalForestDML()` from the `econml` package or `GRFForestRegressor` from the `skgrf` package.
 
@@ -245,7 +366,7 @@ $X$ includes
 + `ethn`: one of "other", "black", "hispanic"
 + `married`: married or not
 
-`grf::causal_forest()` takes only numeric values for $X$. So, we will one-hot encode `ethn`, which is a factor variable.
+`grf::causal_forest()` takes only numeric values for $X$. So, we will one-hot encode `ethn`, which is a factor variable at the moment.
 
 ```{r}
 (
@@ -266,6 +387,30 @@ $$
 Note that we are paying no attention to the potential endogeneity problem here. This is just a demonstration and the results are likely to be biased. We will look at instrumental forest later in @sec-cf-extension, which is consistent under confoundedness as long as you can find appropriate external instruments.
 :::
 
+In running `causal_forest()`, there are many hyper-parameters and options that we need to be aware of. 
+
+Since CF is a GRF and GRF uses random forest (with appropriate pseudo outcome), it is natural that some of the CF hyper-parameters are the same as the ones for RF (by `ranger()`).
+
++ `num.trees`: number of trees
++ `mtry`: number of variables tried in each split (default is $\sqrt{K}$)
++ `min.node.size`: minimum number of observations in each leaf (default is 5)
+
+A hyper-parameter that certainly affects tree building process is `sample.fraction`, which we saw earlier. 
+
++ `sample.fraction`: fraction of the data used to build each tree (default is 0.5)
+
+A higher value of `sample.fraction` means that the trees are more correlated as they share more of the same observations. 
+
+There are three honesty-related options. 
+
++ `honesty`: `TRUE` if using honest-sampling, 0 otherwise (default is `TRUE`)
++ `honesty.fraction`: fraction of the data (after `sample.fraction` is applied) that is grouped into $J_1$, which is used to determine splitting rules
++ `honesty.prune.leaves`: `TRUE` if the leaves with no samples are pruned (default is `TRUE`)
+
+As mentioned earlier, an honest tree "repopulates" the tree with samples in $J_2$ with the splitting rules determined using $J_2$. Therefore, even if all the leaves are populated at the time of determining the splitting rules using $J_1$ (each leaf must have at least as many observations as `min.node.size`), when $J_1$ vacates the tree and $J_2$ repopulate the tree, it is possible that some leaves do not have any observations. When that happens, the leaf is pruned (removed) if `honesty.prune.leaves` is set to `TRUE`.
+
+Let's now train CF using `data_trt`. 
+
 ```{r}
 cf_trained <-
   grf::causal_forest(
@@ -275,20 +420,47 @@ cf_trained <-
   )
 ```
 
-You can look at individual trees using the `get_tree()` function. Let's take a look at the fifth one and plot (there are total of $2,000$ trees, which is the default number of trees).
+Here is what `cf_trained` has as its attributes.
 
 ```{r}
-get_tree(cf_trained, 5) %>% plot()
+names(cf_trained)
+```
+
+You can get $\theta(X_i)$ by accessing the `predictions` attribute.
+
+```{r}
+cf_trained$predictions %>% head()
 ```
 
 
 
+### Predict and interpret CATE
+
+You can use `predict()` to predict the treatment effect at $X$ ($\theta(X)$). For example, consider the following evaluation points.
 
 ```{r}
-grf::variable_importance(cf_trained)
+X_0 <- 
+  data.table(
+    age = 30,
+    re74 = 40000, 
+    educ = 10,
+    ethn_hispanic = 0,
+    ethn_black = 1,
+    married = TRUE
+  )
 ```
 
-Unlike linear-in-parameter model, there are no coefficients that can immediately tell us how influential each of $X$ is in driving the treatment effect heterogeneity. One way to see the impact a variable is to change the variable of interest while the value of the rest of $X$ is fixed. For example, for the given observed value of $X$ except `age`, and then vary the value of `age` to see how `age` affects the treatment effect. We can do this for all the observations and then can get a good picture of how the treatment effect varies across individuals at different values of `age`. 
+Note that the order of columns must be the same as the that when you trained the CF model. You can set `estimate.variance` to `TRUE` to get $var(\hat{\theta}(X))$ along with the point estimate.
+
+```{r}
+predict(
+  cf_trained, 
+  newdata = X_0, 
+  estimate.variance = TRUE
+)
+```
+
+Unlike linear-in-parameter model, there are no coefficients that can immediately tell us how influential each of $X$ is in driving the treatment effect heterogeneity. One way to see the impact of a variable is to change its value while the value of the rest of $X$ is fixed. For example, for the given observed value of $X$ except `age`, you can vary the value of `age` to see how `age` affects the treatment effect. We can do this for all the observations and then can get a good picture of how the treatment effect varies across individuals at different values of `age`. 
 
 Let's first create a sequence of `age` values at which $\hat{\theta}$ is predicted. 
 
@@ -321,7 +493,7 @@ data_te <-
   data.table()
 ```
 
-Now, we can use `predict()` function to predict $\hat{\theta}$ with their standard error estimates (by adding `estimate.variance = TRUE`).
+Let's now predict $\hat{\theta}$ with their standard error estimates.
 
 ```{r}
 (
@@ -377,6 +549,7 @@ ggplot(plot_data) +
 ```
 
 You can easily repeat this analysis for other covariates to see their impacts as well.
+
 
 
 ## Orthogonal Random Forest

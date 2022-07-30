@@ -369,6 +369,11 @@ div.csl-indent {
   <a href="./A01-mc-simulation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Monte Carlo (MC) Simulation</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./A02-method-of-moment.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Primer on method of moment</span></a>
+  </div>
+</li>
     </ul>
   </li>
     </ul>
@@ -386,7 +391,7 @@ div.csl-indent {
   <li><a href="#forest-building-train-an-rf-on-pseudo-outcome" id="toc-forest-building-train-an-rf-on-pseudo-outcome" class="nav-link" data-scroll-target="#forest-building-train-an-rf-on-pseudo-outcome"> <span class="header-section-number">13.2.1</span> Forest building (train an RF on pseudo outcome)</a></li>
   <li><a href="#prediction" id="toc-prediction" class="nav-link" data-scroll-target="#prediction"> <span class="header-section-number">13.2.2</span> Prediction</a></li>
   </ul></li>
-  <li><a href="#honesty" id="toc-honesty" class="nav-link" data-scroll-target="#honesty"> <span class="header-section-number">13.3</span> Honesty</a></li>
+  <li><a href="#sec-grf-honest" id="toc-sec-grf-honest" class="nav-link" data-scroll-target="#sec-grf-honest"> <span class="header-section-number">13.3</span> Honesty</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/E02-grf.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
@@ -492,7 +497,7 @@ Note
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p>Orthogonal random forest (a forest-based heterogeneous treatment effect estimator like causal forest), on the other hand, build trees every time when predicting treatment effect <span class="math inline">\(\theta(X)\)</span> at particular values of <span class="math inline">\(X\)</span>, which is why orthogonal random forest takes a very long time especially when there are many evaluation points.</p>
-</div></div><p>You probably have noticed the similarity in idea between GRF and generalized method moments (GMM). Indeed, GRF can also be considered as local GMM (see <span class="quarto-unresolved-ref">?sec-local-reg</span> to get a sense of what a local regression is like).</p>
+</div></div><p>You probably have noticed the similarity in idea between GRF and generalized method moments (GMM). Indeed, GRF can also be considered as local GMM (see <a href="B01-nonlinear.html#sec-local-reg"><span>Section&nbsp;1.3.1</span></a> to get a sense of what a local regression is like).</p>
 <div class="callout-tip callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -700,8 +705,8 @@ $$
  -->
 </section>
 </section>
-<section id="honesty" class="level2 page-columns page-full" data-number="13.3">
-<h2 data-number="13.3" class="anchored" data-anchor-id="honesty"><span class="header-section-number">13.3</span> Honesty</h2>
+<section id="sec-grf-honest" class="level2 page-columns page-full" data-number="13.3">
+<h2 data-number="13.3" class="anchored" data-anchor-id="sec-grf-honest"><span class="header-section-number">13.3</span> Honesty</h2>
 <p>GRF applies <span style="color:blue"> honesty </span>when it trains forests. Specifically, when building a tree, the bootstrapped sample is first split into two groups: subsamples for <span style="color:blue"> splitting</span> and <span style="color:blue">prediction</span>. Then, the a tree is trained on the subsample for splitting and then generate the splitting rules. However, when predicting (say <span class="math inline">\(E[Y|X]\)</span> at <span class="math inline">\(X=x\)</span>), the value of <span class="math inline">\(Y\)</span> from the subsamples for splitting are not used. Rather, only the splitting rules are taken from the trained tree and then they are applied to the subsamples for prediction (<a href="#fig-honest">Figure&nbsp;<span>13.1</span></a> illustrates this process).</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
@@ -742,8 +747,8 @@ $$
 </details>
 <div id="fig-honest" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<div id="htmlwidget-48b52a59c3ee9f7ba550" style="width:100%;height:325px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-48b52a59c3ee9f7ba550">{"x":{"diagram":"\ndigraph {\n  graph [ranksep = 0.2, fontsize = 4]\n  node [shape = box]\n    SS [label = \"Subsamples for splitting\"]\n    SP [label = \"Subsamples for predicting\"]\n    BD [label = \"Bootstrapped Data\"]\n    TT [label = \"Trained tree\"]\n    PV [label = \"Predicted value\"]\n  edge [minlen = 2]\n    BD->SP\n    BD->SS\n    SS->TT\n    SP->PV\n    TT->SP [label=\"apply the splitting rules\"]\n  { rank = same; SS; SP}\n  { rank = same; TT}\n  { rank = same; PV}\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-9aede1944230035b739c" style="width:100%;height:325px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-9aede1944230035b739c">{"x":{"diagram":"\ndigraph {\n  graph [ranksep = 0.2, fontsize = 4]\n  node [shape = box]\n    SS [label = \"Subsamples for splitting\"]\n    SP [label = \"Subsamples for predicting\"]\n    BD [label = \"Bootstrapped Data\"]\n    TT [label = \"Trained tree\"]\n    PV [label = \"Predicted value\"]\n  edge [minlen = 2]\n    BD->SP\n    BD->SS\n    SS->TT\n    SP->PV\n    TT->SP [label=\"apply the splitting rules\"]\n  { rank = same; SS; SP}\n  { rank = same; TT}\n  { rank = same; PV}\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 <p></p><figcaption aria-hidden="true" class="figure-caption">Figure 13.1: Illustration of an honest tree</figcaption><p></p>
 </figure>
 </div>
