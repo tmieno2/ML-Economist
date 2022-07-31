@@ -1,0 +1,68 @@
+# Local Linear Forest
+
+Local linear forest is an extension of random forest (RF) and also a generalized random forest (GRF) [@friedberg2020local]. We first start from how RF make predictions and then move on to how local linear forest make predictions.
+
+Suppose $T$ tress have been built after a random forest model is trained on a dataset. Now, let $\eta_{i,t}(X)$ takes $1$ if observation $i$ belongs to the same leaf as $X$ in tree $t$, where $X$ is a vector of covariates ($K$ variables). Then, the RF's predicted value of $y$ conditional on a particular value of $X$ (say, $X_0$) can be written as follows:
+
+$$
+\begin{aligned}
+\hat{y}(X_0) = \frac{1}{T} \cdot\sum_{t=1}^T\sum_{i=1}^N \frac{\eta_{i,t}(X_0)}{\sum_{i=1}^N\eta_{i,t}(X_0)}\cdot y_i
+\end{aligned}
+$$
+
+Note that $\sum_{i=1}^N\eta_{i,t}(X_0)$ represents the number of observations in the same leaf as $X_0$. Therefore, $\sum_{i=1}^N \frac{\eta_{i,t}(X_0)}{\sum_{i=1}^N\eta_{i,t}(X_0)}\cdot y_i$ is the average value of $y$ of the leaf that $X_0$ belongs to. So, while looking slightly complicated, it is the average value of $y$ of the tree $X_0$ belongs to averaged across the trees. 
+
+We can switch the summations like this,
+
+$$
+\begin{aligned}
+\hat{y}(X_0) = \sum_{i=1}^N \cdot\frac{1}{T}\sum_{t=1}^T\frac{\eta_{i,t}(X_0)}{\sum_{i=1}^N\eta_{i,t}(X_0)}\cdot y_i
+\end{aligned}
+$$
+
+Let $\alpha(X_i, X_0)$ denote $\frac{1}{T}\sum_{t=1}^T\frac{\eta_{i,t}(X_0)}{\sum_{i=1}^N\eta_{i,t}(X_0)}$. Then, we can rewrite the above equation as
+
+$$
+\begin{aligned}
+\hat{y}(X_0) = \sum_{i=1}^N \alpha(X_i,X_0) \cdot y_i
+\end{aligned}
+$$
+
+It is easy to show that $\hat{y}(X_0)$ is a solution to the following minimization problem.
+
+$$
+\begin{aligned}
+Min_{\theta} \sum_{i=1}^N \alpha(X_i,X_0)\cdot[y_i -\theta]^2
+\end{aligned}
+$$ {#eq-ll-constant}
+
+In this formulation of the problem, $\alpha(X_i,X_0)$ can be considered the weight given to observation $i$. By definition,
+
++ $0 \leq \alpha(X_i,X_0) \leq 1$
++ $\sum_{i=1}^N \alpha(X_i,X_0) = 1$
+
+You may notice that @eq-ll-constant is actually a special case of local constant regression (see @sec-local-reg) where the individual weights are $\alpha(X_i, X_0)$. Roughly speaking, $\alpha(X_i, X_0)$ measures how often observation $i$ share the same leaves as the evaluation point ($X_0$) across $T$ trees. So, it measures how similar $X_i$ is to $X_0$ in the RF way, but not based on euclidean distance (which is subject to curse of dimensionality). So, RF is actually a local constant regression with a special way of distributing weights to the individual observations. This interpretation leads to a natural extension: rewrite @eq-ll-constant as a  local linear regression problem.
+
+$$
+\begin{aligned}
+Min_{\mu, \beta} \sum_{i=1}^N \alpha(X_i,X_0)\cdot[y_i -\mu - (X_i - X_0)\beta]^2 
+\end{aligned}
+$$
+
+where $\mu$ is a scalar and $\beta$ is a vector of parameters ($K \times 1$). Local linear forest implemented by the `grf` package adds the ridge penalty to avoid over-fitting and solve the following problem
+
+$$
+\begin{aligned}
+Min_{\mu, \beta} \sum_{i=1}^N \alpha(X_i,X_0)\cdot[y_i -\mu - (X_i - X_0)\beta]^2 + \lambda||\beta||^2_2
+\end{aligned}
+$$
+
+
+
+
+
+
+
+
+
+

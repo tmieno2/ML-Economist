@@ -38,6 +38,9 @@ quarto::quarto_render(here::here("LectureNotes/P02-boosted-regression-forest.qmd
 #=== XGB ===#
 quarto::quarto_render(here::here("LectureNotes/P03-xgb.qmd"))
 
+#=== local linear forest ===#
+quarto::quarto_render(here::here("LectureNotes/P04-local-linear-forest.qmd"))
+
 #/*=================================================*/
 #' # Causal ML
 #/*=================================================*/
