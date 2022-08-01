@@ -83,23 +83,16 @@ Note: $q(i)$ will let you know which group (fold) observation $i$ belongs to aft
 **Step 2**: Estimate treatment effects via a plug-in version of (3), where the $e^{−q(i)}(X_i)$ and $m^{−q(i)}(X_i)$ denote predictions made without using the data fold that the ith training example belongs to:
 
 
-```{r}
-#| echo: false
 
-DiagrammeR::grViz("
-digraph {
-  graph [ranksep = 0.2]
-  node [shape = plaintext]
-    A [label = 'fold 1']
-    Y [label = 'folds 2 ~ 5']
-    C [label = 'whole dataset']
-  edge [minlen = 2]
-    C->A
-    C->Y
-  { rank = same; A; Y }
-}
-")
+::: {.cell}
+::: {.cell-output-display}
+```{=html}
+<div id="htmlwidget-30c5f73ea1723fef2dc9" style="width:100%;height:464px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-30c5f73ea1723fef2dc9">{"x":{"diagram":"\ndigraph {\n  graph [ranksep = 0.2]\n  node [shape = plaintext]\n    A [label = \"fold 1\"]\n    Y [label = \"folds 2 ~ 5\"]\n    C [label = \"whole dataset\"]\n  edge [minlen = 2]\n    C->A\n    C->Y\n  { rank = same; A; Y }\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 ```
+:::
+:::
+
 
 For fold 1 (observations that satisfy $q(i = 1)$), use data from folds 2 through 5,
 
@@ -132,4 +125,5 @@ $\hat{L_n}\{\tau(\cdot)\}$ is called **R-loss**.
 + Yres = Y - E[Y|X, W] refers to $Y_i-\hat{m}^{\{-q(i)\}}(X_i)$
 + Tres = T - E[T|X, W] refers to $W_i - \hat{e}^{\{-q(i)\}}(X_i)$
 + loss(cate)  = E_n[(Yres - <cate(X), Tres>)^2] refers to $\frac{1}{n}\sum_{i=1}^{n}\normalsize[\{Y_i-\hat{m}^{\{-q(i)\}}(X_i)\}-\{W_i - \hat{e}^{\{-q(i)\}}(X_i)\}\tau(X_i)]^2$
+
 

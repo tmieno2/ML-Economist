@@ -30,37 +30,35 @@ As you can see in these examples, knowledge on the heterogeneity of the treatmen
 
 ## Modeling Framework
 
-Consider the potential outcomes:
+The model of interest in general form is as follows:
 
-+ $Y(0)$: potential outcomes under control ($W = 0$)
-+ $Y(1)$: potential outcomes under treatment ($W = 1$)
+$$
+\begin{aligned}
+Y_i & = \theta(X_i)\cdot T_i + g(X_i, W_i) + \varepsilon_i \\
+T_i & = f(X_i, W_i) + \eta_i 
+\end{aligned}
+$$ {#eq-model-framework}
 
-We get to observe only one of them. Further, let $\mu_1(X)$ and $\mu_0(X)$ denote the expected value of the potential conditional outcomes:
++ $Y$: dependent variable
++ $T$: treatment variable
++ $X$: collection of variables that affect Y indirectly through the treatment ($\theta(X)\cdot T$) and directly ($g(X, W)$) independent of the treatment
++ $W$: collection of variables that affect directly ($g(X, W)$) independent of the treatment, but not through the treatment
+
+Here are the assumptions:
+
++ $E[\varepsilon|X, W] = 0$
++ $E[\eta|X, W] = 0$
++ $E[\eta\cdot\varepsilon|X, W] = 0$
+
+For the notational convenicence, let $\mu_1(X)$ and $\mu_0(X)$ denote the expected value of the potential conditional outcomes:
 
 $$
 \begin{align}
-\mu_1(X) = E[Y(1)|X]\\ 
-\mu_0(X) = E[Y(0)|X]
+\mu_1(X) & = E[Y|W=1, X] = g(X, W)\\ 
+\mu_0(X) & = E[Y|W=0, X] =  \theta(X) + g(X, W)
 \end{align}
 $$
 
-The statistics of interest is the treatment effect conditional on features ($X$):
-
-$$
-\begin{align}
-\tau(X) = E[Y(1)|X] - E[Y(0)|X]  
-\end{align}
-$$
-
-It is assumed that conditional unconfoundedness is satisfied.
-
-$$
-\begin{align}
-{Y_0, Y_1} \perp W|X
-\end{align}
-$$
-
-No assumption about the quantitative relationship between $Y$, $W$, and $X$ is assumed throughout this chapter.
 
 ## S-, T-, and X-Learner
 
@@ -69,15 +67,15 @@ No assumption about the quantitative relationship between $Y$, $W$, and $X$ is a
 S-leaner estimates CATE by taking the following steps:
 
 1. Regress $Y$ on $W$ and $X$ to estimate $E[Y|W,X]$ using any appropriate ML regression methods and call it $\hat{\mu}(W,X)$.
-2. Estimate $\hat{\tau}(X)$ as $\hat{\mu}(W=1,X)-\hat{\mu}(W=0,X)$
+2. Estimate $\hat{\theta}(X)$ as $\hat{\mu}(W=1,X)-\hat{\mu}(W=0,X)$
 
-In this approach, no special treatment is given to $W$. It is just a covariate along with others ($X$). This approach is names S-leaner by @kunzel_metalearners_2019 because it involves estimating a <span style='color:blue'>s</span>ingle response function.
+In this approach, no special treatment is given to $W$. It is just a covariate along with others ($X$). This approach is named S-leaner by @kunzel_metalearners_2019 because it involves estimating a <span style='color:blue'>s</span>ingle response function.
 
 ### T-learner
 
 1. Regress $Y$ on $W$ and $X$ using the treated observations to estimate $\mu_1(X)$ using any appropriate ML regression methods.
 2. Regress $Y$ on $W$ and $X$ using the control  observations to estimate $\mu_0(X)$ using any appropriate ML regression methods.
-3. Estimate $\hat{\tau}(X)$ as $\hat{\mu}_1(X)-\hat{\mu}(X)$
+3. Estimate $\hat{\theta}(X)$ as $\hat{\mu}_1(X)-\hat{\mu}(X)$
 
 This approach is named T-leaner by @kunzel_metalearners_2019 because it involves estimating <span style='color:blue'>t</span>wo functions.
 
@@ -99,15 +97,15 @@ This is similar to cross-fitting we saw in @sec-dml, where the folds are the tre
 
 3. 
 
-+ Regress $\tilde{D}_i^1(X_i)$ on $X$ using the observations in the treated group and denote the predicted value as $\tau_1(X)$
++ Regress $\tilde{D}_i^1(X_i)$ on $X$ using the observations in the treated group and denote the predicted value as $\hat{\theta}_1(X)$
 
-+ Regress $\tilde{D}_i^0(X_i)$ on $X$ using the observations in the control group and denote the predicted value as $\tau_0(X)$
++ Regress $\tilde{D}_i^0(X_i)$ on $X$ using the observations in the control group and denote the predicted value as $\hat{\theta}_0(X)$
 
-4. Calculate $\tau(X)$ as their weighted average
+4. Calculate $\hat{\theta}(X)$ as their weighted average
 
 $$
 \begin{align}
-\tau(X) = g(X)\cdot\tau_0(X) + [1-g(X)]\cdot\tau_1(X)
+\hat{\theta}(X) = g(X)\cdot\hat{\theta}_0(X) + [1-g(X)]\cdot\hat{\theta}_1(X)
 \end{align}
 $$ {#eq-final-X}
 
@@ -126,6 +124,7 @@ Here, an advantage of X-learner over T-learner is demonstrated (This example als
 library(data.table)
 library(tidyverse)
 library(ranger)
+library(rlearner)
 library(mgcv)
 ```
 
@@ -134,6 +133,7 @@ library(mgcv)
 library(data.table)
 library(tidyverse)
 library(ranger)
+library(rlearner)
 library(mgcv)
 ```
 :::
@@ -176,7 +176,7 @@ mu_1_trained <- lm(y ~ x, data = data[type == "Treated", ])
 mu_0_trained <- gam(y ~ s(x, k = 4), data = data[type == "Control", ])
 ```
 
-Now that  $\mu_1(X)$ and $\mu_0(X)$ are estimated, we can estimate $\hat{\tau}(X)$ by T-learner.
+Now that  $\mu_1(X)$ and $\mu_0(X)$ are estimated, we can estimate $\hat{\theta}(X)$ by T-learner.
 
 ```{r}
 x_seq <- data.table(x = seq(-1, 1, length = 100))
@@ -262,7 +262,7 @@ As you can see below, the mean value of $g(x)$ is small because the treatment pr
 mean(tau_hat_data[, g_x])
 ```
 
-This number is basically $`r N_trt`/320$. So, in this example, we could have just used the proportion of the treated observations. Notice that $g(X)$ is multiplied to $\hat{\tau}_0(X)$ in @eq-final-X. So, we are giving a lower weight to $\hat{\tau}_0(X)$. This is because $\hat{\tau}_0(X)$ is less reliable because $\hat{\mu}_1(X)$ is less reliable due to the lack of samples in the treated group. 
+This number is basically $`r N_trt`/320$. So, in this example, we could have just used the proportion of the treated observations. Notice that $g(X)$ is multiplied to $\hat{\theta}_0(X)$ in @eq-final-X. So, we are giving a lower weight to $\hat{\theta}_0(X)$. This is because $\hat{\theta}_0(X)$ is less reliable because $\hat{\mu}_1(X)$ is less reliable due to the lack of samples in the treated group. 
 
 ```{r}
 tau_hat_data[, tau_hat_X := g_x * tau_hat_0 + (1-g_x) * tau_hat_1]
@@ -287,8 +287,6 @@ ggplot(data = tau_hat_data) +
   theme_bw() +
   theme(legend.position = "bottom")
 ```
-
-## R-learner
 
 <!-- Let $e(X)$ denote the propensity score $pr(W=1|X) = E[W|X]$.　
 
@@ -335,82 +333,51 @@ Of course the problem is that we do not know $m(X_i)$ and $e^*(X_i)$, so the abo
  -->
 ## R-learner
 
-The model of interest in general form is as follows:
-
-$$
-\begin{aligned}
-Y & = \theta(X)\cdot T + g(X, W) + \varepsilon \\
-T & = f(X, W) + \eta 
-\end{aligned}
-$$ {#eq-model-framework}
-
-+ $Y$: dependent variable
-+ $T$: treatment variable (can be either binary dummy or continuous)
-+ $X$: collection of variables that affect Y indirectly through the treatment ($\theta(X)\cdot T$) and directly ($g(X, W)$) independent of the treatment
-+ $W$: collection of variables that affect directly ($g(X, W)$) independent of the treatment, but not through the treatment
-
-Here are the key assumptions:
-
-+ $E[\varepsilon|X, W] = 0$
-+ $E[\eta|X, W] = 0$
-+ $E[\eta\cdot\varepsilon|X, W] = 0$
-
-Our objective is to estimate the <span style = "color: red;"> constant </span> marginal CATE $\theta(X)$. (constant in the sense marginal CATE is the same irrespective of the value of the treatment)
-
-## R-learner
-
 ### Theoretical background
 
 Under the assumptions,
 
 $$
 \begin{aligned}
-E[Y|X, W] = \theta(X)\cdot E[T|X,W] + g(X,W)
+E[Y|X, W] = \theta(X)\cdot f(X,W) + g(X,W)
 \end{aligned}
-$$
+$$ {#eq-yxw}
 
-Thus,
+:::{.column-margin}
+$f(X,W) = E[T|X,W]$ 
+:::
+
+Let, $l(X,W)$ denote $E[Y|X, W]$. Taking the difference of @eq-model-framework and @eq-yxw on both sides,
 
 $$
 \begin{aligned}
-Y & = \theta(X)\cdot T + g(X,W) + \varepsilon \\
-\Rightarrow Y - E[Y|X, W] & = \theta(X)\cdot T + g(X,W) + \varepsilon - \theta(X)\cdot E[T|X,W] - g(X,W) \\
-\Rightarrow Y - E[Y|X, W] & = \theta(X)\cdot (T - E[T|X,W]) + \varepsilon \\
+Y_i - l(X_i,Y_i) & = \theta(X_i)\cdot T_i + g(X_i,W_i) + \varepsilon_i - [\theta(X_i)\cdot f(X_i,W_i) + g(X_i,W_i)] \\
+\Rightarrow Y_i - l(X_i,Y_i) & = \theta(X_i)\cdot (T_i -f(X_i,W_i)) + \varepsilon_i \\
 \end{aligned}
 $$
 
+:::{.column-margin}
+This is akin to residualization/orthogonalization seen in the DML approach in @sec-dml.
+:::
+
+So, the problem of identifying $\theta(X)$ reduces to estimating the following model:
 
 $$
 \begin{aligned}
-Y - E[Y|X, W] & = \theta(X)\cdot (T - E[T|X,W]) + \varepsilon 
-\end{aligned}
-$$ 
-
-Suppose we know $E[Y|X, W]$ and $E[T|X,W]$, then we can construct the following new variables:
-
-+ $\tilde{Y} = Y - E[Y|X, W]$
-+ $\tilde{T} = T - E[T|X, W] = \eta$
-
-Then, the problem of identifying $\theta(X)$ reduces to estimating the following model:
-
-$$
-\begin{aligned}
-\tilde{Y} = \theta(X)\cdot \tilde{T} + \varepsilon
+Y_i - l(X_i,Y_i) & = \theta(X_i)\cdot (T_i -f(X_i,W_i)) + \varepsilon_i
 \end{aligned}
 $$
 
-
-Since $E[\eta\cdot\varepsilon|X] = 0$ by assumption, we can regress $\tilde{Y}$ on $X$ and $\tilde{T}$,
-
+Since $E[(T_i -f(X_i,W_i))\cdot\varepsilon_i|X] = E[\eta_i\cdot\varepsilon_i|X] = 0$ by assumption, we can regress $\tilde{Y}_i$ on $X_i$ and $\tilde{T}_i$ to estimate $\theta(X)$. Specifically, we can minimize the following objective function:
 $$
 \begin{aligned}
-\hat{\theta} = argmin_{\theta} \;\; E[(\tilde{Y} - \theta(X)\cdot \tilde{T})^2]
+Min_{\theta(X)}\sum_{i=1}^N [Y_i - l(X_i,Y_i)] - [\theta(X_i)\cdot (T_i -f(X_i,W_i))] 
 \end{aligned}
 $$ {#eq-est-equation}
 
 ### Estimation steps {#sec-est-steps}
 
-In practice, we of course do not observe $E[Y|X, W]$ and $E[T|X, W]$. So, we first need to estimate them using the data at hand to construct $\hat{\tilde{Y}}$ and $\hat{\tilde{T}}$. You can use any suitable statistical methods to estimate $E[Y|X, W]$ and $E[T|X, W]$. Some machine learning methods allow you to estimate them without assuming any functional form or structural assumptions. If you believe they are linear functions of $X$ and $W$, may could alternatively use lasso or other linear models. It is important to keep in mind that the estimation of $E[Y|X, W]$ and $E[T|X, W]$ is done by cross-fitting (see @sec-cf) to avoid over-fitting bias. Let, $f(X, W)$ and $g(X,W)$ denote $\tilde{Y}$ and $\tilde{T}$, respectively. Further, let $I_{-i}$ denote all the observations that belong to the folds that $i$ does <span style="color:blue"> not </span> belong to. Finally, let $\hat{f}(X_i, W_i)^{I_{-i}}$ and $\hat{g}(X_i, W_i)^{I_{-i}}$ denote $\tilde{Y}$ and $\tilde{T}$ estimated using $I_{-i}$. 
+In practice, we of course do not observe $l(X,W)$ $( \equiv E[Y|X, W])$ and $f(X,W)$ $(\equiv E[T|X, W])$. So, we first need to estimate them using the data at hand to construct $\hat{\tilde{Y}}$ and $\hat{\tilde{T}}$. You can use any suitable statistical methods to estimate $E[Y|X, W]$ and $f(X,W)$. Some machine learning methods allow you to estimate them without assuming any functional form or structural assumptions. If you believe they are linear functions of $X$ and $W$, you could alternatively use lasso or other linear models. @nie_quasi-oracle_2021 proposes that the estimation of $l(X,W)$ and $f(X,W)$ is done by cross-fitting (see @sec-cf) to avoid over-fitting bias. Let $I_{-i}$ denote all the observations that belong to the folds that $i$ does <span style="color:blue"> not </span> belong to. Further, let $\hat{f}(X_i, W_i)^{I_{-i}}$ and $\hat{g}(X_i, W_i)^{I_{-i}}$ denote $f(X_i, W_i)$ and $g(X_i, W_i)$ estimated using $I_{-i}$. 
 
 ::: {.column-margin}
 Just like the DML approach discussed in @sec-dml, both $Y$ and $T$ are orthogonalized.
@@ -436,7 +403,15 @@ $$
 
 where $\Lambda(\theta(X))$ is the penalty on the complexity of $\theta(X)$. For example, if you choose to use lasso, then $\Lambda(\theta(X))$ is the L1 norm. You have lots of freedom as to what model you use in the final stage. The `econml` package offers several off-the-shelf choices of R-learner (DML) approaches that differ in the model used at the final stage, including causal forest, lasso, etc.
 
-## R-leaner Example: Linear DML
+### R-learner by hand
+
+This section goes through the estimation steps provided above to further the understanding of how R-learner works.
+
+## Comparing the learners
+
+
+
+## X-, S-, T-, R-learner in Python
 
 We saw a general R-learner framework for CATE estimation. We now look at an example of Linear DML, which uses a linear model at the final stage. So, we are assuming that $\theta(X)$ can be written as follows in @eq-model-framework:
 

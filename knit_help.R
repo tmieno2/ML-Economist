@@ -46,12 +46,15 @@ quarto::quarto_render(here::here("LectureNotes/P04-local-linear-forest.qmd"))
 #/*=================================================*/
 #=== why not this? ===#
 quarto::quarto_render(here::here("LectureNotes/C00-why-not-this.qmd"))
+quarto::quarto_render(here::here("C00-why-not-this.qmd"))
 
 # === double-ml ===#
 quarto::quarto_render(here::here("LectureNotes/C01-dml.qmd"))
 
 # === het te ===#
 quarto::quarto_render(here::here("LectureNotes/C02-het-te.qmd"))
+quarto::quarto_render(here::here("xstr-learners.qmd"))
+quarto::quarto_render(here::here("C02-r-learner.qmd"))
 
 # === cf ===#
 quarto::quarto_render(here::here("LectureNotes/C03-cf-orf.qmd"))
