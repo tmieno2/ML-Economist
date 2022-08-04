@@ -2,6 +2,22 @@
 
 In this section, we look at the S-, X-, T-, and R-learner, which are method that estimate heterogeneous treatment effects when the treatment is binary. While X-leaner and T-learner cannot be extended to continuous treatment cases, S-learner and R-learner can be. Mathematical notations used in this chapter closely follow those of [@kunzel_metalearners_2019] and [@nie_quasi-oracle_2021].
 
+
+:::{.callout-important}
+
+# What you will learn
+:::
+
+:::{.callout-tip}
+
+# Key points
+
++ R-learner is the same as DML approaches by @Chernozhukov2018 except that CATE is estiamted at the second instead of ATE.
++ In most practical cases, R-learner performs better than S-, X-, and T-learners. 
++ S- and T-learners are especially undesirable due to its tendency to underestimate CATE
+
+:::
+
 ## Motivation
 
 In @sec-dml, the basic idea of double machine learning (DML) methods was introduced when the treatment effect is homogeneous. We now turn our focus to the task of estimating heterogeneous treatment effects: the impact of a treatment varies based on observed attributes of the subjects. Heterogeneous treatment effect is also referred to as <span style="color:blue"> conditional </span> average treatment effect (CATE).
@@ -371,7 +387,7 @@ $$
 Since $E[(T_i -f(X_i,W_i))\cdot\varepsilon_i|X] = E[\eta_i\cdot\varepsilon_i|X] = 0$ by assumption, we can regress $\tilde{Y}_i$ on $X_i$ and $\tilde{T}_i$ to estimate $\theta(X)$. Specifically, we can minimize the following objective function:
 $$
 \begin{aligned}
-Min_{\theta(X)}\sum_{i=1}^N [Y_i - l(X_i,Y_i)] - [\theta(X_i)\cdot (T_i -f(X_i,W_i))] 
+Min_{\theta(X)}\sum_{i=1}^N \large(\normalsize[Y_i - l(X_i,Y_i)] - [\theta(X_i)\cdot (T_i -f(X_i,W_i))]\large)^2 
 \end{aligned}
 $$ {#eq-est-equation}
 
@@ -409,6 +425,150 @@ This section goes through the estimation steps provided above to further the und
 
 ## Comparing the learners
 
+$$
+\begin{aligned}
+Y_i =\theta(X_i)\cdot T + \alpha g(X_i) + \mu_i
+\end{aligned}
+$$
+
++ $X_i = \{X_{i,1}, X_{i,2}, X_{i,3}, X_{i,4}, X_{i,5}\}$
++ $T_i|X_i \sim Bernouli(f(X_i))$
++ $\mu_i|X_i \sim N(0,1)$
+
+:::{.callout-note}
+
+## Case A
+
+$$
+\begin{aligned}
+g(X_i) & = sin(\pi X_{i,1}X_{i,2}) + 2(X_{i,3}-0.5)^2 + X_{i,4} + 0.5 X_{i,5}\\
+e(X_i) & = max(0.1, min(sin(\pi X_{i,1}X_{i,2}), 0.9)) \\
+\theta(X_i) & = (X_{i,1}, X_{i,2}) / 2 \\
+X_i & \sim Uni(0,1)^5
+\end{aligned}
+$$
+
+:::
+  
+```{r}
+#| code-fold: true 
+gen_data_A <- function(N){
+  data <-
+    data.table(
+      x1 = runif(N),
+      x2 = runif(N),
+      x3 = runif(N),
+      x4 = runif(N),
+      x5 = runif(N),
+      u = rnorm(N)
+    ) %>% 
+    .[, `:=`(
+      g_x = sin(pi * x1*x2) + 2*(x3-0.5)^2 + x4 + 0.5*x5,
+      e_x = pmax(0.1, pmin(sin(pi * x1*x2), 0.9)),
+      theta_x = (x1+x2)/2
+    )] %>% 
+    .[, t := as.numeric(runif(N) < e_x)] %>% 
+    .[, y := theta_x * t + g_x + u]
+
+  return(data)
+}
+
+```
+
+```{r}
+library(rlearner)
+data <- gen_data_A(N)
+
+rboost_fit 
+
+#--------------------------
+# R-learner
+#--------------------------
+rboost_fit <- 
+  rboost(
+    data[, .(x1, x2, x3, x4, x5)] %>% as.matrix(), 
+    data$t, 
+    data$y
+  )
+
+rboost_est <- predict(rboost_fit, data$x)
+
+#--------------------------
+# S-learner
+#--------------------------
+sboost_fit <- 
+  sboost(
+    data[, .(x1, x2, x3, x4, x5)] %>% as.matrix(), 
+    data$t, 
+    data$y
+  )
+
+sboost_est <- predict(rboost_fit, data$x)
+
+#--------------------------
+# T-learner
+#--------------------------
+tboost_fit <- 
+  tboost(
+    data[, .(x1, x2, x3, x4, x5)] %>% as.matrix(), 
+    data$t, 
+    data$y
+  )
+
+tboost_est <- predict(rboost_fit, data$x)
+
+#--------------------------
+# X-learner
+#--------------------------
+xboost_fit <- 
+  xboost(
+    data[, .(x1, x2, x3, x4, x5)] %>% as.matrix(), 
+    data$t, 
+    data$y
+  )
+
+xboost_est <- predict(rboost_fit, data$x)
+
+```
+
+:::{.callout-note}
+
+## Case B (randomized trial)
+
+$$
+\begin{aligned}
+g(X_i) & = max(X_{i,1} + X_{i,2}, X_{i,3}, 0) + max(X_{i,4}+ X_{i,5},0)\\
+e(X_i) & = 1/2 \\
+\theta(X_i) & = X_{i,1} + log(1+exp(X_{i,2})) \\
+X_i & \sim N(0,I_5)
+\end{aligned}
+$$
+
+:::
+ 
+```{r}
+#| code-fold: true 
+gen_data_B <- function(N){
+  data <-
+    data.table(
+      x1 = rnorm(N),
+      x2 = rnorm(N),
+      x3 = rnorm(N),
+      x4 = rnorm(N),
+      x5 = rnorm(N),
+      u = rnorm(N)
+    ) %>% 
+    .[, `:=`(
+      g_x = pmax(x1 + x2, x3) + pmax(x4 + x5, 0),
+      e_x = 1/2,
+      theta_x = x1+log(1 + exp(x2))
+    )] %>% 
+    .[, t := (runif(N) < e_x)] %>% 
+    .[, y := theta_x * t + g_x + u]
+
+  return(data)
+}
+```
 
 
 ## X-, S-, T-, R-learner in Python

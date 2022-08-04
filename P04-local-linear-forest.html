@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-0.9.629">
+<meta name="generator" content="quarto-0.9.568">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -43,7 +43,7 @@ ul.task-list{list-style: none;}
 
 <section id="local-linear-forest" class="level1">
 <h1>Local Linear Forest</h1>
-<p>Local linear forest is an extension of random forest (RF) and also a generalized random forest (GRF). We first start from how RF make predictions and then move on to how local linear forest make predictions.</p>
+<p>Local linear forest is an extension of random forest (RF) and also a generalized random forest (GRF) <span class="citation" data-cites="friedberg2020local">[@friedberg2020local]</span>. We first start from how RF make predictions and then move on to how local linear forest make predictions.</p>
 <p>Suppose <span class="math inline">\(T\)</span> tress have been built after a random forest model is trained on a dataset. Now, let <span class="math inline">\(\eta_{i,t}(X)\)</span> takes <span class="math inline">\(1\)</span> if observation <span class="math inline">\(i\)</span> belongs to the same leaf as <span class="math inline">\(X\)</span> in tree <span class="math inline">\(t\)</span>, where <span class="math inline">\(X\)</span> is a vector of covariates (<span class="math inline">\(K\)</span> variables). Then, the RF’s predicted value of <span class="math inline">\(y\)</span> conditional on a particular value of <span class="math inline">\(X\)</span> (say, <span class="math inline">\(X_0\)</span>) can be written as follows:</p>
 <p><span class="math display">\[
 \begin{aligned}
@@ -74,13 +74,38 @@ Min_{\theta} \sum_{i=1}^N \alpha(X_i,X_0)\cdot[y_i -\theta]^2
 <li><span class="math inline">\(0 \leq \alpha(X_i,X_0) \leq 1\)</span></li>
 <li><span class="math inline">\(\sum_{i=1}^N \alpha(X_i,X_0) = 1\)</span></li>
 </ul>
-<p>You may notice that <a href="#eq-ll-constant">Equation&nbsp;1</a> is actually a special case of local constant regression (see <strong>?@sec-local-reg</strong>) where the individual weights are <span class="math inline">\(\alpha(X_i, X_0)\)</span>. Roughly speaking, <span class="math inline">\(\alpha(X_i, X_0)\)</span> measures how often observation <span class="math inline">\(i\)</span> share the same leaves as the evaluation point (<span class="math inline">\(X_0\)</span>) across <span class="math inline">\(T\)</span> trees. So, it measures how similar <span class="math inline">\(X_i\)</span> is to <span class="math inline">\(X_0\)</span> in the RF way, but not based on euclidean distance (which is subject to curse of dimensionality). So, RF is actually a local constant regression with a special way of distributing weights to the individual observations. This interpretation opens up a natural extension: rewrite <a href="#eq-ll-constant">Equation&nbsp;1</a> as a local linear regression problem.</p>
+<p>You may notice that <a href="#eq-ll-constant">Equation&nbsp;1</a> is actually a special case of local constant regression (see <strong>?@sec-local-reg</strong>) where the individual weights are <span class="math inline">\(\alpha(X_i, X_0)\)</span>. Roughly speaking, <span class="math inline">\(\alpha(X_i, X_0)\)</span> measures how often observation <span class="math inline">\(i\)</span> share the same leaves as the evaluation point (<span class="math inline">\(X_0\)</span>) across <span class="math inline">\(T\)</span> trees. So, it measures how similar <span class="math inline">\(X_i\)</span> is to <span class="math inline">\(X_0\)</span> in the RF way, but not based on euclidean distance (which is subject to curse of dimensionality). So, RF is actually a local <span style="color:blue">constant</span> regression with a special way of distributing weights to the individual observations. This interpretation leads to a natural extension. Why don’t we solve local <span style="color:blue">linear</span> regression problem instead, which would be more appropriate if <span class="math inline">\(y\)</span> is a smooth function of <span class="math inline">\(X\)</span>?</p>
+<p>Rewriting <a href="#eq-ll-constant">Equation&nbsp;1</a> as a local linear regression problem.</p>
 <p><span class="math display">\[
 \begin{aligned}
 Min_{\mu, \beta} \sum_{i=1}^N \alpha(X_i,X_0)\cdot[y_i -\mu - (X_i - X_0)\beta]^2
 \end{aligned}
 \]</span></p>
 <p>where <span class="math inline">\(\mu\)</span> is a scalar and <span class="math inline">\(\beta\)</span> is a vector of parameters (<span class="math inline">\(K \times 1\)</span>).</p>
+<p>This approach was proposed by Bloniarz et al.&nbsp;(2016) and they showed modest improvement over RF. Local linear forest by <span class="citation" data-cites="friedberg2020local">@friedberg2020local</span> differ from this approach in two important ways.</p>
+<div class="callout-important callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>Modify the splitting process in a way that the resulting splitting rules (and thus weights) are more suitable to the second stage local linear regression<br>
+</li>
+<li>At the local linear regression stage, use ridge regularization</li>
+</ol>
+</div>
+</div>
+<p>Local linear forest implemented by the <code>grf</code> package adds the ridge penalty to avoid over-fitting and solve the following problem</p>
+<p><span class="math display">\[
+\begin{aligned}
+Min_{\mu, \beta} \sum_{i=1}^N \alpha(X_i,X_0)\cdot[y_i -\mu - (X_i - X_0)\beta]^2 + \lambda||\beta||^2_2
+\end{aligned}
+\]</span></p>
 </section>
 
 </main>

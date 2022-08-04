@@ -447,7 +447,7 @@ Y_i - l(X_i,Y_i) &amp; = \theta(X_i)\cdot (T_i -f(X_i,W_i)) + \varepsilon_i
 <p>Since <span class="math inline">\(E[(T_i -f(X_i,W_i))\cdot\varepsilon_i|X] = E[\eta_i\cdot\varepsilon_i|X] = 0\)</span> by assumption, we can regress <span class="math inline">\(\tilde{Y}_i\)</span> on <span class="math inline">\(X_i\)</span> and <span class="math inline">\(\tilde{T}_i\)</span> to estimate <span class="math inline">\(\theta(X)\)</span>. Specifically, we can minimize the following objective function:</p>
 <p><span id="eq-est-equation"><span class="math display">\[
 \begin{aligned}
-Min_{\theta(X)}\sum_{i=1}^N [Y_i - l(X_i,Y_i)] - [\theta(X_i)\cdot (T_i -f(X_i,W_i))]
+Min_{\theta(X)}\sum_{i=1}^N \large(\normalsize[Y_i - l(X_i,Y_i)] - [\theta(X_i)\cdot (T_i -f(X_i,W_i))]\large)^2
 \end{aligned}
 \tag{4}\]</span></span></p>
 </section>
@@ -479,6 +479,56 @@ Min_{\theta(X)}\sum_{i=1}^N [Y_i - l(X_i,Y_i)] - [\theta(X_i)\cdot (T_i -f(X_i,W
 </section>
 <section id="comparing-the-learners" class="level2">
 <h2 class="anchored" data-anchor-id="comparing-the-learners">Comparing the learners</h2>
+<p><span class="math display">\[
+\begin{aligned}
+Y_i =\theta(X_i)\cdot T + \alpha g(X_i) + \mu_i
+\end{aligned}
+\]</span></p>
+<ul>
+<li><span class="math inline">\(X_i = \{X_{i,1}, X_{i,2}, X_{i,3}, X_{i,4}, X_{i,5}\}\)</span></li>
+<li><span class="math inline">\(T_i|X_i \sim Bernouli(f(X_i))\)</span></li>
+<li><span class="math inline">\(\mu_i|X_i \sim N(0,1)\)</span></li>
+</ul>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Case A
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math display">\[
+\begin{aligned}
+g(X_i) &amp; = sin(\pi X_{i,1}X_{i,2}) + 2(X_{i,3}-0.5)^2 + X_{i,4} + 0.5 X_{i,5}\\
+e(X_i) &amp; = max(0.1, min(sin(\pi X_{i,1}X_{i,2}), 0.9)) \\
+\theta(X_i) &amp; = (X_{i,1}, X_{i,2}) / 2 \\
+X_i &amp; \sim Uni(0,1)^5
+\end{aligned}
+\]</span></p>
+</div>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Case B (randomized trial)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math display">\[
+\begin{aligned}
+g(X_i) &amp; = max(X_{i,1} + X_{i,2}, X_{i,3}, 0) + max(X_{i,4}+ X_{i,5},0)\\
+e(X_i) &amp; = 1/2 \\
+\theta(X_i) &amp; = X_{i,1} + log(1+exp(X_{i,2})) \\
+X_i &amp; \sim N(0,I_5)
+\end{aligned}
+\]</span></p>
+</div>
+</div>
 </section>
 <section id="x--s--t--r-learner-in-python" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="x--s--t--r-learner-in-python">X-, S-, T-, R-learner in Python</h2>

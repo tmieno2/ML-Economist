@@ -40,6 +40,7 @@ quarto::quarto_render(here::here("LectureNotes/P03-xgb.qmd"))
 
 #=== local linear forest ===#
 quarto::quarto_render(here::here("LectureNotes/P04-local-linear-forest.qmd"))
+quarto::quarto_render(here::here("P04-local-linear-forest.qmd"))
 
 #/*=================================================*/
 #' # Causal ML
@@ -54,7 +55,7 @@ quarto::quarto_render(here::here("LectureNotes/C01-dml.qmd"))
 # === het te ===#
 quarto::quarto_render(here::here("LectureNotes/C02-het-te.qmd"))
 quarto::quarto_render(here::here("xstr-learners.qmd"))
-quarto::quarto_render(here::here("C02-r-learner.qmd"))
+quarto::quarto_render(here::here("C02-xstr-learner.qmd"))
 
 # === cf ===#
 quarto::quarto_render(here::here("LectureNotes/C03-cf-orf.qmd"))

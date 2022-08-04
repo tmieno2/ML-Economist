@@ -87,8 +87,8 @@ Note: $q(i)$ will let you know which group (fold) observation $i$ belongs to aft
 ::: {.cell}
 ::: {.cell-output-display}
 ```{=html}
-<div id="htmlwidget-30c5f73ea1723fef2dc9" style="width:100%;height:464px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-30c5f73ea1723fef2dc9">{"x":{"diagram":"\ndigraph {\n  graph [ranksep = 0.2]\n  node [shape = plaintext]\n    A [label = \"fold 1\"]\n    Y [label = \"folds 2 ~ 5\"]\n    C [label = \"whole dataset\"]\n  edge [minlen = 2]\n    C->A\n    C->Y\n  { rank = same; A; Y }\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-e0b275785f8e338eb397" style="width:100%;height:464px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-e0b275785f8e338eb397">{"x":{"diagram":"\ndigraph {\n  graph [ranksep = 0.2]\n  node [shape = plaintext]\n    A [label = \"fold 1\"]\n    Y [label = \"folds 2 ~ 5\"]\n    C [label = \"whole dataset\"]\n  edge [minlen = 2]\n    C->A\n    C->Y\n  { rank = same; A; Y }\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 ```
 :::
 :::

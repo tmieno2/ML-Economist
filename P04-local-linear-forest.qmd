@@ -41,21 +41,45 @@ In this formulation of the problem, $\alpha(X_i,X_0)$ can be considered the weig
 + $0 \leq \alpha(X_i,X_0) \leq 1$
 + $\sum_{i=1}^N \alpha(X_i,X_0) = 1$
 
-You may notice that @eq-ll-constant is actually a special case of local constant regression (see @sec-local-reg) where the individual weights are $\alpha(X_i, X_0)$. Roughly speaking, $\alpha(X_i, X_0)$ measures how often observation $i$ share the same leaves as the evaluation point ($X_0$) across $T$ trees. So, it measures how similar $X_i$ is to $X_0$ in the RF way, but not based on euclidean distance (which is subject to curse of dimensionality). So, RF is actually a local constant regression with a special way of distributing weights to the individual observations. This interpretation leads to a natural extension: rewrite @eq-ll-constant as a  local linear regression problem.
+You may notice that @eq-ll-constant is actually a special case of local constant regression (see @sec-local-reg) where the individual weights are $\alpha(X_i, X_0)$. Roughly speaking, $\alpha(X_i, X_0)$ measures how often observation $i$ share the same leaves as the evaluation point ($X_0$) across $T$ trees. So, it measures how similar $X_i$ is to $X_0$ in the RF way, but not based on euclidean distance (which is subject to curse of dimensionality). So, RF is actually a local <span style='color:blue'>constant</span> regression with a special way of distributing weights to the individual observations. This interpretation leads to a natural extension. Why don't we solve local <span style='color:blue'>linear</span> regression problem instead, which would be more appropriate if $y$ is a smooth function of $X$? 
+
+Rewriting @eq-ll-constant as a  local linear regression problem.
 
 $$
 \begin{aligned}
 Min_{\mu, \beta} \sum_{i=1}^N \alpha(X_i,X_0)\cdot[y_i -\mu - (X_i - X_0)\beta]^2 
 \end{aligned}
+$$ {#eq-ll}
+
+where $\mu$ is a scalar and $\beta$ is a vector of parameters ($K \times 1$). 
+
+This approach was proposed by Bloniarz et al. (2016) and they showed modest improvement over RF. Local linear forest by @friedberg2020local differ from this approach in two important ways.
+
+:::{.callout-important}
+
+## Local linear forest 
+
+1. Modify the splitting process in a way that the resulting splitting rules (and thus weights) are more suitable to the second stage local linear regression   
+2. At the local linear regression stage, use ridge regularization
+::: 
+
+Let's look at the first modification. In RF, when deciding how to split a node (parent node), we choose a split that solves the following problem:
+
+$$
+\begin{aligned}
+\sum_{i\in C_1}(Y_i - \bar{Y_1}) + \sum_{i\in C_2}(Y_i - \bar{Y_2})
+\end{aligned}
 $$
 
-where $\mu$ is a scalar and $\beta$ is a vector of parameters ($K \times 1$). Local linear forest implemented by the `grf` package adds the ridge penalty to avoid over-fitting and solve the following problem
+where $C_1$ and $C_2$ are child nodes, and $\bar{Y_1}$ and $\bar{Y_2}$ are the mean value of the outcome for $C_1$ and $C_2$, respectively. Instead, local linear forest by @friedberg2020local first regresses $Y$ on $X$ using ridge regression using the observations in the parent node, finds the residuals, and then uses the residuals in place of $Y$ itself.
+
+Now, let's look at the second modification. Local linear forest implemented by the `grf` package adds the ridge penalty to avoid over-fitting and solve the following problem:
 
 $$
 \begin{aligned}
 Min_{\mu, \beta} \sum_{i=1}^N \alpha(X_i,X_0)\cdot[y_i -\mu - (X_i - X_0)\beta]^2 + \lambda||\beta||^2_2
 \end{aligned}
-$$
+$$ {#eq-ll-ridge}
 
 
 
