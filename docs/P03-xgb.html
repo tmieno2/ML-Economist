@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Introduction to Machine Learning for Economists - 8&nbsp; Extreme Gradient Boosting</title>
+<title>Introduction to Machine Learning for Economists (Under Construction) - 8&nbsp; Extreme Gradient Boosting</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -107,7 +107,7 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./C0P-causal-ml.html" rel="next">
+<link href="./P04-local-linear-forest.html" rel="next">
 <link href="./P02-boosted-regression-forest.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -176,7 +176,7 @@ div.csl-indent {
   <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">Introduction to Machine Learning for Economists</a> 
+      <a href="./">Introduction to Machine Learning for Economists (Under Construction)</a> 
         <div class="sidebar-tools-main">
     <a href="https://github.com/tmieno2/ML-Economist" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
     <a href="" title="Share" id="sidebar-tool-dropdown-0" class="sidebar-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-share"></i></a>
@@ -223,7 +223,7 @@ div.csl-indent {
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
-        <a href="./B0P-basics.html" class="sidebar-item-text sidebar-link">Basics</a>
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Basics</a>
       <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
@@ -259,7 +259,7 @@ div.csl-indent {
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
-        <a href="./P0P-prediction-ml.html" class="sidebar-item-text sidebar-link">Prediction ML</a>
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Prediction ML</a>
       <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
@@ -280,6 +280,11 @@ div.csl-indent {
   <a href="./P03-xgb.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Extreme Gradient Boosting</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./P04-local-linear-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">LLF</span></a>
+  </div>
+</li>
     </ul>
   </li>
         <li class="px-0"><hr class="sidebar-divider hi "></li>
@@ -293,17 +298,17 @@ div.csl-indent {
     <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./C00-why-not-this.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Why can’t we just do this?</span></a>
+  <a href="./C00-why-not-this.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Why can’t we just do this?</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./C01-dml.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Double Machine Learning</span></a>
+  <a href="./C01-dml.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Double Machine Learning</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./C02-r-learner.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">R-learner</span></a>
+  <a href="./C02-r-learner.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">S-, X-, T-, and R-learner</span></a>
   </div>
 </li>
     </ul>
@@ -319,12 +324,12 @@ div.csl-indent {
     <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./E01-spatial-cv.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></a>
+  <a href="./E01-spatial-cv.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./E02-grf.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Generalized Random Forest</span></a>
+  <a href="./E02-grf.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Generalized Random Forest</span></a>
   </div>
 </li>
     </ul>
@@ -340,17 +345,17 @@ div.csl-indent {
     <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PROG-01-mlr3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Machine Learning with <code>mlr3</code> in R</span></a>
+  <a href="./PROG-01-mlr3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Machine Learning with <code>mlr3</code> in R</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PROG-02-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
+  <a href="./PROG-02-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PROG-03-model-selection-prediction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Model Selection (Prediction)</span></a>
+  <a href="./PROG-03-model-selection-prediction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Model Selection (Prediction)</span></a>
   </div>
 </li>
     </ul>
@@ -628,7 +633,7 @@ f_{i,b} = f_{i,b-1} + \eta \cdot w_j^*
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="P03-xgb_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+<p><img src="P03-xgb_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="576"></p>
 </div>
 </div>
 <p>First step (<span class="math inline">\(b = 0\)</span>) is to make an initial prediction. This can be any number, but let’s use the mean of <code>y</code> and set it as the predicted value for all the observations.</p>
@@ -684,7 +689,7 @@ f_{i,b} = f_{i,b-1} + \eta \cdot w_j^*
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="P03-xgb_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+<p><img src="P03-xgb_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="576"></p>
 </div>
 </div>
 
@@ -709,8 +714,8 @@ f_{i,b} = f_{i,b-1} + \eta \cdot w_j^*
 <span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="htmlwidget-7479b4e8c56b291222b1" style="width:100%;height:464px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-7479b4e8c56b291222b1">{"x":{"diagram":"\ndigraph {\n  graph [ranksep = 0.2]\n  node [shape = box]\n    T1R [label = \"L: -9\"]\n    T1L [label = \"R: 1 , 2 , 6\"]\n    T0 [label = \"-9, 1 , 2 , 6\"]\n  edge [minlen = 2]\n    T0->T1L\n    T0->T1R\n  { rank = same; T1R; T1L}\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-45e393be0b7950d68f09" style="width:100%;height:464px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-45e393be0b7950d68f09">{"x":{"diagram":"\ndigraph {\n  graph [ranksep = 0.2]\n  node [shape = box]\n    T1R [label = \"L: -9\"]\n    T1L [label = \"R: 1 , 2 , 6\"]\n    T0 [label = \"-9, 1 , 2 , 6\"]\n  edge [minlen = 2]\n    T0->T1L\n    T0->T1R\n  { rank = same; T1R; T1L}\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </div></div><p>Let’s split the data.</p>
@@ -781,8 +786,8 @@ w_R^* &amp; = 1 + 2 + 6 / (3 + 1) = 2.25
 <span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="htmlwidget-5929a41fe3df43e62842" style="width:100%;height:464px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-5929a41fe3df43e62842">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box]\n      T1R [label = \"L: -9 \n Q score = 40.5\"]\n      T1L [label = \"R: 1 , 2 , 6 \n Q score = 20.25\"]\n      T0 [label = \"-9, 1 , 2 , 6\"]\n    edge [minlen = 2]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-aabdd4848ac6ec7c41db" style="width:100%;height:464px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-aabdd4848ac6ec7c41db">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box]\n      T1R [label = \"L: -9 \n Q score = 40.5\"]\n      T1L [label = \"R: 1 , 2 , 6 \n Q score = 20.25\"]\n      T0 [label = \"-9, 1 , 2 , 6\"]\n    edge [minlen = 2]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </div></div><p><span class="math display">\[
@@ -847,7 +852,7 @@ G_1 = \frac{40.5 + 20.25 - 0}{2} - 10 = 20.375
 <span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="P03-xgb_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+<p><img src="P03-xgb_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="576"></p>
 </div>
 </div>
 
@@ -874,8 +879,8 @@ G_1 = \frac{40.5 + 20.25 - 0}{2} - 10 = 20.375
 <span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="htmlwidget-0a2877348a1b79b62d7c" style="width:100%;height:464px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-0a2877348a1b79b62d7c">{"x":{"diagram":"\n    digraph {\n      graph [ranksep = 0.2]\n      node [shape = box]\n        T1R [label = \"L: -9, 1 \n Q score = 21.33\"]\n        T1L [label = \"R: 2 , 6 \n Q score = 21.33\"]\n        T0 [label = \"-9, 1 , 2 , 6\"]\n      edge [minlen = 2]\n        T0->T1L\n        T0->T1R\n      { rank = same; T1R; T1L}\n    }\n    ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-e6366aeb407831236b45" style="width:100%;height:464px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-e6366aeb407831236b45">{"x":{"diagram":"\n    digraph {\n      graph [ranksep = 0.2]\n      node [shape = box]\n        T1R [label = \"L: -9, 1 \n Q score = 21.33\"]\n        T1L [label = \"R: 2 , 6 \n Q score = 21.33\"]\n        T0 [label = \"-9, 1 , 2 , 6\"]\n      edge [minlen = 2]\n        T0->T1L\n        T0->T1R\n      { rank = same; T1R; T1L}\n    }\n    ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </div></div><p><span class="math display">\[
@@ -903,7 +908,7 @@ G_2 = \frac{21.33 + 21.33 - 0}{2} - 10 = 11.3333333
 <span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="P03-xgb_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
+<p><img src="P03-xgb_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="576"></p>
 </div>
 </div>
 
@@ -930,8 +935,8 @@ G_2 = \frac{21.33 + 21.33 - 0}{2} - 10 = 11.3333333
 <span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="htmlwidget-38b65935fefc2cde94f7" style="width:100%;height:464px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-38b65935fefc2cde94f7">{"x":{"diagram":"\n    digraph {\n      graph [ranksep = 0.2]\n      node [shape = box]\n        T1R [label = \"L: -9, 1, 2 \n Q score = 9\"]\n        T1L [label = \"R: 6 \n Q score = 18\"]\n        T0 [label = \"-9, 1 , 2 , 6\"]\n      edge [minlen = 2]\n        T0->T1L\n        T0->T1R\n      { rank = same; T1R; T1L}\n    }\n    ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-7cf6b276e2529531a38d" style="width:100%;height:464px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-7cf6b276e2529531a38d">{"x":{"diagram":"\n    digraph {\n      graph [ranksep = 0.2]\n      node [shape = box]\n        T1R [label = \"L: -9, 1, 2 \n Q score = 9\"]\n        T1L [label = \"R: 6 \n Q score = 18\"]\n        T0 [label = \"-9, 1 , 2 , 6\"]\n      edge [minlen = 2]\n        T0->T1L\n        T0->T1R\n      { rank = same; T1R; T1L}\n    }\n    ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </div></div><p><span class="math display">\[
@@ -1006,8 +1011,8 @@ Note
 <span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="htmlwidget-a725091f715fc9c2f9e6" style="width:100%;height:325px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-a725091f715fc9c2f9e6">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box, width = 0.3, height = 0.15, fontsize = 3, fixedsize = TRUE, penwidth = 0.2]\n      T1R [label = \"L: -9 \n w* = -4.5\"]\n      T1L [label = \"R: 1 , 2 , 6 \n w* = 2.25\"]\n      T0 [label = \"-9, 1 , 2 , 6\"]\n    edge [penwidth = 0.2, arrowsize = 0.3, len = 0.3]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-9a45175db34a9b971d41" style="width:100%;height:325px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-9a45175db34a9b971d41">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box, width = 0.3, height = 0.15, fontsize = 3, fixedsize = TRUE, penwidth = 0.2]\n      T1R [label = \"L: -9 \n w* = -4.5\"]\n      T1L [label = \"R: 1 , 2 , 6 \n w* = 2.25\"]\n      T0 [label = \"-9, 1 , 2 , 6\"]\n    edge [penwidth = 0.2, arrowsize = 0.3, len = 0.3]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>We now use <span class="math inline">\(w^*\)</span> from this tree to update our prediction according to <a href="#eq-update">Equation&nbsp;<span>8.7</span></a>.</p>
@@ -1108,35 +1113,35 @@ f_{i = 4,b = 1} = 6 + 0.3 \times 2.25 = 6.68
 </div>
 </div>
 <p>All the splits have negative gains. So, we do not split this leaf just like at <span class="math inline">\(b=1\)</span>.</p>
-<p>So, the final tree for this iteration (<span class="math inline">\(b = 1\)</span>) is</p>
+<p>So, the final tree for this iteration (<span class="math inline">\(b = 2\)</span>) is</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>measures_b2 <span class="ot">&lt;-</span> <span class="fu">get_info</span>(data, <span class="dv">2</span>, lambda, gamma)</span>
 <span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
-<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 2</span></span>
-<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 4</span></span>
-<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>DiagrammeR<span class="sc">::</span><span class="fu">grViz</span>(</span>
-<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(</span>
-<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"</span></span>
-<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a><span class="st">  digraph {</span></span>
-<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a><span class="st">    graph [ranksep = 0.2]</span></span>
-<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a><span class="st">    node [shape = box, width = 0.4, height = 0.15, fontsize = 3, fixedsize = TRUE, penwidth = 0.2]</span></span>
-<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a><span class="st">      T1R [label = 'L: -8.18 </span><span class="sc">\n</span><span class="st"> w* = "</span>, <span class="fu">round</span>(measures_b2<span class="sc">$</span>w_L, <span class="at">digits =</span> <span class="dv">2</span>), <span class="st">"']</span></span>
-<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a><span class="st">      T1L [label = 'R: 0.71 , 1.71 , 5.71 </span><span class="sc">\n</span><span class="st"> w* = "</span>, <span class="fu">round</span>(measures_b2<span class="sc">$</span>w_R, <span class="at">digits =</span> <span class="dv">2</span>), <span class="st">"']</span></span>
-<span id="cb45-15"><a href="#cb45-15" aria-hidden="true" tabindex="-1"></a><span class="st">      T0 [label = '-8.18, 0.71 , 1.71 , 5.71']</span></span>
-<span id="cb45-16"><a href="#cb45-16" aria-hidden="true" tabindex="-1"></a><span class="st">    edge [penwidth = 0.2, arrowsize = 0.3, len = 0.3]</span></span>
-<span id="cb45-17"><a href="#cb45-17" aria-hidden="true" tabindex="-1"></a><span class="st">      T0-&gt;T1L</span></span>
-<span id="cb45-18"><a href="#cb45-18" aria-hidden="true" tabindex="-1"></a><span class="st">      T0-&gt;T1R</span></span>
-<span id="cb45-19"><a href="#cb45-19" aria-hidden="true" tabindex="-1"></a><span class="st">    { rank = same; T1R; T1L}</span></span>
-<span id="cb45-20"><a href="#cb45-20" aria-hidden="true" tabindex="-1"></a><span class="st">  }</span></span>
-<span id="cb45-21"><a href="#cb45-21" aria-hidden="true" tabindex="-1"></a><span class="st">  "</span></span>
-<span id="cb45-22"><a href="#cb45-22" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb45-23"><a href="#cb45-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-24"><a href="#cb45-24" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>DiagrammeR<span class="sc">::</span><span class="fu">grViz</span>(</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"</span></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a><span class="st">  digraph {</span></span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a><span class="st">    graph [ranksep = 0.2]</span></span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a><span class="st">    node [shape = box, width = 0.4, height = 0.15, fontsize = 3, fixedsize = TRUE, penwidth = 0.2]</span></span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a><span class="st">      T1R [label = 'L: -8.18 </span><span class="sc">\n</span><span class="st"> w* = "</span>, <span class="fu">round</span>(measures_b2<span class="sc">$</span>w_L, <span class="at">digits =</span> <span class="dv">2</span>), <span class="st">"']</span></span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a><span class="st">      T1L [label = 'R: 0.71 , 1.71 , 5.71 </span><span class="sc">\n</span><span class="st"> w* = "</span>, <span class="fu">round</span>(measures_b2<span class="sc">$</span>w_R, <span class="at">digits =</span> <span class="dv">2</span>), <span class="st">"']</span></span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a><span class="st">      T0 [label = '-8.18, 0.71 , 1.71 , 5.71']</span></span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a><span class="st">    edge [penwidth = 0.2, arrowsize = 0.3, len = 0.3]</span></span>
+<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a><span class="st">      T0-&gt;T1L</span></span>
+<span id="cb45-15"><a href="#cb45-15" aria-hidden="true" tabindex="-1"></a><span class="st">      T0-&gt;T1R</span></span>
+<span id="cb45-16"><a href="#cb45-16" aria-hidden="true" tabindex="-1"></a><span class="st">    { rank = same; T1R; T1L}</span></span>
+<span id="cb45-17"><a href="#cb45-17" aria-hidden="true" tabindex="-1"></a><span class="st">  }</span></span>
+<span id="cb45-18"><a href="#cb45-18" aria-hidden="true" tabindex="-1"></a><span class="st">  "</span></span>
+<span id="cb45-19"><a href="#cb45-19" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb45-20"><a href="#cb45-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-21"><a href="#cb45-21" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
-<div id="htmlwidget-cb266aca8aa131fb2b16" style="width:100%;height:464px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-cb266aca8aa131fb2b16">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box, width = 0.4, height = 0.15, fontsize = 3, fixedsize = TRUE, penwidth = 0.2]\n      T1R [label = \"L: -8.18 \n w* = -3.83\"]\n      T1L [label = \"R: 0.71 , 1.71 , 5.71 \n w* = 1.74\"]\n      T0 [label = \"-8.18, 0.71 , 1.71 , 5.71\"]\n    edge [penwidth = 0.2, arrowsize = 0.3, len = 0.3]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-95aa04018228c0ef871d" style="width:100%;height:325px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-95aa04018228c0ef871d">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box, width = 0.4, height = 0.15, fontsize = 3, fixedsize = TRUE, penwidth = 0.2]\n      T1R [label = \"L: -8.18 \n w* = -3.83\"]\n      T1L [label = \"R: 0.71 , 1.71 , 5.71 \n w* = 1.74\"]\n      T0 [label = \"-8.18, 0.71 , 1.71 , 5.71\"]\n    edge [penwidth = 0.2, arrowsize = 0.3, len = 0.3]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>Let’s now update our predictions.</p>
@@ -1149,7 +1154,7 @@ f_{i = 4,b = 1} = 6 + 0.3 \times 2.25 = 6.68
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> data) <span class="sc">+</span></span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> y, <span class="at">x =</span> x, <span class="at">color =</span> <span class="st">"observed"</span>)) <span class="sc">+</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> y, <span class="at">x =</span> x, <span class="at">color =</span> <span class="st">"observed"</span>), <span class="at">shape =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
 <span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> f_2, <span class="at">x =</span> x, <span class="at">color =</span> <span class="st">"f2"</span>)) <span class="sc">+</span></span>
 <span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> f_1, <span class="at">x =</span> x, <span class="at">color =</span> <span class="st">"f1"</span>)) <span class="sc">+</span></span>
 <span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> f_0, <span class="at">x =</span> x, <span class="at">color =</span> <span class="st">"f0"</span>)) <span class="sc">+</span></span>
@@ -1166,12 +1171,12 @@ f_{i = 4,b = 1} = 6 + 0.3 \times 2.25 = 6.68
 <span id="cb47-16"><a href="#cb47-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(</span>
 <span id="cb47-17"><a href="#cb47-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">y =</span> f_0, <span class="at">x =</span> x, <span class="at">yend =</span> f_1, <span class="at">xend =</span> x), </span>
 <span id="cb47-18"><a href="#cb47-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"blue"</span>,</span>
-<span id="cb47-19"><a href="#cb47-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.1</span>, <span class="st">"cm"</span>))</span>
+<span id="cb47-19"><a href="#cb47-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.2</span>, <span class="st">"cm"</span>))</span>
 <span id="cb47-20"><a href="#cb47-20" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
 <span id="cb47-21"><a href="#cb47-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(</span>
 <span id="cb47-22"><a href="#cb47-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">y =</span> f_1, <span class="at">x =</span> x, <span class="at">yend =</span> f_2, <span class="at">xend =</span> x), </span>
 <span id="cb47-23"><a href="#cb47-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"blue"</span>,</span>
-<span id="cb47-24"><a href="#cb47-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.1</span>, <span class="st">"cm"</span>))</span>
+<span id="cb47-24"><a href="#cb47-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.2</span>, <span class="st">"cm"</span>))</span>
 <span id="cb47-25"><a href="#cb47-25" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
 <span id="cb47-26"><a href="#cb47-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -1362,8 +1367,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./C0P-causal-ml.html" class="pagination-link">
-        <span class="nav-page-text">Causal Machine Learning (CML) Methods</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./P04-local-linear-forest.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">LLF</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

@@ -198,10 +198,9 @@ $$
 
 So, $\theta(x)$ from GRF is the average of tree-specific predictions, which is exactly how RF predicts $E[Y|X=x]$ as well.
 
+## Causal forest as a GRF
 
-<!-- ## Causal forest as a GRF
-
-When $\Psi_{\theta, \nu}(Y_i, X_i, T_i) = (Y_i - E[Y|X])- \theta(X)(T_i - E[T|X])$, GRF is causal forest. In practice $E[Y|X]$ and $E[T|X]$ are first estimated using appropriate machine learning methods (e.g., lasso, random forest) in a cross-fitting manner and then the estimation of $Y_i - E[Y|X]$ and $T_i - E[T|X]$ are constructed. Let's denote them by $\hat{\tilde{Y}}_i$ and $\hat{\tilde{T}}_i$. Then the empirical score function is written as
+A GRF with $\Psi_{\theta, \nu}(Y_i, X_i, T_i) = (Y_i - E[Y|X])- \theta(X)(T_i - E[T|X])$ is causal forest as an R-learner (take a look at @sec-r-learner to see the reasoning behind this score function). In practice $E[Y|X]$ and $E[T|X]$ are first estimated using appropriate machine learning methods (e.g., lasso, random forest, gradient boosted forest) in a cross-fitting manner and then the estimation of $Y_i - E[Y|X]$ and $T_i - E[T|X]$ are constructed. Let's denote them by $\hat{\tilde{Y}}_i$ and $\hat{\tilde{T}}_i$. Then the empirical score function is written as
 
 $$
 \begin{aligned}
@@ -265,7 +264,7 @@ $$
 
 
 :::
- -->
+
 ## Honesty {#sec-grf-honest}
 
 GRF applies <span style="color:blue"> honesty </span>when it trains forests. Specifically, when building a tree, the bootstrapped sample is first split into two groups: subsamples for <span style="color:blue"> splitting</span> and <span style="color:blue">prediction</span>. Then, the a tree is trained on the subsample for splitting and then generate the splitting rules. However, when predicting (say $E[Y|X]$ at $X=x$), the value of $Y$ from the subsamples for splitting are not used. Rather, only the splitting rules are taken from the trained tree and then they are applied to the subsamples for prediction (@fig-honest illustrates this process). 

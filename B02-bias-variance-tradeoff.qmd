@@ -96,6 +96,10 @@ test_data <- gen_data(x = runif(10000) * 5)
 Visually, here is the relationship between $E[y]$ and $x$:
 
 ```{r}
+#| code-fold: true
+#| fig-height: 3 
+#| fig-width: 5 
+
 ggplot(data = train_data) +
   geom_line(aes(y = ey, x = x)) +
   theme_bw()

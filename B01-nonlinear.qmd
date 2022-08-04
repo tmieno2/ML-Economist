@@ -1,7 +1,20 @@
 # Non-linear function estimation {#sec-nonlinear}
 
+The purpose of this section is to introduce you to the idea of semi-parametric and non-parametric regression methods. The world of semi-parametric and non-parametric regression is vast. But, we only scratch the surface by just looking at smoothing splines and local regression methods in this chapter. Learning these methods also provide us with excellent opportunities to learn the phenomenon called over-fitting and also the importance of hyper-parameters. Understanding local regression in particular is essential in understanding generalized random forest covered in @sec-grf.
 
-The purpose of this section is to introduce you to the idea of semi-parametric and non-parametric regression methods. We only scratch the surface by just looking at smoothing splines and K-nearest neighbor regression methods. The world of semi-parametric and non-parametric regression is much deeper. But, that's out of the scope of this section. The primary goal of this section is to familiarize you with the concepts of over-fitting, regularization, hyper-parameters, and parameter tuning using smoothing splines and K-nearest neighbor regression methods as examples. 
+:::{.callout-note}
+
+## What you will learn
+
++ Limitations of linear-in-parameter parametric model in representing non-linear functions
++ Regression splines
++ Local regression
+  * Local constant regression
+  * Local linear regression
++ Over-fitting and hyper-parameters
+
+:::
+
 
 ## Flexible functional form estimation {#sec-functional-form}
 
@@ -31,17 +44,20 @@ library(caret)
 ```
 :::
 
-
 There is a clear limit to liner (in parameter) parametric models in flexibility to represent quantitative relationships between variables. For example, consider crop yield response to fertilizer. Typically, yield increases at the diminishing rate as fertilizer rate increases. However, at a high enough fertilizer rate, yield stops increasing (fertilizer is not a limiting factor at that point). This relationship is illustrated in the figure below.
 
 ```{r}
+#| fig-height: 3
+#| fig-width: 5
+#| fig-align: center
+
 set.seed(83944)
 
 #=== generate data ===#
 N <- 300 # number of observations
 x <- seq(1, 250, length = N) 
 y_det <- 240 * (1 - 0.4 * exp(- 0.03 * x))
-e <- 50 * runif(N) # error
+e <- 25 * rnorm(N) # error
 data <- data.table(x = x, y = y_det + e, y_det = y_det)
 
 #=== plot ===#
@@ -70,6 +86,10 @@ data[, y_hat_quad := lm_quad$fit]
 
 ```{r}
 #| code-fold: true
+#| fig-height: 3
+#| fig-width: 6
+#| fig-align: center
+
 
 plot_data <-
   melt(data, id.var = "x") %>% 
@@ -116,6 +136,8 @@ Here are what $b_1(x), \dots, b_K(x)$ may look like (1 intercept and 9 cubic spl
 ```{r}
 #| code-fold: true
 #| fig-height: 9 
+#| fig-width: 5 
+#| fig-align: center
 
 basis_data <-
   gam(y_det ~ s(x, k = 10, bs = "cr"), data = data) %>% 
@@ -145,6 +167,9 @@ $$
 
 ```{r}
 #| code-fold: true
+#| fig-height: 3
+#| fig-width: 5
+#| fig-align: center
 
 data.table(
   variable = unique(basis_data$variable),
@@ -167,6 +192,9 @@ $$
 
 ```{r}
 #| code-fold: true
+#| fig-height: 3
+#| fig-width: 5
+#| fig-align: center
 
 data.table(
   variable = unique(basis_data$variable),
@@ -205,6 +233,9 @@ This translate into the following fitted curve.
 
 ```{r}
 #| code-fold: true
+#| fig-height: 3
+#| fig-width: 6
+#| fig-align: center
 data.table(
   variable = unique(basis_data$variable)[-1],
   coef = gam_fit$coefficient[-1]
@@ -258,6 +289,11 @@ More specifically, it uses generalized cross-validation (GCV). A special type of
 If you do not pick the value of `sp` well, the estimated curve will be very wiggly. Let's see an example by setting the value of `sp` to 0, meaning no punishment for being very wiggly. We also set the number of splines to $39$ so that $\sum_{k=1}^K \beta_k b_k(x)$  is <span style="color:red"> very </span>flexible.
 
 ```{r}
+#| code-fold: true
+#| fig-height: 3
+#| fig-width: 5
+#| fig-align: center
+
 #=== fit ===#
 gam_fit_wiggly <- gam(y ~ s(x, k = 40, bs = "cr", sp = 0), data = data)
 
@@ -266,8 +302,8 @@ data[, y_hat := gam_fit_wiggly$fitted.values]
 
 #=== plot ===#
 ggplot(data = data) +
-  geom_line(aes(y = y_hat, x = x)) +
-  geom_point(aes(y = y, x = x)) +
+  geom_line(aes(y = y_hat, x = x), color = "red") +
+  geom_point(aes(y = y, x = x), size = 0.7) +
   theme_bw()
 ```
 
@@ -285,6 +321,10 @@ $^1$ or more precisely, how many knots and where to place them
 :::
 
 ```{r}
+#| fig-height: 3
+#| fig-width: 5
+#| fig-align: center
+
 #=== fit ===#
 gam_fit_wiggly <- gam(y ~ s(x, k = 3, bs = "cr", sp = 0), data = data)
 
@@ -293,8 +333,8 @@ data[, y_hat := gam_fit_wiggly$fitted.values]
 
 #=== plot ===#
 ggplot(data = data) +
-  geom_line(aes(y = y_hat, x = x)) +
-  geom_point(aes(y = y, x = x)) +
+  geom_line(aes(y = y_hat, x = x), color = "red") +
+  geom_point(aes(y = y, x = x), size = 0.7) +
   theme_bw()
 ```
 
@@ -307,6 +347,10 @@ That is, we are not tuning `k` and `bs` here. `gam()` uses generalized cross-val
 :::
 
 ```{r}
+#| fig-height: 3
+#| fig-width: 5
+#| fig-align: center
+
 #=== fit ===#
 gam_fit_cv <- gam(y ~ s(x, k = 40, bs = "cr"), data = data)
 
@@ -315,14 +359,14 @@ data[, y_hat := gam_fit_cv$fitted.values]
 
 #=== plot ===#
 ggplot(data = data) +
-  geom_line(aes(y = y_hat, x = x)) +
-  geom_point(aes(y = y, x = x)) +
+  geom_line(aes(y = y_hat, x = x), color = "red") +
+  geom_point(aes(y = y, x = x), size = 0.7) +
   theme_bw()
 ```
 
 You can see that the tuning of `sp` is successful and has resulted in a much better fitted curve compared to the case where `sp` was forced to be 0. As you will see, hyper-parameter tuning will be critical for many of the machine learning methods we will look at later. 
 
-## Local Regression
+## Local Regression {#sec-local}
 
 Local regression is a non-parametric method that predicts $y$ at the target value of $X$ (say $x_0$) using the observations that are "close" to it (called neighbors). One of such methods is Nadaraya-Watson (NW) estimator.
 
@@ -361,6 +405,7 @@ $I\{\cdot\}$ is an indicator function that takes 1 if the statement inside the c
 #| fig-cap: Kernel function examples
 #| label: fig-kernel 
 #| code-fold: true
+#| fig-width: 6
 
 u_seq <- seq(-3, 3, length = 1000)
 
@@ -545,6 +590,7 @@ g_weight_h5 <-
   ylab("K((x - 100)/h)") +
   xlab("x") +
   ggtitle("Corresponding weights: h = 5")
+
 g_h5 <- g_point_h5 / g_weight_h5
 
 g_h2 | g_h5
@@ -555,13 +601,13 @@ Let's write a code to predict `y` at several different values of `x` using `data
 
 
 ```{r}
-x_0 <- 120
+x0 <- 120
 h <- 10
 
 lr_data <-
   copy(data) %>% 
   #=== calculate u ===#
-  .[, u := (x - 120)/h] %>% 
+  .[, u := (x - x0)/h] %>% 
   #=== K(u) ===#
   .[, k_of_u := 3 / 4 * (1-u^2)] %>% 
   #=== turn k_of_u to 0 if abs(u) > 1  ===#
@@ -626,6 +672,10 @@ y_hat_seq <-
 #| code-fold: true
 #| fig-cap: Predictions at various values of x
 #| label: fig-nw
+#| fig-align: center
+#| fig-width: 5
+#| fig-height: 4
+
 data_plot <- 
   data.table(
     x = x_seq,
@@ -646,7 +696,8 @@ ggplot() +
   geom_point(
     data = data,
     aes(y = y, x = x)
-  )
+  ) +
+  theme_bw()
 ```
 
 One critical difference between local non-parametric regression and smoothing splines is that the former fits the data locally (unless $h$ is very high) while smoothing splines fits the data globally (it uses all the data points to fit a single curve).
@@ -693,7 +744,8 @@ y_hat_h_various <-
 ggplot(y_hat_h_various) +
   geom_point(data = data, aes(y = y, x = x), size = 0.8) +
   geom_line(aes(y = y_hat, x = x), color = "red") +
-  facet_wrap(h ~ .) 
+  facet_wrap(h ~ .) +
+  theme_bw()
 ```
 
 As you can see in @fig-fitted-curves-h, at $h = 2$, the fitted curve is extremely wiggly and over-fitted. Increasing the value of $h$ make the fitted curves smoother. Nobody uses NW estimator for any practical applications when the problem at hand is high-dimensional as it suffers from the curse of dimensionality. However, NW estimator is a great example to illustrate the importance of the choice of an arbitrary parameter (hyper-parameter). As discussed above, we will later look at cross-validation as a way to tune hyper-parameters.
@@ -712,25 +764,76 @@ By modifying the objective function slightly, we will have local linear regressi
 
 $$
 \begin{aligned}
-\hat{f}(x = x_0) = argmin_{\alpha,\beta} \sum_{i=1}^N W_i(x_0)(Y_i - (\alpha + \beta x_i ))^2
+\{\hat{\alpha}, \hat{\beta}\} = argmin_{\alpha,\beta} \sum_{i=1}^N W_i(x_0)(Y_i - \alpha - \beta (x_i - x_0))^2
 \end{aligned}
 $$
 
-Then the fitted value is given by $\hat{f}(x = x_0) = \hat{\alpha} + \hat{\beta} x_0$.
-
-You can of course make the function locally more flexible by including polynomials of $x. For example, this is a locally cubic regression.
+Then the fitted value is given by $\hat{f}(x = x_0) = \hat{\alpha}$. This is because the value of $x$ is re-centered around the evaluation point. Alternatively, you can solve the following without re-centering,
 
 $$
 \begin{aligned}
-\hat{f}(x = x_0) = argmin_{\alpha,\beta} \sum_{i=1}^N W_i(x_0)(Y_i - (\alpha + \beta x_i^2 + \beta_2 x_i^2 + \beta_3 x_i^3))^2
+\{\hat{\alpha}, \hat{\beta}\} = argmin_{\alpha,\beta} \sum_{i=1}^N W_i(x_0)(Y_i - \alpha - \beta x_i)^2
 \end{aligned}
 $$
 
-We will see that a similar kind of minimization problem is solved in generalized random forest (GRF) in @sec-grf.
+, and then calculate $\hat{f}(x = x_0) = \hat{\alpha} + \hat{\beta}x_0$. They will provide the same estimate of $\hat{f}(x = x_0)$.
+
+Let's implement this as an illustration for $x_0 = 150$ with the Epanechnikov kernel function with $h=10$.
+
+
+```{r}
+x0 <- 150
+h <- 10
+
+lr_data <-
+  copy(data) %>% 
+  #=== calculate u ===#
+  .[, u := (x - x0)/h] %>% 
+  #=== K(u) ===#
+  .[, k_of_u := 3 / 4 * (1-u^2)] %>% 
+  #=== turn k_of_u to 0 if abs(u) > 1  ===#
+  .[abs(u) >= 1, k_of_u := 0] %>% 
+  #=== find the weight ===#
+  .[, weight := k_of_u / sum(k_of_u)] %>% 
+  .[, x_diff := x - x0]
+
+#=== run linear regression with the weights ===#
+ols_res <- lm(y ~ x_diff, data = lr_data, weights = weight)
+
+#=== predict ===#
+(
+y_hat_x0 <- ols_res$coefficient["(Intercept)"]
+)
+```
+
+Alternatively,
+
+```{r}
+#=== run linear regression with the weights no centering around x0 ===#
+ols_res <- lm(y ~ x, data = lr_data, weights = weight)
+
+#=== predict ===#
+(
+y_hat_x0 <- predict(ols_res, newdata = data.table(x = x0))
+)
+```
 
 :::{.callout-tip}
-Understanding what local regression is helps you understand how generalized random forest works in @sec-grf later.
+
++ In @sec-rf, we will see that random forest is a special case of local constant regression
+
++ Understanding local regression helps you understand how generalized random forest works in @sec-grf
+
 :::
+
+You can make the function locally more flexible by including polynomials of $x$. For example, this is a locally cubic regression.
+
+$$
+\begin{aligned}
+Min_{\alpha,\beta_1,\beta_2,\beta_3} \sum_{i=1}^N W_i(x_0)(Y_i - \alpha - \beta (x_i-x_0) - \beta_2 (x_i-x_0)^2 - \beta_3 (x_i-x_0)^3)^2
+\end{aligned}
+$$
+
 
 ### K-nearest neighbor
 
@@ -763,9 +866,10 @@ plot_data <-
   mutate(k_txt = factor(k_txt, levels = paste0("k = ", c(1, 5, 10, 20))))
 
 ggplot() +
-  geom_point(data = data, aes(y = y, x = x), color = "darkgray") +
+  geom_point(data = data, aes(y = y, x = x), color = "darkgray", size = 0.7) +
   geom_line(data = plot_data, aes(y = y, x = x), color = "red") +
-  facet_wrap(k_txt ~ ., nrow = 2)
+  facet_wrap(k_txt ~ ., nrow = 2) +
+  theme_bw()
 
 ```
 
@@ -867,19 +971,16 @@ mc_results <-
 #| fig-cap: Results of the MC simulations on the efficiency of various methods
 #| label: fig-mc-efficiency
 #| code-fold: true
+#| fig-height: 4 
+#| fig-width: 6 
+#| fig-align: center 
 
 ggplot(data = mc_results) +
   geom_density(aes(x = te, fill = type), alpha = 0.4) +
-  geom_vline(xintercept = log(2))
+  geom_vline(xintercept = log(2)) +
+  theme_bw()
 
 ```
-
-
-
-
-
-
-
 
 
 ## References {.unnumbered}

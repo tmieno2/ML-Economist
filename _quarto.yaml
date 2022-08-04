@@ -3,7 +3,7 @@ project:
   output-dir: docs
   
 book:
-  title: "Introduction to Machine Learning for Economists"
+  title: "Introduction to Machine Learning for Economists (Under Construction)"
   author: "Taro Mieno"
   site-url: https://tmieno2.github.io/ML-Economist/
   repo-url: https://github.com/tmieno2/ML-Economist
@@ -14,7 +14,7 @@ book:
     - index.qmd
     - H00-preface.qmd
     - text: "---"
-    - part: B0P-basics.qmd
+    - part: "Basics"
       chapters: 
         - B01-nonlinear.qmd
         - B02-bias-variance-tradeoff.qmd
@@ -22,17 +22,19 @@ book:
         - B04-regularization.qmd
         - B05-bootstrap.qmd
     - text: "---"
-    - part: P0P-prediction-ml.qmd
+    - part: "Prediction ML"
       chapters: 
         - P01-random-forest.qmd
         - P02-boosted-regression-forest.qmd
         - P03-xgb.qmd
+        - P04-local-linear-forest.qmd
     - text: "---"
     - part: C0P-causal-ml.qmd
       chapters: 
         - C00-why-not-this.qmd
         - C01-dml.qmd
         - C02-r-learner.qmd
+        # - C03-cf-orf.qmd
     - text: "---"
     - part: E0P-extensions.qmd
       chapters:
@@ -61,4 +63,6 @@ format:
 execute:
   warning: false
   message: false
+  fig-align: center
+  
 

@@ -249,7 +249,8 @@ data <-
 
 ```{r}
 #| code-fold: true
-
+#| fig-height: 4
+#| fig-width: 6
 (
 g_0 <-
   ggplot(data) +
@@ -310,7 +311,8 @@ Here is the graphical representations of the split:
 
 ```{r}
 #| code-fold: true
-
+#| fig-height: 4
+#| fig-width: 6
 g_0 +
   geom_vline(xintercept = 2, color = "red") +
   annotate("text", x = 1.25, y = 6, label = "leaf L", color = "red") +
@@ -474,7 +476,8 @@ measures_2 <- get_info(data, 5, lambda, gamma)
 
 ```{r}
 #| code-fold: true
-
+#| fig-height: 4
+#| fig-width: 6
 g_0 +
   geom_vline(xintercept = 5, color = "red") +
   annotate("text", x = 3, y = 6, label = "leaf L", color = "red") +
@@ -525,7 +528,8 @@ measures_3 <- get_info(data, 7, lambda, gamma)
 
 ```{r}
 #| code-fold: true
-
+#| fig-height: 4
+#| fig-width: 6
 g_0 +
   geom_vline(xintercept = 7, color = "red") +
   annotate("text", x = 4, y = 6, label = "leaf L", color = "red") +
@@ -709,14 +713,15 @@ lapply(
 
 All the splits have negative gains. So, we do not split this leaf just like at $b=1$. 
 
-So, the final tree for this iteration ($b = 1$) is
+So, the final tree for this iteration ($b = 2$) is
 
 ```{r}
-measures_b2 <- get_info(data, 2, lambda, gamma)
-
 #| code-fold: true
 #| fig-height: 2
 #| fig-width: 4
+
+measures_b2 <- get_info(data, 2, lambda, gamma)
+
 
 DiagrammeR::grViz(
   paste0(
@@ -750,7 +755,7 @@ data %>%
 #| code-fold: true 
 
 ggplot(data = data) +
-  geom_point(aes(y = y, x = x, color = "observed")) +
+  geom_point(aes(y = y, x = x, color = "observed"), shape = 0) +
   geom_point(aes(y = f_2, x = x, color = "f2")) +
   geom_point(aes(y = f_1, x = x, color = "f1")) +
   geom_point(aes(y = f_0, x = x, color = "f0")) +
@@ -767,12 +772,12 @@ ggplot(data = data) +
   geom_segment(
     aes(y = f_0, x = x, yend = f_1, xend = x), 
     color = "blue",
-    arrow = arrow(length = unit(0.1, "cm"))
+    arrow = arrow(length = unit(0.2, "cm"))
   ) +
   geom_segment(
     aes(y = f_1, x = x, yend = f_2, xend = x), 
     color = "blue",
-    arrow = arrow(length = unit(0.1, "cm"))
+    arrow = arrow(length = unit(0.2, "cm"))
   ) +
   theme_bw()
 ```
@@ -780,6 +785,7 @@ ggplot(data = data) +
 Again, we made small improvements in our predictions. This process continues until user-specified stopping criteria is met.
 
 :::{.callout-tip}
+
 + $\lambda$: 
   * A higher value of $\lambda$ leads to a lower value of prediction updates ($w^*$).
   * A higher value of $\lambda$ leads to a lower value of quality score ($Q$), thus leading to a lower value of gain ($G$), which then leads to more aggressive pruning for a given value of $\gamma$.

@@ -40,14 +40,12 @@ quarto::quarto_render(here::here("LectureNotes/P03-xgb.qmd"))
 
 #=== local linear forest ===#
 quarto::quarto_render(here::here("LectureNotes/P04-local-linear-forest.qmd"))
-quarto::quarto_render(here::here("P04-local-linear-forest.qmd"))
 
 #/*=================================================*/
 #' # Causal ML
 #/*=================================================*/
 #=== why not this? ===#
 quarto::quarto_render(here::here("LectureNotes/C00-why-not-this.qmd"))
-quarto::quarto_render(here::here("C00-why-not-this.qmd"))
 
 # === double-ml ===#
 quarto::quarto_render(here::here("LectureNotes/C01-dml.qmd"))

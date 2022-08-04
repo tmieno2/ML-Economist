@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Introduction to Machine Learning for Economists (Under Construction) - Causal Machine Learning (CML) Methods</title>
+<title>Introduction to Machine Learning for Economists (Under Construction) - 9&nbsp; LLF</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -44,8 +44,8 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./C00-why-not-this.html" rel="next">
-<link href="./P04-local-linear-forest.html" rel="prev">
+<link href="./C0P-causal-ml.html" rel="next">
+<link href="./P03-xgb.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -96,7 +96,7 @@ div.csl-indent {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">Causal Machine Learning (CML) Methods</h1>
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">LLF</span></h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -215,7 +215,7 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./P04-local-linear-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">LLF</span></a>
+  <a href="./P04-local-linear-forest.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">LLF</span></a>
   </div>
 </li>
     </ul>
@@ -223,7 +223,7 @@ div.csl-indent {
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
-        <a href="./C0P-causal-ml.html" class="sidebar-item-text sidebar-link active">Causal Machine Learning (CML) Methods</a>
+        <a href="./C0P-causal-ml.html" class="sidebar-item-text sidebar-link">Causal Machine Learning (CML) Methods</a>
       <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
@@ -323,17 +323,19 @@ div.csl-indent {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#what-is-cml" id="toc-what-is-cml" class="nav-link active" data-scroll-target="#what-is-cml">What is CML?</a></li>
-  <li><a href="#some-notes-on-cml" id="toc-some-notes-on-cml" class="nav-link" data-scroll-target="#some-notes-on-cml">Some notes on CML</a></li>
+  <li><a href="#theoretical-background" id="toc-theoretical-background" class="nav-link active" data-scroll-target="#theoretical-background"> <span class="header-section-number">9.1</span> Theoretical background</a></li>
+  <li><a href="#performance-comparison-llf-v.s.-rf" id="toc-performance-comparison-llf-v.s.-rf" class="nav-link" data-scroll-target="#performance-comparison-llf-v.s.-rf"> <span class="header-section-number">9.2</span> Performance comparison: LLF v.s. RF</a></li>
+  <li><a href="#extension-to-other-grf-methods" id="toc-extension-to-other-grf-methods" class="nav-link" data-scroll-target="#extension-to-other-grf-methods"> <span class="header-section-number">9.3</span> Extension to other GRF methods</a></li>
+  <li><a href="#implementation" id="toc-implementation" class="nav-link" data-scroll-target="#implementation"> <span class="header-section-number">9.4</span> Implementation</a></li>
   </ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/C0P-causal-ml.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/P04-local-linear-forest.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">Causal Machine Learning (CML) Methods</h1>
+<h1 class="title d-none d-lg-block"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">LLF</span></h1>
 </div>
 
 
@@ -347,61 +349,113 @@ div.csl-indent {
 
 </header>
 
-<section id="what-is-cml" class="level2 page-columns page-full">
-<h2 class="anchored" data-anchor-id="what-is-cml">What is CML?</h2>
-<p>Unlike prediction-oriented machine learning (POML) methods, the focus of causal machine learning (CML) methods is to identify the treatment effect of a treatment (or small number of distinct treatments).</p>
-<p><span class="math display">\[
-TE(X) = \theta(X)\cdot T
-\]</span></p>
-<p><span class="math inline">\(\theta(X)\)</span> is the impact of the treatment when <span class="math inline">\(T\)</span> is binary and marginal impact of the treatment when <span class="math inline">\(T\)</span> is continuous. <span class="math inline">\(\theta(X)\)</span> is a function of attributes (<span class="math inline">\(X\)</span>), meaning that the impact of the treatment can vary (heterogeneous) based on the value of the attributes.</p>
+<p>Local linear forest (LLF) is an extension of random forest (RF) and also a generalized random forest (GRF) <span class="citation" data-cites="friedberg2020local">(<a href="#ref-friedberg2020local" role="doc-biblioref">Friedberg et al. 2020</a>)</span>. We first see that RF is actually a special case of local constant regression. We will then see how LLF builds on RF from the view point of a local regression method.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
-<p><span class="math inline">\(\theta(X) = \theta\)</span>, where <span class="math inline">\(\theta\)</span> is a constant, is a special case where the treatment effect is not a function of any observed features.</p>
-</div><div class="">
-<p><span class="math inline">\(T\)</span> may be continuous or discrete.</p>
-</div></div>
-<p>CML considers the following model (following <a href="https://econml.azurewebsites.net/spec/estimation/dml.html">the documentation of the <code>econml</code> Python package</a>)</p>
+<p>See <a href="B01-nonlinear.html#sec-local"><span>Section&nbsp;1.3</span></a> for local constant regression.</p>
+</div></div><section id="theoretical-background" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="theoretical-background"><span class="header-section-number">9.1</span> Theoretical background</h2>
+<p>Suppose <span class="math inline">\(T\)</span> tress have been built after a random forest model is trained on a dataset. Now, let <span class="math inline">\(\eta_{i,t}(X)\)</span> takes <span class="math inline">\(1\)</span> if observation <span class="math inline">\(i\)</span> belongs to the same leaf as <span class="math inline">\(X\)</span> in tree <span class="math inline">\(t\)</span>, where <span class="math inline">\(X\)</span> is a vector of covariates (<span class="math inline">\(K\)</span> variables). Then, the RF’s predicted value of <span class="math inline">\(y\)</span> conditional on a particular value of <span class="math inline">\(X\)</span> (say, <span class="math inline">\(X_0\)</span>) can be written as follows:</p>
 <p><span class="math display">\[
 \begin{aligned}
-Y &amp; = \theta(X)\cdot T + g(X, W) + \varepsilon \\
-T &amp; = f(X, W) + \eta
+\hat{y}(X_0) = \frac{1}{T} \cdot\sum_{t=1}^T\sum_{i=1}^N \frac{\eta_{i,t}(X_0)}{\sum_{i=1}^N\eta_{i,t}(X_0)}\cdot y_i
 \end{aligned}
 \]</span></p>
-<p><span class="math inline">\(W\)</span> are the collection of attributes that affect <span class="math inline">\(Y\)</span> along with <span class="math inline">\(X\)</span> (represented by <span class="math inline">\(g(X, W)\)</span>), but not as drivers of the heterogeneity in the impact of the treatment. <span class="math inline">\(X\)</span> not just affects <span class="math inline">\(Y\)</span> as drivers of the heterogeneity in the impact of the treatment (<span class="math inline">\(\theta(X)\cdot T\)</span>), but also directly along with <span class="math inline">\(W\)</span>.</p>
-<p>Both <span class="math inline">\(X\)</span> and <span class="math inline">\(W\)</span> are potential confounders. While we do control for them (eliminating their influence) by partialing out <span class="math inline">\(f(X, W)\)</span> and <span class="math inline">\(g(X, W)\)</span>, the sole focus is on the estimation of <span class="math inline">\(\theta(X)\)</span>. This is in stark contrast to the focus of the ML methods we have seen in earlier sections, which primarily focuses on the accurate prediction of the <span style="color:blue"> level</span> of the dependent variable, rather than how the level of the dependent variable <span style="color:blue"> changes </span> when treated like CML methods.</p>
-<p>In this chapter, we first cover double-debiased machine learning (DML) method by <span class="citation" data-cites="Chernozhukov2018">Chernozhukov et al. (<a href="#ref-Chernozhukov2018" role="doc-biblioref">2018</a>)</span>, which many prominent CML methods follow. We then move on to discuss R-leaner, followed by causal forest and orthogonal forest.</p>
-</section>
-<section id="some-notes-on-cml" class="level2">
-<h2 class="anchored" data-anchor-id="some-notes-on-cml">Some notes on CML</h2>
+<p>Note that <span class="math inline">\(\sum_{i=1}^N\eta_{i,t}(X_0)\)</span> represents the number of observations in the same leaf as <span class="math inline">\(X_0\)</span>. Therefore, <span class="math inline">\(\sum_{i=1}^N \frac{\eta_{i,t}(X_0)}{\sum_{i=1}^N\eta_{i,t}(X_0)}\cdot y_i\)</span> is the average value of <span class="math inline">\(y\)</span> of the leaf that <span class="math inline">\(X_0\)</span> belongs to. So, while looking slightly complicated, it is the average value of <span class="math inline">\(y\)</span> of the tree <span class="math inline">\(X_0\)</span> belongs to averaged across the trees.</p>
+<p>We can switch the summations like this,</p>
+<p><span class="math display">\[
+\begin{aligned}
+\hat{y}(X_0) = \sum_{i=1}^N \cdot\frac{1}{T}\sum_{t=1}^T\frac{\eta_{i,t}(X_0)}{\sum_{i=1}^N\eta_{i,t}(X_0)}\cdot y_i
+\end{aligned}
+\]</span></p>
+<p>Let <span class="math inline">\(\alpha(X_i, X_0)\)</span> denote <span class="math inline">\(\frac{1}{T}\sum_{t=1}^T\frac{\eta_{i,t}(X_0)}{\sum_{i=1}^N\eta_{i,t}(X_0)}\)</span>. Then, we can rewrite the above equation as</p>
+<p><span class="math display">\[
+\begin{aligned}
+\hat{y}(X_0) = \sum_{i=1}^N \alpha(X_i,X_0) \cdot y_i
+\end{aligned}
+\]</span></p>
+<p>It is easy to show that <span class="math inline">\(\hat{y}(X_0)\)</span> is a solution to the following minimization problem.</p>
+<p><span id="eq-ll-constant"><span class="math display">\[
+\begin{aligned}
+Min_{\theta} \sum_{i=1}^N \alpha(X_i,X_0)\cdot[y_i -\theta]^2
+\end{aligned}
+\tag{9.1}\]</span></span></p>
+<p>In this formulation of the problem, <span class="math inline">\(\alpha(X_i,X_0)\)</span> can be considered the weight given to observation <span class="math inline">\(i\)</span>. By definition,</p>
+<ul>
+<li><span class="math inline">\(0 \leq \alpha(X_i,X_0) \leq 1\)</span></li>
+<li><span class="math inline">\(\sum_{i=1}^N \alpha(X_i,X_0) = 1\)</span></li>
+</ul>
+<p>You may notice that <a href="#eq-ll-constant">Equation&nbsp;<span>9.1</span></a> is actually a special case of local constant regression where the individual weights are <span class="math inline">\(\alpha(X_i, X_0)\)</span>. Roughly speaking, <span class="math inline">\(\alpha(X_i, X_0)\)</span> measures how often observation <span class="math inline">\(i\)</span> share the same leaves as the evaluation point (<span class="math inline">\(X_0\)</span>) across <span class="math inline">\(T\)</span> trees. So, it measures how similar <span class="math inline">\(X_i\)</span> is to <span class="math inline">\(X_0\)</span> in the RF way, but not based on euclidean distance (which is subject to curse of dimensionality). So, RF is actually a local <span style="color:blue">constant</span> regression with a special way of distributing weights to the individual observations. This interpretation leads to a natural extension. Why don’t we solve local <span style="color:blue">linear</span> regression problem instead, which would be more appropriate if <span class="math inline">\(y\)</span> is a smooth function of <span class="math inline">\(X\)</span>?</p>
+<p>Rewriting <a href="#eq-ll-constant">Equation&nbsp;<span>9.1</span></a> as a local linear regression problem.</p>
+<p><span id="eq-ll"><span class="math display">\[
+\begin{aligned}
+Min_{\mu, \beta} \sum_{i=1}^N \alpha(X_i,X_0)\cdot[y_i -\mu - (X_i - X_0)\beta]^2
+\end{aligned}
+\tag{9.2}\]</span></span></p>
+<p>where <span class="math inline">\(\mu\)</span> is a scalar (intercept) and <span class="math inline">\(\beta\)</span> is a vector of parameters (<span class="math inline">\(K \times 1\)</span>).</p>
+<p>This approach was proposed by <span class="citation" data-cites="Bloniarz2016">(<a href="#ref-Bloniarz2016" role="doc-biblioref"><strong>Bloniarz2016?</strong></a>)</span> and they showed modest improvement over RF. LLF by <span class="citation" data-cites="friedberg2020local">Friedberg et al. (<a href="#ref-friedberg2020local" role="doc-biblioref">2020</a>)</span> differ from this approach in two important ways.</p>
 <div class="callout-important callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-caption-container flex-fill">
-Important
+LLF
 </div>
 </div>
 <div class="callout-body-container callout-body">
+<ol type="1">
+<li>Modify the splitting process in a way that the resulting splitting rules (and thus weights) are more suitable to the second stage local linear regression<br>
+</li>
+<li>At the local linear regression stage, use ridge regularization</li>
+</ol>
+</div>
+</div>
+<p>Let’s look at the first modification. In RF, when deciding how to split a node (parent node), we choose a split that solves the following problem:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\sum_{i\in C_1}(Y_i - \bar{Y_1}) + \sum_{i\in C_2}(Y_i - \bar{Y_2})
+\end{aligned}
+\]</span></p>
+<p>where <span class="math inline">\(C_1\)</span> and <span class="math inline">\(C_2\)</span> are child nodes, and <span class="math inline">\(\bar{Y_1}\)</span> and <span class="math inline">\(\bar{Y_2}\)</span> are the mean value of the outcome for <span class="math inline">\(C_1\)</span> and <span class="math inline">\(C_2\)</span>, respectively. Instead, LLF by <span class="citation" data-cites="friedberg2020local">Friedberg et al. (<a href="#ref-friedberg2020local" role="doc-biblioref">2020</a>)</span> first regresses <span class="math inline">\(Y\)</span> on <span class="math inline">\(X\)</span> using ridge regression using the observations in the parent node, finds the residuals, and then uses the residuals in place of <span class="math inline">\(Y\)</span> itself.</p>
+<p>Now, let’s look at the second modification. LLF implemented by the <code>grf</code> package adds the ridge penalty to avoid over-fitting and solve the following problem:</p>
+<p><span id="eq-ll-ridge"><span class="math display">\[
+\begin{aligned}
+Min_{\mu, \beta} \sum_{i=1}^N \alpha(X_i,X_0)\cdot[y_i -\mu - (X_i - X_0)\beta]^2 + \lambda||\beta||^2_2
+\end{aligned}
+\tag{9.3}\]</span></span></p>
+<p>where <span class="math inline">\(\lambda\)</span> is the regularization parameter. LLF estimator is a weighted ridge regression, and it has a nice analytical solution (just like a regular ridge regression). With the following notations,</p>
 <ul>
-<li><p>Point 1. The use of causal machine learning model does not guarantee you the estimate you got is indeed a causal effect.</p></li>
-<li><p>Point 2. Careful examinations of the underlying assumptions is necessary just like traditional causal inference methods.</p></li>
-<li><p>Point 3. CML is not a panacea at all. How can it be better than the traditional approaches?</p>
-<ul>
-<li>They may be able to capture complex non-linear interactions of variables without specifying how they interact</li>
-<li>They are robust to specification errors</li>
-<li>They can be less efficient to correctly specified (or well approximated) parametric models</li>
-</ul></li>
+<li><span class="math inline">\(A\)</span>: the diagonal matrix where its diagonal element at <span class="math inline">\(\{i, i\}\)</span> is the weight for observation <span class="math inline">\(i\)</span>, (<span class="math inline">\(\alpha(X_i,X_0)\)</span>, obtained based on the trees grown using the modified splitting process.</li>
+<li><span class="math inline">\(\Delta\)</span>: the <span class="math inline">\(N \times K\)</span> (the intercept plus <span class="math inline">\(K-1\)</span> covariates) matrix where <span class="math inline">\(\Delta_{i,1} = 1\)</span> and <span class="math inline">\(\Delta_{i,j} = x_{i,j} - x_{0,j}\)</span>.</li>
+<li><span class="math inline">\(J\)</span>: <span class="math inline">\((K+1) \times (K+1)\)</span> diagonal matrix where its diagonal elements are all <span class="math inline">\(1\)</span> except <span class="math inline">\(J_{1,1}\)</span>, which is 0 to not penalize the intercept.</li>
+<li><span class="math inline">\(\theta\)</span>: <span class="math inline">\(\{\mu, \beta\}\)</span></li>
 </ul>
-</div>
-</div>
-<p>Point 1 is not just for CML, but for any statistical models in general. Any statistical model is just a mathematical manipulation of numbers. Model themselves have no ability to identify causal effects.</p>
-<p><span style="color:blue"> More on this later…. </span></p>
+<p><span class="math display">\[
+\begin{aligned}
+\hat{\theta}_{llf} = (\Delta'A\Delta + \lambda J)^{-1}\Delta'AY
+\end{aligned}
+\]</span></p>
+</section>
+<section id="performance-comparison-llf-v.s.-rf" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="performance-comparison-llf-v.s.-rf"><span class="header-section-number">9.2</span> Performance comparison: LLF v.s. RF</h2>
+<p>For more extensive performance comparison via MC simulations, see <span class="citation" data-cites="friedberg2020local">Friedberg et al. (<a href="#ref-friedberg2020local" role="doc-biblioref">2020</a>)</span>.</p>
+</section>
+<section id="extension-to-other-grf-methods" class="level2" data-number="9.3">
+<h2 data-number="9.3" class="anchored" data-anchor-id="extension-to-other-grf-methods"><span class="header-section-number">9.3</span> Extension to other GRF methods</h2>
+<!-- ## Coding by hand
+
+Let's code the modified process for LLF to aid our understanding of them. 
+ -->
+</section>
+<section id="implementation" class="level2" data-number="9.4">
+<h2 data-number="9.4" class="anchored" data-anchor-id="implementation"><span class="header-section-number">9.4</span> Implementation</h2>
+<p>You can use <code>ll_regression_forest()</code> from the <code>grf</code> package to train LLF for R and <code>GRFForestLocalLinearRegressor()</code> from the <code>skgrf</code> package for Python.</p>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
-<div id="ref-Chernozhukov2018" class="csl-entry" role="doc-biblioentry">
-Chernozhukov, Victor, Denis Chetverikov, Mert Demirer, Esther Duflo, Christian Hansen, Whitney Newey, and James Robins. 2018. <span>“<span class="nocase">Double/debiased machine learning for treatment and structural parameters</span>.”</span> <em>The Econometrics Journal</em> 21 (1): C1–68. <a href="https://doi.org/10.1111/ectj.12097">https://doi.org/10.1111/ectj.12097</a>.
+<div id="ref-friedberg2020local" class="csl-entry" role="doc-biblioentry">
+Friedberg, Rina, Julie Tibshirani, Susan Athey, and Stefan Wager. 2020. <span>“Local Linear Forests.”</span> <em>Journal of Computational and Graphical Statistics</em> 30 (2): 503–17.
 </div>
 </div>
 </section>
@@ -488,13 +542,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./P04-local-linear-forest.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">LLF</span></span>
+      <a href="./P03-xgb.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Extreme Gradient Boosting</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./C00-why-not-this.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Why can’t we just do this?</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./C0P-causal-ml.html" class="pagination-link">
+        <span class="nav-page-text">Causal Machine Learning (CML) Methods</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

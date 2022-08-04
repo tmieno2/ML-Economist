@@ -1,6 +1,12 @@
-# Local Linear Forest
+# LLF
 
-Local linear forest is an extension of random forest (RF) and also a generalized random forest (GRF) [@friedberg2020local]. We first start from how RF make predictions and then move on to how local linear forest make predictions.
+Local linear forest (LLF) is an extension of random forest (RF) and also a generalized random forest (GRF) [@friedberg2020local]. We first see that RF is actually a special case of local constant regression. We will then see how LLF builds on RF from the view point of a local regression method.
+
+::: {.column-margin}
+See @sec-local for local constant regression.
+:::
+
+## Theoretical background
 
 Suppose $T$ tress have been built after a random forest model is trained on a dataset. Now, let $\eta_{i,t}(X)$ takes $1$ if observation $i$ belongs to the same leaf as $X$ in tree $t$, where $X$ is a vector of covariates ($K$ variables). Then, the RF's predicted value of $y$ conditional on a particular value of $X$ (say, $X_0$) can be written as follows:
 
@@ -41,9 +47,9 @@ In this formulation of the problem, $\alpha(X_i,X_0)$ can be considered the weig
 + $0 \leq \alpha(X_i,X_0) \leq 1$
 + $\sum_{i=1}^N \alpha(X_i,X_0) = 1$
 
-You may notice that @eq-ll-constant is actually a special case of local constant regression (see @sec-local-reg) where the individual weights are $\alpha(X_i, X_0)$. Roughly speaking, $\alpha(X_i, X_0)$ measures how often observation $i$ share the same leaves as the evaluation point ($X_0$) across $T$ trees. So, it measures how similar $X_i$ is to $X_0$ in the RF way, but not based on euclidean distance (which is subject to curse of dimensionality). So, RF is actually a local <span style='color:blue'>constant</span> regression with a special way of distributing weights to the individual observations. This interpretation leads to a natural extension. Why don't we solve local <span style='color:blue'>linear</span> regression problem instead, which would be more appropriate if $y$ is a smooth function of $X$? 
+You may notice that @eq-ll-constant is actually a special case of local constant regression where the individual weights are $\alpha(X_i, X_0)$. Roughly speaking, $\alpha(X_i, X_0)$ measures how often observation $i$ share the same leaves as the evaluation point ($X_0$) across $T$ trees. So, it measures how similar $X_i$ is to $X_0$ in the RF way, but not based on euclidean distance (which is subject to curse of dimensionality). So, RF is actually a local <span style='color:blue'>constant</span> regression with a special way of distributing weights to the individual observations. This interpretation leads to a natural extension. Why don't we solve local <span style='color:blue'>linear</span> regression problem instead, which would be more appropriate if $y$ is a smooth function of $X$? 
 
-Rewriting @eq-ll-constant as a  local linear regression problem.
+Rewriting @eq-ll-constant as a local linear regression problem.
 
 $$
 \begin{aligned}
@@ -51,13 +57,13 @@ Min_{\mu, \beta} \sum_{i=1}^N \alpha(X_i,X_0)\cdot[y_i -\mu - (X_i - X_0)\beta]^
 \end{aligned}
 $$ {#eq-ll}
 
-where $\mu$ is a scalar and $\beta$ is a vector of parameters ($K \times 1$). 
+where $\mu$ is a scalar (intercept) and $\beta$ is a vector of parameters ($K \times 1$). 
 
-This approach was proposed by Bloniarz et al. (2016) and they showed modest improvement over RF. Local linear forest by @friedberg2020local differ from this approach in two important ways.
+This approach was proposed by @Bloniarz2016 and they showed modest improvement over RF. LLF by @friedberg2020local differ from this approach in two important ways.
 
 :::{.callout-important}
 
-## Local linear forest 
+## LLF 
 
 1. Modify the splitting process in a way that the resulting splitting rules (and thus weights) are more suitable to the second stage local linear regression   
 2. At the local linear regression stage, use ridge regularization
@@ -71,15 +77,57 @@ $$
 \end{aligned}
 $$
 
-where $C_1$ and $C_2$ are child nodes, and $\bar{Y_1}$ and $\bar{Y_2}$ are the mean value of the outcome for $C_1$ and $C_2$, respectively. Instead, local linear forest by @friedberg2020local first regresses $Y$ on $X$ using ridge regression using the observations in the parent node, finds the residuals, and then uses the residuals in place of $Y$ itself.
+where $C_1$ and $C_2$ are child nodes, and $\bar{Y_1}$ and $\bar{Y_2}$ are the mean value of the outcome for $C_1$ and $C_2$, respectively. Instead, LLF by @friedberg2020local first regresses $Y$ on $X$ using ridge regression using the observations in the parent node, finds the residuals, and then uses the residuals in place of $Y$ itself.
 
-Now, let's look at the second modification. Local linear forest implemented by the `grf` package adds the ridge penalty to avoid over-fitting and solve the following problem:
+Now, let's look at the second modification. LLF implemented by the `grf` package adds the ridge penalty to avoid over-fitting and solve the following problem:
 
 $$
 \begin{aligned}
 Min_{\mu, \beta} \sum_{i=1}^N \alpha(X_i,X_0)\cdot[y_i -\mu - (X_i - X_0)\beta]^2 + \lambda||\beta||^2_2
 \end{aligned}
 $$ {#eq-ll-ridge}
+
+where $\lambda$ is the regularization parameter. LLF estimator is a weighted ridge regression, and it has a nice analytical solution (just like a regular ridge regression). With the following notations,
+
++ $A$: the diagonal matrix where its diagonal element at $\{i, i\}$ is the weight for observation $i$, ($\alpha(X_i,X_0)$, obtained based on the trees grown using the modified splitting process. 
++ $\Delta$: the $N \times K$ (the intercept plus $K-1$ covariates) matrix where $\Delta_{i,1} = 1$ and $\Delta_{i,j} = x_{i,j} - x_{0,j}$.
++ $J$: $(K+1) \times (K+1)$ diagonal matrix where its diagonal elements are all $1$ except $J_{1,1}$, which is 0 to not penalize the intercept.
++ $\theta$: $\{\mu, \beta\}$
+
+$$
+\begin{aligned}
+\hat{\theta}_{llf} = (\Delta'A\Delta + \lambda J)^{-1}\Delta'AY
+\end{aligned}
+$$
+
+## Performance comparison: LLF v.s. RF
+
+For more extensive performance comparison via MC simulations, see @friedberg2020local. 
+
+## Extension to other GRF methods
+
+
+
+
+<!-- ## Coding by hand
+
+Let's code the modified process for LLF to aid our understanding of them. 
+ -->
+
+
+## Implementation
+
+You can use `ll_regression_forest()` from the `grf` package to train LLF for R and `GRFForestLocalLinearRegressor()` from the `skgrf` package for Python.
+
+
+
+
+
+
+
+
+
+
 
 
 

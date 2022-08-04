@@ -101,6 +101,8 @@ Visually, here is the relationship between $E[y]$ and $x$:
 
 ```{r}
 #| code-fold: true
+#| fig-height: 3 
+#| fig-width: 5 
 
 ggplot(data = data) +
   geom_line(aes(y = ey, x = x)) +
@@ -476,6 +478,10 @@ So, according to the KCV, we should pick `sp` $= `r best_sp`$ as the penalty par
 By the way, here is what MSE values look like for each fold based on the value of `sp` by fold.
 
 ```{r}
+#| code-fold: true
+#| fig-height: 4
+#| fig-width: 6
+
 ggplot(data = mse_results) +
   geom_line(aes(y = mse, x = sp, color = factor(k))) +
   scale_color_discrete(name = "Fold") +
@@ -515,7 +521,9 @@ mean_mse <-
 
 ## How are LOOCV, KCV and RKCV different?
 
-## Does KCV really work?
+
+
+<!-- ## Does KCV really work?
 
 LOOCV and KCV use the train data to estimate test MSE. But, does it really work? In other words, does it let us pick the parameter that minimizes the test MSE? We will run a simple MC simulations to test this. We continue to use the same data generating process and GAM models for this simulation as well. 
 
@@ -670,7 +678,7 @@ ggplot(data = which_sp_optimal) +
 
 As you can see KCV gives you `sp` that is close to the `sp` based on pure MSE in many cases. But, you can also see that KCV can suggest you a very different number as well. KCV is not perfect, which is kind of obvious.
 
-
+ -->
 ## References {.unnumbered}
 
 <div id="refs"></div>

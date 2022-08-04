@@ -236,6 +236,10 @@ data <-
 Under the data generating process, here is what the production function looks like:
 
 ```{r}
+#| code-fold: true
+#| fig-height: 3
+#| fig-width: 5
+
 ggplot(data = data) +
   geom_line(aes(y = ey, x = x)) +
   theme_bw()
@@ -282,6 +286,10 @@ x_stars <-
 Here is the histogram:
 
 ```{r}
+#| code-fold: true
+#| fig-height: 4
+#| fig-width: 6
+
 hist(x_stars, breaks = 30)
 ```
 
@@ -318,7 +326,7 @@ boot_data <- data[row_indices, ]
 reg_rf <- ranger(y ~ x, data = boot_data)
 ```
 
-Once you train RF, we can predict yield at a range of values of $x$, calculate profit, and then pick the value of $x$ that maximizes the estimated profit. Here is what the estimated production function looks like:
+Once you train RF, we can predict yield at a range of values of $x$, calculate profit, and then pick the value of $x$ that maximizes the estimated profit. 
 
 ```{r}
 #=== create series of x values at which yield will be predicted ===#
@@ -326,6 +334,14 @@ eval_data <- data.table(x = seq(0, 3, length = 1000))
 
 #=== predict yield based on the trained RF ===#
 eval_data[, y_hat := predict(reg_rf, eval_data)$predictions]
+```
+
+Here is what the estimated production function looks like:
+
+```{r}
+#| code-fold: true
+#| fig-height: 4
+#| fig-width: 6
 
 #=== plot ===#
 ggplot(data = eval_data) +
@@ -438,6 +454,8 @@ BLB works as follows:
 
 Let's go back to the example discussed in @sec-boot-comp, where the goal is to identify the confidence interval ($\eta$) of the economically optimal input rate ($\theta$).
 
+---
+
 **<span style="color:blue"> Step 1: </span>**
 
 ::: {.column-margin}
@@ -471,6 +489,8 @@ subsamples <-
   )
 ```
 :::
+
+---
 
 **<span style="color:blue"> Steps 2: </span>**
 
@@ -589,6 +609,8 @@ ci_data <-
   rbindlist()
 )
 ```
+
+---
 
 **<span style="color:blue"> Steps 3: </span>**
 

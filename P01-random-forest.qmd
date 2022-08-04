@@ -305,7 +305,7 @@ So, the variable-threshold combination that minimizes RSS is `r min_rss_by_var[w
 
 ### A note on splitting algorithm
 
-Instead of minimizing RSS, it is equivalent to <span style="color:blue"> maximize </span> the sum of <span style="color:blue"> similarity score </span>from the two splits. Let $C_1(r)$ and $C_2(r)$ denote the set of observations that belong to the first and second splits, respectively given splitting rule $r$. For a given split combination $C_1(r)$ and $C_2(r)$, the estimators for the two splits are simply the average value of $Y$ in the respective splits. Denoting the means as $\hat{\mu}_1$ and $\hat{\mu}_2$, minimizing RSS can be written as 
+Minimizing RSS is equivalent to <span style="color:blue"> maximize </span> the sum of <span style="color:blue"> similarity score </span>from the two splits. Let $C_1(r)$ and $C_2(r)$ denote the set of observations that belong to the first and second splits, respectively given splitting rule $r$. For a given split combination $C_1(r)$ and $C_2(r)$, the estimators for the two splits are simply the average value of $Y$ in the respective splits. Denoting the means as $\hat{\mu}_1$ and $\hat{\mu}_2$, minimizing RSS can be written as 
 
 $$
 \begin{aligned}
@@ -844,9 +844,6 @@ parameters[which.min(oob_mse), ]
 :::{.callout-tip}
 The same cross-validation procedure can be done with less coding effort using the `mlr3` framework (see @sec-mlr3). 
 :::
-
-## Locally linear regression forest 
-
 
 
 ## References {.unnumbered}
