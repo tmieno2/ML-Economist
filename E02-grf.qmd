@@ -381,9 +381,34 @@ honest_pred <- eval_data[, mean(lsalary), by = hits < 356]
 )
 ```
 
+
 So, instead of $12.47$ and $14.23$, the predicted values from the honest tree are $`r round(honest_pred[hits == TRUE, V1], digits = 2)`$ and $`r round(honest_pred[hits == FALSE, V1], digits = 2)`$ for the left and right nodes, respectively. Trees are built in this manner many times to form a forest.
 
 More generally, in GRF, honesty is applied by using the evaluation data to solve @eq-opt based on the weight $\alpha_i(x)$ derived from the trained forest using the splitting data. Honesty is required for the GRF estimator to be consistent and asymptotically normal [@athey2019generalized]. However, the application of honesty can do more damage than help when the sample size is small.
+
+## Common hyper-parameters
+
+Here, we look some of the hyper-parameters that are <span style='color:blue'>common </span>across the methods under the GRF framework. Since the various GRF methods vary only on how the pseudo outcome is defined, it is natural that they share many hyper-parameters. There are of course method-specific hyper-parameters and we will look at such parameters when we discuss them individually.
+
+Further, since GRF basically uses the RF algorithm, it is natural that some of the GRF hyper-parameters are the same as the ones for RF (by `ranger()`).
+
++ `num.trees`: number of trees
++ `mtry`: number of variables tried in each split (default is $\sqrt{K}$)
++ `min.node.size`: minimum number of observations in each leaf (default is 5)
+
+GRF uses sampling without replacement when determining the samples for building each tree. RF implemented by `ranger()`` uses 
+
+`sample.fraction`, which we saw earlier. 
+
++ `sample.fraction`: fraction of the data used to build each tree (default is 0.5)
+
+A higher value of `sample.fraction` means that the trees are more correlated as they share more of the same observations. 
+
+There are three honesty-related options. 
+
++ `honesty`: `TRUE` if using honest-sampling, 0 otherwise (default is `TRUE`)
++ `honesty.fraction`: fraction of the data (after `sample.fraction` is applied) that is grouped into $J_1$, which is used to determine splitting rules
++ `honesty.prune.leaves`: `TRUE` if the leaves with no samples are pruned (default is `TRUE`)
 
 
 ## References {.unnumbered}
