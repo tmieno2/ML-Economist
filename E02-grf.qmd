@@ -474,6 +474,7 @@ honest_pred <- eval_data[, mean(lsalary), by = hits < 356]
 )
 ```
 
+
 So, instead of $12.47$ and $14.23$, the predicted values from the honest tree are $`r round(honest_pred[hits == TRUE, V1], digits = 2)`$ and $`r round(honest_pred[hits == FALSE, V1], digits = 2)`$ for the left and right nodes, respectively. Trees are built in this manner many times to form a forest.
 
 More generally, in GRF, honesty is applied by using the evaluation data to solve @eq-opt based on the weight $\alpha_i(x)$ derived from the trained forest using the splitting data. Honesty is required for the GRF estimator to be consistent and asymptotically normal [@athey2019generalized]. However, the application of honesty can do more damage than help when the sample size is small.
