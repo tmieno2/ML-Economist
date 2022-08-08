@@ -54,7 +54,7 @@ There is a clear limit to liner (in parameter) parametric models in flexibility 
 set.seed(83944)
 
 #=== generate data ===#
-N <- 300 # number of observations
+N <- 400 # number of observations
 x <- seq(1, 250, length = N) 
 y_det <- 240 * (1 - 0.4 * exp(- 0.03 * x))
 e <- 25 * rnorm(N) # error
@@ -597,12 +597,12 @@ g_h2 | g_h5
 
 ```
 
-Let's write a code to predict `y` at several different values of `x` using `data` for illustration. We will use the Epanechnikov Kernel function with bandwidth value of 10. First, we work on prediction at `x = 120`.
+Let's write a code to predict `y` at several different values of `x` using `data` for illustration. We will use the Epanechnikov Kernel function with bandwidth value of $20$. First, we work on prediction at `x = 120`.
 
 
 ```{r}
 x0 <- 120
-h <- 10
+h <- 20
 
 lr_data <-
   copy(data) %>% 
@@ -616,10 +616,10 @@ lr_data <-
   .[, weight := k_of_u / sum(k_of_u)]
 ```
 
-Here are the data points that have non-zero weights:
+Here are some of the data points that have non-zero weights:
 
 ```{r}
-lr_data[weight != 0, .(x, y, k_of_u, weight)]
+lr_data[weight != 0, .(x, y, k_of_u, weight)] %>% head()
 ```
 
 We can then simply calculate the weighted mean.
@@ -633,7 +633,7 @@ y_hat_x120 <- lr_data[, sum(weight * y)]
 We can do this for many values of $X$ and and connects the dots to find the "fitted curve." First, let's define a function that predicts `y` at a particular value of `x` using the Epanechnikov Kernel function for a given value of $h$. 
 
 ```{r}
-est_y_nw <- function(data, x0, h)
+est_y_nw <- function(x0, data, h)
 {
   y_hat <-
     copy(data) %>% 
@@ -647,8 +647,15 @@ est_y_nw <- function(data, x0, h)
     .[, weight := k_of_u / sum(k_of_u)] %>% 
     .[, sum(weight * y)]
 
-  return(y_hat)
+  return_data <-
+    data.table(
+      x = x0,
+      y_hat = y_hat
+    )
+
+  return(return_data)
 }
+
 ```
 
 Now, we do predictions at various values of `x`.
@@ -658,12 +665,13 @@ Now, we do predictions at various values of `x`.
 x_seq <- seq(data[, min(x)], data[, max(x)], length = 100)
 
 #=== predict ===#
-y_hat_seq <-
+y_hat_lc <-
   lapply(
     x_seq,
-    function(x) est_y_nw(data, x, 10)
+    function(x) est_y_nw(x, data, h)
   ) %>% 
-  unlist()
+  rbindlist() %>% 
+  .[, type := "Local Constant"]
 ```
 
 @fig-nw visualizes the prediction results. 
@@ -676,26 +684,22 @@ y_hat_seq <-
 #| fig-width: 5
 #| fig-height: 4
 
-data_plot <- 
-  data.table(
-    x = x_seq,
-    y_hat = y_hat_seq
-  )
-
 ggplot() +
   geom_line(
-    data = data_plot,
+    data = y_hat_lc,
     aes(y = y_hat, x = x),
     color = "red"
   ) +
   geom_point(
-    data = data_plot,
+    data = y_hat_lc,
     aes(y = y_hat, x = x),
-    color = "red"
+    color = "red",
+    size = 0.6
   ) +
   geom_point(
     data = data,
-    aes(y = y, x = x)
+    aes(y = y, x = x),
+    size = 0.6
   ) +
   theme_bw()
 ```
@@ -709,21 +713,18 @@ Now, let's see how the choice of $h$ affects the fitted "curve." We will try `h 
 
 ```{r}
 #| code-fold: true
+#| fig-cap: Fitted curves at different values of h 
+#| label: fig-fitted-curves-h
 
 get_y_hat_given_h <- function(data, x_seq, h_val)
 {
-  y_hat_seq <-
-    lapply(
-      x_seq,
-      function(x) est_y_nw(data, x, h_val)
-    ) %>% 
-    unlist()
 
   return_data <-
-    data.table(
-      x = x_seq,
-      y_hat = y_hat_seq
+    lapply(
+      x_seq,
+      function(x) est_y_nw(x, data, h_val)
     ) %>% 
+    rbindlist() %>% 
     .[, h := h_val]
 
   return(return_data)
@@ -735,12 +736,7 @@ y_hat_h_various <-
     function(x) get_y_hat_given_h(data, x_seq, x)
   ) %>% 
   rbindlist()
-```
 
-```{r}
-#| code-fold: true
-#| fig-cap: Fitted curves at different values of h 
-#| label: fig-fitted-curves-h
 ggplot(y_hat_h_various) +
   geom_point(data = data, aes(y = y, x = x), size = 0.8) +
   geom_line(aes(y = y_hat, x = x), color = "red") +
@@ -778,12 +774,12 @@ $$
 
 , and then calculate $\hat{f}(x = x_0) = \hat{\alpha} + \hat{\beta}x_0$. They will provide the same estimate of $\hat{f}(x = x_0)$.
 
-Let's implement this as an illustration for $x_0 = 150$ with the Epanechnikov kernel function with $h=10$.
+Let's implement this as an illustration for $x_0 = 150$ with the Epanechnikov kernel function with $h=20$.
 
 
 ```{r}
 x0 <- 150
-h <- 10
+h <- 20
 
 lr_data <-
   copy(data) %>% 
@@ -818,6 +814,138 @@ y_hat_x0 <- predict(ols_res, newdata = data.table(x = x0))
 )
 ```
 
+Local linear regression is better than local constant regression if the underlying curve is significantly non-linear instead of a flat line. Local linear regression also does better near the boundary of the support of $x$. @fig-nw-ll presents predicted values by local constant and linear regressions. In this case, it is hard to see the difference between the two except at the edges of $x$ support. 
+
+```{r}
+#| code-fold: true
+#| fig-cap: Predictions at various values of x by NW and LL
+#| label: fig-nw-ll
+#| fig-align: center
+#| fig-width: 6
+#| fig-height: 5
+
+est_y_ll <- function(x0, data, h){
+
+  lr_data <-
+    copy(data) %>% 
+    #=== calculate u ===#
+    .[, u := (x - x0)/h] %>% 
+    #=== K(u) ===#
+    .[, k_of_u := 3 / 4 * (1-u^2)] %>% 
+    #=== turn k_of_u to 0 if abs(u) > 1  ===#
+    .[abs(u) >= 1, k_of_u := 0] %>% 
+    #=== find the weight ===#
+    .[, weight := k_of_u / sum(k_of_u)] %>% 
+    .[, x_diff := x - x0]
+
+  #=== run linear regression with the weights ===#
+  ols_res <- lm(y ~ x_diff, data = lr_data, weights = weight)
+
+  return_data <-
+    data.table(
+      x = x0,
+      y_hat = ols_res$coefficient["(Intercept)"]
+    )
+
+  return(return_data)
+}
+
+y_hat_ll <-
+  lapply(
+    x_seq,
+    function(x) est_y_ll(x, data, h)
+  ) %>% 
+  rbindlist() %>% 
+  .[, type := "Local Linear"]
+
+#=== combine with the local constant results ===#
+data_all <- rbind(y_hat_lc, y_hat_ll)
+
+#=== plot ===#
+ggplot() +
+  geom_line(
+    data = data_all,
+    aes(y = y_hat, x = x, color = type)
+  ) +
+  geom_point(
+    data = data_all,
+    aes(y = y_hat, x = x, color = type),
+    size = 0.6
+  ) +
+  geom_point(
+    data = data,
+    aes(y = y, x = x),
+    size = 0.6
+  ) +
+  scale_color_discrete(name = "") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+
+<!-- ```{r}
+N <- 500
+
+data <- 
+  data.table(
+    x = rnorm(N),
+    e = rnorm(N)
+  ) %>% 
+  .[, y_det := 2 * sin(2 * x)] %>% 
+  .[, y := y_det + e]
+
+h <- 0.3
+
+x_seq <- seq(min(data$x), max(data$x), length = 200)
+
+y_hat_ll <-
+  lapply(
+    x_seq,
+    function(x) est_y_ll(x, data, h)
+  ) %>% 
+  rbindlist() %>% 
+  .[, type := "Local Linear"]
+
+y_hat_lc <-
+  lapply(
+    x_seq,
+    function(x) est_y_nw(x, data, h)
+  ) %>% 
+  rbindlist() %>% 
+  .[, type := "Local Constant"]
+
+data_true <- 
+  data[, .(x, y_det)] %>% 
+  setnames("y_det", "y_hat") %>% 
+  .[, type := "True"]
+
+#=== combine with the local constant results ===#
+data_all <- rbind(y_hat_lc, y_hat_ll, data_true)
+
+
+#=== plot ===#
+ggplot() +
+  geom_line(
+    data = data_all,
+    aes(y = y_hat, x = x, color = type)
+  ) +
+  geom_point(
+    data = data_all,
+    aes(y = y_hat, x = x, color = type),
+    size = 0.6
+  ) +
+  geom_point(
+    data = data,
+    aes(y = y, x = x),
+    size = 0.6
+  ) +
+  scale_color_discrete(name = "") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+
+```
+ -->
 :::{.callout-tip}
 
 + In @sec-rf, we will see that random forest is a special case of local constant regression
@@ -835,9 +963,17 @@ Min_{\alpha,\beta_1,\beta_2,\beta_3} \sum_{i=1}^N W_i(x_0)(Y_i - \alpha - \beta 
 $$
 
 
+:::{.callout-tip}
+
+## Useful Resource
+
+For those who are interested in fuller treatments of local regression, [this chapter](https://bookdown.org/egarpor/PM-UC3M/npreg-kre.html#npreg-kre-locpoly) of @Garcia-Portugues2022.
+:::
+
+
 ### K-nearest neighbor
 
-K-nearest neighbor (KNN) regression is a special case of local non-parametric regression. The prediction of $y$ conditional on $x$ is simply the average of $y$ observed for the K closest (in terms of distance to $x$) observations in the data. So, it is like the NW estimator with the uniform Kernel function. But, it is not a NW estimator because it does not fix the number of observations in the **neighbor**.  
+K-nearest neighbor (KNN) regression is a special case of local constant regression. The prediction of $y$ conditional on $x$ is simply the average of $y$ observed for the K closest (in terms of distance to $x$) observations in the data. So, it is like the NW estimator with the uniform Kernel function. But, it is not a NW estimator because NW estimator does not fix the number of observations in the **neighbor**.  
 
 ::: {.column-margin}
 Predictions at points around a more densely populated area have larger numbers of observations in their **neighbors**.

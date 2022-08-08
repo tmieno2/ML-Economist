@@ -167,7 +167,9 @@ cf_trained <-
     W = data[, T],
     min.node.size = 30
   )
+
 ```
+
 
 After training a causal forest model, we have trees like the ones shown in @fig-cf-trees, which shows only the first and last of the $2000$ trees are. Trees are made intentionally shallow to make discussions simpler.
 
@@ -298,6 +300,7 @@ weights <-
   eta_all %>% 
   .[, .(weight = mean(eta)), by = row_id]
 )
+
 ```
 
 Here is the observations that was given the highest and lowest weights.
@@ -317,6 +320,16 @@ theta_X0 <- sum(data_with_wights[, weight * (T-cf_trained$W.hat) * (y-cf_trained
 )
 
 ```
+
+:::{.callout-note}
+You should not use the codes above to get the individual weights stored in `weights`. You can just use `get_forest_weights()` like below:
+
+```{r}
+#| eval: false
+get_forest_weights(cf_trained, X_0)
+```
+:::
+
 
 ### Training a causal forest
 
@@ -426,17 +439,35 @@ Here is what `cf_trained` has as its attributes.
 names(cf_trained)
 ```
 
-You can get $\theta(X_i)$ by accessing the `predictions` attribute.
+For example, you can get $\theta(X_i)$ by accessing the `predictions` attribute.
 
 ```{r}
 cf_trained$predictions %>% head()
 ```
 
 
-
 ### Predict and interpret CATE
 
-You can use `predict()` to predict the treatment effect at $X$ ($\theta(X)$). For example, consider the following evaluation points.
+Before looking at how to predict $\theta(X)$, let's look at which variables are used to split tree nodes. You can get such information using `split_frequencies()` on a trained causal forest.
+
+```{r}
+split_frequencies(cf_trained)
+```
+
+```{r}
+#| include: false
+split_data <- split_frequencies(cf_trained)
+```
+
+In this table, rows represent the depth of the nodes and columns represent covariates. For example, the second variable (`educ`) was used to do the first split `r split_data[1, 2]` times and split a node at the second depth `r split_data[2, 2]` times. A variable with higher numbers of splits at earlier stages is more influential in driving treatment effect heterogeneity. `variable_importance()` returns a measure of how important each variable is in explaining treatment effect heterogeneity based on the split information.
+
+```{r}
+variable_importance(cf_trained)
+```
+
+So, according to this measure, the second variable (`educ`) is the most important variable. While variable of importance measure is informative, it does not tell us <span style="color:blue">how </span> the variables are affecting treatment effects. For that, we need to look at $\theta(X)$ at different values of $X$.
+
+You can use `predict()` to predict the treatment effect at $X$. For example, consider the following evaluation point.
 
 ```{r}
 X_0 <- 
@@ -450,7 +481,7 @@ X_0 <-
   )
 ```
 
-Note that the order of columns must be the same as the that when you trained the CF model. You can set `estimate.variance` to `TRUE` to get $var(\hat{\theta}(X))$ along with the point estimate.
+Note that the order of columns of the evaluation data must be the same as that of the `X` in `causal_forest()` when you trained a CF model. You can set `estimate.variance` to `TRUE` to get $var(\hat{\theta}(X))$ along with the point estimate.
 
 ```{r}
 predict(

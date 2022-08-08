@@ -19,6 +19,14 @@ We first start with understanding how a regression tree is built, which is the f
 
 :::
 
+:::{.callout-tip}
+
+## Background knowledge
+
++ (necessary) bootstrap (@sec-boot)
+
+:::
+
 ## Regression tree {#sec-rt}
 
 ::: {.column-margin}
@@ -303,7 +311,7 @@ min_rss_by_var <-
 
 So, the variable-threshold combination that minimizes RSS is `r min_rss_by_var[which.min(rss), var_name]` - `r min_rss_by_var[which.min(rss), round(var_value, digits = 2)]`. We now have the first split. This tree is developed further by splitting nodes like this. 
 
-### A note on splitting algorithm
+### A note on splitting algorithm {#sec-split-sim}
 
 Minimizing RSS is equivalent to <span style="color:blue"> maximize </span> the sum of <span style="color:blue"> similarity score </span>from the two splits. Let $C_1(r)$ and $C_2(r)$ denote the set of observations that belong to the first and second splits, respectively given splitting rule $r$. For a given split combination $C_1(r)$ and $C_2(r)$, the estimators for the two splits are simply the average value of $Y$ in the respective splits. Denoting the means as $\hat{\mu}_1$ and $\hat{\mu}_2$, minimizing RSS can be written as 
 

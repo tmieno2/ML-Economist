@@ -1,0 +1,1975 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-0.9.629">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Introduction to Machine Learning for Economists (Under Construction) - 13&nbsp; Forest-based CATE Estimators</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./E0P-extensions.html" rel="next">
+<link href="./C02-xstr-learner.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<link href="style.css" rel="stylesheet" type="text/css">
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-45VKT2HZSL"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+
+  gtag('config', 'G-45VKT2HZSL');
+</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating slimcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Forest-based CATE Estimators</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Introduction to Machine Learning for Economists (Under Construction)</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/tmieno2/ML-Economist" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+    <a href="" title="Share" id="sidebar-tool-dropdown-0" class="sidebar-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-share"></i></a>
+    <ul class="dropdown-menu" aria-labelledby="sidebar-tool-dropdown-0">
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=|url|">
+            <i class="bi bi-bi-twitter pe-1"></i>
+          Twitter
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
+            <i class="bi bi-bi-facebook pe-1"></i>
+          Facebook
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://www.linkedin.com/sharing/share-offsite/?url=|url|">
+            <i class="bi bi-bi-linkedin pe-1"></i>
+          LinkedIn
+          </a>
+        </li>
+    </ul>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Welcome</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./H00-preface.html" class="sidebar-item-text sidebar-link">Preface</a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Basics</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./B01-nonlinear.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Non-linear function estimation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./B02-bias-variance-tradeoff.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Bias-variance Trade-off</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./B03-cross-validation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Cross-validation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./B04-regularization.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Regression Shrinkage Methods</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./B05-bootstrap.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Bootstrap</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Prediction ML</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./P01-random-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Random Forest</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./P02-boosted-regression-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Boosted Regression Forest</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./P03-xgb.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Extreme Gradient Boosting</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./P04-local-linear-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Local Linear Forest</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="./C0P-causal-ml.html" class="sidebar-item-text sidebar-link">Causal Machine Learning (CML) Methods</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./C00-why-not-this.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Why can’t we just do this?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./C01-dml.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Double Machine Learning</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./C02-xstr-learner.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">S-, X-, T-, and R-learner</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./C03-cf-orf.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Forest-based CATE Estimators</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="./E0P-extensions.html" class="sidebar-item-text sidebar-link">Extensions</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./E01-spatial-cv.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./E02-grf.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Generalized Random Forest</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="./PROG-00-programming.html" class="sidebar-item-text sidebar-link">Programming Guide</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PROG-01-mlr3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Machine Learning with <code>mlr3</code> in R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PROG-02-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PROG-03-model-selection-prediction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Model Selection (Prediction)</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">Appendices</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./A01-mc-simulation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Monte Carlo (MC) Simulation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./A02-method-of-moment.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Primer on method of moment</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#model" id="toc-model" class="nav-link active" data-scroll-target="#model"> <span class="header-section-number">13.1</span> Model</a></li>
+  <li><a href="#causal-forest" id="toc-causal-forest" class="nav-link" data-scroll-target="#causal-forest"> <span class="header-section-number">13.2</span> Causal Forest</a>
+  <ul class="collapse">
+  <li><a href="#understanding-the-basic-mechanics-with-illustrations" id="toc-understanding-the-basic-mechanics-with-illustrations" class="nav-link" data-scroll-target="#understanding-the-basic-mechanics-with-illustrations"> <span class="header-section-number">13.2.1</span> Understanding the basic mechanics with illustrations</a></li>
+  <li><a href="#training-a-causal-forest" id="toc-training-a-causal-forest" class="nav-link" data-scroll-target="#training-a-causal-forest"> <span class="header-section-number">13.2.2</span> Training a causal forest</a></li>
+  <li><a href="#predict-and-interpret-cate" id="toc-predict-and-interpret-cate" class="nav-link" data-scroll-target="#predict-and-interpret-cate"> <span class="header-section-number">13.2.3</span> Predict and interpret CATE</a></li>
+  </ul></li>
+  <li><a href="#orthogonal-random-forest" id="toc-orthogonal-random-forest" class="nav-link" data-scroll-target="#orthogonal-random-forest"> <span class="header-section-number">13.3</span> Orthogonal Random Forest</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/C03-cf-orf.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title"><span id="sec-cf-orf" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Forest-based CATE Estimators</span></span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<p>In <a href="C02-xstr-learner.html"><span>Chapter&nbsp;12</span></a>, we saw a special case of R-learner/DML where the final model is a linear-in-parameter model. Here, we learn two methods that estimate CATE non-parametrically: causal forest <span class="citation" data-cites="athey2019generalized">(<a href="#ref-athey2019generalized" role="doc-biblioref">Athey, Tibshirani, and Wager 2019</a>)</span> and orthogonal forest <span class="citation" data-cites="oprescu2019orthogonal">(<a href="#ref-oprescu2019orthogonal" role="doc-biblioref">Oprescu, Syrgkanis, and Wu 2019</a>)</span>.</p>
+<div class="callout-important callout callout-style-default no-icon callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+What you will learn
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Causal forest
+<ul>
+<li>Mechanics</li>
+<li>Hyper-parameter</li>
+<li>Predict heterogeneous treatment effects (CATE)</li>
+<li>Predict average treatment effects (ATE)</li>
+<li>Interpretation</li>
+</ul></li>
+<li>Orthogonal forest
+<ul>
+<li>Differences from causal forest</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div class="callout-tip callout callout-style-default no-icon callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Preferable background knowledge
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>DML/R-learner (<a href="C02-xstr-learner.html"><span>Chapter&nbsp;12</span></a>)</li>
+<li>GRF (<a href="E02-grf.html"><span>Chapter&nbsp;15</span></a>)</li>
+</ul>
+</div>
+</div>
+<p><strong>Left to be added</strong> + how variance is estimated + balance + ATE + linear correction with locally weighted linear regression</p>
+<section id="model" class="level2" data-number="13.1">
+<h2 data-number="13.1" class="anchored" data-anchor-id="model"><span class="header-section-number">13.1</span> Model</h2>
+<p>The heterogeneous treatment effect model of interest in this chapter is the same as the one in <a href="C02-xstr-learner.html"><span>Chapter&nbsp;12</span></a>.</p>
+<p><span id="eq-model-het-te"><span class="math display">\[
+\begin{aligned}
+Y &amp; = \theta(X)\cdot T + g(X, W) + \varepsilon \\
+T &amp; = f(X, W) + \eta
+\end{aligned}
+\tag{13.1}\]</span></span></p>
+<ul>
+<li><span class="math inline">\(Y\)</span>: dependent variable</li>
+<li><span class="math inline">\(T\)</span>: treatment variable (can be either binary dummy or continuous)</li>
+<li><span class="math inline">\(X\)</span>: collection of variables that affect Y indirectly through the treatment (<span class="math inline">\(\theta(X)\cdot T\)</span>) and directly (<span class="math inline">\(g(X, W)\)</span>) independent of the treatment</li>
+<li><span class="math inline">\(W\)</span>: collection of variables that affect directly (<span class="math inline">\(g(X, W)\)</span>) independent of the treatment, but not through the treatment</li>
+</ul>
+<p>Causal forest and orthogonal random forest is consistent only if the following conditions fold.</p>
+<ul>
+<li><span class="math inline">\(E[\varepsilon|X, W] = 0\)</span></li>
+<li><span class="math inline">\(E[\eta|X, W] = 0\)</span></li>
+<li><span class="math inline">\(E[\eta\cdot\varepsilon|X, W] = 0\)</span></li>
+</ul>
+</section>
+<section id="causal-forest" class="level2 page-columns page-full" data-number="13.2">
+<h2 data-number="13.2" class="anchored" data-anchor-id="causal-forest"><span class="header-section-number">13.2</span> Causal Forest</h2>
+<p>Causal Forest (CF) (as implemented by the R <code>grf</code> package or python <code>econml</code> package) is a special type of R-learner (also a DML) and also a special case of generalized random forest (GRF).</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>See <a href="E02-grf.html"><span>Chapter&nbsp;15</span></a> for a brief description of what GRF is.</p>
+</div></div><p>Causal Forest can be useful in estimating heterogeneous treatment effects when they are complex and/or non-linear functions of attributes (heterogeneity drivers) and it is hard to represent them using linear-in-parameter models.</p>
+<section id="understanding-the-basic-mechanics-with-illustrations" class="level3 page-columns page-full" data-number="13.2.1">
+<h3 data-number="13.2.1" class="anchored" data-anchor-id="understanding-the-basic-mechanics-with-illustrations"><span class="header-section-number">13.2.1</span> Understanding the basic mechanics with illustrations</h3>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><strong>Packages to load for replication</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(grf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div></div><p>Let <span class="math inline">\(\hat{f}(X_i,W_i)\)</span> and <span class="math inline">\(\hat{g}(X_i,W_i)\)</span> denote the estimation of <span class="math inline">\(E[Y|X,W]\)</span> and <span class="math inline">\(E[T|X,W]\)</span>, respectively. Further, let <span class="math inline">\(\hat{\tilde{Y_i}}\)</span> and <span class="math inline">\(\hat{\tilde{T_i}}\)</span> denote <span class="math inline">\(Y_i - \hat{f}(X_i,W_i)\)</span> and <span class="math inline">\(T_i - \hat{g}(X_i,W_i)\)</span>, respectively.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>CF can be implemented using the R <code>grf</code> package or python <code>econml</code> package. Both of them implements CF as an R-learner. However, the original causal forest proposed in <span class="citation" data-cites="wager_estimation_2018">Wager and Athey (<a href="#ref-wager_estimation_2018" role="doc-biblioref">2018</a>)</span> does not follow an R-learner procedure.</p>
+</div></div><p>Then, CF estimates <span class="math inline">\(\theta(X)\)</span> at <span class="math inline">\(X = X_0\)</span> by solving the following equation:</p>
+<p><span id="eq-solve-cf"><span class="math display">\[
+\begin{aligned}
+\hat{\theta}(X_0) = argmin_{\theta}\;\;\sum_{i=1}^N \alpha_i(X_i, X_0)[\hat{\tilde{Y_i}} - \theta\cdot \hat{\tilde{T_i}}]^2
+\end{aligned}
+\tag{13.2}\]</span></span></p>
+<p>where <span class="math inline">\(\alpha_i(X_i, X_0)\)</span> is the weight given to each <span class="math inline">\(i\)</span>. The F.O.C is</p>
+<p><span class="math display">\[
+\begin{aligned}
+2 \cdot \sum_{i=1}^N \alpha_i(X_i, X_0)[\hat{\tilde{Y_i}} - \theta\cdot \hat{\tilde{T_i}}]\hat{\tilde{T_i}} = 0
+\end{aligned}
+\]</span></p>
+<p><span id="eq-theta-solution"><span class="math display">\[
+\begin{aligned}
+\hat{\theta}(X_0) = \frac{\sum_{i=1}^N\alpha_i(X_i, X_0)\cdot\hat{\tilde{Y}}_i\cdot \hat{\tilde{T}}_i}{\sum_{i=1}^N\alpha_i(X_i, X_0)\cdot\hat{\tilde{T}}_i\cdot \hat{\tilde{T}}_i}
+\end{aligned}
+\tag{13.3}\]</span></span></p>
+<p>Unlike the DML approaches we saw in <a href="C02-xstr-learner.html"><span>Chapter&nbsp;12</span></a> that uses a linear model as the final model, CF does not assume any functional form for how <span class="math inline">\(X\)</span> affects <span class="math inline">\(\theta\)</span> as you can see from the above minimization problem. As mentioned earlier, CF is a special case of GRF (discussed in <a href="E02-grf.html"><span>Chapter&nbsp;15</span></a>), so CF is also a local non-parametric regression (see <a href="B01-nonlinear.html#sec-local-reg"><span>Section&nbsp;1.3.1</span></a> for a brief discussion on local regression).</p>
+<p><span class="math inline">\(\alpha_i(X_i, X_0)\)</span> is determined based on the trees trained based on the pseudo outcomes that are defined specifically for causal forest estimation. Suppose <span class="math inline">\(T\)</span> trees have been built and let <span class="math inline">\(\eta_{i,t}(X_i, X_0)\)</span> be 1 if observation <span class="math inline">\(i\)</span> belongs to the same leaf as <span class="math inline">\(X_0\)</span> in tree <span class="math inline">\(t\)</span>. Then,</p>
+<p><span id="eq-weight-cf"><span class="math display">\[
+\begin{aligned}
+\alpha_i(X_i, X_0) = \frac{1}{T}\sum_{t=1}^T\frac{\eta_{i,t}(X_i, X_0)}{\sum_{i=1}^N\eta_{i,t}(X_i, X_0)}
+\end{aligned}
+\tag{13.4}\]</span></span></p>
+<p>So, the weight given to observation <span class="math inline">\(i\)</span> is higher if observation <span class="math inline">\(i\)</span> belongs to the same leaf as the evaluation point <span class="math inline">\(X_0\)</span> in more trees.</p>
+<p>It is useful to see a simple example to understand this procedure. Let’s use a simple toy data generating process for this.</p>
+<p><span class="math display">\[
+\begin{aligned}
+y = (x_1 + \frac{1}{x_2}) \cdot T + e
+\end{aligned}
+\]</span></p>
+<p>where all the variables on the right hand side are independent of one another.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">293</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>(</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x1 =</span> <span class="fu">rnorm</span>(N),</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">x2 =</span> <span class="fu">runif</span>(N) <span class="sc">+</span> <span class="dv">1</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">e =</span> <span class="fu">rnorm</span>(N), <span class="co"># error term</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">T =</span> <span class="fu">runif</span>(N) <span class="sc">&gt;</span> <span class="fl">0.5</span> <span class="co"># treatment that is independent</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  .[, <span class="at">y :=</span> (x1 <span class="sc">+</span> <span class="dv">1</span><span class="sc">/</span>x2)<span class="sc">*</span>T <span class="sc">+</span> e]</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now, we train a causal forest model on <code>data</code>.</p>
+<div class="callout-note callout callout-style-default no-icon callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>You do not need to know how <code>causal_forest()</code> works yet. We are using it just because accessing its elements makes it easy to illustrate how <span class="math inline">\(\theta(X)\)</span> is obtained.</p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>cf_trained <span class="ot">&lt;-</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">causal_forest</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">X =</span> data[, .(x1, x2)],</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Y =</span> data[, y],</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">W =</span> data[, T],</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">min.node.size =</span> <span class="dv">30</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>After training a causal forest model, we have trees like the ones shown in <a href="#fig-cf-trees">Figure&nbsp;<span>13.1</span></a>, which shows only the first and last of the <span class="math inline">\(2000\)</span> trees are. Trees are made intentionally shallow to make discussions simpler.</p>
+<div id="fig-cf-trees" class="cell quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.8%;justify-content: center;">
+<div id="fig-cf-trees-1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="figures/Tree_1.png" class="img-fluid figure-img" data-ref-parent="fig-cf-trees" width="875"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">(a) Tree 1</figcaption><p></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 49.2%;justify-content: center;">
+<div id="fig-cf-trees-2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="figures/Tree_2.png" class="img-fluid figure-img" data-ref-parent="fig-cf-trees" width="849"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">(b) Tree 2000</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 13.1: Example trees built in causal forest estimation</figcaption><p></p>
+</figure>
+</div>
+<p>You probably noticed that the total number of samples in the leaves is only <span class="math inline">\(250\)</span> instead of <span class="math inline">\(1000\)</span>, which is the total number of observations in <code>data</code>. When causal forest was trained on this dataset, only half of the entire sample are randomly selected for building each tree (due to the default setting of <code>sample.fraction = 0.5</code>). The halved sample is further split into two groups, each containing <span class="math inline">\(250\)</span> observations (due to the default setting of <code>honest.fraction = 0.5</code>). Let’s call them <span class="math inline">\(J_1\)</span> and <span class="math inline">\(J_2\)</span>. Then, <span class="math inline">\(J_1\)</span> is used to train a tree to find the splitting rules. For example, <span class="math inline">\(x1 \leq -0.09\)</span> is the splitting rule for Tree 1. Once the splitting rules are determined (tree building process is complete), then <span class="math inline">\(J_1\)</span> is “vacated” (or thrown out) from the tree. Then, <span class="math inline">\(J_2\)</span> “repopulate” the tree nodes. That is, the statistics presented in the left and right nodes (<code>avg_Y</code> and <code>avg_W</code>) are based on the samples in <span class="math inline">\(J_2\)</span>, not <span class="math inline">\(J_1\)</span> which was used to determine the splitting rules. This process is called honest sampling and trees built based on honest sampling are called honest trees (see <a href="E02-grf.html#sec-grf-honest"><span>Section&nbsp;15.4</span></a> for more details).</p>
+<p>Let’s take a look at a tree to see what happened. We can use <code>get_tree()</code> to access individual trees from <code>cf_trained</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== get the first tree ===#</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>a_tree <span class="ot">&lt;-</span> <span class="fu">get_tree</span>(cf_trained, <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>drawn_samples</code> attribute of the tree contains row indices that are selected randomly for this tree.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(a_tree<span class="sc">$</span>drawn_samples)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 770  45 727  83 938 870</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(a_tree<span class="sc">$</span>drawn_samples)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 500</code></pre>
+</div>
+</div>
+<p>As you can see, there are 500 samples. The rest of the observations were not used for this tree. Accessing <code>nodes</code> attribute will give you the splitting rules for the tree built and which samples are in what node.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>nodes <span class="ot">&lt;-</span> a_tree<span class="sc">$</span>nodes</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+[[1]]$is_leaf
+[1] FALSE
+
+[[1]]$split_variable
+[1] 1
+
+[[1]]$split_value
+[1] -0.08902169
+
+[[1]]$send_missing_left
+[1] TRUE
+
+[[1]]$left_child
+[1] 2
+
+[[1]]$right_child
+[1] 3
+
+
+[[2]]
+[[2]]$is_leaf
+[1] TRUE
+
+[[2]]$samples
+  [1] 746 981 127 100 683 857 217 579 110 442 634 756 486 721 285 738  23 612
+ [19]  65 237 848 715  26 688 312 858 507 901 601 498 249  83 979 570 679 324
+ [37] 748 836 652   8 349 969 871 737 360  78 289 524 225 117 141 755 457 282
+ [55]  52 447 287 903 989 105 441 814 449 698 335 706 446 221 735 548 134 841
+ [73] 543 342 872 919 146 388 512 645 894 864 275 545 302 355 544  36 202 174
+ [91] 211 468 909 833 133 920   2 521 171 184 597 657 262 125 710 546 938 986
+[109] 807 505 119 523 113
+
+[[2]]$leaf_stats
+avg_Y avg_W 
+-0.09  0.47 
+
+
+[[3]]
+[[3]]$is_leaf
+[1] TRUE
+
+[[3]]$samples
+  [1]  582  567  788   11  906  296  696    5  564  944  152  256  258  680  914
+ [16]  834  777  109  563   89  242  808  121  591  729  473  810  771  426  684
+ [31]  915  402  900  623  638  209  557  851  632  220  849  978  625  861  327
+ [46]    6  530  890  207   60  540  713  337  445 1000  172  382  454  116  318
+ [61]  181  183  153  947   22  673  767  180  491   77  952    1  967  717  303
+ [76]  583  822  252   29  295   32  485  714  968  500  760  889  301  644  367
+ [91]  987  847  562  452  664  259  238  427   96  980  806  492  837  253  399
+[106]  272  353  643  503  390  145  206  368  150  299  186  421  799  101  800
+[121]  255  178  358  194  902  155  472  300  404  440    9  484  956  929  585
+[136]  742  733
+
+[[3]]$leaf_stats
+avg_Y avg_W 
+ 0.68  0.50 </code></pre>
+</div>
+</div>
+<p><code>nodes</code> is a list of three elements (one root node and two terminal nodes). The <code>samples</code> attribute gives you row indices of the samples that belong to the terminal node.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>nodes[[<span class="dv">2</span>]]<span class="sc">$</span>samples</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  [1] 746 981 127 100 683 857 217 579 110 442 634 756 486 721 285 738  23 612
+ [19]  65 237 848 715  26 688 312 858 507 901 601 498 249  83 979 570 679 324
+ [37] 748 836 652   8 349 969 871 737 360  78 289 524 225 117 141 755 457 282
+ [55]  52 447 287 903 989 105 441 814 449 698 335 706 446 221 735 548 134 841
+ [73] 543 342 872 919 146 388 512 645 894 864 275 545 302 355 544  36 202 174
+ [91] 211 468 909 833 133 920   2 521 171 184 597 657 262 125 710 546 938 986
+[109] 807 505 119 523 113</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>nodes[[<span class="dv">3</span>]]<span class="sc">$</span>samples</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  [1]  582  567  788   11  906  296  696    5  564  944  152  256  258  680  914
+ [16]  834  777  109  563   89  242  808  121  591  729  473  810  771  426  684
+ [31]  915  402  900  623  638  209  557  851  632  220  849  978  625  861  327
+ [46]    6  530  890  207   60  540  713  337  445 1000  172  382  454  116  318
+ [61]  181  183  153  947   22  673  767  180  491   77  952    1  967  717  303
+ [76]  583  822  252   29  295   32  485  714  968  500  760  889  301  644  367
+ [91]  987  847  562  452  664  259  238  427   96  980  806  492  837  253  399
+[106]  272  353  643  503  390  145  206  368  150  299  186  421  799  101  800
+[121]  255  178  358  194  902  155  472  300  404  440    9  484  956  929  585
+[136]  742  733</code></pre>
+</div>
+</div>
+<p>These are from <span class="math inline">\(J_2\)</span>. That is, they were not used in finding the splitting rule of <span class="math inline">\(x1 \leq -0.09\)</span>. They were populating the terminal nodes by simply following the splitting rule. The difference in <code>a_tree$drawn_samples</code> and the combination of <code>nodes[[2]]$samples</code> and <code>nodes[[3]]$samples</code> is <span class="math inline">\(J_1\)</span>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>J2_rows <span class="ot">&lt;-</span> <span class="fu">c</span>(nodes[[<span class="dv">2</span>]]<span class="sc">$</span>samples, nodes[[<span class="dv">3</span>]]<span class="sc">$</span>samples)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>J1_J2_rows <span class="ot">&lt;-</span> a_tree<span class="sc">$</span>drawn_samples</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>J1_rows <span class="ot">&lt;-</span> J1_J2_rows[J1_J2_rows <span class="sc">%in%</span> J2_rows]</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  [1]   83  938  871  258  540  645  625  742  255  777  491  632  906  952  738
+ [16]  733  296  282  388  746  152  822  442  209  889  582  194  220  570  652
+ [31]  180 1000  929  679  181  979  771  706  914  543  127  956  150   65    8
+ [46]  186  684  583  289  440  390  524  858  249  426  303  484  441  507  252
+ [61]  121  721  155  468  211  696  987  353  919  638  447  184  944  841  714
+ [76]  748  503  890  113  134  512  178  680  125  969  302  585  849  834  100
+ [91]  206   23  833  174  760  318  301  492  445   96  673  225  153  449   22
+[106]  473  807  342  978  915  894  486  446  756  207   11  335  262  861  623
+[121]  452  523    6  909  399  505  355  989  145  920  903  472  806  710  814
+[136]  256  259  900  643  382  116   26  546   77  579  498  967  664  545  295
+[151]  767  133  902  404  183  857  901  242  688  698  799  715   78  683  530
+[166]  287  612  117  141  737  986  847  564  562    1  810  713  837  729  312
+[181]  146  299  285  421  848  968   52  485  427    2  253  238  105  110  172
+[196]  634   60  457  358  101  808  327  755  402  500  272  601   36  275  735
+[211]  981   89  544  368  300  109  947  324  548  119  557  454  360  717  349
+[226]  202    5    9  563   29  171   32  217  221  836  521  657  597  591  980
+[241]  851  864  237  872  800  567  788  337  367  644</code></pre>
+</div>
+</div>
+<p>As you can see, there are 250 samples in <span class="math inline">\(J_1\)</span>.</p>
+<p>Suppose you are interested in predicting <span class="math inline">\(\hat{\theta}\)</span> at <span class="math inline">\(X_0 = \{x_1 = 0.5, x_2 = 1.5\}\)</span>. For a given tree, we give 1 to the observations that belong to the same leaf as <span class="math inline">\(X_0\)</span>. For example, for the first tree, <span class="math inline">\(X_0\)</span> belongs to the right leaf because <span class="math inline">\(x1 = 0.5 &gt; -0.09\)</span> for <span class="math inline">\(X_0\)</span>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>X_0 <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">x1 =</span> <span class="fl">0.5</span>, <span class="at">x2 =</span> <span class="fl">1.5</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>which_tree_is_X0_in <span class="ot">&lt;-</span> <span class="fu">get_leaf_node</span>(a_tree, X_0)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3</code></pre>
+</div>
+</div>
+<p>So, we give <span class="math inline">\(1/N_t(X_0)\)</span> to all those in the right leaf (the third node in <code>nodes</code>) and 0 to those in the left leaf, where <span class="math inline">\(N_t(X_0)\)</span> is the number of observations that belong to the same leaf as <span class="math inline">\(X_0\)</span>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== which row numbers in the same leaf as X_0? ===#</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>rows_1 <span class="ot">&lt;-</span> nodes[[which_tree_is_X0_in]]<span class="sc">$</span>samples</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co">#=== define eta for tree 1  ===#</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>data[, eta_t1 <span class="sc">:</span><span class="er">=</span> <span class="dv">0</span>] <span class="co"># first set eta to 0 for all</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>data[rows_1, eta_t1 <span class="sc">:</span><span class="er">=</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">length</span>(rows_1)] <span class="co"># replace eta with 1 if in the right node</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co">#=== see the data ===#</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>               x1       x2           e     T           y     eta_t1
+   1:  0.89745082 1.990011 -0.35910418  TRUE  1.04085649 0.00729927
+   2: -1.60850657 1.256397  1.05061185 FALSE  1.05061185 0.00000000
+   3:  0.73689498 1.708665 -0.89720054  TRUE  0.42494676 0.00000000
+   4: -0.59891982 1.885940 -0.24822258 FALSE -0.24822258 0.00000000
+   5:  1.59500071 1.972150 -0.32838233 FALSE -0.32838233 0.00729927
+  ---                                                              
+ 996: -0.23916443 1.314333  2.86282188  TRUE  3.38449949 0.00000000
+ 997: -0.08247831 1.458381 -0.82859708 FALSE -0.82859708 0.00000000
+ 998:  0.50428391 1.638361  0.70834971  TRUE  1.82299985 0.00000000
+ 999: -1.08175643 1.226198  0.33946401 FALSE  0.33946401 0.00000000
+1000:  0.12954221 1.344623 -0.03024091 FALSE -0.03024091 0.00729927</code></pre>
+</div>
+</div>
+<p>We repeat this for all the trees and use <a href="#eq-weight-cf">Equation&nbsp;<span>13.4</span></a> to calculate the weights for the individual observations. The following function gets <span class="math inline">\(eta_{i,t}(X_i, X_0)\)</span> for a given tree for all the observations.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>get_eta <span class="ot">&lt;-</span> <span class="cf">function</span>(t, X_0) {</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  w_tree <span class="ot">&lt;-</span> <span class="fu">get_tree</span>(cf_trained, t)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  which_tree_is_X0_in <span class="ot">&lt;-</span> <span class="fu">get_leaf_node</span>(w_tree, X_0)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  rows <span class="ot">&lt;-</span> w_tree<span class="sc">$</span>nodes[[which_tree_is_X0_in]]<span class="sc">$</span>samples</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  eta_data <span class="ot">&lt;-</span> </span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.table</span>(</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">row_id =</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(data)),</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">eta =</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">nrow</span>(data))</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    .[rows, eta <span class="sc">:</span><span class="er">=</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">length</span>(rows)]</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(eta_data)</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We apply <code>get_eta()</code> for each of the 2000 trees.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>eta_all <span class="ot">&lt;-</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span><span class="sc">:</span><span class="dv">2000</span>,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) <span class="fu">get_eta</span>(x, X_0)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbindlist</span>(<span class="at">idcol =</span> <span class="st">"t"</span>)</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            t row_id        eta
+      1:    1      1 0.00729927
+      2:    1      2 0.00000000
+      3:    1      3 0.00000000
+      4:    1      4 0.00000000
+      5:    1      5 0.00729927
+     ---                       
+1999996: 2000    996 0.00000000
+1999997: 2000    997 0.00000000
+1999998: 2000    998 0.00000000
+1999999: 2000    999 0.00000000
+2000000: 2000   1000 0.00000000</code></pre>
+</div>
+</div>
+<p>Calculate the mean of <span class="math inline">\(\eta_{i,t}\)</span> by <code>row_id</code> (observation).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>weights <span class="ot">&lt;-</span> </span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  eta_all <span class="sc">%&gt;%</span> </span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  .[, .(<span class="at">weight =</span> <span class="fu">mean</span>(eta)), <span class="at">by =</span> row_id]</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      row_id       weight
+   1:      1 1.558064e-03
+   2:      2 5.127165e-05
+   3:      3 1.674709e-03
+   4:      4 8.951246e-05
+   5:      5 1.490776e-03
+  ---                    
+ 996:    996 7.199398e-04
+ 997:    997 1.312735e-03
+ 998:    998 2.454565e-03
+ 999:    999 3.073570e-05
+1000:   1000 1.443599e-03</code></pre>
+</div>
+</div>
+<p>Here is the observations that was given the highest and lowest weights.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>data_with_wights <span class="ot">&lt;-</span> <span class="fu">cbind</span>(data, weights)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="co">#=== highest (1st) and lowest (2nd) ===#</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>data_with_wights[weight <span class="sc">%in%</span> <span class="fu">c</span>(<span class="fu">max</span>(weight), <span class="fu">min</span>(weight)), ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           x1       x2        e    T          y eta_t1 row_id       weight
+1:  0.4810197 1.471770 1.038158 TRUE 2.19863138      0    422 2.673985e-03
+2: -1.1359605 1.869219 0.630474 TRUE 0.02949626      0    634 1.661746e-05</code></pre>
+</div>
+</div>
+<p>Then, we can use <a href="#eq-theta-solution">Equation&nbsp;<span>13.3</span></a> to calculate <span class="math inline">\(\hat{\theta}(X_0)\)</span>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>theta_X0 <span class="ot">&lt;-</span> <span class="fu">sum</span>(data_with_wights[, weight <span class="sc">*</span> (T<span class="sc">-</span>cf_trained<span class="sc">$</span>W.hat) <span class="sc">*</span> (y<span class="sc">-</span>cf_trained<span class="sc">$</span>Y.hat)]) <span class="sc">/</span> <span class="fu">sum</span>(data_with_wights[, weight <span class="sc">*</span> (T<span class="sc">-</span>cf_trained<span class="sc">$</span>W.hat)<span class="sc">^</span><span class="dv">2</span>])</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.258731</code></pre>
+</div>
+</div>
+<div class="callout-note callout callout-style-default no-icon callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>You should not use the codes above to get the individual weights stored in <code>weights</code>. You can just use <code>get_forest_weights()</code> like below:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_forest_weights</span>(cf_trained, X_0)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="training-a-causal-forest" class="level3" data-number="13.2.2">
+<h3 data-number="13.2.2" class="anchored" data-anchor-id="training-a-causal-forest"><span class="header-section-number">13.2.2</span> Training a causal forest</h3>
+<p>We can use the <code>causal_forest()</code> function from the <code>grf</code> package to train a CF model in R. In Python, you can use <code>CausalForestDML()</code> from the <code>econml</code> package or <code>GRFForestRegressor</code> from the <code>skgrf</code> package.</p>
+<p>As of now, there are some notable differences between <code>grf</code> and <code>econml</code>.</p>
+<div class="callout-tip callout callout-style-default no-icon callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Some differences between the <code>grf</code> and <code>econml</code> implementation of causal forest
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p>While <code>grf</code> support clustering, <code>econml</code> does not.</p></li>
+<li><p>It is easy to modify the first stage estimations in <code>econml</code>. <code>grf</code> uses random forest by default for them. If you would like to try other ML methods, then you need to write a code to predict <span class="math inline">\(Y - E[Y|X, W]\)</span> and <span class="math inline">\(T - E[T|X, W]\)</span> with your choice of ML methods yourself (see <a href="PROG-01-mlr3.html#sec-mlr3-in-action"><span>Section&nbsp;16.6</span></a> for an example code to do this).</p></li>
+<li><p><code>grf</code> does not cross-fit in the first-stage estimation. Rather, it uses out-of-bag prediction from the trained random forest models, which avoids over-fitting (Note that the motivation behind cross-fitting in DML is to avoid over-fitting bias in the second stage estimation. See <a href="C01-dml.html"><span>Chapter&nbsp;11</span></a>).</p></li>
+<li><p><code>grf</code> does not make distinctions between <span class="math inline">\(X\)</span> and <span class="math inline">\(W\)</span>.</p></li>
+</ul>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== load the Treatment dataset ===#</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"Treatment"</span>, <span class="at">package =</span> <span class="st">"Ecdat"</span>)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="co">#=== convert to a data.table ===#</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> </span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>(Treatment) <span class="sc">%&gt;%</span> </span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== create an id variable ===#</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>  .[, <span class="at">id :=</span> <span class="dv">1</span><span class="sc">:</span>.N]</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Here are the variables in this dataset that we use.</p>
+<ul>
+<li><code>re78</code> (<span class="math inline">\(Y\)</span>): real annual earnings in 1978 (after the treatment)</li>
+<li><code>treat</code> (<span class="math inline">\(T\)</span>): <code>TRUE</code> if a person had gone through a training, <code>FALSE</code> otherwise.</li>
+</ul>
+<p><span class="math inline">\(X\)</span> includes</p>
+<ul>
+<li><code>re74</code>: real annual earnings in 1978 (after the treatment)</li>
+<li><code>age</code>: age</li>
+<li><code>educ</code>: education in years</li>
+<li><code>ethn</code>: one of “other”, “black”, “hispanic”</li>
+<li><code>married</code>: married or not</li>
+</ul>
+<p><code>grf::causal_forest()</code> takes only numeric values for <span class="math inline">\(X\)</span>. So, we will one-hot encode <code>ethn</code>, which is a factor variable at the moment.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>data_trt <span class="ot">&lt;-</span> mltools<span class="sc">::</span><span class="fu">one_hot</span>(data)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      treat age educ ethn_other ethn_black ethn_hispanic married    re74
+   1:  TRUE  37   11          0          1             0    TRUE     0.0
+   2:  TRUE  30   12          0          1             0   FALSE     0.0
+   3:  TRUE  27   11          0          1             0   FALSE     0.0
+   4:  TRUE  33    8          0          1             0   FALSE     0.0
+   5:  TRUE  22    9          0          1             0   FALSE     0.0
+  ---                                                                   
+2671: FALSE  47    8          1          0             0    TRUE 44667.4
+2672: FALSE  32    8          1          0             0    TRUE 47022.4
+2673: FALSE  47   10          1          0             0    TRUE 48198.0
+2674: FALSE  54    0          0          0             1    TRUE 49228.5
+2675: FALSE  40    8          1          0             0    TRUE 50940.9
+         re75     re78   u74   u75   id
+   1:     0.0  9930.05  TRUE  TRUE    1
+   2:     0.0 24909.50  TRUE  TRUE    2
+   3:     0.0  7506.15  TRUE  TRUE    3
+   4:     0.0   289.79  TRUE  TRUE    4
+   5:     0.0  4056.49  TRUE  TRUE    5
+  ---                                  
+2671: 33837.1 38568.70 FALSE FALSE 2671
+2672: 67137.1 59109.10 FALSE FALSE 2672
+2673: 47968.1 55710.30 FALSE FALSE 2673
+2674: 44221.0 20540.40 FALSE FALSE 2674
+2675: 55500.0 53198.20 FALSE FALSE 2675</code></pre>
+</div>
+</div>
+<p>We now have <code>ethn_black</code>, <code>ethn_hispanic</code>, and <code>ethn_other</code> from <code>ethn</code>. The model we are estimating is as follows:</p>
+<p><span class="math display">\[
+\begin{aligned}
+re78 &amp; = \theta(age, re74, educ, ethn\_hipanic, ethn\_black, married)\cdot treat + g(age, re74, educ, ethn\_hipanic, ethn\_black, married) + \varepsilon \\
+treat &amp; = f(age, re74, educ, ethn\_hipanic, ethn\_black, married) + \eta
+\end{aligned}
+\]</span></p>
+<div class="callout-warning callout callout-style-default no-icon callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Note that we are paying no attention to the potential endogeneity problem here. This is just a demonstration and the results are likely to be biased. We will look at instrumental forest later in <span class="quarto-unresolved-ref">?sec-cf-extension</span>, which is consistent under confoundedness as long as you can find appropriate external instruments.</p>
+</div>
+</div>
+<p>In running <code>causal_forest()</code>, there are many hyper-parameters and options that we need to be aware of.</p>
+<p>Since CF is a GRF and GRF uses random forest (with appropriate pseudo outcome), it is natural that some of the CF hyper-parameters are the same as the ones for RF (by <code>ranger()</code>).</p>
+<ul>
+<li><code>num.trees</code>: number of trees</li>
+<li><code>mtry</code>: number of variables tried in each split (default is <span class="math inline">\(\sqrt{K}\)</span>)</li>
+<li><code>min.node.size</code>: minimum number of observations in each leaf (default is 5)</li>
+</ul>
+<p>A hyper-parameter that certainly affects tree building process is <code>sample.fraction</code>, which we saw earlier.</p>
+<ul>
+<li><code>sample.fraction</code>: fraction of the data used to build each tree (default is 0.5)</li>
+</ul>
+<p>A higher value of <code>sample.fraction</code> means that the trees are more correlated as they share more of the same observations.</p>
+<p>There are three honesty-related options.</p>
+<ul>
+<li><code>honesty</code>: <code>TRUE</code> if using honest-sampling, 0 otherwise (default is <code>TRUE</code>)</li>
+<li><code>honesty.fraction</code>: fraction of the data (after <code>sample.fraction</code> is applied) that is grouped into <span class="math inline">\(J_1\)</span>, which is used to determine splitting rules</li>
+<li><code>honesty.prune.leaves</code>: <code>TRUE</code> if the leaves with no samples are pruned (default is <code>TRUE</code>)</li>
+</ul>
+<p>As mentioned earlier, an honest tree “repopulates” the tree with samples in <span class="math inline">\(J_2\)</span> with the splitting rules determined using <span class="math inline">\(J_2\)</span>. Therefore, even if all the leaves are populated at the time of determining the splitting rules using <span class="math inline">\(J_1\)</span> (each leaf must have at least as many observations as <code>min.node.size</code>), when <span class="math inline">\(J_1\)</span> vacates the tree and <span class="math inline">\(J_2\)</span> repopulate the tree, it is possible that some leaves do not have any observations. When that happens, the leaf is pruned (removed) if <code>honesty.prune.leaves</code> is set to <code>TRUE</code>.</p>
+<p>Let’s now train CF using <code>data_trt</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>cf_trained <span class="ot">&lt;-</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  grf<span class="sc">::</span><span class="fu">causal_forest</span>(</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">X =</span> data_trt[, .(age, re74, educ, ethn_hispanic, ethn_black, married)] <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>(),</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Y =</span> data_trt[, re78],</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">W =</span> data_trt[, treat]</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Here is what <code>cf_trained</code> has as its attributes.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(cf_trained)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "_ci_group_size"           "_num_variables"          
+ [3] "_num_trees"               "_root_nodes"             
+ [5] "_child_nodes"             "_leaf_samples"           
+ [7] "_split_vars"              "_split_values"           
+ [9] "_drawn_samples"           "_send_missing_left"      
+[11] "_pv_values"               "_pv_num_types"           
+[13] "predictions"              "variance.estimates"      
+[15] "debiased.error"           "excess.error"            
+[17] "seed"                     "ci.group.size"           
+[19] "X.orig"                   "Y.orig"                  
+[21] "W.orig"                   "Y.hat"                   
+[23] "W.hat"                    "clusters"                
+[25] "equalize.cluster.weights" "tunable.params"          
+[27] "has.missing.values"      </code></pre>
+</div>
+</div>
+<p>For example, you can get <span class="math inline">\(\theta(X_i)\)</span> by accessing the <code>predictions</code> attribute.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>cf_trained<span class="sc">$</span>predictions <span class="sc">%&gt;%</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          [,1]
+[1,]  727.4426
+[2,]  588.9038
+[3,] -597.8268
+[4,] 1280.5674
+[5,]  686.0950
+[6,] 1161.6407</code></pre>
+</div>
+</div>
+</section>
+<section id="predict-and-interpret-cate" class="level3 page-columns page-full" data-number="13.2.3">
+<h3 data-number="13.2.3" class="anchored" data-anchor-id="predict-and-interpret-cate"><span class="header-section-number">13.2.3</span> Predict and interpret CATE</h3>
+<p>Before looking at how to predict <span class="math inline">\(\theta(X)\)</span>, let’s look at which variables are used to split tree nodes. You can get such information using <code>split_frequencies()</code> on a trained causal forest.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">split_frequencies</span>(cf_trained)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4] [,5] [,6]
+[1,]  219 1544   97   38   22   78
+[2,] 1382 1055  672   31  147  272
+[3,] 1814  509 1065   20  222  188
+[4,] 1301  275  724    8   86   75</code></pre>
+</div>
+</div>
+<p>In this table, rows represent the depth of the nodes and columns represent covariates. For example, the second variable (<code>educ</code>) was used to do the first split 1544 times and split a node at the second depth 1055 times. A variable with higher numbers of splits at earlier stages is more influential in driving treatment effect heterogeneity. <code>variable_importance()</code> returns a measure of how important each variable is in explaining treatment effect heterogeneity based on the split information.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">variable_importance</span>(cf_trained)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           [,1]
+[1,] 0.20540138
+[2,] 0.61017707
+[3,] 0.10190537
+[4,] 0.01544042
+[5,] 0.02105530
+[6,] 0.04602046</code></pre>
+</div>
+</div>
+<p>So, according to this measure, the second variable (<code>educ</code>) is the most important variable. While variable of importance measure is informative, it does not tell us <span style="color:blue">how </span> the variables are affecting treatment effects. For that, we need to look at <span class="math inline">\(\theta(X)\)</span> at different values of <span class="math inline">\(X\)</span>.</p>
+<p>You can use <code>predict()</code> to predict the treatment effect at <span class="math inline">\(X\)</span>. For example, consider the following evaluation point.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>X_0 <span class="ot">&lt;-</span> </span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>(</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">age =</span> <span class="dv">30</span>,</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">re74 =</span> <span class="dv">40000</span>, </span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">educ =</span> <span class="dv">10</span>,</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">ethn_hispanic =</span> <span class="dv">0</span>,</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">ethn_black =</span> <span class="dv">1</span>,</span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">married =</span> <span class="cn">TRUE</span></span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Note that the order of columns of the evaluation data must be the same as that of the <code>X</code> in <code>causal_forest()</code> when you trained a CF model. You can set <code>estimate.variance</code> to <code>TRUE</code> to get <span class="math inline">\(var(\hat{\theta}(X))\)</span> along with the point estimate.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  cf_trained, </span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> X_0, </span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimate.variance =</span> <span class="cn">TRUE</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  predictions variance.estimates
+1   -7285.096            1589426</code></pre>
+</div>
+</div>
+<p>Unlike linear-in-parameter model, there are no coefficients that can immediately tell us how influential each of <span class="math inline">\(X\)</span> is in driving the treatment effect heterogeneity. One way to see the impact of a variable is to change its value while the value of the rest of <span class="math inline">\(X\)</span> is fixed. For example, for the given observed value of <span class="math inline">\(X\)</span> except <code>age</code>, you can vary the value of <code>age</code> to see how <code>age</code> affects the treatment effect. We can do this for all the observations and then can get a good picture of how the treatment effect varies across individuals at different values of <code>age</code>.</p>
+<p>Let’s first create a sequence of <code>age</code> values at which <span class="math inline">\(\hat{\theta}\)</span> is predicted.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>age_seq <span class="ot">&lt;-</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>(</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">age =</span> data_trt[, <span class="fu">seq</span>(<span class="fu">min</span>(age), <span class="fu">max</span>(age), <span class="at">length =</span> <span class="dv">30</span>)]</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We then create a dataset where every single individual (observation) in the original data <code>data_trt</code> to have all the age values in <code>age_seq</code> while the value of the rest of <span class="math inline">\(X\)</span> fixed at their own values.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>Confirm what <code>reshape::expand.grid.df</code> does with this simple example.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>reshape<span class="sc">::</span><span class="fu">expand.grid.df</span>(</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>(<span class="at">a =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)), <span class="co"># first data set</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>(<span class="at">b =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">c =</span> <span class="fu">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>)) <span class="co"># second data set</span></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  a b c
+1 1 1 a
+2 2 1 a
+3 3 1 a
+4 1 2 b
+5 2 2 b
+6 3 2 b</code></pre>
+</div>
+</div>
+</div></div><div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>data_te <span class="ot">&lt;-</span> </span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  reshape<span class="sc">::</span><span class="fu">expand.grid.df</span>(</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>    age_seq, </span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>    data_trt[, .(re74, educ, ethn_hispanic, ethn_black, married, id)]</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s now predict <span class="math inline">\(\hat{\theta}\)</span> with their standard error estimates.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>theta_hat_with_se <span class="ot">&lt;-</span> </span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(cf_trained, <span class="at">newdata =</span> dplyr<span class="sc">::</span><span class="fu">select</span>(data_te, <span class="sc">-</span>id), <span class="at">estimate.variance =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>  .[, <span class="at">se :=</span> <span class="fu">sqrt</span>(variance.estimates)] <span class="sc">%&gt;%</span> </span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setnames</span>(<span class="st">"predictions"</span>, <span class="st">"theta_hat"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>  .[, .(theta_hat, se)]</span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        theta_hat       se
+    1:   246.7308 1134.186
+    2:   251.5291 1125.746
+    3:   271.6803 1024.368
+    4:   361.2663 1013.566
+    5:   316.5520 1095.276
+   ---                    
+80246: -5887.2414 1745.328
+80247: -5895.0378 1750.329
+80248: -5893.1043 1773.677
+80249: -5885.4768 1760.558
+80250: -5885.4768 1760.558</code></pre>
+</div>
+</div>
+<p><a href="#fig-ind-3">Figure&nbsp;<span>13.2</span></a> shows the impact of <code>age</code> on treatment effect for the first three individuals of <code>data_trt</code>. For example, if an individual that has the identical values for <span class="math inline">\(X\)</span> except <code>age</code> and also this person is 40 years old, then the treatment effect of the training program would be about $1,000. Standard errors are fairly large and treatment effects are not statistically significantly different from 0 at any value of <code>age</code> for all three individuals. The impact of <code>age</code> seems to be very similar for all the individuals. However, you can see shifts in <span class="math inline">\(\hat{\theta}\)</span> among them. Those shifts are due to the differences in other covariates.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>plot_data <span class="ot">&lt;-</span> <span class="fu">cbind</span>(data_te, theta_hat_with_se)</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(plot_data[id <span class="sc">%in%</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, ]) <span class="sc">+</span></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> theta_hat, <span class="at">x =</span> age)) <span class="sc">+</span></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(</span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(</span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">ymin =</span> theta_hat <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> se, </span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">ymax =</span> theta_hat <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> se, </span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> age</span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"blue"</span>,</span>
+<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.4</span></span>
+<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb52-14"><a href="#cb52-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(. <span class="sc">~</span> id) <span class="sc">+</span></span>
+<span id="cb52-15"><a href="#cb52-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-ind-3" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="C03-cf-orf_files/figure-html/fig-ind-3-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 13.2: Estimated treatment effect for the first three individuals at different values of the age variable</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p><a href="#fig-all-box">Figure&nbsp;<span>13.3</span></a> shows the box-plot of treatment effects for all the individuals. Note that variations observed at each <code>age</code> value is due to heterogeneity in treatment effect driven by covariates other than <code>age</code>. It looks like the three individuals looked at are exceptions. For the majority of individuals, the estimated treatment effects are negative at any value of <code>age</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(plot_data) <span class="sc">+</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> theta_hat, <span class="at">x =</span> <span class="fu">factor</span>(<span class="fu">round</span>(age, <span class="at">digits =</span> <span class="dv">2</span>)))) <span class="sc">+</span></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Age"</span>) <span class="sc">+</span></span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Estimated treatment effect"</span>) <span class="sc">+</span></span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>)</span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-all-box" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="C03-cf-orf_files/figure-html/fig-all-box-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 13.3: Box-plot of the estimated treatment effects from all the individuals at different values of the age variable</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>You can easily repeat this analysis for other covariates to see their impacts as well.</p>
+</section>
+</section>
+<section id="orthogonal-random-forest" class="level2" data-number="13.3">
+<h2 data-number="13.3" class="anchored" data-anchor-id="orthogonal-random-forest"><span class="header-section-number">13.3</span> Orthogonal Random Forest</h2>
+</section>
+<section id="references" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-athey2019generalized" class="csl-entry" role="doc-biblioentry">
+Athey, Susan, Julie Tibshirani, and Stefan Wager. 2019. <span>“Generalized Random Forests.”</span> <em>The Annals of Statistics</em> 47 (2): 1148–78.
+</div>
+<div id="ref-oprescu2019orthogonal" class="csl-entry" role="doc-biblioentry">
+Oprescu, Miruna, Vasilis Syrgkanis, and Zhiwei Steven Wu. 2019. <span>“Orthogonal Random Forest for Causal Inference.”</span> In <em>International Conference on Machine Learning</em>, 4932–41. PMLR.
+</div>
+<div id="ref-wager_estimation_2018" class="csl-entry" role="doc-biblioentry">
+Wager, Stefan, and Susan Athey. 2018. <span>“Estimation and <span>Inference</span> of <span>Heterogeneous</span> <span>Treatment</span> <span>Effects</span> Using <span>Random</span> <span>Forests</span>.”</span> <em>Journal of the American Statistical Association</em> 113 (523): 1228–42. <a href="https://doi.org/10.1080/01621459.2017.1319839">https://doi.org/10.1080/01621459.2017.1319839</a>.
+</div>
+</div>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./C02-xstr-learner.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">S-, X-, T-, and R-learner</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./E0P-extensions.html" class="pagination-link">
+        <span class="nav-page-text">Extensions</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb54" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Forest-based CATE Estimators {#sec-cf-orf}</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>In @sec-het-dml, we saw a special case of R-learner/DML where the final model is a linear-in-parameter model. Here, we learn two methods that estimate CATE non-parametrically: causal forest <span class="co">[</span><span class="ot">@athey2019generalized</span><span class="co">]</span> and orthogonal forest <span class="co">[</span><span class="ot">@oprescu2019orthogonal</span><span class="co">]</span>.</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>:::{.callout-important}</span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a><span class="fu">## What you will learn</span></span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>Causal forest </span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>Mechanics</span>
+<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>Hyper-parameter</span>
+<span id="cb54-12"><a href="#cb54-12" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>Predict heterogeneous treatment effects (CATE)</span>
+<span id="cb54-13"><a href="#cb54-13" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>Predict average treatment effects (ATE)</span>
+<span id="cb54-14"><a href="#cb54-14" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>Interpretation</span>
+<span id="cb54-15"><a href="#cb54-15" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>Orthogonal forest </span>
+<span id="cb54-16"><a href="#cb54-16" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>Differences from causal forest</span>
+<span id="cb54-17"><a href="#cb54-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-18"><a href="#cb54-18" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb54-19"><a href="#cb54-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-20"><a href="#cb54-20" aria-hidden="true" tabindex="-1"></a>:::{.callout-tip}</span>
+<span id="cb54-21"><a href="#cb54-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-22"><a href="#cb54-22" aria-hidden="true" tabindex="-1"></a><span class="fu">## Preferable background knowledge</span></span>
+<span id="cb54-23"><a href="#cb54-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-24"><a href="#cb54-24" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>DML/R-learner (@sec-het-dml)</span>
+<span id="cb54-25"><a href="#cb54-25" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>GRF (@sec-grf)</span>
+<span id="cb54-26"><a href="#cb54-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-27"><a href="#cb54-27" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb54-28"><a href="#cb54-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-29"><a href="#cb54-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-30"><a href="#cb54-30" aria-hidden="true" tabindex="-1"></a>**Left to be added**</span>
+<span id="cb54-31"><a href="#cb54-31" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>how variance is estimated</span>
+<span id="cb54-32"><a href="#cb54-32" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>balance</span>
+<span id="cb54-33"><a href="#cb54-33" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>ATE</span>
+<span id="cb54-34"><a href="#cb54-34" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>linear correction with locally weighted linear regression</span>
+<span id="cb54-35"><a href="#cb54-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-36"><a href="#cb54-36" aria-hidden="true" tabindex="-1"></a><span class="fu">## Model</span></span>
+<span id="cb54-37"><a href="#cb54-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-38"><a href="#cb54-38" aria-hidden="true" tabindex="-1"></a>The heterogeneous treatment effect model of interest in this chapter is the same as the one in @sec-het-dml.</span>
+<span id="cb54-39"><a href="#cb54-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-40"><a href="#cb54-40" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb54-41"><a href="#cb54-41" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb54-42"><a href="#cb54-42" aria-hidden="true" tabindex="-1"></a>Y &amp; = \theta(X)\cdot T + g(X, W) + \varepsilon <span class="sc">\\</span></span>
+<span id="cb54-43"><a href="#cb54-43" aria-hidden="true" tabindex="-1"></a>T &amp; = f(X, W) + \eta </span>
+<span id="cb54-44"><a href="#cb54-44" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb54-45"><a href="#cb54-45" aria-hidden="true" tabindex="-1"></a>$$ {#eq-model-het-te}</span>
+<span id="cb54-46"><a href="#cb54-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-47"><a href="#cb54-47" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>$Y$: dependent variable</span>
+<span id="cb54-48"><a href="#cb54-48" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>$T$: treatment variable (can be either binary dummy or continuous)</span>
+<span id="cb54-49"><a href="#cb54-49" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>$X$: collection of variables that affect Y indirectly through the treatment ($\theta(X)\cdot T$) and directly ($g(X, W)$) independent of the treatment</span>
+<span id="cb54-50"><a href="#cb54-50" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>$W$: collection of variables that affect directly ($g(X, W)$) independent of the treatment, but not through the treatment</span>
+<span id="cb54-51"><a href="#cb54-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-52"><a href="#cb54-52" aria-hidden="true" tabindex="-1"></a>Causal forest and orthogonal random forest is consistent only if the following conditions fold.</span>
+<span id="cb54-53"><a href="#cb54-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-54"><a href="#cb54-54" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>$E<span class="co">[</span><span class="ot">\varepsilon|X, W</span><span class="co">]</span> = 0$</span>
+<span id="cb54-55"><a href="#cb54-55" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>$E<span class="co">[</span><span class="ot">\eta|X, W</span><span class="co">]</span> = 0$</span>
+<span id="cb54-56"><a href="#cb54-56" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>$E<span class="co">[</span><span class="ot">\eta\cdot\varepsilon|X, W</span><span class="co">]</span> = 0$</span>
+<span id="cb54-57"><a href="#cb54-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-58"><a href="#cb54-58" aria-hidden="true" tabindex="-1"></a><span class="fu">## Causal Forest</span></span>
+<span id="cb54-59"><a href="#cb54-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-60"><a href="#cb54-60" aria-hidden="true" tabindex="-1"></a>Causal Forest (CF) (as implemented by the R <span class="in">`grf`</span> package or python <span class="in">`econml`</span> package) is a special type of R-learner (also a DML) and also a special case of generalized random forest (GRF). </span>
+<span id="cb54-61"><a href="#cb54-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-62"><a href="#cb54-62" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb54-63"><a href="#cb54-63" aria-hidden="true" tabindex="-1"></a>See @sec-grf for a brief description of what GRF is. </span>
+<span id="cb54-64"><a href="#cb54-64" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb54-65"><a href="#cb54-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-66"><a href="#cb54-66" aria-hidden="true" tabindex="-1"></a>Causal Forest can be useful in estimating heterogeneous treatment effects when they are complex and/or non-linear functions of attributes (heterogeneity drivers) and it is hard to represent them using linear-in-parameter models.</span>
+<span id="cb54-67"><a href="#cb54-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-68"><a href="#cb54-68" aria-hidden="true" tabindex="-1"></a><span class="fu">### Understanding the basic mechanics with illustrations</span></span>
+<span id="cb54-69"><a href="#cb54-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-70"><a href="#cb54-70" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb54-71"><a href="#cb54-71" aria-hidden="true" tabindex="-1"></a>**Packages to load for replication**</span>
+<span id="cb54-72"><a href="#cb54-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-75"><a href="#cb54-75" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-76"><a href="#cb54-76" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb54-77"><a href="#cb54-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-78"><a href="#cb54-78" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb54-79"><a href="#cb54-79" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb54-80"><a href="#cb54-80" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(grf)</span>
+<span id="cb54-81"><a href="#cb54-81" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-82"><a href="#cb54-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-85"><a href="#cb54-85" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-86"><a href="#cb54-86" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb54-87"><a href="#cb54-87" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb54-88"><a href="#cb54-88" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb54-89"><a href="#cb54-89" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(grf)</span>
+<span id="cb54-90"><a href="#cb54-90" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-91"><a href="#cb54-91" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb54-92"><a href="#cb54-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-93"><a href="#cb54-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-94"><a href="#cb54-94" aria-hidden="true" tabindex="-1"></a>Let $\hat{f}(X_i,W_i)$ and $\hat{g}(X_i,W_i)$ denote the estimation of $E<span class="co">[</span><span class="ot">Y|X,W</span><span class="co">]</span>$ and $E<span class="co">[</span><span class="ot">T|X,W</span><span class="co">]</span>$, respectively. Further, let $\hat{\tilde{Y_i}}$ and $\hat{\tilde{T_i}}$ denote $Y_i - \hat{f}(X_i,W_i)$ and $T_i - \hat{g}(X_i,W_i)$, respectively.</span>
+<span id="cb54-95"><a href="#cb54-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-96"><a href="#cb54-96" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb54-97"><a href="#cb54-97" aria-hidden="true" tabindex="-1"></a>CF can be implemented using the R <span class="in">`grf`</span> package or python <span class="in">`econml`</span> package. Both of them implements CF as an R-learner. However, the original causal forest proposed in @wager_estimation_2018 does not follow an R-learner procedure.</span>
+<span id="cb54-98"><a href="#cb54-98" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb54-99"><a href="#cb54-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-100"><a href="#cb54-100" aria-hidden="true" tabindex="-1"></a>Then, CF estimates $\theta(X)$ at $X = X_0$ by solving the following equation:</span>
+<span id="cb54-101"><a href="#cb54-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-102"><a href="#cb54-102" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb54-103"><a href="#cb54-103" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb54-104"><a href="#cb54-104" aria-hidden="true" tabindex="-1"></a>\hat{\theta}(X_0) = argmin_{\theta}\;\;\sum_{i=1}^N \alpha_i(X_i, X_0)<span class="co">[</span><span class="ot">\hat{\tilde{Y_i}} - \theta\cdot \hat{\tilde{T_i}}</span><span class="co">]</span>^2</span>
+<span id="cb54-105"><a href="#cb54-105" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb54-106"><a href="#cb54-106" aria-hidden="true" tabindex="-1"></a>$$ {#eq-solve-cf}</span>
+<span id="cb54-107"><a href="#cb54-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-108"><a href="#cb54-108" aria-hidden="true" tabindex="-1"></a>where $\alpha_i(X_i, X_0)$ is the weight given to each $i$. The F.O.C is </span>
+<span id="cb54-109"><a href="#cb54-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-110"><a href="#cb54-110" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb54-111"><a href="#cb54-111" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb54-112"><a href="#cb54-112" aria-hidden="true" tabindex="-1"></a>2 \cdot \sum_{i=1}^N \alpha_i(X_i, X_0)<span class="co">[</span><span class="ot">\hat{\tilde{Y_i}} - \theta\cdot \hat{\tilde{T_i}}</span><span class="co">]</span>\hat{\tilde{T_i}} = 0 </span>
+<span id="cb54-113"><a href="#cb54-113" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb54-114"><a href="#cb54-114" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb54-115"><a href="#cb54-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-116"><a href="#cb54-116" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb54-117"><a href="#cb54-117" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb54-118"><a href="#cb54-118" aria-hidden="true" tabindex="-1"></a>\hat{\theta}(X_0) = \frac{\sum_{i=1}^N\alpha_i(X_i, X_0)\cdot\hat{\tilde{Y}}_i\cdot \hat{\tilde{T}}_i}{\sum_{i=1}^N\alpha_i(X_i, X_0)\cdot\hat{\tilde{T}}_i\cdot \hat{\tilde{T}}_i}</span>
+<span id="cb54-119"><a href="#cb54-119" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb54-120"><a href="#cb54-120" aria-hidden="true" tabindex="-1"></a>$$ {#eq-theta-solution}</span>
+<span id="cb54-121"><a href="#cb54-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-122"><a href="#cb54-122" aria-hidden="true" tabindex="-1"></a>Unlike the DML approaches we saw in @sec-het-dml that uses a linear model as the final model, CF does not assume any functional form for how $X$ affects $\theta$ as you can see from the above minimization problem. As mentioned earlier, CF is a special case of GRF (discussed in @sec-grf), so CF is also a local non-parametric regression (see @sec-local-reg for a brief discussion on local regression).</span>
+<span id="cb54-123"><a href="#cb54-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-124"><a href="#cb54-124" aria-hidden="true" tabindex="-1"></a>$\alpha_i(X_i, X_0)$ is determined based on the trees trained based on the pseudo outcomes that are defined specifically for causal forest estimation. Suppose $T$ trees have been built and let $\eta_{i,t}(X_i, X_0)$ be 1 if observation $i$ belongs to the same leaf as $X_0$ in tree $t$. Then, </span>
+<span id="cb54-125"><a href="#cb54-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-126"><a href="#cb54-126" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb54-127"><a href="#cb54-127" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb54-128"><a href="#cb54-128" aria-hidden="true" tabindex="-1"></a>\alpha_i(X_i, X_0) = \frac{1}{T}\sum_{t=1}^T\frac{\eta_{i,t}(X_i, X_0)}{\sum_{i=1}^N\eta_{i,t}(X_i, X_0)}</span>
+<span id="cb54-129"><a href="#cb54-129" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb54-130"><a href="#cb54-130" aria-hidden="true" tabindex="-1"></a>$$ {#eq-weight-cf}</span>
+<span id="cb54-131"><a href="#cb54-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-132"><a href="#cb54-132" aria-hidden="true" tabindex="-1"></a>So, the weight given to observation $i$ is higher if observation $i$ belongs to the same leaf as the evaluation point $X_0$ in more trees. </span>
+<span id="cb54-133"><a href="#cb54-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-134"><a href="#cb54-134" aria-hidden="true" tabindex="-1"></a>It is useful to see a simple example to understand this procedure. Let's use a simple toy data generating process for this.</span>
+<span id="cb54-135"><a href="#cb54-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-136"><a href="#cb54-136" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb54-137"><a href="#cb54-137" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb54-138"><a href="#cb54-138" aria-hidden="true" tabindex="-1"></a>y = (x_1 + \frac{1}{x_2}) \cdot T + e</span>
+<span id="cb54-139"><a href="#cb54-139" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb54-140"><a href="#cb54-140" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb54-141"><a href="#cb54-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-142"><a href="#cb54-142" aria-hidden="true" tabindex="-1"></a>where all the variables on the right hand side are independent of one another.</span>
+<span id="cb54-143"><a href="#cb54-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-146"><a href="#cb54-146" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-147"><a href="#cb54-147" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">293</span>)</span>
+<span id="cb54-148"><a href="#cb54-148" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb54-149"><a href="#cb54-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-150"><a href="#cb54-150" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb54-151"><a href="#cb54-151" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span></span>
+<span id="cb54-152"><a href="#cb54-152" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>(</span>
+<span id="cb54-153"><a href="#cb54-153" aria-hidden="true" tabindex="-1"></a>    <span class="at">x1 =</span> <span class="fu">rnorm</span>(N),</span>
+<span id="cb54-154"><a href="#cb54-154" aria-hidden="true" tabindex="-1"></a>    <span class="at">x2 =</span> <span class="fu">runif</span>(N) <span class="sc">+</span> <span class="dv">1</span>,</span>
+<span id="cb54-155"><a href="#cb54-155" aria-hidden="true" tabindex="-1"></a>    <span class="at">e =</span> <span class="fu">rnorm</span>(N), <span class="co"># error term</span></span>
+<span id="cb54-156"><a href="#cb54-156" aria-hidden="true" tabindex="-1"></a>    <span class="at">T =</span> <span class="fu">runif</span>(N) <span class="sc">&gt;</span> <span class="fl">0.5</span> <span class="co"># treatment that is independent</span></span>
+<span id="cb54-157"><a href="#cb54-157" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-158"><a href="#cb54-158" aria-hidden="true" tabindex="-1"></a>  .[, <span class="at">y :=</span> (x1 <span class="sc">+</span> <span class="dv">1</span><span class="sc">/</span>x2)<span class="sc">*</span>T <span class="sc">+</span> e]</span>
+<span id="cb54-159"><a href="#cb54-159" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb54-160"><a href="#cb54-160" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-161"><a href="#cb54-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-162"><a href="#cb54-162" aria-hidden="true" tabindex="-1"></a>Now, we train a causal forest model on <span class="in">`data`</span>. </span>
+<span id="cb54-163"><a href="#cb54-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-164"><a href="#cb54-164" aria-hidden="true" tabindex="-1"></a>:::{.callout-note}</span>
+<span id="cb54-165"><a href="#cb54-165" aria-hidden="true" tabindex="-1"></a>You do not need to know how <span class="in">`causal_forest()`</span> works yet. We are using it just because accessing its elements makes it easy to illustrate how $\theta(X)$ is obtained.</span>
+<span id="cb54-166"><a href="#cb54-166" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb54-167"><a href="#cb54-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-170"><a href="#cb54-170" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-171"><a href="#cb54-171" aria-hidden="true" tabindex="-1"></a>cf_trained <span class="ot">&lt;-</span></span>
+<span id="cb54-172"><a href="#cb54-172" aria-hidden="true" tabindex="-1"></a>  <span class="fu">causal_forest</span>(</span>
+<span id="cb54-173"><a href="#cb54-173" aria-hidden="true" tabindex="-1"></a>    <span class="at">X =</span> data[, .(x1, x2)],</span>
+<span id="cb54-174"><a href="#cb54-174" aria-hidden="true" tabindex="-1"></a>    <span class="at">Y =</span> data[, y],</span>
+<span id="cb54-175"><a href="#cb54-175" aria-hidden="true" tabindex="-1"></a>    <span class="at">W =</span> data[, T],</span>
+<span id="cb54-176"><a href="#cb54-176" aria-hidden="true" tabindex="-1"></a>    <span class="at">min.node.size =</span> <span class="dv">30</span></span>
+<span id="cb54-177"><a href="#cb54-177" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb54-178"><a href="#cb54-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-179"><a href="#cb54-179" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-180"><a href="#cb54-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-181"><a href="#cb54-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-182"><a href="#cb54-182" aria-hidden="true" tabindex="-1"></a>After training a causal forest model, we have trees like the ones shown in @fig-cf-trees, which shows only the first and last of the $2000$ trees are. Trees are made intentionally shallow to make discussions simpler.</span>
+<span id="cb54-183"><a href="#cb54-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-186"><a href="#cb54-186" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-187"><a href="#cb54-187" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Example trees built in causal forest estimation</span></span>
+<span id="cb54-188"><a href="#cb54-188" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-cf-trees </span></span>
+<span id="cb54-189"><a href="#cb54-189" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false </span></span>
+<span id="cb54-190"><a href="#cb54-190" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-subcap: </span></span>
+<span id="cb54-191"><a href="#cb54-191" aria-hidden="true" tabindex="-1"></a><span class="co">#|   - "Tree 1"</span></span>
+<span id="cb54-192"><a href="#cb54-192" aria-hidden="true" tabindex="-1"></a><span class="co">#|   - "Tree 2000"</span></span>
+<span id="cb54-193"><a href="#cb54-193" aria-hidden="true" tabindex="-1"></a><span class="co">#| layout-ncol: 2 </span></span>
+<span id="cb54-194"><a href="#cb54-194" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-195"><a href="#cb54-195" aria-hidden="true" tabindex="-1"></a><span class="co"># get_tree(cf_trained, 10) %&gt;% plot()</span></span>
+<span id="cb54-196"><a href="#cb54-196" aria-hidden="true" tabindex="-1"></a><span class="co"># get_tree(cf_trained, 2000) %&gt;% plot()</span></span>
+<span id="cb54-197"><a href="#cb54-197" aria-hidden="true" tabindex="-1"></a><span class="co"># these plots do not accept subcaps, so manually importing figures</span></span>
+<span id="cb54-198"><a href="#cb54-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-199"><a href="#cb54-199" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"figures/Tree_1.png"</span>)</span>
+<span id="cb54-200"><a href="#cb54-200" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"figures/Tree_2.png"</span>)</span>
+<span id="cb54-201"><a href="#cb54-201" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-202"><a href="#cb54-202" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-203"><a href="#cb54-203" aria-hidden="true" tabindex="-1"></a>You probably noticed that the total number of samples in the leaves is only $250$ instead of $1000$, which is the total number of observations in <span class="in">`data`</span>. When causal forest was trained on this dataset, only half of the entire sample are randomly selected for building each tree (due to the default setting of <span class="in">`sample.fraction = 0.5`</span>). The halved sample is further split into two groups, each containing $250$ observations (due to the default setting of <span class="in">`honest.fraction = 0.5`</span>). Let's call them $J_1$ and $J_2$. Then, $J_1$ is used to train a tree to find the splitting rules. For example, $x1 \leq -0.09$ is the splitting rule for Tree 1. Once the splitting rules are determined (tree building process is complete), then $J_1$ is "vacated" (or thrown out) from the tree. Then, $J_2$ "repopulate" the tree nodes. That is, the statistics presented in the left and right nodes (<span class="in">`avg_Y`</span> and <span class="in">`avg_W`</span>) are based on the samples in $J_2$, not $J_1$ which was used to determine the splitting rules. This process is called honest sampling and trees built based on honest sampling are called honest trees (see @sec-grf-honest for more details).</span>
+<span id="cb54-204"><a href="#cb54-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-205"><a href="#cb54-205" aria-hidden="true" tabindex="-1"></a>Let's take a look at a tree to see what happened. We can use <span class="in">`get_tree()`</span> to access individual trees from <span class="in">`cf_trained`</span>. </span>
+<span id="cb54-206"><a href="#cb54-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-209"><a href="#cb54-209" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-210"><a href="#cb54-210" aria-hidden="true" tabindex="-1"></a><span class="co">#=== get the first tree ===#</span></span>
+<span id="cb54-211"><a href="#cb54-211" aria-hidden="true" tabindex="-1"></a>a_tree <span class="ot">&lt;-</span> <span class="fu">get_tree</span>(cf_trained, <span class="dv">1</span>)</span>
+<span id="cb54-212"><a href="#cb54-212" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-213"><a href="#cb54-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-214"><a href="#cb54-214" aria-hidden="true" tabindex="-1"></a><span class="in">`drawn_samples`</span> attribute of the tree contains row indices that are selected randomly for this tree.</span>
+<span id="cb54-215"><a href="#cb54-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-218"><a href="#cb54-218" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-219"><a href="#cb54-219" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(a_tree<span class="sc">$</span>drawn_samples)</span>
+<span id="cb54-220"><a href="#cb54-220" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-221"><a href="#cb54-221" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(a_tree<span class="sc">$</span>drawn_samples)</span>
+<span id="cb54-222"><a href="#cb54-222" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-223"><a href="#cb54-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-224"><a href="#cb54-224" aria-hidden="true" tabindex="-1"></a>As you can see, there are 500 samples. The rest of the observations were not used for this tree. Accessing <span class="in">`nodes`</span> attribute will give you the splitting rules for the tree built and which samples are in what node.</span>
+<span id="cb54-225"><a href="#cb54-225" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-228"><a href="#cb54-228" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-229"><a href="#cb54-229" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb54-230"><a href="#cb54-230" aria-hidden="true" tabindex="-1"></a>nodes <span class="ot">&lt;-</span> a_tree<span class="sc">$</span>nodes</span>
+<span id="cb54-231"><a href="#cb54-231" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb54-232"><a href="#cb54-232" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-233"><a href="#cb54-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-234"><a href="#cb54-234" aria-hidden="true" tabindex="-1"></a><span class="in">`nodes`</span> is a list of three elements (one root node and two terminal nodes). The <span class="in">`samples`</span> attribute gives you row indices of the samples that belong to the terminal node. </span>
+<span id="cb54-235"><a href="#cb54-235" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-238"><a href="#cb54-238" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-239"><a href="#cb54-239" aria-hidden="true" tabindex="-1"></a>nodes[[<span class="dv">2</span>]]<span class="sc">$</span>samples</span>
+<span id="cb54-240"><a href="#cb54-240" aria-hidden="true" tabindex="-1"></a>nodes[[<span class="dv">3</span>]]<span class="sc">$</span>samples</span>
+<span id="cb54-241"><a href="#cb54-241" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-242"><a href="#cb54-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-243"><a href="#cb54-243" aria-hidden="true" tabindex="-1"></a>These are from $J_2$. That is, they were not used in finding the splitting rule of $x1 \leq -0.09$. They were populating the terminal nodes by simply following the splitting rule. The difference in <span class="in">`a_tree$drawn_samples`</span> and the combination of <span class="in">`nodes[[2]]$samples`</span> and <span class="in">`nodes[[3]]$samples`</span> is $J_1$.</span>
+<span id="cb54-244"><a href="#cb54-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-247"><a href="#cb54-247" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-248"><a href="#cb54-248" aria-hidden="true" tabindex="-1"></a>J2_rows <span class="ot">&lt;-</span> <span class="fu">c</span>(nodes[[<span class="dv">2</span>]]<span class="sc">$</span>samples, nodes[[<span class="dv">3</span>]]<span class="sc">$</span>samples)</span>
+<span id="cb54-249"><a href="#cb54-249" aria-hidden="true" tabindex="-1"></a>J1_J2_rows <span class="ot">&lt;-</span> a_tree<span class="sc">$</span>drawn_samples</span>
+<span id="cb54-250"><a href="#cb54-250" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-251"><a href="#cb54-251" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb54-252"><a href="#cb54-252" aria-hidden="true" tabindex="-1"></a>J1_rows <span class="ot">&lt;-</span> J1_J2_rows[J1_J2_rows <span class="sc">%in%</span> J2_rows]</span>
+<span id="cb54-253"><a href="#cb54-253" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb54-254"><a href="#cb54-254" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-255"><a href="#cb54-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-256"><a href="#cb54-256" aria-hidden="true" tabindex="-1"></a>As you can see, there are 250 samples in $J_1$.</span>
+<span id="cb54-257"><a href="#cb54-257" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-258"><a href="#cb54-258" aria-hidden="true" tabindex="-1"></a>Suppose you are interested in predicting $\hat{\theta}$ at $X_0 = <span class="sc">\{</span>x_1 = 0.5, x_2 = 1.5<span class="sc">\}</span>$. For a given tree, we give 1 to the observations that belong to the same leaf as $X_0$. For example, for the first tree, $X_0$ belongs to the right leaf because $x1 = 0.5 &gt; -0.09$ for $X_0$. </span>
+<span id="cb54-259"><a href="#cb54-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-262"><a href="#cb54-262" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-263"><a href="#cb54-263" aria-hidden="true" tabindex="-1"></a>X_0 <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">x1 =</span> <span class="fl">0.5</span>, <span class="at">x2 =</span> <span class="fl">1.5</span>)</span>
+<span id="cb54-264"><a href="#cb54-264" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb54-265"><a href="#cb54-265" aria-hidden="true" tabindex="-1"></a>which_tree_is_X0_in <span class="ot">&lt;-</span> <span class="fu">get_leaf_node</span>(a_tree, X_0)</span>
+<span id="cb54-266"><a href="#cb54-266" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb54-267"><a href="#cb54-267" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-268"><a href="#cb54-268" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-269"><a href="#cb54-269" aria-hidden="true" tabindex="-1"></a>So, we give $1/N_t(X_0)$ to all those in the right leaf (the third node in <span class="in">`nodes`</span>) and 0 to those in the left leaf, where $N_t(X_0)$ is the number of observations that belong to the same leaf as $X_0$.</span>
+<span id="cb54-270"><a href="#cb54-270" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-273"><a href="#cb54-273" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-274"><a href="#cb54-274" aria-hidden="true" tabindex="-1"></a><span class="co">#=== which row numbers in the same leaf as X_0? ===#</span></span>
+<span id="cb54-275"><a href="#cb54-275" aria-hidden="true" tabindex="-1"></a>rows_1 <span class="ot">&lt;-</span> nodes[[which_tree_is_X0_in]]<span class="sc">$</span>samples</span>
+<span id="cb54-276"><a href="#cb54-276" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-277"><a href="#cb54-277" aria-hidden="true" tabindex="-1"></a><span class="co">#=== define eta for tree 1  ===#</span></span>
+<span id="cb54-278"><a href="#cb54-278" aria-hidden="true" tabindex="-1"></a>data[, eta_t1 <span class="sc">:</span><span class="er">=</span> <span class="dv">0</span>] <span class="co"># first set eta to 0 for all</span></span>
+<span id="cb54-279"><a href="#cb54-279" aria-hidden="true" tabindex="-1"></a>data[rows_1, eta_t1 <span class="sc">:</span><span class="er">=</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">length</span>(rows_1)] <span class="co"># replace eta with 1 if in the right node</span></span>
+<span id="cb54-280"><a href="#cb54-280" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-281"><a href="#cb54-281" aria-hidden="true" tabindex="-1"></a><span class="co">#=== see the data ===#</span></span>
+<span id="cb54-282"><a href="#cb54-282" aria-hidden="true" tabindex="-1"></a>data</span>
+<span id="cb54-283"><a href="#cb54-283" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-284"><a href="#cb54-284" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-285"><a href="#cb54-285" aria-hidden="true" tabindex="-1"></a>We repeat this for all the trees and use @eq-weight-cf to calculate the weights for the individual observations. The following function gets $eta_{i,t}(X_i, X_0)$ for a given tree for all the observations.</span>
+<span id="cb54-286"><a href="#cb54-286" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-289"><a href="#cb54-289" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-290"><a href="#cb54-290" aria-hidden="true" tabindex="-1"></a>get_eta <span class="ot">&lt;-</span> <span class="cf">function</span>(t, X_0) {</span>
+<span id="cb54-291"><a href="#cb54-291" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-292"><a href="#cb54-292" aria-hidden="true" tabindex="-1"></a>  w_tree <span class="ot">&lt;-</span> <span class="fu">get_tree</span>(cf_trained, t)</span>
+<span id="cb54-293"><a href="#cb54-293" aria-hidden="true" tabindex="-1"></a>  which_tree_is_X0_in <span class="ot">&lt;-</span> <span class="fu">get_leaf_node</span>(w_tree, X_0)</span>
+<span id="cb54-294"><a href="#cb54-294" aria-hidden="true" tabindex="-1"></a>  rows <span class="ot">&lt;-</span> w_tree<span class="sc">$</span>nodes[[which_tree_is_X0_in]]<span class="sc">$</span>samples</span>
+<span id="cb54-295"><a href="#cb54-295" aria-hidden="true" tabindex="-1"></a>  eta_data <span class="ot">&lt;-</span> </span>
+<span id="cb54-296"><a href="#cb54-296" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.table</span>(</span>
+<span id="cb54-297"><a href="#cb54-297" aria-hidden="true" tabindex="-1"></a>      <span class="at">row_id =</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(data)),</span>
+<span id="cb54-298"><a href="#cb54-298" aria-hidden="true" tabindex="-1"></a>      <span class="at">eta =</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">nrow</span>(data))</span>
+<span id="cb54-299"><a href="#cb54-299" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-300"><a href="#cb54-300" aria-hidden="true" tabindex="-1"></a>    .[rows, eta <span class="sc">:</span><span class="er">=</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">length</span>(rows)]</span>
+<span id="cb54-301"><a href="#cb54-301" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-302"><a href="#cb54-302" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(eta_data)</span>
+<span id="cb54-303"><a href="#cb54-303" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb54-304"><a href="#cb54-304" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-305"><a href="#cb54-305" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-306"><a href="#cb54-306" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-307"><a href="#cb54-307" aria-hidden="true" tabindex="-1"></a>We apply <span class="in">`get_eta()`</span> for each of the 2000 trees.</span>
+<span id="cb54-308"><a href="#cb54-308" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-311"><a href="#cb54-311" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-312"><a href="#cb54-312" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb54-313"><a href="#cb54-313" aria-hidden="true" tabindex="-1"></a>eta_all <span class="ot">&lt;-</span></span>
+<span id="cb54-314"><a href="#cb54-314" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb54-315"><a href="#cb54-315" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span><span class="sc">:</span><span class="dv">2000</span>,</span>
+<span id="cb54-316"><a href="#cb54-316" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) <span class="fu">get_eta</span>(x, X_0)</span>
+<span id="cb54-317"><a href="#cb54-317" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-318"><a href="#cb54-318" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbindlist</span>(<span class="at">idcol =</span> <span class="st">"t"</span>)</span>
+<span id="cb54-319"><a href="#cb54-319" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb54-320"><a href="#cb54-320" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-321"><a href="#cb54-321" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-322"><a href="#cb54-322" aria-hidden="true" tabindex="-1"></a>Calculate the mean of $\eta_{i,t}$ by <span class="in">`row_id`</span> (observation).</span>
+<span id="cb54-323"><a href="#cb54-323" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-326"><a href="#cb54-326" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-327"><a href="#cb54-327" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb54-328"><a href="#cb54-328" aria-hidden="true" tabindex="-1"></a>weights <span class="ot">&lt;-</span> </span>
+<span id="cb54-329"><a href="#cb54-329" aria-hidden="true" tabindex="-1"></a>  eta_all <span class="sc">%&gt;%</span> </span>
+<span id="cb54-330"><a href="#cb54-330" aria-hidden="true" tabindex="-1"></a>  .[, .(<span class="at">weight =</span> <span class="fu">mean</span>(eta)), <span class="at">by =</span> row_id]</span>
+<span id="cb54-331"><a href="#cb54-331" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb54-332"><a href="#cb54-332" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-333"><a href="#cb54-333" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-334"><a href="#cb54-334" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-335"><a href="#cb54-335" aria-hidden="true" tabindex="-1"></a>Here is the observations that was given the highest and lowest weights.</span>
+<span id="cb54-336"><a href="#cb54-336" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-339"><a href="#cb54-339" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-340"><a href="#cb54-340" aria-hidden="true" tabindex="-1"></a>data_with_wights <span class="ot">&lt;-</span> <span class="fu">cbind</span>(data, weights)</span>
+<span id="cb54-341"><a href="#cb54-341" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-342"><a href="#cb54-342" aria-hidden="true" tabindex="-1"></a><span class="co">#=== highest (1st) and lowest (2nd) ===#</span></span>
+<span id="cb54-343"><a href="#cb54-343" aria-hidden="true" tabindex="-1"></a>data_with_wights[weight <span class="sc">%in%</span> <span class="fu">c</span>(<span class="fu">max</span>(weight), <span class="fu">min</span>(weight)), ]</span>
+<span id="cb54-344"><a href="#cb54-344" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-345"><a href="#cb54-345" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-346"><a href="#cb54-346" aria-hidden="true" tabindex="-1"></a>Then, we can use @eq-theta-solution to calculate $\hat{\theta}(X_0)$.</span>
+<span id="cb54-347"><a href="#cb54-347" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-350"><a href="#cb54-350" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-351"><a href="#cb54-351" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb54-352"><a href="#cb54-352" aria-hidden="true" tabindex="-1"></a>theta_X0 <span class="ot">&lt;-</span> <span class="fu">sum</span>(data_with_wights[, weight <span class="sc">*</span> (T<span class="sc">-</span>cf_trained<span class="sc">$</span>W.hat) <span class="sc">*</span> (y<span class="sc">-</span>cf_trained<span class="sc">$</span>Y.hat)]) <span class="sc">/</span> <span class="fu">sum</span>(data_with_wights[, weight <span class="sc">*</span> (T<span class="sc">-</span>cf_trained<span class="sc">$</span>W.hat)<span class="sc">^</span><span class="dv">2</span>])</span>
+<span id="cb54-353"><a href="#cb54-353" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb54-354"><a href="#cb54-354" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-355"><a href="#cb54-355" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-356"><a href="#cb54-356" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-357"><a href="#cb54-357" aria-hidden="true" tabindex="-1"></a>:::{.callout-note}</span>
+<span id="cb54-358"><a href="#cb54-358" aria-hidden="true" tabindex="-1"></a>You should not use the codes above to get the individual weights stored in <span class="in">`weights`</span>. You can just use <span class="in">`get_forest_weights()`</span> like below:</span>
+<span id="cb54-359"><a href="#cb54-359" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-362"><a href="#cb54-362" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-363"><a href="#cb54-363" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb54-364"><a href="#cb54-364" aria-hidden="true" tabindex="-1"></a><span class="fu">get_forest_weights</span>(cf_trained, X_0)</span>
+<span id="cb54-365"><a href="#cb54-365" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-366"><a href="#cb54-366" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb54-367"><a href="#cb54-367" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-368"><a href="#cb54-368" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-369"><a href="#cb54-369" aria-hidden="true" tabindex="-1"></a><span class="fu">### Training a causal forest</span></span>
+<span id="cb54-370"><a href="#cb54-370" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-371"><a href="#cb54-371" aria-hidden="true" tabindex="-1"></a>We can use the <span class="in">`causal_forest()`</span> function from the <span class="in">`grf`</span> package to train a CF model in R. In Python, you can use <span class="in">`CausalForestDML()`</span> from the <span class="in">`econml`</span> package or <span class="in">`GRFForestRegressor`</span> from the <span class="in">`skgrf`</span> package.</span>
+<span id="cb54-372"><a href="#cb54-372" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-373"><a href="#cb54-373" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-374"><a href="#cb54-374" aria-hidden="true" tabindex="-1"></a>As of now, there are some notable differences between <span class="in">`grf`</span> and <span class="in">`econml`</span>. </span>
+<span id="cb54-375"><a href="#cb54-375" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-376"><a href="#cb54-376" aria-hidden="true" tabindex="-1"></a>:::{.callout-tip}</span>
+<span id="cb54-377"><a href="#cb54-377" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-378"><a href="#cb54-378" aria-hidden="true" tabindex="-1"></a><span class="fu">## Some differences between the `grf` and `econml` implementation of causal forest</span></span>
+<span id="cb54-379"><a href="#cb54-379" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-380"><a href="#cb54-380" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>While <span class="in">`grf`</span> support clustering, <span class="in">`econml`</span> does not.</span>
+<span id="cb54-381"><a href="#cb54-381" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-382"><a href="#cb54-382" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>It is easy to modify the first stage estimations in <span class="in">`econml`</span>. <span class="in">`grf`</span> uses random forest by default for them. If you would like to try other ML methods, then you need to write a code to predict $Y - E<span class="co">[</span><span class="ot">Y|X, W</span><span class="co">]</span>$ and $T - E<span class="co">[</span><span class="ot">T|X, W</span><span class="co">]</span>$ with your choice of ML methods yourself (see @sec-mlr3-in-action for an example code to do this).</span>
+<span id="cb54-383"><a href="#cb54-383" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-384"><a href="#cb54-384" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span><span class="in">`grf`</span> does not cross-fit in the first-stage estimation. Rather, it uses out-of-bag prediction from the trained random forest models, which avoids over-fitting (Note that the motivation behind cross-fitting in DML is to avoid over-fitting bias in the second stage estimation. See @sec-dml).</span>
+<span id="cb54-385"><a href="#cb54-385" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-386"><a href="#cb54-386" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span><span class="in">`grf`</span> does not make distinctions between $X$ and $W$.</span>
+<span id="cb54-387"><a href="#cb54-387" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-388"><a href="#cb54-388" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb54-389"><a href="#cb54-389" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-390"><a href="#cb54-390" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-393"><a href="#cb54-393" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-394"><a href="#cb54-394" aria-hidden="true" tabindex="-1"></a><span class="co">#=== load the Treatment dataset ===#</span></span>
+<span id="cb54-395"><a href="#cb54-395" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"Treatment"</span>, <span class="at">package =</span> <span class="st">"Ecdat"</span>)</span>
+<span id="cb54-396"><a href="#cb54-396" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-397"><a href="#cb54-397" aria-hidden="true" tabindex="-1"></a><span class="co">#=== convert to a data.table ===#</span></span>
+<span id="cb54-398"><a href="#cb54-398" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb54-399"><a href="#cb54-399" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> </span>
+<span id="cb54-400"><a href="#cb54-400" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>(Treatment) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-401"><a href="#cb54-401" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== create an id variable ===#</span></span>
+<span id="cb54-402"><a href="#cb54-402" aria-hidden="true" tabindex="-1"></a>  .[, <span class="at">id :=</span> <span class="dv">1</span><span class="sc">:</span>.N]</span>
+<span id="cb54-403"><a href="#cb54-403" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb54-404"><a href="#cb54-404" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-405"><a href="#cb54-405" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-406"><a href="#cb54-406" aria-hidden="true" tabindex="-1"></a>Here are the variables in this dataset that we use.</span>
+<span id="cb54-407"><a href="#cb54-407" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-408"><a href="#cb54-408" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span><span class="in">`re78`</span> ($Y$): real annual earnings in 1978 (after the treatment)</span>
+<span id="cb54-409"><a href="#cb54-409" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span><span class="in">`treat`</span> ($T$): <span class="in">`TRUE`</span> if a person had gone through a training, <span class="in">`FALSE`</span> otherwise. </span>
+<span id="cb54-410"><a href="#cb54-410" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-411"><a href="#cb54-411" aria-hidden="true" tabindex="-1"></a>$X$ includes</span>
+<span id="cb54-412"><a href="#cb54-412" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-413"><a href="#cb54-413" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span><span class="in">`re74`</span>: real annual earnings in 1978 (after the treatment)</span>
+<span id="cb54-414"><a href="#cb54-414" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span><span class="in">`age`</span>: age</span>
+<span id="cb54-415"><a href="#cb54-415" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span><span class="in">`educ`</span>: education in years</span>
+<span id="cb54-416"><a href="#cb54-416" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span><span class="in">`ethn`</span>: one of "other", "black", "hispanic"</span>
+<span id="cb54-417"><a href="#cb54-417" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span><span class="in">`married`</span>: married or not</span>
+<span id="cb54-418"><a href="#cb54-418" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-419"><a href="#cb54-419" aria-hidden="true" tabindex="-1"></a><span class="in">`grf::causal_forest()`</span> takes only numeric values for $X$. So, we will one-hot encode <span class="in">`ethn`</span>, which is a factor variable at the moment.</span>
+<span id="cb54-420"><a href="#cb54-420" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-423"><a href="#cb54-423" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-424"><a href="#cb54-424" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb54-425"><a href="#cb54-425" aria-hidden="true" tabindex="-1"></a>data_trt <span class="ot">&lt;-</span> mltools<span class="sc">::</span><span class="fu">one_hot</span>(data)</span>
+<span id="cb54-426"><a href="#cb54-426" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb54-427"><a href="#cb54-427" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-428"><a href="#cb54-428" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-429"><a href="#cb54-429" aria-hidden="true" tabindex="-1"></a>We now have <span class="in">`ethn_black`</span>, <span class="in">`ethn_hispanic`</span>, and <span class="in">`ethn_other`</span> from <span class="in">`ethn`</span>. The model we are estimating is as follows:</span>
+<span id="cb54-430"><a href="#cb54-430" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-431"><a href="#cb54-431" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb54-432"><a href="#cb54-432" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb54-433"><a href="#cb54-433" aria-hidden="true" tabindex="-1"></a>re78 &amp; = \theta(age, re74, educ, ethn<span class="sc">\_</span>hipanic, ethn<span class="sc">\_</span>black, married)\cdot treat + g(age, re74, educ, ethn<span class="sc">\_</span>hipanic, ethn<span class="sc">\_</span>black, married) + \varepsilon <span class="sc">\\</span></span>
+<span id="cb54-434"><a href="#cb54-434" aria-hidden="true" tabindex="-1"></a>treat &amp; = f(age, re74, educ, ethn<span class="sc">\_</span>hipanic, ethn<span class="sc">\_</span>black, married) + \eta</span>
+<span id="cb54-435"><a href="#cb54-435" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb54-436"><a href="#cb54-436" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb54-437"><a href="#cb54-437" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-438"><a href="#cb54-438" aria-hidden="true" tabindex="-1"></a>:::{.callout-warning}</span>
+<span id="cb54-439"><a href="#cb54-439" aria-hidden="true" tabindex="-1"></a>Note that we are paying no attention to the potential endogeneity problem here. This is just a demonstration and the results are likely to be biased. We will look at instrumental forest later in @sec-cf-extension, which is consistent under confoundedness as long as you can find appropriate external instruments.</span>
+<span id="cb54-440"><a href="#cb54-440" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb54-441"><a href="#cb54-441" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-442"><a href="#cb54-442" aria-hidden="true" tabindex="-1"></a>In running <span class="in">`causal_forest()`</span>, there are many hyper-parameters and options that we need to be aware of. </span>
+<span id="cb54-443"><a href="#cb54-443" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-444"><a href="#cb54-444" aria-hidden="true" tabindex="-1"></a>Since CF is a GRF and GRF uses random forest (with appropriate pseudo outcome), it is natural that some of the CF hyper-parameters are the same as the ones for RF (by <span class="in">`ranger()`</span>).</span>
+<span id="cb54-445"><a href="#cb54-445" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-446"><a href="#cb54-446" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span><span class="in">`num.trees`</span>: number of trees</span>
+<span id="cb54-447"><a href="#cb54-447" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span><span class="in">`mtry`</span>: number of variables tried in each split (default is $\sqrt{K}$)</span>
+<span id="cb54-448"><a href="#cb54-448" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span><span class="in">`min.node.size`</span>: minimum number of observations in each leaf (default is 5)</span>
+<span id="cb54-449"><a href="#cb54-449" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-450"><a href="#cb54-450" aria-hidden="true" tabindex="-1"></a>A hyper-parameter that certainly affects tree building process is <span class="in">`sample.fraction`</span>, which we saw earlier. </span>
+<span id="cb54-451"><a href="#cb54-451" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-452"><a href="#cb54-452" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span><span class="in">`sample.fraction`</span>: fraction of the data used to build each tree (default is 0.5)</span>
+<span id="cb54-453"><a href="#cb54-453" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-454"><a href="#cb54-454" aria-hidden="true" tabindex="-1"></a>A higher value of <span class="in">`sample.fraction`</span> means that the trees are more correlated as they share more of the same observations. </span>
+<span id="cb54-455"><a href="#cb54-455" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-456"><a href="#cb54-456" aria-hidden="true" tabindex="-1"></a>There are three honesty-related options. </span>
+<span id="cb54-457"><a href="#cb54-457" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-458"><a href="#cb54-458" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span><span class="in">`honesty`</span>: <span class="in">`TRUE`</span> if using honest-sampling, 0 otherwise (default is <span class="in">`TRUE`</span>)</span>
+<span id="cb54-459"><a href="#cb54-459" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span><span class="in">`honesty.fraction`</span>: fraction of the data (after <span class="in">`sample.fraction`</span> is applied) that is grouped into $J_1$, which is used to determine splitting rules</span>
+<span id="cb54-460"><a href="#cb54-460" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span><span class="in">`honesty.prune.leaves`</span>: <span class="in">`TRUE`</span> if the leaves with no samples are pruned (default is <span class="in">`TRUE`</span>)</span>
+<span id="cb54-461"><a href="#cb54-461" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-462"><a href="#cb54-462" aria-hidden="true" tabindex="-1"></a>As mentioned earlier, an honest tree "repopulates" the tree with samples in $J_2$ with the splitting rules determined using $J_2$. Therefore, even if all the leaves are populated at the time of determining the splitting rules using $J_1$ (each leaf must have at least as many observations as <span class="in">`min.node.size`</span>), when $J_1$ vacates the tree and $J_2$ repopulate the tree, it is possible that some leaves do not have any observations. When that happens, the leaf is pruned (removed) if <span class="in">`honesty.prune.leaves`</span> is set to <span class="in">`TRUE`</span>.</span>
+<span id="cb54-463"><a href="#cb54-463" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-464"><a href="#cb54-464" aria-hidden="true" tabindex="-1"></a>Let's now train CF using <span class="in">`data_trt`</span>. </span>
+<span id="cb54-465"><a href="#cb54-465" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-468"><a href="#cb54-468" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-469"><a href="#cb54-469" aria-hidden="true" tabindex="-1"></a>cf_trained <span class="ot">&lt;-</span></span>
+<span id="cb54-470"><a href="#cb54-470" aria-hidden="true" tabindex="-1"></a>  grf<span class="sc">::</span><span class="fu">causal_forest</span>(</span>
+<span id="cb54-471"><a href="#cb54-471" aria-hidden="true" tabindex="-1"></a>    <span class="at">X =</span> data_trt[, .(age, re74, educ, ethn_hispanic, ethn_black, married)] <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>(),</span>
+<span id="cb54-472"><a href="#cb54-472" aria-hidden="true" tabindex="-1"></a>    <span class="at">Y =</span> data_trt[, re78],</span>
+<span id="cb54-473"><a href="#cb54-473" aria-hidden="true" tabindex="-1"></a>    <span class="at">W =</span> data_trt[, treat]</span>
+<span id="cb54-474"><a href="#cb54-474" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb54-475"><a href="#cb54-475" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-476"><a href="#cb54-476" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-477"><a href="#cb54-477" aria-hidden="true" tabindex="-1"></a>Here is what <span class="in">`cf_trained`</span> has as its attributes.</span>
+<span id="cb54-478"><a href="#cb54-478" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-481"><a href="#cb54-481" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-482"><a href="#cb54-482" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(cf_trained)</span>
+<span id="cb54-483"><a href="#cb54-483" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-484"><a href="#cb54-484" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-485"><a href="#cb54-485" aria-hidden="true" tabindex="-1"></a>For example, you can get $\theta(X_i)$ by accessing the <span class="in">`predictions`</span> attribute.</span>
+<span id="cb54-486"><a href="#cb54-486" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-489"><a href="#cb54-489" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-490"><a href="#cb54-490" aria-hidden="true" tabindex="-1"></a>cf_trained<span class="sc">$</span>predictions <span class="sc">%&gt;%</span> <span class="fu">head</span>()</span>
+<span id="cb54-491"><a href="#cb54-491" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-492"><a href="#cb54-492" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-493"><a href="#cb54-493" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-494"><a href="#cb54-494" aria-hidden="true" tabindex="-1"></a><span class="fu">### Predict and interpret CATE</span></span>
+<span id="cb54-495"><a href="#cb54-495" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-496"><a href="#cb54-496" aria-hidden="true" tabindex="-1"></a>Before looking at how to predict $\theta(X)$, let's look at which variables are used to split tree nodes. You can get such information using <span class="in">`split_frequencies()`</span> on a trained causal forest.</span>
+<span id="cb54-497"><a href="#cb54-497" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-500"><a href="#cb54-500" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-501"><a href="#cb54-501" aria-hidden="true" tabindex="-1"></a><span class="fu">split_frequencies</span>(cf_trained)</span>
+<span id="cb54-502"><a href="#cb54-502" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-503"><a href="#cb54-503" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-506"><a href="#cb54-506" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-507"><a href="#cb54-507" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb54-508"><a href="#cb54-508" aria-hidden="true" tabindex="-1"></a>split_data <span class="ot">&lt;-</span> <span class="fu">split_frequencies</span>(cf_trained)</span>
+<span id="cb54-509"><a href="#cb54-509" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-510"><a href="#cb54-510" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-511"><a href="#cb54-511" aria-hidden="true" tabindex="-1"></a>In this table, rows represent the depth of the nodes and columns represent covariates. For example, the second variable (<span class="in">`educ`</span>) was used to do the first split <span class="in">`r split_data[1, 2]`</span> times and split a node at the second depth <span class="in">`r split_data[2, 2]`</span> times. A variable with higher numbers of splits at earlier stages is more influential in driving treatment effect heterogeneity. <span class="in">`variable_importance()`</span> returns a measure of how important each variable is in explaining treatment effect heterogeneity based on the split information.</span>
+<span id="cb54-512"><a href="#cb54-512" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-515"><a href="#cb54-515" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-516"><a href="#cb54-516" aria-hidden="true" tabindex="-1"></a><span class="fu">variable_importance</span>(cf_trained)</span>
+<span id="cb54-517"><a href="#cb54-517" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-518"><a href="#cb54-518" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-519"><a href="#cb54-519" aria-hidden="true" tabindex="-1"></a>So, according to this measure, the second variable (<span class="in">`educ`</span>) is the most important variable. While variable of importance measure is informative, it does not tell us <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span>how <span class="kw">&lt;/span&gt;</span> the variables are affecting treatment effects. For that, we need to look at $\theta(X)$ at different values of $X$.</span>
+<span id="cb54-520"><a href="#cb54-520" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-521"><a href="#cb54-521" aria-hidden="true" tabindex="-1"></a>You can use <span class="in">`predict()`</span> to predict the treatment effect at $X$. For example, consider the following evaluation point.</span>
+<span id="cb54-522"><a href="#cb54-522" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-525"><a href="#cb54-525" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-526"><a href="#cb54-526" aria-hidden="true" tabindex="-1"></a>X_0 <span class="ot">&lt;-</span> </span>
+<span id="cb54-527"><a href="#cb54-527" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>(</span>
+<span id="cb54-528"><a href="#cb54-528" aria-hidden="true" tabindex="-1"></a>    <span class="at">age =</span> <span class="dv">30</span>,</span>
+<span id="cb54-529"><a href="#cb54-529" aria-hidden="true" tabindex="-1"></a>    <span class="at">re74 =</span> <span class="dv">40000</span>, </span>
+<span id="cb54-530"><a href="#cb54-530" aria-hidden="true" tabindex="-1"></a>    <span class="at">educ =</span> <span class="dv">10</span>,</span>
+<span id="cb54-531"><a href="#cb54-531" aria-hidden="true" tabindex="-1"></a>    <span class="at">ethn_hispanic =</span> <span class="dv">0</span>,</span>
+<span id="cb54-532"><a href="#cb54-532" aria-hidden="true" tabindex="-1"></a>    <span class="at">ethn_black =</span> <span class="dv">1</span>,</span>
+<span id="cb54-533"><a href="#cb54-533" aria-hidden="true" tabindex="-1"></a>    <span class="at">married =</span> <span class="cn">TRUE</span></span>
+<span id="cb54-534"><a href="#cb54-534" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb54-535"><a href="#cb54-535" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-536"><a href="#cb54-536" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-537"><a href="#cb54-537" aria-hidden="true" tabindex="-1"></a>Note that the order of columns of the evaluation data must be the same as that of the <span class="in">`X`</span> in <span class="in">`causal_forest()`</span> when you trained a CF model. You can set <span class="in">`estimate.variance`</span> to <span class="in">`TRUE`</span> to get $var(\hat{\theta}(X))$ along with the point estimate.</span>
+<span id="cb54-538"><a href="#cb54-538" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-541"><a href="#cb54-541" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-542"><a href="#cb54-542" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(</span>
+<span id="cb54-543"><a href="#cb54-543" aria-hidden="true" tabindex="-1"></a>  cf_trained, </span>
+<span id="cb54-544"><a href="#cb54-544" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> X_0, </span>
+<span id="cb54-545"><a href="#cb54-545" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimate.variance =</span> <span class="cn">TRUE</span></span>
+<span id="cb54-546"><a href="#cb54-546" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb54-547"><a href="#cb54-547" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-548"><a href="#cb54-548" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-549"><a href="#cb54-549" aria-hidden="true" tabindex="-1"></a>Unlike linear-in-parameter model, there are no coefficients that can immediately tell us how influential each of $X$ is in driving the treatment effect heterogeneity. One way to see the impact of a variable is to change its value while the value of the rest of $X$ is fixed. For example, for the given observed value of $X$ except <span class="in">`age`</span>, you can vary the value of <span class="in">`age`</span> to see how <span class="in">`age`</span> affects the treatment effect. We can do this for all the observations and then can get a good picture of how the treatment effect varies across individuals at different values of <span class="in">`age`</span>. </span>
+<span id="cb54-550"><a href="#cb54-550" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-551"><a href="#cb54-551" aria-hidden="true" tabindex="-1"></a>Let's first create a sequence of <span class="in">`age`</span> values at which $\hat{\theta}$ is predicted. </span>
+<span id="cb54-552"><a href="#cb54-552" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-555"><a href="#cb54-555" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-556"><a href="#cb54-556" aria-hidden="true" tabindex="-1"></a>age_seq <span class="ot">&lt;-</span></span>
+<span id="cb54-557"><a href="#cb54-557" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>(</span>
+<span id="cb54-558"><a href="#cb54-558" aria-hidden="true" tabindex="-1"></a>    <span class="at">age =</span> data_trt[, <span class="fu">seq</span>(<span class="fu">min</span>(age), <span class="fu">max</span>(age), <span class="at">length =</span> <span class="dv">30</span>)]</span>
+<span id="cb54-559"><a href="#cb54-559" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb54-560"><a href="#cb54-560" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-561"><a href="#cb54-561" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-562"><a href="#cb54-562" aria-hidden="true" tabindex="-1"></a>We then create a dataset where every single individual (observation) in the original data <span class="in">`data_trt`</span> to have all the age values in <span class="in">`age_seq`</span> while the value of the rest of $X$ fixed at their own values.</span>
+<span id="cb54-563"><a href="#cb54-563" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-564"><a href="#cb54-564" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb54-565"><a href="#cb54-565" aria-hidden="true" tabindex="-1"></a>Confirm what <span class="in">`reshape::expand.grid.df`</span> does with this simple example.</span>
+<span id="cb54-566"><a href="#cb54-566" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-569"><a href="#cb54-569" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-570"><a href="#cb54-570" aria-hidden="true" tabindex="-1"></a>reshape<span class="sc">::</span><span class="fu">expand.grid.df</span>(</span>
+<span id="cb54-571"><a href="#cb54-571" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>(<span class="at">a =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)), <span class="co"># first data set</span></span>
+<span id="cb54-572"><a href="#cb54-572" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>(<span class="at">b =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">c =</span> <span class="fu">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>)) <span class="co"># second data set</span></span>
+<span id="cb54-573"><a href="#cb54-573" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb54-574"><a href="#cb54-574" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-575"><a href="#cb54-575" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb54-576"><a href="#cb54-576" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-579"><a href="#cb54-579" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-580"><a href="#cb54-580" aria-hidden="true" tabindex="-1"></a>data_te <span class="ot">&lt;-</span> </span>
+<span id="cb54-581"><a href="#cb54-581" aria-hidden="true" tabindex="-1"></a>  reshape<span class="sc">::</span><span class="fu">expand.grid.df</span>(</span>
+<span id="cb54-582"><a href="#cb54-582" aria-hidden="true" tabindex="-1"></a>    age_seq, </span>
+<span id="cb54-583"><a href="#cb54-583" aria-hidden="true" tabindex="-1"></a>    data_trt[, .(re74, educ, ethn_hispanic, ethn_black, married, id)]</span>
+<span id="cb54-584"><a href="#cb54-584" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-585"><a href="#cb54-585" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>()</span>
+<span id="cb54-586"><a href="#cb54-586" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-587"><a href="#cb54-587" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-588"><a href="#cb54-588" aria-hidden="true" tabindex="-1"></a>Let's now predict $\hat{\theta}$ with their standard error estimates.</span>
+<span id="cb54-589"><a href="#cb54-589" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-592"><a href="#cb54-592" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-593"><a href="#cb54-593" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb54-594"><a href="#cb54-594" aria-hidden="true" tabindex="-1"></a>theta_hat_with_se <span class="ot">&lt;-</span> </span>
+<span id="cb54-595"><a href="#cb54-595" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(cf_trained, <span class="at">newdata =</span> dplyr<span class="sc">::</span><span class="fu">select</span>(data_te, <span class="sc">-</span>id), <span class="at">estimate.variance =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-596"><a href="#cb54-596" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb54-597"><a href="#cb54-597" aria-hidden="true" tabindex="-1"></a>  .[, <span class="at">se :=</span> <span class="fu">sqrt</span>(variance.estimates)] <span class="sc">%&gt;%</span> </span>
+<span id="cb54-598"><a href="#cb54-598" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setnames</span>(<span class="st">"predictions"</span>, <span class="st">"theta_hat"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-599"><a href="#cb54-599" aria-hidden="true" tabindex="-1"></a>  .[, .(theta_hat, se)]</span>
+<span id="cb54-600"><a href="#cb54-600" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb54-601"><a href="#cb54-601" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-602"><a href="#cb54-602" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-603"><a href="#cb54-603" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-604"><a href="#cb54-604" aria-hidden="true" tabindex="-1"></a>@fig-ind-3 shows the impact of <span class="in">`age`</span> on treatment effect for the first three individuals of <span class="in">`data_trt`</span>. For example, if an individual that has the identical values for $X$ except <span class="in">`age`</span> and also this person is 40 years old, then the treatment effect of the training program would be about $1,000. Standard errors are fairly large and treatment effects are not statistically significantly different from 0 at any value of <span class="in">`age`</span> for all three individuals. The impact of <span class="in">`age`</span> seems to be very similar for all the individuals. However, you can see shifts in $\hat{\theta}$ among them. Those shifts are due to the differences in other covariates. </span>
+<span id="cb54-605"><a href="#cb54-605" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-608"><a href="#cb54-608" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-609"><a href="#cb54-609" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Estimated treatment effect for the first three individuals at different values of the age variable</span></span>
+<span id="cb54-610"><a href="#cb54-610" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-ind-3</span></span>
+<span id="cb54-611"><a href="#cb54-611" aria-hidden="true" tabindex="-1"></a>plot_data <span class="ot">&lt;-</span> <span class="fu">cbind</span>(data_te, theta_hat_with_se)</span>
+<span id="cb54-612"><a href="#cb54-612" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-613"><a href="#cb54-613" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(plot_data[id <span class="sc">%in%</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, ]) <span class="sc">+</span></span>
+<span id="cb54-614"><a href="#cb54-614" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> theta_hat, <span class="at">x =</span> age)) <span class="sc">+</span></span>
+<span id="cb54-615"><a href="#cb54-615" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(</span>
+<span id="cb54-616"><a href="#cb54-616" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(</span>
+<span id="cb54-617"><a href="#cb54-617" aria-hidden="true" tabindex="-1"></a>      <span class="at">ymin =</span> theta_hat <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> se, </span>
+<span id="cb54-618"><a href="#cb54-618" aria-hidden="true" tabindex="-1"></a>      <span class="at">ymax =</span> theta_hat <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> se, </span>
+<span id="cb54-619"><a href="#cb54-619" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> age</span>
+<span id="cb54-620"><a href="#cb54-620" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb54-621"><a href="#cb54-621" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"blue"</span>,</span>
+<span id="cb54-622"><a href="#cb54-622" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.4</span></span>
+<span id="cb54-623"><a href="#cb54-623" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb54-624"><a href="#cb54-624" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(. <span class="sc">~</span> id) <span class="sc">+</span></span>
+<span id="cb54-625"><a href="#cb54-625" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb54-626"><a href="#cb54-626" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-627"><a href="#cb54-627" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-628"><a href="#cb54-628" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-629"><a href="#cb54-629" aria-hidden="true" tabindex="-1"></a>@fig-all-box shows the box-plot of treatment effects for all the individuals. Note that variations observed at each <span class="in">`age`</span> value is due to heterogeneity in treatment effect driven by covariates other than <span class="in">`age`</span>. It looks like the three individuals looked at are exceptions. For the majority of individuals, the estimated treatment effects are negative at any value of <span class="in">`age`</span>.</span>
+<span id="cb54-630"><a href="#cb54-630" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-633"><a href="#cb54-633" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-634"><a href="#cb54-634" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Box-plot of the estimated treatment effects from all the individuals at different values of the age variable </span></span>
+<span id="cb54-635"><a href="#cb54-635" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-all-box</span></span>
+<span id="cb54-636"><a href="#cb54-636" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-637"><a href="#cb54-637" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(plot_data) <span class="sc">+</span></span>
+<span id="cb54-638"><a href="#cb54-638" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> theta_hat, <span class="at">x =</span> <span class="fu">factor</span>(<span class="fu">round</span>(age, <span class="at">digits =</span> <span class="dv">2</span>)))) <span class="sc">+</span></span>
+<span id="cb54-639"><a href="#cb54-639" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb54-640"><a href="#cb54-640" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Age"</span>) <span class="sc">+</span></span>
+<span id="cb54-641"><a href="#cb54-641" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Estimated treatment effect"</span>) <span class="sc">+</span></span>
+<span id="cb54-642"><a href="#cb54-642" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb54-643"><a href="#cb54-643" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb54-644"><a href="#cb54-644" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>)</span>
+<span id="cb54-645"><a href="#cb54-645" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb54-646"><a href="#cb54-646" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-647"><a href="#cb54-647" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-648"><a href="#cb54-648" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-649"><a href="#cb54-649" aria-hidden="true" tabindex="-1"></a>You can easily repeat this analysis for other covariates to see their impacts as well.</span>
+<span id="cb54-650"><a href="#cb54-650" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-651"><a href="#cb54-651" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-652"><a href="#cb54-652" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-653"><a href="#cb54-653" aria-hidden="true" tabindex="-1"></a><span class="fu">## Orthogonal Random Forest</span></span>
+<span id="cb54-654"><a href="#cb54-654" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-655"><a href="#cb54-655" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-656"><a href="#cb54-656" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-657"><a href="#cb54-657" aria-hidden="true" tabindex="-1"></a><span class="fu">## References {.unnumbered}</span></span>
+<span id="cb54-658"><a href="#cb54-658" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-659"><a href="#cb54-659" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"refs"</span><span class="kw">&gt;&lt;/div&gt;</span></span>
+<span id="cb54-660"><a href="#cb54-660" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-661"><a href="#cb54-661" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-662"><a href="#cb54-662" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-663"><a href="#cb54-663" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-664"><a href="#cb54-664" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-665"><a href="#cb54-665" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-666"><a href="#cb54-666" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-667"><a href="#cb54-667" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-668"><a href="#cb54-668" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-669"><a href="#cb54-669" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-670"><a href="#cb54-670" aria-hidden="true" tabindex="-1"></a></span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+</body></html>

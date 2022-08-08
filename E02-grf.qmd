@@ -1,114 +1,261 @@
 # Generalized Random Forest {#sec-grf}
 
 
-## GRF in a nutshell
+:::{.callout-important}
 
-Here, we follow the notations used in @athey2019generalized as much as possible. Let, $O_i$ denote the entire data available.
+## What you will learn
 
-::: {.column-margin}
-For random forest, $O_i$ is {$Y_i$, $X_i$} where $Y_i$ is the dependent variable and $X_i$ is a collection of independent variables. For causal forest, $O_i$ is {$Y_i$, $W_i$, $X_i$}, where $W_i$ is the treatment variable.
++ What GRF is
++ How GRF was motivated
++ Random forest is a special case of GRF
++ Honesty rule
+
 :::
 
-Let $\theta(X)$ denote the statistics of interest (e.g., CATE for causal forest, conditional quantile for for quantile forest) and $\nu(X)$ denote any nuisance (you are not interested in it) statistics. Generalized random forest (GRF) solves the following problem to find the estimate of $\theta$ conditional on $X_i= x$: 
+:::{.callout-tip}
+
+## Background knowledge
+
++ (necessary) random forest (@sec-rf)
++ (necessary) local regression (@sec-local)
+
+:::
+
+::: {.callout-note}
+
+## Packages to load for replication
+
+```{r}
+#| include: false
+
+library(tidyverse)
+library(data.table)
+library(ranger)
+library(grf)
+```
+
+```{r}
+#| eval: false
+
+library(tidyverse)
+library(data.table)
+library(ranger)
+library(grf)
+```
+:::
+
+## Random forest as a local constant regression
+
+Suppose you are interested in estimating $E[y|X]$ using a dataset and you have trained a random forest model with $T$ tress. Now, let $\eta_{i,t}(X)$ takes $1$ if observation $i$ belongs to the same leaf as $X$ in tree $t$, where $X$ is a vector of covariates ($K$ variables). Then, the RF's predicted value of $y$ conditional on a particular value of $X$ (say, $X_0$) can be written as follows:
 
 $$
 \begin{aligned}
-\theta(x),\nu(x) = argmin_{\theta,\nu} \sum_{i=1}^n \alpha_i(x)\Psi_{\theta, \nu}(O_i)^2
+\hat{y}(X_0) = \frac{1}{T} \cdot\sum_{t=1}^T\sum_{i=1}^N \frac{\eta_{i,t}(X_0)}{\sum_{i=1}^N\eta_{i,t}(X_0)}\cdot y_i
+\end{aligned}
+$$
+
+Note that $\sum_{i=1}^N\eta_{i,t}(X_0)$ represents the number of observations in the same leaf as $X_0$. Therefore, $\sum_{i=1}^N \frac{\eta_{i,t}(X_0)}{\sum_{i=1}^N\eta_{i,t}(X_0)}\cdot y_i$ is the average value of $y$ of the leaf that $X_0$ belongs to. So, while looking slightly complicated, it is the average value of $y$ of the tree $X_0$ belongs to averaged across the trees, which we know is how RF predicts $y$ at $X_0$.
+
+We can switch the summations like this,
+
+$$
+\begin{aligned}
+\hat{y}(X_0) = \sum_{i=1}^N \cdot\frac{1}{T}\sum_{t=1}^T\frac{\eta_{i,t}(X_0)}{\sum_{i=1}^N\eta_{i,t}(X_0)}\cdot y_i
+\end{aligned}
+$$
+
+Let $\alpha(X_i, X_0)$ denote $\frac{1}{T}\sum_{t=1}^T\frac{\eta_{i,t}(X_0)}{\sum_{i=1}^N\eta_{i,t}(X_0)}$. Then, we can rewrite the above equation as
+
+$$
+\begin{aligned}
+\hat{y}(X_0) = \sum_{i=1}^N \alpha(X_i,X_0) \cdot y_i
+\end{aligned}
+$$
+
+Now, it is easy to show that $\hat{y}(X_0)$ is a solution to the following minimization problem.
+
+$$
+\begin{aligned}
+Min_{\theta} \sum_{i=1}^N \alpha(X_i,X_0)\cdot[y_i -\theta]^2
+\end{aligned}
+$$ {#eq-ll-constant}
+
+In this formulation of the problem, $\alpha(X_i,X_0)$ can be considered the weight given to observation $i$. 
+
+By definition,
+
++ $0 \leq \alpha(X_i,X_0) \leq 1$
++ $\sum_{i=1}^N \alpha(X_i,X_0) = 1$
+
+You may notice that @eq-ll-constant is actually a special case of <span style="color:blue">local constant regression</span> where the individual weights are $\alpha(X_i, X_0)$. Roughly speaking, $\alpha(X_i, X_0)$ measures how often observation $i$ share the same leaves as the evaluation point ($X_0$) across $T$ trees. So, it measures how similar $X_i$ is to $X_0$ in the RF way, but not based on euclidean distance (which is subject to curse of dimensionality). So, RF is actually a local constant regression with a special way of distributing weights to the individual observations. 
+
+## GRF
+
+Interpretation of RF as a local regression led @athey2019generalized to conceive GRF, under which various statistics (e.g., conditional average treatment effect, conditional quantile) can be estimated under the unified framework.
+
+You can consider prediction of $y$ at $X = X_0$ using RF as a three-step process.
+
+:::{.callout-note}
+
+## Predicting $y$ at $X=X_0$ using RF
+
+1. Grow trees (find splitting rules for each tree)
+2. For $X = X_0$, find the weights for individual observations based on the trees grown  
+3. Solve @eq-ll-constant based on the weights
+:::
+
+Step 1 is done only once. Every time you make a prediction at a different value of $X$, you go over steps 2 and 3. 
+
+GRF follows exactly the same steps except that it <span style="color:red">adjusts the way trees are grown </span>in step 1 and <span style="color:red">adjusts the local minimization problem</span> solved at step 3 (they are actually interrelated) depending on what you would like to estimate.
+
+Here, we follow the notations used in @athey2019generalized as much as possible. Here are the list of notations:
+
++ $O_i$: data for observation $i$
++ $\theta$: the statistics of interest (e.g., CATE for causal forest, conditional quantile for for quantile forest)
++ $\nu$: nuisance statistics (you are not interested in estimating this). 
++ $\Psi_{\theta, \nu}(O)$: score function
++ $\alpha_i(x)$: weight given to observation $i$ when predicting at $X=x$. 
+
+In general, GRF solves the following problem to find the estimate of $\theta$ conditional on $X_i= x$: 
+
+$$
+\begin{aligned}
+\sum_{i=1}^n \alpha_i(x)\Psi_{\theta, \nu}(O_i) = 0
 \end{aligned}
 $$ {#eq-opt}
 
-where $\Psi_{\theta, \nu}(O_i)$ is a score function, and $\alpha_i(x)$ is the weight given to $i$th observation. 
-
-:::{.callout-note}
-Why is it called <span style="color:red"> generalized </span> random forest?
-:::
-
-This is because depending on how the score function ($\Psi_{\theta, \nu}(O_i)$) is defined, you can estimate <span style="color:blue"> a wide range of statistics using different approaches </span>under the <span style="color:blue"> same</span> estimation framework. 
+As we saw earlier, GRF is RF when $\Psi_{\theta, \nu}(O_i) = Y_i-\theta$. There is no nuisance statistics, $\nu(x)$, in the RF case. By changing how the score function ($\Psi_{\theta, \nu}(O_i)$) is defined, you can estimate <span style="color:blue"> a wide range of statistics using different approaches </span>under the <span style="color:blue"> same</span> estimation framework (this is why it is called <span style="color:red">generalized </span>random forest). Here are some of the statistics and estimation approaches that are under the GRF framework.
 
 + Conditional expectation ($E[Y|X]$)
-  * Regression Forest (Random forest for regression)
-  * Boosted Regression Forest
+  * Regression forest (Random forest for regression)
+  * Local linear forest
+  * Boosted regression forest
 + Conditional average treatment effect (CATE)
-  * Causal Forest
-  * Instrumental Forest
+  * Causal forest
+  * Instrumental forest
 + Conditional quantile
-  * Quantile Forest
+  * Quantile forest
 
-How can @eq-opt represents so many (very) different statistical approaches? It all boils down to how $\Psi_{\theta, \nu}(O_i)$ is specified. Here are some examples:
+:::{.callout-note}
 
-+ $\Psi_{\theta, \nu}(Y_i, X_i) = Y_i - \theta(X)$: traditional random forest
-+ $\Psi_{\theta, \nu}(Y_i, X_i, T_i) = (Y_i - E[Y|X])- \theta(X)(T_i - E[T|X])$: causal forest
-+ $\Psi_{\theta, \nu}(Y_i) = qI\{Y_i > \theta\} - (1-q)I\{Y_i \leq \theta\}$: quantile forest
+## Score function examples
+
++ Random forest: $\Psi_{\theta, \nu}(O_i) = Y_i - \theta$
+
++ Causal forest: $\Psi_{\theta, \nu}(O_i) = (\tilde{Y}_i- \theta\tilde{T}_i)\cdot\tilde{T}_i$, where $\tilde{v_i} = v_i - E[v_i|X_i]$
+
++ Quantile forest: $\Psi_{\theta, \nu}(O_i) = qI\{Y_i > \theta\} - (1-q)I\{Y_i \leq \theta\}$
+
+:::
 
 ::: {.column-margin}
 $I\{\}$ is an indicator function that takes 1 if the condition inside the curly brackets and 0 otherwise.
 :::
 
-:::{.callout-note}
-Why is it called generalized <span style="color:red"> random forest</span>?
+---
+
+So far, we have only talked about score functions so far, but not the weights. Do all the approaches listed above use the weights derived from the trees grown by the traditional RF in solving @eq-opt? You could (you are free to use any weights), but that would not be wise. As mentioned earlier, GRF adjusts the way trees are grown (thus weights) as well according to the score function so that weights are optimized for your objective. This makes sense. Right <span style="color:blue"> neighbors </span>should be different based on what you are interesting in estimating.
+
+Specifically, GRF uses the random forest <span style="color:blue">algorithm</span> to grow trees based on <span style="color:blue"> pseudo outcome ($\rho_i$) </span> derived from the score function that is specific to the type of regression you are running, but not on $Y$. Basically, you are using exactly the same algorithm as the traditional RF we saw in @sec-rf except that $Y$ is swapped with the pseudo outcome.
+
+::: {.column-margin}
+See @athey2019generalized for how the pseudo outcome is derived from a score function in general. 
 :::
 
-<span style="color:blue"> GRF uses random forest to find the weights $\alpha_i(x)$. </span>Specifically, it trains a random forest in which the dependent variable is <span style="color:blue"> pseudo outcome ($\rho_i$) </span>derived from the score function that is specific to the type of regression you are running. Based on the trees build, then $\alpha_i(x)$ is calculated as the proportion of the number of times observation $i$ ended up in the same terminal node (leaf) relative to the total number of observations that $X = x$ share leaves with for all the trees. 
+:::{.callout-note}
 
-Suppose you build $T$ trees using RF on the pseudo outcomes. Each of the tree has its own splitting rules, and you can identify which leaf $X=x$ belongs to for each of the $T$ trees. Now, let $\eta_{i,t}(X)$ is 1 if observation $i$ belongs to the same leaf as $X=x$ in tree $t$. Then the weight given to observation $i$ is
+## Example pseudo outcomes
+
+<span style="color:blue">Random forest</span>: 
 
 $$
 \begin{aligned}
-\alpha_i(x) = \frac{1}{T}\sum_{t=1}^T\frac{\eta_{i,t}(x)}{\sum_{i=1}^N\eta_{i,t}(x)}
+\rho_i = Y_i - \hat{\theta}_P
 \end{aligned}
-$$ {#eq-weight}
+$$
 
-+ $\sum_{i=1}^{N}\eta_{i,t}(x)$: the number of observations in the same terminal node as $X=x$ in tree $t$
+<span style="color:blue"> Causal forest</span>:
 
-::: {.column-margin}
-Note that some trees do not even have observation $i$ as bootstrapped samples are used to build trees.
+$$
+\begin{aligned}
+\rho_i = (\tilde{Y}_i- \hat{\theta}_P \tilde{T}_i)\cdot\tilde{T}_i
+\end{aligned}
+$$ 
+
+<span style="color:blue"> Quantile forest</span>:
+
+$$
+\begin{aligned}
+\rho_i = I\{Y_i > \hat{\theta}_P\}
+\end{aligned}
+$$
+
 :::
 
-Note that trees are build only once in GRF and it is used repeatedly when predicting $\theta(X)$ at different values of $X$. So, the trained RF is applied <span style="color:blue"> globally</span>, but the weights obtained based on the forest are <span style="color:blue"> local </span>to the point of evaluation ($X_i = x$). As you can see from @eq-weight, depending on the value of $X$ ($x$), individual weights are adjusted according to how similar the observations are to the point of evaluation ($X=x$). For a given value of $X$, the weights are plugged into @eq-opt and the minimization problem is solve to identify $\theta(x)$.
+Note that $\hat{\theta}_P$ in the pseudo outcomes presented above is the solution to @eq-opt with their respective score functions using the data in the parent node. For example, $\hat{\theta}_P = \bar{Y}_p$ for RF, which is the average value of $Y$ in the parent node. In quantile forest, $\hat{\theta}_P$ is the $q$th quantile of the parent node if you are estimating the $q$the conditional quantile.
 
+---
+
+Finally, here are the conceptual steps of GRF:
+
+:::{.callout-note}
+
+## GRF: conceptual steps 
+
++ Training (Forest Growing) Step:
+  1. Determine what statistics you are interested in ($\theta(X)$, e.g., CATE, conditional quantile)
+  2. Define the appropriate score function according to the statistics of interest
+  3. Derive the pseudo outcome based on the score function
+  4. Grow trees using the RF algorithm based on the pseudo outcome
+
++ Prediction Step:
+  1. Determine what value of $X$ you would like to predict $\theta(X)$ (call it $X_0$)
+  2. Find the individual weights $\alpha(X_i, X_0)$ according to 
+  $$
+  \begin{aligned}
+  \alpha(X_i, X_0) = \frac{1}{T}\sum_{t=1}^T\frac{\eta_{i,t}(X_0)}{\sum_{i=1}^N\eta_{i,t}(X_0)}
+  \end{aligned}
+  $$
+  , which measures how often observation $i$ belongs to the same node as the evaluation point $X_0$.
+
+  3. Solve @eq-opt with the weights obtained above and the score function specified earlier
+
+::: 
+
+The training step is done only once (trees are built only once). But, whenever you predict $\theta(X)$ at different values of $X$, you go through the prediction step.
 
 ::: {.column-margin}
-Orthogonal random forest (a forest-based heterogeneous treatment effect estimator like causal forest), on the other hand, build trees every time when predicting treatment effect $\theta(X)$ at particular values of $X$, which is why orthogonal random forest takes a very long time especially when there are many evaluation points.
-:::
-
-
-You probably have noticed the similarity in idea between GRF and generalized method moments (GMM). Indeed, GRF can also be considered as local GMM (see @sec-local-reg to get a sense of what a local regression is like). 
-
-:::{.callout-tip}
-**GRF** procedure
-
-+ Step 1: Train random forest
-  * Specify the score function that is appropriate for the statistics of interest and the data generating process
-  * Derive pseudo outcome from the score function
-  * Train random forest using the pseudo outcomes as the dependent variable
-+ Step 2: Estimate (predict) $\theta(x)$
-  * Find the weight for each observation based on the trained random forest according to @eq-weight and then solve the weighted minimization problem (@eq-opt).
-
+Orthogonal random forest (a forest-based heterogeneous treatment effect estimator like causal forest), on the other hand, build trees every time when predicting treatment effect $\theta(X)$ at particular values of $X$, which is why orthogonal random forest takes a very long time especially when there are many evaluation points. Orthogonal random forest is covered in @sec-cf-orf.
 :::
 
 ## Random forest as a GRF
 
-Here, we take a look at RF as a GRF as an illustration to understand the general GRF procedure better.
-
-### Forest building (train an RF on pseudo outcome)
-
-When $\Psi_{\theta, \nu}(Y_i, X_i)$ is set to $Y_i - \theta(X)$, then GRF is simply RF. By plugging $Y_i - \theta(X)$ into @eq-opt, the minimization problem to predict $\theta(x)$ ($E[Y|X=x]$) for this GRF is then,
+Here, we take a look at RF as a GRF as an illustration to understand the general GRF procedure better. When $\Psi_{\theta, \nu}(Y_i)$ is set to $Y_i - \theta$, then GRF is equivalent to the traditional RF. By plugging $Y_i - \theta$ into @eq-opt, the estimate of $E[Y|X=X_0]$, $\theta(X_0)$, is identified by solving 
 
 $$
 \begin{aligned}
-\theta(x) = argmin_{\theta} \sum_{i=1}^n \alpha_i(x)[Y_i - \theta(X)]^2
+\sum_{i=1}^n \alpha_i(X_0)(Y_i - \theta) = 0
 \end{aligned}
 $$ {#eq-rf}
 
-::: {.column-margin}
-No nuisance parameters ($\nu(X)$) here.
-:::
+The weights $\alpha_i(X_i, X_0)$ are defined as follows:
+$$
+\begin{aligned}
+\alpha_i(X_i, X_0) = \frac{1}{T}\cdot\sum_{t=1}^T\frac{\eta_{i,t}(X_0)}{\sum_{i=1}^N\eta_{i,t}(X_0)}
+\end{aligned}
+$$
 
-Now, let's consider building a forest to find $\alpha_i(x)$ in @eq-rf. For a given bootstrapped sample and set of variables randomly selected, GRF starts with solving the unweighted version of @eq-rf. 
+, where $\eta_{i,t}(X_0)$ is 1 if observation $i$ which has feature values $X_i$ belongs to the same leaf as $X_0$. 
+
+
+### Step 1: Grow trees
+
+
+Now, let's consider growing trees to find $\alpha_i(X_0)$ in @eq-rf. For a given sample and set of variables randomly selected, GRF starts with solving the unweighted version of @eq-rf. 
 
 $$
 \begin{aligned}
-\theta(x) = argmin_{\theta} \sum_{i=1}^n [Y_i - \theta]^2
+\sum_{i=1}^n Y_i - \theta = 0
 \end{aligned}
 $$ {#eq-rf-initial}
 
@@ -122,65 +269,25 @@ $$
 \end{aligned}
 $$
 
-::: {.column-margin}
-In general, 
-$$
-\begin{aligned}
-\rho_i = - \xi^T A_P^{-1}\Psi_{\hat{\theta}_P, \hat{\nu}_P}(O_i)
-\end{aligned}
-$$
-
-where $A_P = \frac{1}{N_P} \sum_{i=1}^{N_P} \nabla \Psi_{\hat{\theta}_P, \hat{\nu}_P}(O_i)$ 
-
-Here, 
-
-+ $\xi^T = 1$
-+ $\Psi_{\hat{\theta}_P, \hat{\nu}_P}(O_i) = Y_i - \theta_P$
-
-Therefore, 
-
-$$
-\begin{aligned}
-A_P = \frac{1}{N_P} \sum_{i=1}^{N_P} \times (-1) = -1
-\end{aligned}
-$$
-
-Thus,
-
-$$
-\begin{aligned}
-\rho_i = -1(-1)(Y_i - \theta_P) = Y_i - \bar{Y}_P
-\end{aligned}
-$$
-
-since $\theta_P = \bar{Y}_P$. 
-:::
-
-
-Now, a standard CART regression split is applied on the pseudo outcomes. 
-That is, the variable-cutpoint combination that maximizes the following criteria is found in a greedy manner (see @sec-rt for how a CART is build):
+Now, a standard CART regression split is applied on the pseudo outcomes. That is, the variable-threshold combination that maximizes the following criteria is found:
 
 $$
 \begin{aligned}
 \tilde{\Delta}(C_1, C_2) = \frac{(\sum_{i \in C_1} \rho_i)^2}{N_{C_1}} + \frac{(\sum_{i \in C_2} \rho_i)^2}{N_{C_2}}
 \end{aligned}
-$$
+$$ {#eq-criteria}
 
-where $C_1$ and $C_2$ represent two child node candidates for a given split. This is exactly the same as how the traditional RF builds trees.
+where $C_1$ and $C_2$ represent two child node candidates for a given split. Since $\bar{Y}_P$ is just a constant, it is equivalent to splitting on $Y_i$. So, this is exactly the same as how the traditional RF builds trees (see @sec-split-sim for the rationale behind maximizing the criteria presented in @eq-criteria).
 
-Note that the pseudo outcomes are first summed and then squared in $(\sum_{i \in C_1} \rho_i)^2$. This is a similarity score. If the pseudo outcomes are similar to one another, then they do not cancel each other out, which leads to a higher similarity score. Maximizing the weighted sum of similarity scores from the two child node candidates means that you are trying to find a split so that each of the group have similar pseudo outcomes <span style="color:blue"> within </span>the group (which in turn means larger heterogeneity in pseudo outcomes <span style="color:blue"> between </span>the child nodes). 
+Once the best split is identified, each of the new child nodes is split following the exactly the same procedure. Splitting continues until one of the user-specified condition prevent a further splitting. Many trees from bootstrapped samples are created (just like the regular random forest) and they form a forest. This shows that the GRF with $\Psi_{\theta, \nu}(Y_i, X_i) = Y_i - \theta$ grows trees in the same manner as the traditional RF. RF in GRF is implemented by `regression_forest()`. But, note that running `ranger()` and `regression_forest()` will not result in the same forest because of the randomness involved in resampling and random selection of variables. Only their algorithms are equivalent
 
-Once the best split is identified, each of the new child nodes is split following the exactly the same procedure. Splitting continues until one of the user-specified condition prevent a further splitting. 
+### Step 2: predict 
 
-Many trees from bootstrapped samples are created (just like the regular random forest) and they form a random forest. 
-
-### Prediction
-
-To predict $E[Y|X=x]$, solve @eq-rf with the weights. The first order condition is then
+To predict $E[Y|X=X_0]$, @eq-rf is solved
 
 $$
 \begin{aligned}
-\sum_{i=1}^N \alpha_i(X)(Y_i-\theta) = 0
+\sum_{i=1}^N \alpha_i(X_i, X_0)(Y_i-\theta) = 0
 \end{aligned}
 $$  
 
@@ -188,82 +295,68 @@ So,
 
 $$
 \begin{aligned}
-\theta(x) & = \frac{\sum_{i=1}^N \alpha_i(x)Y_i}{\sum_{i=1}^N \alpha_i(x)}\\
-& = \sum_{i=1}^N \alpha_i(x)Y_i \;\; \mbox{(since } \sum_{i=1}^N \alpha_i(x) = 1\mbox{)} \\
-& = \sum_{i=1}^N \huge[\normalsize \frac{1}{T}\cdot\sum_{t=1}^T\frac{\eta_{i,t}(x)}{\sum_{i=1}^N\eta_{i,t}(x)}\cdot y_i\huge]\\
-& = \frac{1}{T}  \cdot\sum_{t=1}^T\sum_{i=1}^N \frac{\eta_{i,t}(x)}{\sum_{i=1}^N\eta_{i,t}(x)}\cdot y_i \;\; \mbox{(changing the order of the summations)} \\
+\theta(X_0) & = \frac{\sum_{i=1}^N \alpha_i(X_0)Y_i}{\sum_{i=1}^N \alpha_i(X_0)}\\
+& = \sum_{i=1}^N \alpha_i(X_0)Y_i \;\; \mbox{(since } \sum_{i=1}^N \alpha_i(X_0) = 1\mbox{)} \\
+& = \sum_{i=1}^N \huge[\normalsize \frac{1}{T}\cdot\sum_{t=1}^T\frac{\eta_{i,t}(X_0)}{\sum_{i=1}^N\eta_{i,t}(X_0)}\cdot y_i\huge]\\
+& = \frac{1}{T}  \cdot\sum_{t=1}^T\sum_{i=1}^N \frac{\eta_{i,t}(X_0)}{\sum_{i=1}^N\eta_{i,t}(X_0)}\cdot y_i \;\; \mbox{(changing the order of the summations)} \\
 & = \frac{1}{T} \cdot\sum_{t=1}^T \bar{Y}_t
 \end{aligned}
 $$
 
-So, $\theta(x)$ from GRF is the average of tree-specific predictions, which is exactly how RF predicts $E[Y|X=x]$ as well.
+So, $\theta(X_0)$ from GRF is the average of tree-specific predictions for $X_0$, which is exactly how RF predicts $E[Y|X=X_0]$ as well.
+
+So, it has been shown that GRF with $\Psi_{\theta, \nu}(Y_i)=Y_i - \theta$ grows trees in the same manner as the traditional RF and also that GRF predicts $E[Y|X=X_0]$ in the same manner as the traditional RF. So, RF is a special case of GRF, where $\Psi_{\theta, \nu}(Y_i)=Y_i - \theta$.
 
 ## Causal forest as a GRF
 
-A GRF with $\Psi_{\theta, \nu}(Y_i, X_i, T_i) = (Y_i - E[Y|X])- \theta(X)(T_i - E[T|X])$ is causal forest as an R-learner (take a look at @sec-r-learner to see the reasoning behind this score function). In practice $E[Y|X]$ and $E[T|X]$ are first estimated using appropriate machine learning methods (e.g., lasso, random forest, gradient boosted forest) in a cross-fitting manner and then the estimation of $Y_i - E[Y|X]$ and $T_i - E[T|X]$ are constructed. Let's denote them by $\hat{\tilde{Y}}_i$ and $\hat{\tilde{T}}_i$. Then the empirical score function is written as
+
+### Mechanics
+
+Causal forest (with a single treatment variable) as an R-learner is a GRF with
 
 $$
 \begin{aligned}
-\Psi_{\theta} = \hat{\tilde{Y}}_i- \theta(X)\hat{\tilde{T}}_i
+\Psi_{\theta, \nu}(O_i) = [(Y_i - E[Y|X_i])- \theta(X_i)(T_i - E[T|X_i])](T_i - E[T|X_i])
+\end{aligned}
+$$
+
+In practice $E[Y|X_i]$ and $E[T|X_i]$ are first estimated using appropriate machine learning methods (e.g., lasso, random forest, gradient boosted forest) in a cross-fitting manner and then the estimation of $Y_i - E[Y|X_i]$ and $T_i - E[T|X_i]$ are constructed. Let's denote them by $\tilde{Y}_i$ and $\tilde{T}_i$. Then the score function is written as
+
+$$
+\begin{aligned}
+\Psi_{\theta} = (\tilde{Y}_i- \theta\tilde{T}_i)\tilde{T}_i
 \end{aligned}
 $$ {#eq-cf-score}
 
-Then, the heterogeneous treatment effect ($\theta(X)$) is estimated by solving the following problem:
+So, the conditional treatment effect at $X=X_0$, $\theta(X_0)$, is estimated by solving the following problem:
 
 $$
 \begin{aligned}
-\hat{\theta}(X) = argmin_{\theta}\;\;\sum_{i=1}^N \alpha_i(x)[\hat{\tilde{Y_i}} - \theta\cdot \hat{\tilde{T_i}}]^2
+\hat{\theta}(X_0) = \sum_{i=1}^N \alpha_i(x)(\tilde{Y_i} - \theta\cdot \tilde{T_i})\tilde{T_i} = 0
 \end{aligned}
 $$ {#eq-cf-solve}
 
 where $\alpha_i(x)$ is the weight obtained from the trees built using random forest on the pseudo outcomes that are derived from the score function (@eq-cf-score).
 
-In building a tree, CF sets $\theta_P$ as a solution to the unweighted version of @eq-cf-solve.
+For a given parent node $p$, the pseudo outcomes are defined as
 
 $$
 \begin{aligned}
-\hat{\theta}_P = \sum_{i=1}^N \hat{\tilde{T_i}}(\hat{\tilde{Y_i}}-\theta \hat{\tilde{T_i}})
+\rho_i = (\tilde{Y}_i- \hat{\theta}_P\tilde{T}_i)\tilde{T}_i
 \end{aligned}
 $$
 
-The pseudo outcome for CF is
+where $\hat{\theta}_P$ is the solution of the following problem using the observations in the parent node:
 
 $$
 \begin{aligned}
-\rho_i = 
+\sum_{i=1}^N \tilde{T_i}(\tilde{Y_i}-\theta \tilde{T_i}) = 0
 \end{aligned}
 $$
 
-::: {.column-margin}
-+ $\xi^T = 1$
-+ $\Psi_{\hat{\theta}_P, \hat{\nu}_P}(O_i) = Y_i - \theta_P T$
+, which is the unweighted version of @eq-cf-solve.
 
-Therefore, 
-
-$$
-\begin{aligned}
-\nabla \Psi_{\hat{\theta}_P} = -T
-\end{aligned}
-$$
-
-, which leads to 
-
-$$
-\begin{aligned}
-A_P = \frac{1}{N_P} \sum_{i=1}^{N_P} \times (-T) = -T
-\end{aligned}
-$$
-
-Thus,
-
-$$
-\begin{aligned}
-\rho_i = -1\cdot \frac{-1}{T}\cdot(Y_i - \theta_P T) = \frac{Y_i}{T} - \theta_P
-\end{aligned}
-$$
-
-
-:::
+The standard CART splitting algorithm is applied on the pseudo outcomes to build trees.
 
 ## Honesty {#sec-grf-honest}
 
@@ -339,7 +432,7 @@ We would like to train a RF using this data where the dependent variable is logg
 We first bootstrap data.
 
 ```{r}
-set.seed(89232)
+set.seed(358349)
 num_obs <- nrow(mlb1_dt)
 row_indices <- sample(seq_len(num_obs), num_obs, replace = TRUE)
 boot_mlb1_dt <- mlb1_dt[row_indices, ]
@@ -384,6 +477,611 @@ honest_pred <- eval_data[, mean(lsalary), by = hits < 356]
 So, instead of $12.47$ and $14.23$, the predicted values from the honest tree are $`r round(honest_pred[hits == TRUE, V1], digits = 2)`$ and $`r round(honest_pred[hits == FALSE, V1], digits = 2)`$ for the left and right nodes, respectively. Trees are built in this manner many times to form a forest.
 
 More generally, in GRF, honesty is applied by using the evaluation data to solve @eq-opt based on the weight $\alpha_i(x)$ derived from the trained forest using the splitting data. Honesty is required for the GRF estimator to be consistent and asymptotically normal [@athey2019generalized]. However, the application of honesty can do more damage than help when the sample size is small.
+
+## Understanding GRF better by example
+
+This section goes through CF model training and CATE prediction step by step with codes to enhance our understanding of how GRF works. In the process, we also learn the role of many of the hyper-parameters. They include those that are common across all the GRF methods and those that are specific to CF. 
+
+While the process explained here is for CF, the vast majority of the process is exactly the same for other models under GRF. Here are some differences:
+
++ Orthogonalization of the data at the beginning for CF 
++ The definition of the pseudo outcome (but, the way they are used in the algorithm is identical once they are defined) 
++ The role of `min.node.size`, `alpha`, and `imbalance.penalty` used for safeguarding against extreme splits
+
+::: {.column-margin}
+Obviously, the codes here are only for illustration and should not be used in practice.
+:::
+
+We will use a synthetic data generated from the following generating process:
+
+$$
+\begin{aligned}
+y = \theta(X)\cdot T + g(X) + \mu
+\end{aligned}
+$$
+, where
+
+$$
+\begin{aligned}
+\theta(X) & = 2 + 3 * x_1^2 - \sqrt{3 * x_2^3 + 1}\\
+g(X) & = 10 \cdot [log(x_2+1) + 2\cdot x_3*x_2]
+\end{aligned}
+$$
+
+We have 10 feature variables $x_1, \dots, x_{10}$ and only $x_1$ through $x_3$ plays a role.  
+
++ $x_1, x_2 \sim U[0, 3]^2$
++ $x_3 \sim N(1, 1)$
++ $x_4, \dots, x_{10} \sim U[0, 1]^{10}$
+
+The error term and the treatment variable is defined as follows. 
+
++ $\mu \sim N(0, 1)$
++ $T \sim Ber(0.5)$
+
+```{r}
+set.seed(73843)
+N <- 1000 # number of observations
+
+x4_x10 <- 
+  matrix(runif(N * 7), nrow = N) %>% 
+  data.table() %>% 
+  setnames(names(.), paste0("x", 4:10))
+
+(
+data <- 
+  data.table(
+    x1 = 3 * runif(N),
+    x2 = 3 * runif(N),
+    x3 = rnorm(N, mean = 1, sd = 1),
+    mu = rnorm(N),
+    T = runif(N) > 0.5
+  ) %>% 
+  #=== theta(X) ===#
+  .[, theta_x := 2 + 3 * x1^2 - sqrt(3* x2^3 + 2)] %>%
+  #=== g(X) ===#
+  .[, g_x := 10 * (log(x2 + 1) + 2 * x3 * x2)] %>% 
+  .[, y := theta_x * T + g_x + mu] %>% 
+  .[, .(y, T, x1, x2, x3)] %>% 
+  cbind(., x4_x10)
+)
+
+```
+
+### Orthogonalization of $Y$ and $T$
+
+Causal forest (and instrumental forest) first orthogonalizes $Y$ and $T$. This is not the case for the other GRF methods. By default, `causal_forest()` uses random forest to estimate $E[Y|X]$ and $E[T|X]$, and then use out-of-bag predictions. Since the treatment assignment is randomized, we could use $0.5$ for as the estimate for $E[T|X]$ for all the observations. But, we will estimate both in this example.
+
+
+```{r}
+#--------------------------
+# E[Y|X]
+#--------------------------
+#=== train an RF on y ===#
+y_rf_trained <-
+  regression_forest(
+    X = data[, .(x1, x2, x3)],
+    Y = data[, y]
+  )
+
+#=== OOB estimates of E[Y|X] ===#
+ey_x_hat <- y_rf_trained$predictions
+
+#--------------------------
+# E[T|X]
+#--------------------------
+#=== train an RF on T ===#
+t_rf_trained <-
+  probability_forest(
+    X = data[, .(x1, x2, x3)],
+    Y = data[, factor(T)]
+  )
+
+#=== OOB estimates of E[T|X] ===#
+et_x_hat <- t_rf_trained$predictions[, 2] # get the probability of T = 1
+
+```
+
+Let's now orthogonalize $Y$ and $T$,
+
+```{r}
+data[, `:=`(y_tilde = y - ey_x_hat, t_tilde = T - et_x_hat)]
+```
+
+Here is what the data looks like:
+
+```{r}
+head(data)
+```
+
+### Building trees
+
+---
+
+<span style="color:blue"> Preparing Data</span>:
+
+When building a tree, GRF use sampling without replacement instead of sampling with replacement as a default for RF implemented by `ranger()`. `sample.fraction` parameter determines the fraction of the entire sample drawn for each tree. Let's use the default value, which is $0.5$. 
+
+```{r}
+(
+data_for_the_first_tree <- data[sample(1:N, 0.5 * N, replace = FALSE), ] 
+)
+```
+
+By default, honest splitting is implemented (`honesty = TRUE`). The `honesty.fraction` parameter determines the fraction of the randomly sampled data (`data_for_the_first_tree`), which will be used for determining splitting decisions. We will use the default value of `honesty.fraction`, which is $0.5$.
+
+```{r}
+#=== number of observations ===#
+N_d <- nrow(data_for_the_first_tree)
+
+#=== indices ===#
+J1_index <- sample(1:N_d, 0.5 * N_d, replace = FALSE)
+
+#=== data for determining splitting rules ===#
+(
+data_J1 <- data_for_the_first_tree[J1_index, ]
+)
+```
+
+As you can see, we are just using a quarter of the original dataset (`sample.fraction` $\times$ `honesty.fraction` = $0.5 \times 0.5$). Here is the data for repopulating the tree once the tree is built.
+
+```{r}
+#=== data for repopulate the tree ===#
+(
+data_J2 <- data_for_the_first_tree[-J1_index, ]
+)
+```
+
+---
+
+<span style="color:blue"> Determining splitting rules</span>:
+
+Now let's find the splitting rules using `data_J1` (Remember, `data_J2` is not used).
+
+We are at the root node to which all the observations belong. Let's first calculate the pseudo outcome. Finding pseudo outcomes starts from solving the unweighted version of @eq-opt using the samples in the parent node (root node here) in general. For CF, it is
+
+$$
+\begin{aligned}
+\sum_{i=1}^n (\tilde{Y}_i - \theta\tilde{T}_i)\cdot \tilde{T}_i = 0
+\end{aligned}
+$$ {#eq-theta-p}
+
+because the score function for CF is $(\tilde{Y}_i - \theta\tilde{T}_i)\cdot \tilde{T}_i$. So, 
+
+$$
+\begin{aligned}
+\theta_P = \frac{\sum_{i=1}^n \tilde{Y}_i\cdot \tilde{T}_i}{\sum_{i=1}^n\tilde{T}_i\cdot \tilde{T}_i}
+\end{aligned}
+$$
+
+```{r}
+(
+theta_p <- data_J1[, sum(y_tilde * t_tilde)/sum(t_tilde * t_tilde)]
+)
+```
+
+The pseudo outcome for CF is $(\tilde{Y}_i - \theta_P\tilde{T}_i)\cdot \tilde{T}_i$. Let's define that in `data_J1`.
+
+```{r}
+data_J1[, rho := (y_tilde - theta_p * t_tilde) * t_tilde]
+```
+
+Now, the number of variables to use for splitting is determined by the `mtry` parameter. Its default is `min(ceiling(sqrt(ncol(X))+20), ncol(X))`, where `X` is the feature matrix. Here `ncol(X)` is 10. So, `mtry` is set to `r min(ceiling(sqrt(10)+20), 10)`. Following this, we will use all three variables for splitting here. Let $C_j$ ($j = 1, 2$) and $N_j$ denote the child node $j$ and the number of observations in child node $j$, respectively. We will write a function that works on a single feature variable to find all the threshold values that would result in unique splits, and then return the following information:
+
++ $(\sum_{i\in C_j} \rho_i)^2$
++ $N_j$
++ $\sum_{i=1}^{N_j} (T_i - \bar{T})^2$ (we will call this `info_size`)
++ the number of treated and control units
+
+The output allows us to calculate the heterogeneity score of the split defined as
+
+$$
+\begin{aligned}
+\sum_{j=1}^2 \frac{(\sum_{i\in C_j} \rho_i)^2}{N_j}.
+\end{aligned}
+$$
+
+It also allows us to eliminate some of the splits based on `mtry`, `alpha`, and `imbalance.penalty` parameters. 
+
+```{r}
+get_ss_by_var <- function(feature_var, outcome_var, parent_data)
+{
+  temp_data <- 
+    copy(parent_data) %>% 
+    setnames(feature_var, "temp_var") %>% 
+    setnames(outcome_var, "outcome")  
+
+  #=== define a sequence of values of hruns ===#
+  thr_seq <-
+    temp_data[order(temp_var), unique(temp_var)] %>%
+    #=== get the rolling mean ===#
+    frollmean(2) %>% 
+    .[-1]
+
+  #=== get RSS ===#
+  ss_value <-
+    lapply(
+      thr_seq,
+      function(x){
+
+        return_data <- 
+          temp_data[, .(
+            het_score = sum(outcome)^2/.N, 
+            nobs = .N,
+            info_size = sum((T - mean(T))^2),
+            num_treated = sum(T),
+            num_ctrl = sum(!T)
+          ), by = temp_var < x] %>% 
+          setnames("temp_var", "child") %>% 
+          .[, child := ifelse(child == TRUE, "Child 1", "Child 2")] %>% 
+          .[, thr := x]
+        
+        return(return_data)
+      } 
+    ) %>% 
+    rbindlist() %>% 
+    .[, var := feature_var] %>% 
+    relocate(var, thr, child)
+
+  return(ss_value)
+}
+```
+
+For example, here is the output for `x1`.
+
+```{r}
+get_ss_by_var("x1", "rho", data_J1)[]
+```
+
+Repeating this for all the feature variables,
+
+```{r}
+(
+thr_score_data <-
+  lapply(
+    paste0("x", 1:10),
+    function(x) get_ss_by_var(x, "rho", data_J1)
+  ) %>% 
+  rbindlist()
+)
+```
+
+Now, we ensure that we have at least as many `min.node.size` numbers of treated and control units in both child nodes. This provides a safeguard against having a very inaccurate treatment effect estimation. The default value of `min.node.size` is 5. 
+
+```{r}
+min.node.size <- 5 # referred to as mns
+
+#=== check if both child nodes have at least mns control and treatment units  ===#
+thr_score_data[, mns_met_grup := all(num_ctrl >= min.node.size & num_treated >= min.node.size), by = .(var, thr)]
+
+(
+msn_met_data <- thr_score_data[mns_met_grup == TRUE, ]
+)
+```
+
+Now, we consider how `alpha` and `imbalance.penalty` affect the potential pool of feature-threshold combinations. Each child node needs to have at least as large `info_size` as `alpha` $\times$ `info_size` of the parent node. The `info_size` of the parent node is 
+
+```{r}
+(
+info_size_p <- data_J1[, sum((T - mean(T))^2)]
+)
+```
+
+By default, `alpha` is set to 0.05. We use this number.
+
+```{r alpha}
+alpha <- 0.05
+
+msn_met_data[, info_size_met := all(info_size > (alpha * info_size_p)), by = .(var, thr)]
+
+msn_ifs_met <- msn_met_data[info_size_met == TRUE, ]
+```
+
+`imbalance.penalty` is used to further punish splits that introduce imbalance. For example, for feature `x1` and `thr` of `r msn_ifs_met[1, thr]`, 
+
+```{r}
+#| echo: false
+(
+ex_score <- 
+  msn_met_data[var == "x1", ] %>% 
+  .[1:2,]
+)
+```
+
+the unpunished heterogeneity score is `r ex_score[, sum(het_score)]`. With a non-zero value of `imbalance.penalty`, the following penalty will be subtracted from the unpunished heterogeneity score: `imbalance.penalty * (1/info_size_1 + 1/info_size_2)`. By default, `imbalance.penalty` is 0. But, let's use `imbalance.penalty` $= 1$ here.
+
+```{r}
+imbalance.penalty <- 1
+msn_ifs_met[, imb_penalty := imbalance.penalty * (1/info_size)]
+```
+
+Now, we calculate the heterogeneity score for each feature-threshold with imbalance penalty.
+
+```{r imbp-score}
+(
+het_score_data <- msn_ifs_met[, .(het_with_imbp = sum(het_score - imb_penalty)), by = .(var, thr)]
+)
+```
+
+We now find the feature-threshold combination that maximizes the score,
+
+```{r}
+(
+best_split <- het_score_data[which.max(het_with_imbp), ]
+)
+```
+
+So, we are splitting the root node using `x1` with threshold of `r best_split[, round(thr, digits = 4)]`. Here is a visualization of the split,
+
+```{r viz-first-split}
+#| code-fold: true
+ggplot(data_J1) +
+  geom_point(aes(y = rho, x = x1, color = (x1 < best_split[, thr]))) +
+  scale_color_discrete("Less than the threshold") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+Now, let's look at the pseudo outcome and elaborate more on what we are seeing here.
+
+$$
+\begin{aligned}
+\rho_i = (\tilde{Y}_i- \hat{\theta}_P\tilde{T}_i)\tilde{T}_i
+\end{aligned}
+$$
+
+Note that $\hat{\theta}_P$ is just a constant and represents the average treatment effect for the parent node. So, $\rho_i$ tends to be higher for the observations whose CATE is higher (above-average treatment effect). So, splitting on $\rho$ (instead of $Y$) made it possible to pick the right feature variable `x1`. This is because `x1` is influential in determining CATE and higher values of `x1` lead to more positive CATE.
+
+Note that the checks implemented with `mtry`, `alpha`, and  `imbalance.penalty` is more important further down a tree. But, the examples above should have illustrated how they are used. 
+
+Okay, now let's split the root node into two child nodes according to the best split on $\rho$ we found earlier.
+
+```{r}
+depth_2_node_1 <- data_J1[x1 < best_split[, thr], ]
+depth_2_node_2 <- data_J1[x1 >= best_split[, thr], ]
+```
+
+Let's consider splitting the second node, `depth_2_node_1`. We basically follow exactly the same process the we just did. First, find $\hat{\theta}_P$ for this (parent) node using @eq-theta-p and define the pseudo outcomes.
+
+```{r}
+(
+theta_p <- depth_2_node_1[, sum(y_tilde * t_tilde)/sum(t_tilde * t_tilde)]
+)
+
+depth_2_node_1[, rho := (y_tilde - theta_p * t_tilde) * t_tilde]
+```
+
+Now, we find the best split (here we ignore various checks),
+
+```{r}
+(
+best_split_d2_n1 <-
+  lapply(
+    paste0("x", 1:10),
+    function(x) get_ss_by_var(x, "rho", depth_2_node_1)
+  ) %>% 
+  rbindlist() %>% 
+  .[, .(het_score = sum(het_score)), by = .(var, thr)] %>% 
+  .[which.max(het_score), ]
+)
+```
+
+We keep splitting nodes until no splits is possible any more based on the value of `min.node.size`, `alpha`, and `imbalance.penalty`. 
+
+---
+
+To see the role of `honesty.prune.leaves`, let's suppose we stopped splitting after the first split based on `x` with threshold of `r best_split[, round(thr, digits = 4)]`. So, we just two terminal nodes. As stated in @sec-grf-honest, when we do prediction, `data_J1` (which is used for determining the splitting rule) is not used. Rather, `data_J2` (the data that was set aside) is used. When `honesty.prune.leaves = TRUE` (default), the tree is pruned so that no leaves are empty. Yes, we made sure that we have certain number of observations in each node with `min.node.size`, however, that is only for `data_J1`, not `data_J2`. 
+
+```{r}
+data_J2[, .N, by = x1 < best_split[, thr]]
+```
+
+Okay, so, each child has at least one observation. So, we are not going to prune the tree. If either of the child nodes was empty, then we would have removed the leaves and had the root node as the tree. 
+
+As you can see, while `data_J1` plays a central role in the tree building process, the other half, `data_J2`, plays a very small role. However, `data_J2` plays the central role in prediction, which will be seen in the next section.
+
+### Prediction
+
+Suppose you have built $T$ trees already. In general for GRF, statistics of interest, $\theta(X)$, at $X = X_0$ is found by solving the following equation:
+
+$$
+\begin{aligned}
+\sum_{i=1}^N \alpha_i(X_i, X_0)\psi_{\theta,\nu}(O_i) = 0 
+\end{aligned}
+$$
+
+where $\alpha_i(X_i, X_0)$ is the weight given to each $i$ calculated based on the trees that have been built. Let $\eta_{i,t}(X_i, X_0)$ be 1 if observation $i$ belongs to the same leaf as $X_0$ in tree $t$. Then, 
+
+$$
+\begin{aligned}
+\alpha_i(X_i, X_0) = \frac{1}{T}\sum_{t=1}^T\frac{\eta_{i,t}(X_i, X_0)}{\sum_{i=1}^N\eta_{i,t}(X_i, X_0)}
+\end{aligned}
+$$ {#eq-weight-cf}
+
+So, the weight given to observation $i$ is higher if observation $i$ belongs to the same leaf as the evaluation point $X_0$ in more trees. 
+
+For CF, since the score function is defined as $\psi_{\theta,\nu}(O_i) = \tilde{Y}_i - \theta\tilde{T}_i)\cdot \tilde{T}_i$, the equation can be written as
+
+$$
+\begin{aligned}
+\sum_{i=1}^N \alpha_i(X_i, X_0)[\tilde{Y_i} - \theta\cdot \tilde{T_i}]\hat{\tilde{T_i}} = 0 
+\end{aligned}
+$$
+
+So,
+
+$$
+\begin{aligned}
+\theta_P = \frac{\sum_{i=1}^n alpha_i(X_i, X_0)\tilde{Y}_i\cdot \tilde{T}_i}{\sum_{i=1}^n\alpha_i(X_i, X_0)\tilde{T}_i\cdot \tilde{T}_i}
+\end{aligned}
+$$
+
+Unlike the DML approaches we saw in @sec-het-dml that uses a linear model as the final model, CF does not assume any functional form for how $X$ affects $\theta$ as you can see from the above minimization problem. As mentioned earlier, CF is a special case of GRF (discussed in @sec-grf), so CF is also a local non-parametric regression (see @sec-local-reg for a brief discussion on local regression).
+
+We now illustrate how predictions are done once the trees have been built. Let's first build trees using `causal_forest()`. `min.node.size` is set deliberately high so we can work with very simple trees.
+
+::: {.column-margin}
+You do not need to know how `causal_forest()` works. You only need to know that `causal_forest()` build trees for CATE estimation.
+:::
+
+```{r}
+cf_trained <-
+  causal_forest(
+    X = select(data, starts_with("x")),
+    Y = data[, y],
+    W = data[, T],
+    min.node.size = 50
+  )
+```
+
+After training a causal forest model, we have trees like the one shown in @fig-cf-tree, which shows the first of the $2000$ trees.
+
+```{r}
+#| fig-cap: Example trees built in causal forest estimation
+#| label: fig-cf-tree 
+#| echo: false 
+get_tree(cf_trained, 1) %>% plot()
+```
+
+You probably noticed that the total number of samples in the leaves is only $250$ instead of $1000$, which is the total number of observations in `data`. When causal forest was trained on this dataset, only half of the entire sample are randomly selected for building each tree (due to the default setting of `sample.fraction = 0.5`). The halved sample is further split into two groups, each containing $250$ observations (due to the default setting of `honesty = TRUE` and `honest.fraction = 0.5`). Let's call them $J_1$ and $J_2$. Then, $J_1$ is used to train a tree to find the splitting rules (e.g., $x1 \leq 1.74$ for the first tree). Once the splitting rules are determined (tree building process is complete), then $J_1$ is "vacated" (or thrown out) from the tree. Then, $J_2$ "repopulate" the tree nodes. That is, the statistics presented in the terminal nodes (`avg_Y` and `avg_W`) are based on the samples in $J_2$, not $J_1$.
+
+Let's take a look at a tree to see what happened. We can use `get_tree()` to access individual trees from `cf_trained`. 
+
+```{r}
+#=== get the first tree ===#
+a_tree <- get_tree(cf_trained, 1)
+```
+
+`drawn_samples` attribute of the tree contains row indices that are selected randomly for this tree.
+
+```{r}
+head(a_tree$drawn_samples)
+
+length(a_tree$drawn_samples)
+```
+
+As you can see, there are 500 samples. The rest of the observations were not used for this tree. Accessing `nodes` attribute will give you the splitting rules for the tree built and which samples are in what node.
+
+```{r}
+(
+nodes <- a_tree$nodes
+)
+```
+
+`nodes` is a list of three elements (one root node and two terminal nodes). The `samples` attribute gives you row indices of the samples that belong to the terminal node. 
+
+```{r}
+nodes[[2]]$samples
+nodes[[3]]$samples
+```
+
+These are from $J_2$. That is, they were not used in finding the splitting rule of $x1 \leq 1.74$. They were populating the terminal nodes by simply following the splitting rule. The difference in `a_tree$drawn_samples` and the combination of `nodes[[2]]$samples` and `nodes[[3]]$samples` is $J_1$.
+
+```{r}
+J2_rows <- c(nodes[[2]]$samples, nodes[[3]]$samples)
+J1_J2_rows <- a_tree$drawn_samples
+
+(
+J1_rows <- J1_J2_rows[J1_J2_rows %in% J2_rows]
+)
+```
+
+As you can see, there are 250 samples in $J_1$.
+
+Suppose you are interested in predicting $\hat{\theta}$ at $X_0 = \{x_1 = 0.5, x_2 = 1.5\}$. For a given tree, we give 1 to the observations that belong to the same leaf as $X_0$. For example, for the first tree, $X_0$ belongs to the right leaf because $x1 = 0.5 > -0.09$ for $X_0$. 
+
+```{r}
+X_0 <- data.table(x1 = 0.5, x2 = 1.5)
+(
+which_tree_is_X0_in <- get_leaf_node(a_tree, X_0)
+)
+```
+
+So, we give $1/N_t(X_0)$ to all those in the right leaf (the third node in `nodes`) and 0 to those in the left leaf, where $N_t(X_0)$ is the number of observations that belong to the same leaf as $X_0$.
+
+```{r}
+#=== which row numbers in the same leaf as X_0? ===#
+rows_1 <- nodes[[which_tree_is_X0_in]]$samples
+
+#=== define eta for tree 1  ===#
+data[, eta_t1 := 0] # first set eta to 0 for all
+data[rows_1, eta_t1 := 1 / length(rows_1)] # replace eta with 1 if in the right node
+
+#=== see the data ===#
+data
+```
+
+We repeat this for all the trees and use @eq-weight-cf to calculate the weights for the individual observations. The following function gets $eta_{i,t}(X_i, X_0)$ for a given tree for all the observations.
+
+```{r}
+
+get_eta <- function(t, X_0) {
+
+  w_tree <- get_tree(cf_trained, t)
+  which_tree_is_X0_in <- get_leaf_node(w_tree, X_0)
+  rows <- w_tree$nodes[[which_tree_is_X0_in]]$samples
+  eta_data <- 
+    data.table(
+      row_id = seq_len(nrow(data)),
+      eta = rep(0, nrow(data))
+    ) %>% 
+    .[rows, eta := 1 / length(rows)]
+
+  return(eta_data)
+}
+
+```
+
+We apply `get_eta()` for each of the 2000 trees.
+
+```{r}
+(
+eta_all <-
+  lapply(
+    1:2000,
+    function(x) get_eta(x, X_0)
+  ) %>% 
+  rbindlist(idcol = "t")
+)
+```
+
+Calculate the mean of $\eta_{i,t}$ by `row_id` (observation).
+
+```{r}
+(
+weights <- 
+  eta_all %>% 
+  .[, .(weight = mean(eta)), by = row_id]
+)
+
+```
+
+Here is the observations that was given the highest and lowest weights.
+
+```{r}
+data_with_wights <- cbind(data, weights)
+
+#=== highest (1st) and lowest (2nd) ===#
+data_with_wights[weight %in% c(max(weight), min(weight)), ]
+```
+
+Then, we can use @eq-theta-solution to calculate $\hat{\theta}(X_0)$.
+
+```{r}
+(
+theta_X0 <- sum(data_with_wights[, weight * (T-cf_trained$W.hat) * (y-cf_trained$Y.hat)]) / sum(data_with_wights[, weight * (T-cf_trained$W.hat)^2])
+)
+
+```
+
+:::{.callout-note}
+You should not use the codes above to get the individual weights stored in `weights`. You can just use `get_forest_weights()` like below:
+
+```{r}
+#| eval: false
+get_forest_weights(cf_trained, X_0)
+```
+:::
 
 
 ## References {.unnumbered}

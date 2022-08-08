@@ -282,7 +282,7 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./P04-local-linear-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">LLF</span></a>
+  <a href="./P04-local-linear-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Local Linear Forest</span></a>
   </div>
 </li>
     </ul>
@@ -308,7 +308,12 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./C02-r-learner.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">S-, X-, T-, and R-learner</span></a>
+  <a href="./C02-xstr-learner.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">S-, X-, T-, and R-learner</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./C03-cf-orf.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Forest-based CATE Estimators</span></a>
   </div>
 </li>
     </ul>
@@ -324,12 +329,12 @@ div.csl-indent {
     <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./E01-spatial-cv.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></a>
+  <a href="./E01-spatial-cv.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./E02-grf.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Generalized Random Forest</span></a>
+  <a href="./E02-grf.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Generalized Random Forest</span></a>
   </div>
 </li>
     </ul>
@@ -345,17 +350,17 @@ div.csl-indent {
     <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PROG-01-mlr3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Machine Learning with <code>mlr3</code> in R</span></a>
+  <a href="./PROG-01-mlr3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Machine Learning with <code>mlr3</code> in R</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PROG-02-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
+  <a href="./PROG-02-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PROG-03-model-selection-prediction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Model Selection (Prediction)</span></a>
+  <a href="./PROG-03-model-selection-prediction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Model Selection (Prediction)</span></a>
   </div>
 </li>
     </ul>
@@ -403,7 +408,7 @@ div.csl-indent {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-xgb" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Extreme Gradient Boosting</span></span></h1>
+<div class="quarto-title-block"><div><h1 class="title"><span id="sec-xgb" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Extreme Gradient Boosting</span></span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
 </div>
 
 
@@ -418,10 +423,10 @@ div.csl-indent {
 </header>
 
 <p>Extreme gradient boosting (XGB) has been extremely popular due to its superb performance <span class="citation" data-cites="chen2016xgboost">(<a href="#ref-chen2016xgboost" role="doc-biblioref">Chen and Guestrin 2016</a>)</span>. It is a variant of gradient boosting and follows the same steps as gradient boosting covered in <a href="P02-boosted-regression-forest.html"><span>Chapter&nbsp;7</span></a>. However, it has it has its own way of building a tree, which is more mindful of avoiding over-fitting trees.</p>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-note callout callout-style-default no-icon callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
-<i class="callout-icon"></i>
+<i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-caption-container flex-fill">
 Note
@@ -548,10 +553,10 @@ h_i = \frac{\partial^2 L(y_i, p_i)}{\partial p_i^2} = 1 \\
 <p>So, <span class="math inline">\(g_i\)</span> is simply the negative of the residual for <span class="math inline">\(i\)</span>.</p>
 <p>Now, suppose you are at iteration <span class="math inline">\(b\)</span> and the predicted value for <span class="math inline">\(i\)</span> is denoted as <span class="math inline">\(f_{i,b}(x_i)\)</span>. Further, let <span class="math inline">\(r_{i,b}\)</span> denote the residual (<span class="math inline">\(y_i - f_{i,b}(x_i)\)</span>).</p>
 <p>Given this, here is how a tree is built at iteration <span class="math inline">\(b\)</span>.</p>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-note callout callout-style-default no-icon callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
-<i class="callout-icon"></i>
+<i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-caption-container flex-fill">
 Note
@@ -714,8 +719,8 @@ f_{i,b} = f_{i,b-1} + \eta \cdot w_j^*
 <span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="htmlwidget-45e393be0b7950d68f09" style="width:100%;height:464px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-45e393be0b7950d68f09">{"x":{"diagram":"\ndigraph {\n  graph [ranksep = 0.2]\n  node [shape = box]\n    T1R [label = \"L: -9\"]\n    T1L [label = \"R: 1 , 2 , 6\"]\n    T0 [label = \"-9, 1 , 2 , 6\"]\n  edge [minlen = 2]\n    T0->T1L\n    T0->T1R\n  { rank = same; T1R; T1L}\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-410964f3786320e4145f" style="width:100%;height:464px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-410964f3786320e4145f">{"x":{"diagram":"\ndigraph {\n  graph [ranksep = 0.2]\n  node [shape = box]\n    T1R [label = \"L: -9\"]\n    T1L [label = \"R: 1 , 2 , 6\"]\n    T0 [label = \"-9, 1 , 2 , 6\"]\n  edge [minlen = 2]\n    T0->T1L\n    T0->T1R\n  { rank = same; T1R; T1L}\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </div></div><p>Let’s split the data.</p>
@@ -786,8 +791,8 @@ w_R^* &amp; = 1 + 2 + 6 / (3 + 1) = 2.25
 <span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="htmlwidget-aabdd4848ac6ec7c41db" style="width:100%;height:464px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-aabdd4848ac6ec7c41db">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box]\n      T1R [label = \"L: -9 \n Q score = 40.5\"]\n      T1L [label = \"R: 1 , 2 , 6 \n Q score = 20.25\"]\n      T0 [label = \"-9, 1 , 2 , 6\"]\n    edge [minlen = 2]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-5a57269e7641ab428640" style="width:100%;height:464px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-5a57269e7641ab428640">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box]\n      T1R [label = \"L: -9 \n Q score = 40.5\"]\n      T1L [label = \"R: 1 , 2 , 6 \n Q score = 20.25\"]\n      T0 [label = \"-9, 1 , 2 , 6\"]\n    edge [minlen = 2]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </div></div><p><span class="math display">\[
@@ -879,8 +884,8 @@ G_1 = \frac{40.5 + 20.25 - 0}{2} - 10 = 20.375
 <span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="htmlwidget-e6366aeb407831236b45" style="width:100%;height:464px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-e6366aeb407831236b45">{"x":{"diagram":"\n    digraph {\n      graph [ranksep = 0.2]\n      node [shape = box]\n        T1R [label = \"L: -9, 1 \n Q score = 21.33\"]\n        T1L [label = \"R: 2 , 6 \n Q score = 21.33\"]\n        T0 [label = \"-9, 1 , 2 , 6\"]\n      edge [minlen = 2]\n        T0->T1L\n        T0->T1R\n      { rank = same; T1R; T1L}\n    }\n    ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-6a53d9128dfdcf1a859a" style="width:100%;height:464px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-6a53d9128dfdcf1a859a">{"x":{"diagram":"\n    digraph {\n      graph [ranksep = 0.2]\n      node [shape = box]\n        T1R [label = \"L: -9, 1 \n Q score = 21.33\"]\n        T1L [label = \"R: 2 , 6 \n Q score = 21.33\"]\n        T0 [label = \"-9, 1 , 2 , 6\"]\n      edge [minlen = 2]\n        T0->T1L\n        T0->T1R\n      { rank = same; T1R; T1L}\n    }\n    ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </div></div><p><span class="math display">\[
@@ -935,8 +940,8 @@ G_2 = \frac{21.33 + 21.33 - 0}{2} - 10 = 11.3333333
 <span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="htmlwidget-7cf6b276e2529531a38d" style="width:100%;height:464px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-7cf6b276e2529531a38d">{"x":{"diagram":"\n    digraph {\n      graph [ranksep = 0.2]\n      node [shape = box]\n        T1R [label = \"L: -9, 1, 2 \n Q score = 9\"]\n        T1L [label = \"R: 6 \n Q score = 18\"]\n        T0 [label = \"-9, 1 , 2 , 6\"]\n      edge [minlen = 2]\n        T0->T1L\n        T0->T1R\n      { rank = same; T1R; T1L}\n    }\n    ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-b8edab55f51f28152494" style="width:100%;height:464px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-b8edab55f51f28152494">{"x":{"diagram":"\n    digraph {\n      graph [ranksep = 0.2]\n      node [shape = box]\n        T1R [label = \"L: -9, 1, 2 \n Q score = 9\"]\n        T1L [label = \"R: 6 \n Q score = 18\"]\n        T0 [label = \"-9, 1 , 2 , 6\"]\n      edge [minlen = 2]\n        T0->T1L\n        T0->T1R\n      { rank = same; T1R; T1L}\n    }\n    ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </div></div><p><span class="math display">\[
@@ -963,10 +968,10 @@ G_3 = \frac{9 + 18 - 0}{2} - 10 = 3.5
 </div>
 </div>
 <p>So, neither of the splits has a positive gain value. Therefore, we do not adopt either of the splits. For this iteration (<span class="math inline">\(b=1\)</span>), this is the end of tree building.</p>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-note callout callout-style-default no-icon callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
-<i class="callout-icon"></i>
+<i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-caption-container flex-fill">
 Note
@@ -1011,8 +1016,8 @@ Note
 <span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="htmlwidget-9a45175db34a9b971d41" style="width:100%;height:325px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-9a45175db34a9b971d41">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box, width = 0.3, height = 0.15, fontsize = 3, fixedsize = TRUE, penwidth = 0.2]\n      T1R [label = \"L: -9 \n w* = -4.5\"]\n      T1L [label = \"R: 1 , 2 , 6 \n w* = 2.25\"]\n      T0 [label = \"-9, 1 , 2 , 6\"]\n    edge [penwidth = 0.2, arrowsize = 0.3, len = 0.3]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-93ba3b867e3d1911f61e" style="width:100%;height:325px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-93ba3b867e3d1911f61e">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box, width = 0.3, height = 0.15, fontsize = 3, fixedsize = TRUE, penwidth = 0.2]\n      T1R [label = \"L: -9 \n w* = -4.5\"]\n      T1L [label = \"R: 1 , 2 , 6 \n w* = 2.25\"]\n      T0 [label = \"-9, 1 , 2 , 6\"]\n    edge [penwidth = 0.2, arrowsize = 0.3, len = 0.3]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>We now use <span class="math inline">\(w^*\)</span> from this tree to update our prediction according to <a href="#eq-update">Equation&nbsp;<span>8.7</span></a>.</p>
@@ -1140,8 +1145,8 @@ f_{i = 4,b = 1} = 6 + 0.3 \times 2.25 = 6.68
 <span id="cb45-21"><a href="#cb45-21" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="htmlwidget-95aa04018228c0ef871d" style="width:100%;height:325px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-95aa04018228c0ef871d">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box, width = 0.4, height = 0.15, fontsize = 3, fixedsize = TRUE, penwidth = 0.2]\n      T1R [label = \"L: -8.18 \n w* = -3.83\"]\n      T1L [label = \"R: 0.71 , 1.71 , 5.71 \n w* = 1.74\"]\n      T0 [label = \"-8.18, 0.71 , 1.71 , 5.71\"]\n    edge [penwidth = 0.2, arrowsize = 0.3, len = 0.3]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-34a6619252a254219d01" style="width:100%;height:325px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-34a6619252a254219d01">{"x":{"diagram":"\n  digraph {\n    graph [ranksep = 0.2]\n    node [shape = box, width = 0.4, height = 0.15, fontsize = 3, fixedsize = TRUE, penwidth = 0.2]\n      T1R [label = \"L: -8.18 \n w* = -3.83\"]\n      T1L [label = \"R: 0.71 , 1.71 , 5.71 \n w* = 1.74\"]\n      T0 [label = \"-8.18, 0.71 , 1.71 , 5.71\"]\n    edge [penwidth = 0.2, arrowsize = 0.3, len = 0.3]\n      T0->T1L\n      T0->T1R\n    { rank = same; T1R; T1L}\n  }\n  ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>Let’s now update our predictions.</p>
@@ -1185,10 +1190,10 @@ f_{i = 4,b = 1} = 6 + 0.3 \times 2.25 = 6.68
 </div>
 </div>
 <p>Again, we made small improvements in our predictions. This process continues until user-specified stopping criteria is met.</p>
-<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-tip callout callout-style-default no-icon callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
-<i class="callout-icon"></i>
+<i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-caption-container flex-fill">
 Tip
@@ -1267,6 +1272,8 @@ Tip
 </ul>
 
 
+<!-- -->
+
 <div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
 <div id="ref-chen2016xgboost" class="csl-entry" role="doc-biblioentry">
 Chen, Tianqi, and Carlos Guestrin. 2016. <span>“Xgboost: A Scalable Tree Boosting System.”</span> In <em>Proceedings of the 22nd Acm Sigkdd International Conference on Knowledge Discovery and Data Mining</em>, 785–94.
@@ -1311,6 +1318,57 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
   function tippyHover(el, contentFn) {
     const config = {
       allowHTML: true,
@@ -1368,10 +1426,867 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
   <div class="nav-page nav-page-next">
       <a href="./P04-local-linear-forest.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">LLF</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Local Linear Forest</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
-</nav>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb52" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Extreme Gradient Boosting {#sec-xgb}</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>Extreme gradient boosting (XGB) has been extremely popular due to its superb performance <span class="co">[</span><span class="ot">@chen2016xgboost</span><span class="co">]</span>. It is a variant of gradient boosting and follows the same steps as gradient boosting covered in @sec-brf. However, it has it has its own way of building a tree, which is more mindful of avoiding over-fitting trees. </span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>:::{.callout-note}</span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Set $f_0(X_i)  = \frac{\sum_{i=1}^N y_i}{N}$ for all $i = 1, \dots, N$</span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>For b = 1 to B,</span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>  i. For $i = 1, \dots, N$, calculate</span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a>    $$</span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a>    r_{i,b} =  (y_i - f_{b-1}(X_i))</span>
+<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>    $$</span>
+<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a>  ii. <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> Build a tree XGB-way <span class="kw">&lt;/span&gt;</span></span>
+<span id="cb52-14"><a href="#cb52-14" aria-hidden="true" tabindex="-1"></a>  iii. Update $f_{b-1}(X_i)$ to $f_{b}(X_i)$</span>
+<span id="cb52-15"><a href="#cb52-15" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Finally, $\hat{f}(X_i) = f_B(X_i)$</span>
+<span id="cb52-16"><a href="#cb52-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-17"><a href="#cb52-17" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb52-18"><a href="#cb52-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-19"><a href="#cb52-19" aria-hidden="true" tabindex="-1"></a>XGB can be implemented by the <span class="in">`XGBoost`</span> package (for both R and Python). They have several different ways of build trees (Step 2.ii). While we discuss only a variant of the available algorithms in this chapter, understanding of the general idea of XGB can still be gained.</span>
+<span id="cb52-20"><a href="#cb52-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-21"><a href="#cb52-21" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb52-22"><a href="#cb52-22" aria-hidden="true" tabindex="-1"></a>See <span class="co">[</span><span class="ot">here</span><span class="co">](https://xgboost.readthedocs.io/en/stable/treemethod.html)</span> for various tree building algorithms.</span>
+<span id="cb52-23"><a href="#cb52-23" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb52-24"><a href="#cb52-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-25"><a href="#cb52-25" aria-hidden="true" tabindex="-1"></a><span class="fu">## Tree updating in XGB (general case)</span></span>
+<span id="cb52-26"><a href="#cb52-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-27"><a href="#cb52-27" aria-hidden="true" tabindex="-1"></a>Let $f_{i,b}(x_i)$ be the prediction for the $i$th observation at the $b$-th iteration. Further, let $I_j$ denote a set of observations that belong to leaf $j$ ($j = 1, \dots, J$) of the tree that is built at Step 2.ii. Then, at Step 2.iii, $f_{i,b-1}(x_i)$ is updated to $f_{i,b}(x_i)$ according to the following:</span>
+<span id="cb52-28"><a href="#cb52-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-29"><a href="#cb52-29" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-30"><a href="#cb52-30" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb52-31"><a href="#cb52-31" aria-hidden="true" tabindex="-1"></a>f_{i,b}(x_i) = f_{i,b-1}(x_i) + \eta w_j(x_i)</span>
+<span id="cb52-32"><a href="#cb52-32" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb52-33"><a href="#cb52-33" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-34"><a href="#cb52-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-35"><a href="#cb52-35" aria-hidden="true" tabindex="-1"></a>Ideally, it would be great to find $w_j(x_i)$ is such that it minimizes the following objective:</span>
+<span id="cb52-36"><a href="#cb52-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-37"><a href="#cb52-37" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-38"><a href="#cb52-38" aria-hidden="true" tabindex="-1"></a>\Psi = \sum_{i=1}^N <span class="co">[</span><span class="ot">L(y_i, f_{i,b}(x_i) + w_j(x_i))</span><span class="co">]</span> + \Omega(w_j)</span>
+<span id="cb52-39"><a href="#cb52-39" aria-hidden="true" tabindex="-1"></a>$$ {#eq-obj}</span>
+<span id="cb52-40"><a href="#cb52-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-41"><a href="#cb52-41" aria-hidden="true" tabindex="-1"></a>where $L()$ is the user-specified loss-function that is differentiable and $\Omega(w_j)$ is the regularization term. However, solving this minimization problem exactly can be too complicated depending on the loss function specification. Instead of @eq-obj, XGB uses the second order Taylor expansion of $L()$ about $w$^<span class="co">[</span><span class="ot">This helps for some of the commonly used loss functions</span><span class="co">]</span>. </span>
+<span id="cb52-42"><a href="#cb52-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-43"><a href="#cb52-43" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-44"><a href="#cb52-44" aria-hidden="true" tabindex="-1"></a>\tilde{\Psi} = \sum_{i=1}^N <span class="co">[</span><span class="ot">L(y_i, f_{i,b}(x_i)) + g_i w_j(x_i) + \frac{1}{2}h_i w_j(x_i)^2</span><span class="co">]</span> + \Omega(w_j)</span>
+<span id="cb52-45"><a href="#cb52-45" aria-hidden="true" tabindex="-1"></a>$$ {#eq-obj-taylor}</span>
+<span id="cb52-46"><a href="#cb52-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-47"><a href="#cb52-47" aria-hidden="true" tabindex="-1"></a>where $g_i = \frac{\partial L(y_i, p_i)}{\partial p_i}$ (first-order derivative) and $h_i = \frac{\partial^2 L(y_i, p_i)}{\partial p_i^2}$ (second-order derivative). Since $L(y_i, f_{i,b}(x_i))$ is just a constant, we can safely remove it from the objective function, which leads to</span>
+<span id="cb52-48"><a href="#cb52-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-49"><a href="#cb52-49" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-50"><a href="#cb52-50" aria-hidden="true" tabindex="-1"></a>\tilde{\Psi}_t = \sum_{i=1}^N <span class="co">[</span><span class="ot">g_i w_j(x_i) + \frac{1}{2}h_i w_j(x_i)^2</span><span class="co">]</span> + \Omega(w_j)</span>
+<span id="cb52-51"><a href="#cb52-51" aria-hidden="true" tabindex="-1"></a>$$ {#eq-obj-taylor-final}</span>
+<span id="cb52-52"><a href="#cb52-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-53"><a href="#cb52-53" aria-hidden="true" tabindex="-1"></a>Suppose the L2 norm is used and $\Omega(w_j) = \frac{1}{2}\lambda\sum_{j=1}^J w_j^2$.</span>
+<span id="cb52-54"><a href="#cb52-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-55"><a href="#cb52-55" aria-hidden="true" tabindex="-1"></a>Let $I_j$ denote a set of observations that belong to leaf $j$ ($j = 1, \dots, J$). Then, @eq-obj-taylor-final is written as follows:</span>
+<span id="cb52-56"><a href="#cb52-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-57"><a href="#cb52-57" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-58"><a href="#cb52-58" aria-hidden="true" tabindex="-1"></a>\tilde{\Psi}_t = \sum_{j=1}^J\huge[\normalsize (\sum_{i\in I_j}g_i)w_j + \frac{1}{2}(\sum_{i\in I_j}h_i + \lambda)w_j^2 \huge]\normalsize + \gamma J</span>
+<span id="cb52-59"><a href="#cb52-59" aria-hidden="true" tabindex="-1"></a>$$ {#eq-obj-taylor-tree}</span>
+<span id="cb52-60"><a href="#cb52-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-61"><a href="#cb52-61" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb52-62"><a href="#cb52-62" aria-hidden="true" tabindex="-1"></a>Remember that all the observations in the same leaf shares the same prediction. So, for all $i$s that belong to leaf $j$, the prediction is denoted as $w_j$ in @eq-obj-taylor-tree. That is, $w_t(x_i)$ that belongs to leaf $j$ is $w_j$.</span>
+<span id="cb52-63"><a href="#cb52-63" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb52-64"><a href="#cb52-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-65"><a href="#cb52-65" aria-hidden="true" tabindex="-1"></a>For a given tree structure (denoted as $q(x)$), the leaves can be treated independently in minimizing this objective. </span>
+<span id="cb52-66"><a href="#cb52-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-67"><a href="#cb52-67" aria-hidden="true" tabindex="-1"></a>Taking the derivative of $\tilde{\Psi}_t$ w.r.t $w_j$, </span>
+<span id="cb52-68"><a href="#cb52-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-69"><a href="#cb52-69" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-70"><a href="#cb52-70" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb52-71"><a href="#cb52-71" aria-hidden="true" tabindex="-1"></a>(\sum_{i\in I_j}g_i) + (\sum_{i\in I_j}h_i + \lambda)w_j = 0 <span class="sc">\\</span></span>
+<span id="cb52-72"><a href="#cb52-72" aria-hidden="true" tabindex="-1"></a>\Rightarrow w_j^* = \frac{-\sum_{i\in I_j}g_i}{\sum_{i\in I_j}h_i + \lambda}</span>
+<span id="cb52-73"><a href="#cb52-73" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb52-74"><a href="#cb52-74" aria-hidden="true" tabindex="-1"></a>$$ {#eq-foc-leaf}</span>
+<span id="cb52-75"><a href="#cb52-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-76"><a href="#cb52-76" aria-hidden="true" tabindex="-1"></a>The minimized value of $\tilde{\Psi}_t$ is then (obtained by plugging $w_j^*$ into @eq-obj-taylor-tree),</span>
+<span id="cb52-77"><a href="#cb52-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-78"><a href="#cb52-78" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-79"><a href="#cb52-79" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb52-80"><a href="#cb52-80" aria-hidden="true" tabindex="-1"></a>\tilde{\Psi}_t(q)^* &amp; = \sum_{j=1}^J\huge[\normalsize (\sum_{i\in I_j}g_i)\frac{-\sum_{i\in I_j}g_i}{\sum_{i\in I_j}h_i + \lambda} + \frac{1}{2}(\sum_{i\in I_j}h_i + \lambda)(\frac{-\sum_{i\in I_j}g_i}{\sum_{i\in I_j}h_i + \lambda})^2 \huge]\normalsize + \gamma J <span class="sc">\\</span></span>
+<span id="cb52-81"><a href="#cb52-81" aria-hidden="true" tabindex="-1"></a>&amp; = \sum_{j=1}^J\huge<span class="co">[</span><span class="ot">\normalsize \frac{-(\sum_{i\in I_j}g_i)^2}{\sum_{i\in I_j}h_i + \lambda} + \frac{1}{2}\frac{(\sum_{i\in I_j}g_i)^2}{\sum_{i\in I_j}h_i + \lambda} \huge</span><span class="co">]</span>\normalsize + \gamma J <span class="sc">\\</span></span>
+<span id="cb52-82"><a href="#cb52-82" aria-hidden="true" tabindex="-1"></a>&amp; = -\frac{1}{2} \sum_{j=1}^J \huge<span class="co">[</span><span class="ot">\normalsize\frac{(\sum_{i\in I_j}g_i)^2}{\sum_{i\in I_j}h_i + \lambda}\huge</span><span class="co">]</span>\normalsize + \gamma J</span>
+<span id="cb52-83"><a href="#cb52-83" aria-hidden="true" tabindex="-1"></a>\end{aligned} </span>
+<span id="cb52-84"><a href="#cb52-84" aria-hidden="true" tabindex="-1"></a>$$ {#eq-minimized-obj}</span>
+<span id="cb52-85"><a href="#cb52-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-86"><a href="#cb52-86" aria-hidden="true" tabindex="-1"></a>For rotational convenience, we call $\frac{(\sum_{i\in I_j}g_i)^2}{\sum_{i\in I_j}h_i + \lambda}$ quality score and denote it by $Q_j$ (<span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:red"</span><span class="kw">&gt;</span> Q<span class="kw">&lt;/span&gt;</span>uality score for leaf $j$).</span>
+<span id="cb52-87"><a href="#cb52-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-88"><a href="#cb52-88" aria-hidden="true" tabindex="-1"></a>We could find the best tree structure by finding $w_j^*(q)$ according to @eq-obj-taylor-tree and calculate $\tilde{\Psi}_t(q)^*$ according to @eq-minimized-obj for each of all the possible tree structures, and then pick the tree structure q(x) that has the lowest $\tilde{\Psi}_t(q)^*$. </span>
+<span id="cb52-89"><a href="#cb52-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-90"><a href="#cb52-90" aria-hidden="true" tabindex="-1"></a>However, it is impossible to consider all possible tree structures practically. So, a greedy (myopic) approach that starts from a single leaf and iteratively splits leaves is used instead. </span>
+<span id="cb52-91"><a href="#cb52-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-92"><a href="#cb52-92" aria-hidden="true" tabindex="-1"></a>Consider splitting an existing leaf $p$ (where in the tree it may be located) into two leaves $L$ and $R$ according to splitting rule $s$ when there are $J$ existing leaves. Then, the resulting minimized objective is</span>
+<span id="cb52-93"><a href="#cb52-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-94"><a href="#cb52-94" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-95"><a href="#cb52-95" aria-hidden="true" tabindex="-1"></a>-\frac{1}{2} \huge<span class="co">[</span><span class="ot">\normalsize Q_L(s) + Q_R(s) + \Gamma \huge</span><span class="co">]</span>\normalsize + \gamma(J+1)</span>
+<span id="cb52-96"><a href="#cb52-96" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-97"><a href="#cb52-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-98"><a href="#cb52-98" aria-hidden="true" tabindex="-1"></a>where $\Gamma$ is the sum of quality scores for all the leaves except $L$ and $R$. </span>
+<span id="cb52-99"><a href="#cb52-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-100"><a href="#cb52-100" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb52-101"><a href="#cb52-101" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-102"><a href="#cb52-102" aria-hidden="true" tabindex="-1"></a>\Gamma = \sum_{j\ne <span class="sc">\{</span>L, R<span class="sc">\}</span>}^J Q_j</span>
+<span id="cb52-103"><a href="#cb52-103" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-104"><a href="#cb52-104" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb52-105"><a href="#cb52-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-106"><a href="#cb52-106" aria-hidden="true" tabindex="-1"></a>The minimized objective before splitting is</span>
+<span id="cb52-107"><a href="#cb52-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-108"><a href="#cb52-108" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-109"><a href="#cb52-109" aria-hidden="true" tabindex="-1"></a>-\frac{1}{2} \huge<span class="co">[</span><span class="ot">\normalsize Q_p + \Gamma \huge</span><span class="co">]</span>\normalsize + \gamma J</span>
+<span id="cb52-110"><a href="#cb52-110" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-111"><a href="#cb52-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-112"><a href="#cb52-112" aria-hidden="true" tabindex="-1"></a>So, the <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span>reduction <span class="kw">&lt;/span&gt;</span> in loss after the split is</span>
+<span id="cb52-113"><a href="#cb52-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-114"><a href="#cb52-114" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-115"><a href="#cb52-115" aria-hidden="true" tabindex="-1"></a>G(s,p) = \frac{1}{2} \huge<span class="co">[</span><span class="ot">\normalsize Q_L(s) + Q_R(s) - Q_p \huge</span><span class="co">]</span>\normalsize - \gamma</span>
+<span id="cb52-116"><a href="#cb52-116" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-117"><a href="#cb52-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-118"><a href="#cb52-118" aria-hidden="true" tabindex="-1"></a>Let's call $G(s, p)$ simply a gain of split parent node $p$ using splitting rule $s$.</span>
+<span id="cb52-119"><a href="#cb52-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-120"><a href="#cb52-120" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb52-121"><a href="#cb52-121" aria-hidden="true" tabindex="-1"></a>A more positive value of gain ($G(s, L, R)$) means a more successful split.</span>
+<span id="cb52-122"><a href="#cb52-122" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb52-123"><a href="#cb52-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-124"><a href="#cb52-124" aria-hidden="true" tabindex="-1"></a>We calculate the gain for all the possible splits of $p$ and pick the split that has the highest gain.</span>
+<span id="cb52-125"><a href="#cb52-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-126"><a href="#cb52-126" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb52-127"><a href="#cb52-127" aria-hidden="true" tabindex="-1"></a>Different patterns of $I_L$ and $I_R$ arise from different variable-cutpoint combinations </span>
+<span id="cb52-128"><a href="#cb52-128" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb52-129"><a href="#cb52-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-130"><a href="#cb52-130" aria-hidden="true" tabindex="-1"></a>If the highest gain is negative, then leaf $p$ is not split. </span>
+<span id="cb52-131"><a href="#cb52-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-132"><a href="#cb52-132" aria-hidden="true" tabindex="-1"></a>Once the best tree is built, then we update our prediction based on $w^*$ of the terminal nodes of the tree. For observation $i$ that belongs to leaf $j$ of the tree,</span>
+<span id="cb52-133"><a href="#cb52-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-134"><a href="#cb52-134" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-135"><a href="#cb52-135" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb52-136"><a href="#cb52-136" aria-hidden="true" tabindex="-1"></a>f_{i,b} = f_{i,b-1} + \eta \cdot w_j^*</span>
+<span id="cb52-137"><a href="#cb52-137" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb52-138"><a href="#cb52-138" aria-hidden="true" tabindex="-1"></a>$$ {#eq-update}</span>
+<span id="cb52-139"><a href="#cb52-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-140"><a href="#cb52-140" aria-hidden="true" tabindex="-1"></a>where $\eta$ is the learning rate.</span>
+<span id="cb52-141"><a href="#cb52-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-142"><a href="#cb52-142" aria-hidden="true" tabindex="-1"></a><span class="fu">## Tree updating in XGB (regression)</span></span>
+<span id="cb52-143"><a href="#cb52-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-144"><a href="#cb52-144" aria-hidden="true" tabindex="-1"></a>We now make the general tree updating algorithm specific to regression problems, where the loss function is squared error: $L(y_i, p_i) = \frac{1}{2}(y_i - p_i)^2$, where $p_i$ is the predicted value for $i$. </span>
+<span id="cb52-145"><a href="#cb52-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-146"><a href="#cb52-146" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- We first set the mean of $y$ as the predicted value for all the observations and denote it by $y_0$.  --&gt;</span></span>
+<span id="cb52-147"><a href="#cb52-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-148"><a href="#cb52-148" aria-hidden="true" tabindex="-1"></a>First, let's find $g_i$ and $h_i$ for $L(y_i, p_i) = \frac{1}{2}(y_i - p_i)^2$.</span>
+<span id="cb52-149"><a href="#cb52-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-150"><a href="#cb52-150" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-151"><a href="#cb52-151" aria-hidden="true" tabindex="-1"></a>\begin{aligned} </span>
+<span id="cb52-152"><a href="#cb52-152" aria-hidden="true" tabindex="-1"></a>g_i = \frac{\partial L(y_i, p_i)}{\partial p_i}  = -(y_i - p_i)<span class="sc">\\</span></span>
+<span id="cb52-153"><a href="#cb52-153" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb52-154"><a href="#cb52-154" aria-hidden="true" tabindex="-1"></a>$$ {#eq-g}</span>
+<span id="cb52-155"><a href="#cb52-155" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-156"><a href="#cb52-156" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-157"><a href="#cb52-157" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb52-158"><a href="#cb52-158" aria-hidden="true" tabindex="-1"></a>h_i = \frac{\partial^2 L(y_i, p_i)}{\partial p_i^2} = 1 <span class="sc">\\</span></span>
+<span id="cb52-159"><a href="#cb52-159" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb52-160"><a href="#cb52-160" aria-hidden="true" tabindex="-1"></a>$$ {#eq-h}</span>
+<span id="cb52-161"><a href="#cb52-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-162"><a href="#cb52-162" aria-hidden="true" tabindex="-1"></a>So, $g_i$ is simply the negative of the residual for $i$. </span>
+<span id="cb52-163"><a href="#cb52-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-164"><a href="#cb52-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-165"><a href="#cb52-165" aria-hidden="true" tabindex="-1"></a>Now, suppose you are at iteration $b$ and the predicted value for $i$ is denoted as $f_{i,b}(x_i)$. Further, let $r_{i,b}$ denote the residual ($y_i - f_{i,b}(x_i)$). </span>
+<span id="cb52-166"><a href="#cb52-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-167"><a href="#cb52-167" aria-hidden="true" tabindex="-1"></a>Given this, here is how a tree is built at iteration $b$. </span>
+<span id="cb52-168"><a href="#cb52-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-169"><a href="#cb52-169" aria-hidden="true" tabindex="-1"></a>:::{.callout-note}</span>
+<span id="cb52-170"><a href="#cb52-170" aria-hidden="true" tabindex="-1"></a>**Steps 2.ii and 2.iii** of the XGB algorithm:</span>
+<span id="cb52-171"><a href="#cb52-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-172"><a href="#cb52-172" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>For a given splitting rule ($s$) among all the possible splits (denoted as leaves $L$ and $R$) of parent node $p$, calculate the quality score ($Q$) and then gain ($G$):</span>
+<span id="cb52-173"><a href="#cb52-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-174"><a href="#cb52-174" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-175"><a href="#cb52-175" aria-hidden="true" tabindex="-1"></a>Q_j(s) = \frac{(\sum_{i\in I_j(s)}r_{i,b})^2}{N_j + \lambda}, \;\; j = <span class="sc">\{</span>L, R<span class="sc">\}</span></span>
+<span id="cb52-176"><a href="#cb52-176" aria-hidden="true" tabindex="-1"></a>$$ </span>
+<span id="cb52-177"><a href="#cb52-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-178"><a href="#cb52-178" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-179"><a href="#cb52-179" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb52-180"><a href="#cb52-180" aria-hidden="true" tabindex="-1"></a>G(s) = \frac{1}{2}<span class="co">[</span><span class="ot">Q_L(s) + Q_R(s) - Q_p</span><span class="co">]</span> - \gamma</span>
+<span id="cb52-181"><a href="#cb52-181" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb52-182"><a href="#cb52-182" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-183"><a href="#cb52-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-184"><a href="#cb52-184" aria-hidden="true" tabindex="-1"></a>where $Q_p$ is the quality score of the parent node.</span>
+<span id="cb52-185"><a href="#cb52-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-186"><a href="#cb52-186" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Find the splitting rule that produces the highest gain. If the highest gain is positive, then split the parent node according to the associated splitting rule, otherwise do not split the parent node. </span>
+<span id="cb52-187"><a href="#cb52-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-188"><a href="#cb52-188" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Repeat 1 and 2 until no further splits are possible.</span>
+<span id="cb52-189"><a href="#cb52-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-190"><a href="#cb52-190" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>For each observation, calculate $w^*$. For all the observations that belong to leaf $j$, $w^*$ can be obtained as follows (plugging @eq-h and @eq-g into @eq-foc-leaf)</span>
+<span id="cb52-191"><a href="#cb52-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-192"><a href="#cb52-192" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-193"><a href="#cb52-193" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb52-194"><a href="#cb52-194" aria-hidden="true" tabindex="-1"></a>w_j^* &amp; = \frac{\sum_{i\in I_j}r_{i,b}}{\sum_{i\in I_j}1 + \lambda} <span class="sc">\\</span></span>
+<span id="cb52-195"><a href="#cb52-195" aria-hidden="true" tabindex="-1"></a>      &amp; = \frac{\sum_{i\in I_j}r_{i,b}}{N_j + \lambda}</span>
+<span id="cb52-196"><a href="#cb52-196" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb52-197"><a href="#cb52-197" aria-hidden="true" tabindex="-1"></a>$$ </span>
+<span id="cb52-198"><a href="#cb52-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-199"><a href="#cb52-199" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb52-200"><a href="#cb52-200" aria-hidden="true" tabindex="-1"></a>That is, for a given leaf $j$, the optimal predicted value ($w_j^*$) is the sum of the residuals of all the observations in leaf $j$ divided by the number of observations in leaf $j$ plus $\lambda$. When $\lambda = 0$, the optimal predicted value ($w_j^*$) is simply the mean of the residuals.</span>
+<span id="cb52-201"><a href="#cb52-201" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb52-202"><a href="#cb52-202" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-203"><a href="#cb52-203" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Update the prediction for each observation according to </span>
+<span id="cb52-204"><a href="#cb52-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-205"><a href="#cb52-205" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-206"><a href="#cb52-206" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb52-207"><a href="#cb52-207" aria-hidden="true" tabindex="-1"></a>f_{i,b} = f_{i,b-1} + \eta \cdot w_j^*</span>
+<span id="cb52-208"><a href="#cb52-208" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb52-209"><a href="#cb52-209" aria-hidden="true" tabindex="-1"></a>$$ </span>
+<span id="cb52-210"><a href="#cb52-210" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb52-211"><a href="#cb52-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-212"><a href="#cb52-212" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-213"><a href="#cb52-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-214"><a href="#cb52-214" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-215"><a href="#cb52-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-216"><a href="#cb52-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-217"><a href="#cb52-217" aria-hidden="true" tabindex="-1"></a><span class="fu">## Illustration of XGB for regression</span></span>
+<span id="cb52-218"><a href="#cb52-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-219"><a href="#cb52-219" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb52-220"><a href="#cb52-220" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-221"><a href="#cb52-221" aria-hidden="true" tabindex="-1"></a>**Packages to load for replication**</span>
+<span id="cb52-222"><a href="#cb52-222" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-225"><a href="#cb52-225" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-226"><a href="#cb52-226" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb52-227"><a href="#cb52-227" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-228"><a href="#cb52-228" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb52-229"><a href="#cb52-229" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb52-230"><a href="#cb52-230" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-231"><a href="#cb52-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-234"><a href="#cb52-234" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-235"><a href="#cb52-235" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb52-236"><a href="#cb52-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-237"><a href="#cb52-237" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb52-238"><a href="#cb52-238" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb52-239"><a href="#cb52-239" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-240"><a href="#cb52-240" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb52-241"><a href="#cb52-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-242"><a href="#cb52-242" aria-hidden="true" tabindex="-1"></a>In order to further our understanding of the entire XGB algorithm, let's take a look at a simple regression problem as an illustration. We consider a four-observation data as follows:</span>
+<span id="cb52-243"><a href="#cb52-243" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-246"><a href="#cb52-246" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-247"><a href="#cb52-247" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb52-248"><a href="#cb52-248" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span></span>
+<span id="cb52-249"><a href="#cb52-249" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>(</span>
+<span id="cb52-250"><a href="#cb52-250" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">12</span>),</span>
+<span id="cb52-251"><a href="#cb52-251" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">8</span>)</span>
+<span id="cb52-252"><a href="#cb52-252" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb52-253"><a href="#cb52-253" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb52-254"><a href="#cb52-254" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-255"><a href="#cb52-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-258"><a href="#cb52-258" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-259"><a href="#cb52-259" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb52-260"><a href="#cb52-260" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4</span></span>
+<span id="cb52-261"><a href="#cb52-261" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 6</span></span>
+<span id="cb52-262"><a href="#cb52-262" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb52-263"><a href="#cb52-263" aria-hidden="true" tabindex="-1"></a>g_0 <span class="ot">&lt;-</span></span>
+<span id="cb52-264"><a href="#cb52-264" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(data) <span class="sc">+</span></span>
+<span id="cb52-265"><a href="#cb52-265" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> y, <span class="at">x =</span> x)) <span class="sc">+</span></span>
+<span id="cb52-266"><a href="#cb52-266" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb52-267"><a href="#cb52-267" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb52-268"><a href="#cb52-268" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-269"><a href="#cb52-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-270"><a href="#cb52-270" aria-hidden="true" tabindex="-1"></a>First step ($b = 0$) is to make an initial prediction. This can be any number, but let's use the mean of <span class="in">`y`</span> and set it as the predicted value for all the observations.</span>
+<span id="cb52-271"><a href="#cb52-271" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-274"><a href="#cb52-274" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-275"><a href="#cb52-275" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb52-276"><a href="#cb52-276" aria-hidden="true" tabindex="-1"></a>f_0 <span class="ot">&lt;-</span> <span class="fu">mean</span>(data<span class="sc">$</span>y) <span class="co"># f_0: the predicted value for all the observations</span></span>
+<span id="cb52-277"><a href="#cb52-277" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb52-278"><a href="#cb52-278" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-279"><a href="#cb52-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-280"><a href="#cb52-280" aria-hidden="true" tabindex="-1"></a>Let's set $\gamma$, $\lambda$, and $\eta$ to $10$, $1$, and $0.3$, respectively.</span>
+<span id="cb52-281"><a href="#cb52-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-284"><a href="#cb52-284" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-285"><a href="#cb52-285" aria-hidden="true" tabindex="-1"></a>gamma <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb52-286"><a href="#cb52-286" aria-hidden="true" tabindex="-1"></a>lambda <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb52-287"><a href="#cb52-287" aria-hidden="true" tabindex="-1"></a>eta <span class="ot">&lt;-</span> <span class="fl">0.3</span></span>
+<span id="cb52-288"><a href="#cb52-288" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-289"><a href="#cb52-289" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-290"><a href="#cb52-290" aria-hidden="true" tabindex="-1"></a>We have a single-leaf tree at the moment. And the quality score for this leaf is </span>
+<span id="cb52-291"><a href="#cb52-291" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-292"><a href="#cb52-292" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb52-293"><a href="#cb52-293" aria-hidden="true" tabindex="-1"></a>quality score for leaf $j$ is $\frac{(\sum_{i\in I_j}r_{i,b})^2}{N_j + \lambda}$</span>
+<span id="cb52-294"><a href="#cb52-294" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb52-295"><a href="#cb52-295" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-298"><a href="#cb52-298" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-299"><a href="#cb52-299" aria-hidden="true" tabindex="-1"></a><span class="co">#=== get residuals ===#</span></span>
+<span id="cb52-300"><a href="#cb52-300" aria-hidden="true" tabindex="-1"></a>data[, resid <span class="sc">:</span><span class="er">=</span> y <span class="sc">-</span> f_0]</span>
+<span id="cb52-301"><a href="#cb52-301" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-302"><a href="#cb52-302" aria-hidden="true" tabindex="-1"></a><span class="co">#=== get quality score ===#</span></span>
+<span id="cb52-303"><a href="#cb52-303" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb52-304"><a href="#cb52-304" aria-hidden="true" tabindex="-1"></a>q_0 <span class="ot">&lt;-</span> (<span class="fu">sum</span>(data<span class="sc">$</span>resid))<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(<span class="fu">nrow</span>(data) <span class="sc">+</span> lambda)</span>
+<span id="cb52-305"><a href="#cb52-305" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb52-306"><a href="#cb52-306" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-307"><a href="#cb52-307" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-308"><a href="#cb52-308" aria-hidden="true" tabindex="-1"></a>Quality score of the leaf is <span class="in">`r q_0`</span>. </span>
+<span id="cb52-309"><a href="#cb52-309" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-310"><a href="#cb52-310" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb52-311"><a href="#cb52-311" aria-hidden="true" tabindex="-1"></a>Since we are using the mean of $y$ as the prediction, of course, the sum of the residuals is zero, which then means that the quality score is zero.</span>
+<span id="cb52-312"><a href="#cb52-312" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb52-313"><a href="#cb52-313" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-314"><a href="#cb52-314" aria-hidden="true" tabindex="-1"></a>Now, we have three potential to split patterns: {<span class="in">`x`</span>, 2}, {<span class="in">`x`</span>, 5}, {<span class="in">`x`</span>, 7}. </span>
+<span id="cb52-315"><a href="#cb52-315" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-316"><a href="#cb52-316" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb52-317"><a href="#cb52-317" aria-hidden="true" tabindex="-1"></a>{<span class="in">`x`</span>, 2} means the leaf is split into two leaves: ${x | x &lt;2}$ and ${x | x &gt;= 2}$. Note that any number between $1$ and $4$ will result in the same split results.</span>
+<span id="cb52-318"><a href="#cb52-318" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb52-319"><a href="#cb52-319" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-320"><a href="#cb52-320" aria-hidden="true" tabindex="-1"></a>Let's consider them one by one. </span>
+<span id="cb52-321"><a href="#cb52-321" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-322"><a href="#cb52-322" aria-hidden="true" tabindex="-1"></a><span class="fu">#### &lt;span style="color:blue"&gt; Split: {`x`, 2} &lt;/span&gt;</span></span>
+<span id="cb52-323"><a href="#cb52-323" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-324"><a href="#cb52-324" aria-hidden="true" tabindex="-1"></a>Here is the graphical representations of the split:</span>
+<span id="cb52-325"><a href="#cb52-325" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-328"><a href="#cb52-328" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-329"><a href="#cb52-329" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb52-330"><a href="#cb52-330" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4</span></span>
+<span id="cb52-331"><a href="#cb52-331" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 6</span></span>
+<span id="cb52-332"><a href="#cb52-332" aria-hidden="true" tabindex="-1"></a>g_0 <span class="sc">+</span></span>
+<span id="cb52-333"><a href="#cb52-333" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">2</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb52-334"><a href="#cb52-334" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">1.25</span>, <span class="at">y =</span> <span class="dv">6</span>, <span class="at">label =</span> <span class="st">"leaf L"</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb52-335"><a href="#cb52-335" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="dv">5</span>, <span class="at">y =</span> <span class="dv">6</span>, <span class="at">label =</span> <span class="st">"leaf R"</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb52-336"><a href="#cb52-336" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb52-337"><a href="#cb52-337" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-338"><a href="#cb52-338" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-339"><a href="#cb52-339" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb52-342"><a href="#cb52-342" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-343"><a href="#cb52-343" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb52-344"><a href="#cb52-344" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-345"><a href="#cb52-345" aria-hidden="true" tabindex="-1"></a>DiagrammeR<span class="sc">::</span><span class="fu">grViz</span>(</span>
+<span id="cb52-346"><a href="#cb52-346" aria-hidden="true" tabindex="-1"></a><span class="st">"</span></span>
+<span id="cb52-347"><a href="#cb52-347" aria-hidden="true" tabindex="-1"></a><span class="st">digraph {</span></span>
+<span id="cb52-348"><a href="#cb52-348" aria-hidden="true" tabindex="-1"></a><span class="st">  graph [ranksep = 0.2]</span></span>
+<span id="cb52-349"><a href="#cb52-349" aria-hidden="true" tabindex="-1"></a><span class="st">  node [shape = box]</span></span>
+<span id="cb52-350"><a href="#cb52-350" aria-hidden="true" tabindex="-1"></a><span class="st">    T1R [label = 'L: -9']</span></span>
+<span id="cb52-351"><a href="#cb52-351" aria-hidden="true" tabindex="-1"></a><span class="st">    T1L [label = 'R: 1 , 2 , 6']</span></span>
+<span id="cb52-352"><a href="#cb52-352" aria-hidden="true" tabindex="-1"></a><span class="st">    T0 [label = '-9, 1 , 2 , 6']</span></span>
+<span id="cb52-353"><a href="#cb52-353" aria-hidden="true" tabindex="-1"></a><span class="st">  edge [minlen = 2]</span></span>
+<span id="cb52-354"><a href="#cb52-354" aria-hidden="true" tabindex="-1"></a><span class="st">    T0-&gt;T1L</span></span>
+<span id="cb52-355"><a href="#cb52-355" aria-hidden="true" tabindex="-1"></a><span class="st">    T0-&gt;T1R</span></span>
+<span id="cb52-356"><a href="#cb52-356" aria-hidden="true" tabindex="-1"></a><span class="st">  { rank = same; T1R; T1L}</span></span>
+<span id="cb52-357"><a href="#cb52-357" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb52-358"><a href="#cb52-358" aria-hidden="true" tabindex="-1"></a><span class="st">"</span></span>
+<span id="cb52-359"><a href="#cb52-359" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb52-360"><a href="#cb52-360" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-361"><a href="#cb52-361" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb52-362"><a href="#cb52-362" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-363"><a href="#cb52-363" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-364"><a href="#cb52-364" aria-hidden="true" tabindex="-1"></a>Let's split the data.</span>
+<span id="cb52-365"><a href="#cb52-365" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-368"><a href="#cb52-368" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-369"><a href="#cb52-369" aria-hidden="true" tabindex="-1"></a><span class="co">#=== leaf L ===#</span></span>
+<span id="cb52-370"><a href="#cb52-370" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb52-371"><a href="#cb52-371" aria-hidden="true" tabindex="-1"></a>data_L_1 <span class="ot">&lt;-</span> data[x <span class="sc">&lt;</span> <span class="dv">2</span>, ]</span>
+<span id="cb52-372"><a href="#cb52-372" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb52-373"><a href="#cb52-373" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-374"><a href="#cb52-374" aria-hidden="true" tabindex="-1"></a><span class="co">#=== leaf R ===#</span></span>
+<span id="cb52-375"><a href="#cb52-375" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb52-376"><a href="#cb52-376" aria-hidden="true" tabindex="-1"></a>data_R_1 <span class="ot">&lt;-</span> data[x <span class="sc">&gt;=</span> <span class="dv">2</span>, ]</span>
+<span id="cb52-377"><a href="#cb52-377" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb52-378"><a href="#cb52-378" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-379"><a href="#cb52-379" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-380"><a href="#cb52-380" aria-hidden="true" tabindex="-1"></a>Using @eq-w-reg, </span>
+<span id="cb52-381"><a href="#cb52-381" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-382"><a href="#cb52-382" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb52-383"><a href="#cb52-383" aria-hidden="true" tabindex="-1"></a>$w_j^* = \frac{\sum_{i\in I_j}r_{i,b}}{N_j + \lambda}$</span>
+<span id="cb52-384"><a href="#cb52-384" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb52-385"><a href="#cb52-385" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-388"><a href="#cb52-388" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-389"><a href="#cb52-389" aria-hidden="true" tabindex="-1"></a>w_L <span class="ot">&lt;-</span> (<span class="fu">sum</span>(data_L_1<span class="sc">$</span>resid))<span class="sc">/</span>(<span class="fu">nrow</span>(data_L_1) <span class="sc">+</span> lambda)</span>
+<span id="cb52-390"><a href="#cb52-390" aria-hidden="true" tabindex="-1"></a>w_R <span class="ot">&lt;-</span> (<span class="fu">sum</span>(data_R_1<span class="sc">$</span>resid))<span class="sc">/</span>(<span class="fu">nrow</span>(data_R_1) <span class="sc">+</span> lambda)</span>
+<span id="cb52-391"><a href="#cb52-391" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-392"><a href="#cb52-392" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-393"><a href="#cb52-393" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-394"><a href="#cb52-394" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb52-395"><a href="#cb52-395" aria-hidden="true" tabindex="-1"></a>w_L^* &amp; = -9 / (<span class="in">`r nrow(data_L_1)`</span> + <span class="in">`r lambda`</span>) = <span class="in">`r round(w_L, digits = 2)`</span> <span class="sc">\\</span></span>
+<span id="cb52-396"><a href="#cb52-396" aria-hidden="true" tabindex="-1"></a>w_R^* &amp; = 1 + 2 + 6 / (<span class="in">`r nrow(data_R_1)`</span> + <span class="in">`r lambda`</span>) = <span class="in">`r round(w_R, digits = 2)`</span></span>
+<span id="cb52-397"><a href="#cb52-397" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb52-398"><a href="#cb52-398" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-399"><a href="#cb52-399" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-400"><a href="#cb52-400" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-401"><a href="#cb52-401" aria-hidden="true" tabindex="-1"></a>Using @eq-q-reg, the quality scores for the leaves are</span>
+<span id="cb52-402"><a href="#cb52-402" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-403"><a href="#cb52-403" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb52-404"><a href="#cb52-404" aria-hidden="true" tabindex="-1"></a>$Q_j = \frac{(\sum_{i\in I_j}r_{i,b})^2}{N_j + \lambda}$</span>
+<span id="cb52-405"><a href="#cb52-405" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb52-406"><a href="#cb52-406" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-409"><a href="#cb52-409" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-410"><a href="#cb52-410" aria-hidden="true" tabindex="-1"></a>q_L <span class="ot">&lt;-</span> (<span class="fu">sum</span>(data_L_1<span class="sc">$</span>resid))<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(<span class="fu">nrow</span>(data_L_1) <span class="sc">+</span> lambda)</span>
+<span id="cb52-411"><a href="#cb52-411" aria-hidden="true" tabindex="-1"></a>q_R <span class="ot">&lt;-</span> (<span class="fu">sum</span>(data_R_1<span class="sc">$</span>resid))<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(<span class="fu">nrow</span>(data_R_1) <span class="sc">+</span> lambda)</span>
+<span id="cb52-412"><a href="#cb52-412" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-413"><a href="#cb52-413" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-414"><a href="#cb52-414" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb52-417"><a href="#cb52-417" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-418"><a href="#cb52-418" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb52-419"><a href="#cb52-419" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-420"><a href="#cb52-420" aria-hidden="true" tabindex="-1"></a>DiagrammeR<span class="sc">::</span><span class="fu">grViz</span>(</span>
+<span id="cb52-421"><a href="#cb52-421" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(</span>
+<span id="cb52-422"><a href="#cb52-422" aria-hidden="true" tabindex="-1"></a>  <span class="st">"</span></span>
+<span id="cb52-423"><a href="#cb52-423" aria-hidden="true" tabindex="-1"></a><span class="st">  digraph {</span></span>
+<span id="cb52-424"><a href="#cb52-424" aria-hidden="true" tabindex="-1"></a><span class="st">    graph [ranksep = 0.2]</span></span>
+<span id="cb52-425"><a href="#cb52-425" aria-hidden="true" tabindex="-1"></a><span class="st">    node [shape = box]</span></span>
+<span id="cb52-426"><a href="#cb52-426" aria-hidden="true" tabindex="-1"></a><span class="st">      T1R [label = 'L: -9 </span><span class="sc">\n</span><span class="st"> Q score = "</span>, <span class="fu">round</span>(q_L, <span class="at">digits =</span> <span class="dv">2</span>), <span class="st">"']</span></span>
+<span id="cb52-427"><a href="#cb52-427" aria-hidden="true" tabindex="-1"></a><span class="st">      T1L [label = 'R: 1 , 2 , 6 </span><span class="sc">\n</span><span class="st"> Q score = "</span>, <span class="fu">round</span>(q_R, <span class="at">digits =</span> <span class="dv">2</span>), <span class="st">"']</span></span>
+<span id="cb52-428"><a href="#cb52-428" aria-hidden="true" tabindex="-1"></a><span class="st">      T0 [label = '-9, 1 , 2 , 6']</span></span>
+<span id="cb52-429"><a href="#cb52-429" aria-hidden="true" tabindex="-1"></a><span class="st">    edge [minlen = 2]</span></span>
+<span id="cb52-430"><a href="#cb52-430" aria-hidden="true" tabindex="-1"></a><span class="st">      T0-&gt;T1L</span></span>
+<span id="cb52-431"><a href="#cb52-431" aria-hidden="true" tabindex="-1"></a><span class="st">      T0-&gt;T1R</span></span>
+<span id="cb52-432"><a href="#cb52-432" aria-hidden="true" tabindex="-1"></a><span class="st">    { rank = same; T1R; T1L}</span></span>
+<span id="cb52-433"><a href="#cb52-433" aria-hidden="true" tabindex="-1"></a><span class="st">  }</span></span>
+<span id="cb52-434"><a href="#cb52-434" aria-hidden="true" tabindex="-1"></a><span class="st">  "</span></span>
+<span id="cb52-435"><a href="#cb52-435" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb52-436"><a href="#cb52-436" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-437"><a href="#cb52-437" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb52-438"><a href="#cb52-438" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-439"><a href="#cb52-439" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb52-440"><a href="#cb52-440" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-441"><a href="#cb52-441" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-442"><a href="#cb52-442" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-443"><a href="#cb52-443" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb52-444"><a href="#cb52-444" aria-hidden="true" tabindex="-1"></a>q_L^* &amp; = (-9)^2 / (<span class="in">`r nrow(data_L_1)`</span> + <span class="in">`r lambda`</span>) = <span class="in">`r round(q_L, digits = 2)`</span> <span class="sc">\\</span></span>
+<span id="cb52-445"><a href="#cb52-445" aria-hidden="true" tabindex="-1"></a>q_R^* &amp; = (1 + 2 + 6)^2 / (<span class="in">`r nrow(data_R_1)`</span> + <span class="in">`r lambda`</span>) = <span class="in">`r round(q_R, digits = 2)`</span></span>
+<span id="cb52-446"><a href="#cb52-446" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb52-447"><a href="#cb52-447" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-448"><a href="#cb52-448" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-449"><a href="#cb52-449" aria-hidden="true" tabindex="-1"></a>Notice that residuals are first summed and then squared in the denominator of the quality score (the higher, the better). This means that if the prediction is off in the same direction (meaning they are similar) among the observations within the leaf, then the quality score is higher. On the other hand, if the prediction is off in both directions (meaning they are not similar), then the residuals cancel each other out, resulting in a lower quality score. Since we would like to create leaves consisting of similar observations, a more successful split has a higher quality score. </span>
+<span id="cb52-450"><a href="#cb52-450" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-451"><a href="#cb52-451" aria-hidden="true" tabindex="-1"></a>Finally, the gain of this split is </span>
+<span id="cb52-452"><a href="#cb52-452" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-453"><a href="#cb52-453" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb52-454"><a href="#cb52-454" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-455"><a href="#cb52-455" aria-hidden="true" tabindex="-1"></a>G(s, L, R) = \frac{1}{2} \huge<span class="co">[</span><span class="ot">\normalsize Q_L + Q_R - Q_s \huge</span><span class="co">]</span>\normalsize - \gamma</span>
+<span id="cb52-456"><a href="#cb52-456" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-457"><a href="#cb52-457" aria-hidden="true" tabindex="-1"></a>where $s$ is the leaf before split, $L$ and $R$ are leaves after the split of leaf $s$.</span>
+<span id="cb52-458"><a href="#cb52-458" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb52-459"><a href="#cb52-459" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-462"><a href="#cb52-462" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-463"><a href="#cb52-463" aria-hidden="true" tabindex="-1"></a>gain_1 <span class="ot">&lt;-</span> (q_L <span class="sc">+</span> q_R <span class="sc">-</span> q_0)<span class="sc">/</span><span class="dv">2</span> <span class="sc">-</span> gamma</span>
+<span id="cb52-464"><a href="#cb52-464" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-465"><a href="#cb52-465" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-466"><a href="#cb52-466" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-467"><a href="#cb52-467" aria-hidden="true" tabindex="-1"></a>G_1 = \frac{<span class="in">`r round(q_L, digits = 2)`</span> + <span class="in">`r round(q_R, digits = 2)`</span> - <span class="in">`r q_0`</span>}{2} - <span class="in">`r gamma`</span> = <span class="in">`r gain_1`</span></span>
+<span id="cb52-468"><a href="#cb52-468" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-469"><a href="#cb52-469" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-470"><a href="#cb52-470" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-471"><a href="#cb52-471" aria-hidden="true" tabindex="-1"></a>Now that we have gone through the process of finding update value ($w$), quality score ($q$), and gain ($G$) for a given split structure, let's write a function that returns the values of these measures by feeding the cutpoint before moving onto the next split candidate.</span>
+<span id="cb52-472"><a href="#cb52-472" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-475"><a href="#cb52-475" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-476"><a href="#cb52-476" aria-hidden="true" tabindex="-1"></a>get_info <span class="ot">&lt;-</span> <span class="cf">function</span>(data, cutpoint, lambda, gamma)</span>
+<span id="cb52-477"><a href="#cb52-477" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb52-478"><a href="#cb52-478" aria-hidden="true" tabindex="-1"></a>  q_0 <span class="ot">&lt;-</span> (<span class="fu">sum</span>(data<span class="sc">$</span>resid))<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(<span class="fu">nrow</span>(data) <span class="sc">+</span> lambda)</span>
+<span id="cb52-479"><a href="#cb52-479" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-480"><a href="#cb52-480" aria-hidden="true" tabindex="-1"></a>  data_L <span class="ot">&lt;-</span> data[x <span class="sc">&lt;</span> cutpoint, ]</span>
+<span id="cb52-481"><a href="#cb52-481" aria-hidden="true" tabindex="-1"></a>  data_R <span class="ot">&lt;-</span> data[x <span class="sc">&gt;=</span> cutpoint, ]</span>
+<span id="cb52-482"><a href="#cb52-482" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-483"><a href="#cb52-483" aria-hidden="true" tabindex="-1"></a>  w_L <span class="ot">&lt;-</span> (<span class="fu">sum</span>(data_L<span class="sc">$</span>resid))<span class="sc">/</span>(<span class="fu">nrow</span>(data_L) <span class="sc">+</span> lambda)</span>
+<span id="cb52-484"><a href="#cb52-484" aria-hidden="true" tabindex="-1"></a>  w_R <span class="ot">&lt;-</span> (<span class="fu">sum</span>(data_R<span class="sc">$</span>resid))<span class="sc">/</span>(<span class="fu">nrow</span>(data_R) <span class="sc">+</span> lambda)</span>
+<span id="cb52-485"><a href="#cb52-485" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-486"><a href="#cb52-486" aria-hidden="true" tabindex="-1"></a>  q_L <span class="ot">&lt;-</span> (<span class="fu">sum</span>(data_L<span class="sc">$</span>resid))<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(<span class="fu">nrow</span>(data_L) <span class="sc">+</span> lambda)</span>
+<span id="cb52-487"><a href="#cb52-487" aria-hidden="true" tabindex="-1"></a>  q_R <span class="ot">&lt;-</span> (<span class="fu">sum</span>(data_R<span class="sc">$</span>resid))<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(<span class="fu">nrow</span>(data_R) <span class="sc">+</span> lambda)</span>
+<span id="cb52-488"><a href="#cb52-488" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-489"><a href="#cb52-489" aria-hidden="true" tabindex="-1"></a>  gain <span class="ot">&lt;-</span> (q_L <span class="sc">+</span> q_R <span class="sc">-</span> q_0)<span class="sc">/</span><span class="dv">2</span> <span class="sc">-</span> gamma</span>
+<span id="cb52-490"><a href="#cb52-490" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-491"><a href="#cb52-491" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(</span>
+<span id="cb52-492"><a href="#cb52-492" aria-hidden="true" tabindex="-1"></a>    <span class="at">w_L =</span> w_L, </span>
+<span id="cb52-493"><a href="#cb52-493" aria-hidden="true" tabindex="-1"></a>    <span class="at">w_R =</span> w_R, </span>
+<span id="cb52-494"><a href="#cb52-494" aria-hidden="true" tabindex="-1"></a>    <span class="at">q_L =</span> q_L, </span>
+<span id="cb52-495"><a href="#cb52-495" aria-hidden="true" tabindex="-1"></a>    <span class="at">q_R =</span> q_R, </span>
+<span id="cb52-496"><a href="#cb52-496" aria-hidden="true" tabindex="-1"></a>    <span class="at">gain =</span> gain </span>
+<span id="cb52-497"><a href="#cb52-497" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb52-498"><a href="#cb52-498" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb52-499"><a href="#cb52-499" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-500"><a href="#cb52-500" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-501"><a href="#cb52-501" aria-hidden="true" tabindex="-1"></a><span class="fu">#### &lt;span style="color:blue"&gt; Split: {`x`, 5} &lt;/span&gt;</span></span>
+<span id="cb52-502"><a href="#cb52-502" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-505"><a href="#cb52-505" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-506"><a href="#cb52-506" aria-hidden="true" tabindex="-1"></a>measures_2 <span class="ot">&lt;-</span> <span class="fu">get_info</span>(data, <span class="dv">5</span>, lambda, gamma)</span>
+<span id="cb52-507"><a href="#cb52-507" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-508"><a href="#cb52-508" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-511"><a href="#cb52-511" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-512"><a href="#cb52-512" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb52-513"><a href="#cb52-513" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4</span></span>
+<span id="cb52-514"><a href="#cb52-514" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 6</span></span>
+<span id="cb52-515"><a href="#cb52-515" aria-hidden="true" tabindex="-1"></a>g_0 <span class="sc">+</span></span>
+<span id="cb52-516"><a href="#cb52-516" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">5</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb52-517"><a href="#cb52-517" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="dv">3</span>, <span class="at">y =</span> <span class="dv">6</span>, <span class="at">label =</span> <span class="st">"leaf L"</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb52-518"><a href="#cb52-518" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="dv">7</span>, <span class="at">y =</span> <span class="dv">6</span>, <span class="at">label =</span> <span class="st">"leaf R"</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb52-519"><a href="#cb52-519" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb52-520"><a href="#cb52-520" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-521"><a href="#cb52-521" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-522"><a href="#cb52-522" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb52-525"><a href="#cb52-525" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-526"><a href="#cb52-526" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb52-527"><a href="#cb52-527" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-528"><a href="#cb52-528" aria-hidden="true" tabindex="-1"></a>DiagrammeR<span class="sc">::</span><span class="fu">grViz</span>(</span>
+<span id="cb52-529"><a href="#cb52-529" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(</span>
+<span id="cb52-530"><a href="#cb52-530" aria-hidden="true" tabindex="-1"></a>    <span class="st">"</span></span>
+<span id="cb52-531"><a href="#cb52-531" aria-hidden="true" tabindex="-1"></a><span class="st">    digraph {</span></span>
+<span id="cb52-532"><a href="#cb52-532" aria-hidden="true" tabindex="-1"></a><span class="st">      graph [ranksep = 0.2]</span></span>
+<span id="cb52-533"><a href="#cb52-533" aria-hidden="true" tabindex="-1"></a><span class="st">      node [shape = box]</span></span>
+<span id="cb52-534"><a href="#cb52-534" aria-hidden="true" tabindex="-1"></a><span class="st">        T1R [label = 'L: -9, 1 </span><span class="sc">\n</span><span class="st"> Q score = "</span>, <span class="fu">round</span>(measures_2<span class="sc">$</span>q_L, <span class="at">digits =</span> <span class="dv">2</span>), <span class="st">"']</span></span>
+<span id="cb52-535"><a href="#cb52-535" aria-hidden="true" tabindex="-1"></a><span class="st">        T1L [label = 'R: 2 , 6 </span><span class="sc">\n</span><span class="st"> Q score = "</span>, <span class="fu">round</span>(measures_2<span class="sc">$</span>q_R, <span class="at">digits =</span> <span class="dv">2</span>), <span class="st">"']</span></span>
+<span id="cb52-536"><a href="#cb52-536" aria-hidden="true" tabindex="-1"></a><span class="st">        T0 [label = '-9, 1 , 2 , 6']</span></span>
+<span id="cb52-537"><a href="#cb52-537" aria-hidden="true" tabindex="-1"></a><span class="st">      edge [minlen = 2]</span></span>
+<span id="cb52-538"><a href="#cb52-538" aria-hidden="true" tabindex="-1"></a><span class="st">        T0-&gt;T1L</span></span>
+<span id="cb52-539"><a href="#cb52-539" aria-hidden="true" tabindex="-1"></a><span class="st">        T0-&gt;T1R</span></span>
+<span id="cb52-540"><a href="#cb52-540" aria-hidden="true" tabindex="-1"></a><span class="st">      { rank = same; T1R; T1L}</span></span>
+<span id="cb52-541"><a href="#cb52-541" aria-hidden="true" tabindex="-1"></a><span class="st">    }</span></span>
+<span id="cb52-542"><a href="#cb52-542" aria-hidden="true" tabindex="-1"></a><span class="st">    "</span></span>
+<span id="cb52-543"><a href="#cb52-543" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb52-544"><a href="#cb52-544" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb52-545"><a href="#cb52-545" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-546"><a href="#cb52-546" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb52-547"><a href="#cb52-547" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-548"><a href="#cb52-548" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-549"><a href="#cb52-549" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb52-550"><a href="#cb52-550" aria-hidden="true" tabindex="-1"></a>q_L^* &amp; = (-9 + 1)^2 / (2 + <span class="in">`r lambda`</span>) = <span class="in">`r round(measures_2$q_L, digits = 2)`</span> <span class="sc">\\</span></span>
+<span id="cb52-551"><a href="#cb52-551" aria-hidden="true" tabindex="-1"></a>q_R^* &amp; = (2 + 6)^2 / (2 + <span class="in">`r lambda`</span>) = <span class="in">`r round(measures_2$q_R, digits = 2)`</span></span>
+<span id="cb52-552"><a href="#cb52-552" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb52-553"><a href="#cb52-553" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-554"><a href="#cb52-554" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-555"><a href="#cb52-555" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-556"><a href="#cb52-556" aria-hidden="true" tabindex="-1"></a>G_2 = \frac{<span class="in">`r round(measures_2$q_L, digits = 2)`</span> + <span class="in">`r round(measures_2$q_R, digits = 2)`</span> - <span class="in">`r q_0`</span>}{2} - <span class="in">`r gamma`</span> = <span class="in">`r measures_2$gain`</span></span>
+<span id="cb52-557"><a href="#cb52-557" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-558"><a href="#cb52-558" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-559"><a href="#cb52-559" aria-hidden="true" tabindex="-1"></a><span class="fu">#### &lt;span style="color:blue"&gt; Split: {`x`, 7} &lt;/span&gt;</span></span>
+<span id="cb52-560"><a href="#cb52-560" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-563"><a href="#cb52-563" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-564"><a href="#cb52-564" aria-hidden="true" tabindex="-1"></a>measures_3 <span class="ot">&lt;-</span> <span class="fu">get_info</span>(data, <span class="dv">7</span>, lambda, gamma)</span>
+<span id="cb52-565"><a href="#cb52-565" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-566"><a href="#cb52-566" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-569"><a href="#cb52-569" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-570"><a href="#cb52-570" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb52-571"><a href="#cb52-571" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4</span></span>
+<span id="cb52-572"><a href="#cb52-572" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 6</span></span>
+<span id="cb52-573"><a href="#cb52-573" aria-hidden="true" tabindex="-1"></a>g_0 <span class="sc">+</span></span>
+<span id="cb52-574"><a href="#cb52-574" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">7</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb52-575"><a href="#cb52-575" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="dv">4</span>, <span class="at">y =</span> <span class="dv">6</span>, <span class="at">label =</span> <span class="st">"leaf L"</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb52-576"><a href="#cb52-576" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="dv">8</span>, <span class="at">y =</span> <span class="dv">6</span>, <span class="at">label =</span> <span class="st">"leaf R"</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb52-577"><a href="#cb52-577" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb52-578"><a href="#cb52-578" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-579"><a href="#cb52-579" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-580"><a href="#cb52-580" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb52-583"><a href="#cb52-583" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-584"><a href="#cb52-584" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb52-585"><a href="#cb52-585" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-586"><a href="#cb52-586" aria-hidden="true" tabindex="-1"></a>DiagrammeR<span class="sc">::</span><span class="fu">grViz</span>(</span>
+<span id="cb52-587"><a href="#cb52-587" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(</span>
+<span id="cb52-588"><a href="#cb52-588" aria-hidden="true" tabindex="-1"></a>    <span class="st">"</span></span>
+<span id="cb52-589"><a href="#cb52-589" aria-hidden="true" tabindex="-1"></a><span class="st">    digraph {</span></span>
+<span id="cb52-590"><a href="#cb52-590" aria-hidden="true" tabindex="-1"></a><span class="st">      graph [ranksep = 0.2]</span></span>
+<span id="cb52-591"><a href="#cb52-591" aria-hidden="true" tabindex="-1"></a><span class="st">      node [shape = box]</span></span>
+<span id="cb52-592"><a href="#cb52-592" aria-hidden="true" tabindex="-1"></a><span class="st">        T1R [label = 'L: -9, 1, 2 </span><span class="sc">\n</span><span class="st"> Q score = "</span>, <span class="fu">round</span>(measures_3<span class="sc">$</span>q_L, <span class="at">digits =</span> <span class="dv">2</span>), <span class="st">"']</span></span>
+<span id="cb52-593"><a href="#cb52-593" aria-hidden="true" tabindex="-1"></a><span class="st">        T1L [label = 'R: 6 </span><span class="sc">\n</span><span class="st"> Q score = "</span>, <span class="fu">round</span>(measures_3<span class="sc">$</span>q_R, <span class="at">digits =</span> <span class="dv">2</span>), <span class="st">"']</span></span>
+<span id="cb52-594"><a href="#cb52-594" aria-hidden="true" tabindex="-1"></a><span class="st">        T0 [label = '-9, 1 , 2 , 6']</span></span>
+<span id="cb52-595"><a href="#cb52-595" aria-hidden="true" tabindex="-1"></a><span class="st">      edge [minlen = 2]</span></span>
+<span id="cb52-596"><a href="#cb52-596" aria-hidden="true" tabindex="-1"></a><span class="st">        T0-&gt;T1L</span></span>
+<span id="cb52-597"><a href="#cb52-597" aria-hidden="true" tabindex="-1"></a><span class="st">        T0-&gt;T1R</span></span>
+<span id="cb52-598"><a href="#cb52-598" aria-hidden="true" tabindex="-1"></a><span class="st">      { rank = same; T1R; T1L}</span></span>
+<span id="cb52-599"><a href="#cb52-599" aria-hidden="true" tabindex="-1"></a><span class="st">    }</span></span>
+<span id="cb52-600"><a href="#cb52-600" aria-hidden="true" tabindex="-1"></a><span class="st">    "</span></span>
+<span id="cb52-601"><a href="#cb52-601" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb52-602"><a href="#cb52-602" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb52-603"><a href="#cb52-603" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-604"><a href="#cb52-604" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb52-605"><a href="#cb52-605" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-606"><a href="#cb52-606" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-607"><a href="#cb52-607" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-608"><a href="#cb52-608" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb52-609"><a href="#cb52-609" aria-hidden="true" tabindex="-1"></a>q_L^* &amp; = (-9+1+2)^2 / (3 + <span class="in">`r lambda`</span>) = <span class="in">`r round(measures_3$q_L, digits = 2)`</span> <span class="sc">\\</span></span>
+<span id="cb52-610"><a href="#cb52-610" aria-hidden="true" tabindex="-1"></a>q_R^* &amp; = (6)^2 / (1 + <span class="in">`r lambda`</span>) = <span class="in">`r round(measures_3$q_R, digits = 2)`</span></span>
+<span id="cb52-611"><a href="#cb52-611" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb52-612"><a href="#cb52-612" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-613"><a href="#cb52-613" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-614"><a href="#cb52-614" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-615"><a href="#cb52-615" aria-hidden="true" tabindex="-1"></a>G_3 = \frac{<span class="in">`r round(measures_3$q_L, digits = 2)`</span> + <span class="in">`r round(measures_3$q_R, digits = 2)`</span> - <span class="in">`r q_0`</span>}{2} - <span class="in">`r gamma`</span> = <span class="in">`r measures_3$gain`</span></span>
+<span id="cb52-616"><a href="#cb52-616" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-617"><a href="#cb52-617" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-618"><a href="#cb52-618" aria-hidden="true" tabindex="-1"></a>Among all the splits we considered, the first case (Split: {<span class="in">`x`</span>, 2}) has the highest score. This is easy to confirm visually and shows picking a split based on the gain measure indeed makes sense. </span>
+<span id="cb52-619"><a href="#cb52-619" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-620"><a href="#cb52-620" aria-hidden="true" tabindex="-1"></a>Now we consider how to split leaf R (leaf L cannot be split further as it has only one observation). We have two split candidates: {<span class="in">`x`</span>, 5} and {<span class="in">`x`</span>, 7}. Let's get the gain measures using <span class="in">`get_info()`</span>.</span>
+<span id="cb52-621"><a href="#cb52-621" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-624"><a href="#cb52-624" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-625"><a href="#cb52-625" aria-hidden="true" tabindex="-1"></a><span class="co">#=== first split ===#</span></span>
+<span id="cb52-626"><a href="#cb52-626" aria-hidden="true" tabindex="-1"></a><span class="fu">get_info</span>(data_R_1, <span class="dv">5</span>, lambda, gamma)<span class="sc">$</span>gain </span>
+<span id="cb52-627"><a href="#cb52-627" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-628"><a href="#cb52-628" aria-hidden="true" tabindex="-1"></a><span class="co">#=== second split ===#</span></span>
+<span id="cb52-629"><a href="#cb52-629" aria-hidden="true" tabindex="-1"></a><span class="fu">get_info</span>(data_R_1, <span class="dv">7</span>, lambda, gamma)<span class="sc">$</span>gain</span>
+<span id="cb52-630"><a href="#cb52-630" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-631"><a href="#cb52-631" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-632"><a href="#cb52-632" aria-hidden="true" tabindex="-1"></a>So, neither of the splits has a positive gain value. Therefore, we do not adopt either of the splits. For this iteration ($b=1$), this is the end of tree building. </span>
+<span id="cb52-633"><a href="#cb52-633" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-634"><a href="#cb52-634" aria-hidden="true" tabindex="-1"></a>:::{.callout-note}</span>
+<span id="cb52-635"><a href="#cb52-635" aria-hidden="true" tabindex="-1"></a>If the value of $\gamma$ is lower (say, 0), then we would have adopted the second split. </span>
+<span id="cb52-636"><a href="#cb52-636" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-639"><a href="#cb52-639" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-640"><a href="#cb52-640" aria-hidden="true" tabindex="-1"></a><span class="fu">get_info</span>(data_R_1, <span class="dv">5</span>, lambda, <span class="dv">0</span>)<span class="sc">$</span>gain <span class="co"># first split</span></span>
+<span id="cb52-641"><a href="#cb52-641" aria-hidden="true" tabindex="-1"></a><span class="fu">get_info</span>(data_R_1, <span class="dv">7</span>, lambda, <span class="dv">0</span>)<span class="sc">$</span>gain <span class="co"># second split</span></span>
+<span id="cb52-642"><a href="#cb52-642" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-643"><a href="#cb52-643" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-644"><a href="#cb52-644" aria-hidden="true" tabindex="-1"></a>As you can see, a higher value of $\gamma$ leads to a more aggressive tree pruning. </span>
+<span id="cb52-645"><a href="#cb52-645" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb52-646"><a href="#cb52-646" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-647"><a href="#cb52-647" aria-hidden="true" tabindex="-1"></a>So, the final tree for this iteration ($b = 1$) is</span>
+<span id="cb52-648"><a href="#cb52-648" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-651"><a href="#cb52-651" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-652"><a href="#cb52-652" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb52-653"><a href="#cb52-653" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 2</span></span>
+<span id="cb52-654"><a href="#cb52-654" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 4</span></span>
+<span id="cb52-655"><a href="#cb52-655" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-656"><a href="#cb52-656" aria-hidden="true" tabindex="-1"></a>DiagrammeR<span class="sc">::</span><span class="fu">grViz</span>(</span>
+<span id="cb52-657"><a href="#cb52-657" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(</span>
+<span id="cb52-658"><a href="#cb52-658" aria-hidden="true" tabindex="-1"></a>  <span class="st">"</span></span>
+<span id="cb52-659"><a href="#cb52-659" aria-hidden="true" tabindex="-1"></a><span class="st">  digraph {</span></span>
+<span id="cb52-660"><a href="#cb52-660" aria-hidden="true" tabindex="-1"></a><span class="st">    graph [ranksep = 0.2]</span></span>
+<span id="cb52-661"><a href="#cb52-661" aria-hidden="true" tabindex="-1"></a><span class="st">    node [shape = box, width = 0.3, height = 0.15, fontsize = 3, fixedsize = TRUE, penwidth = 0.2]</span></span>
+<span id="cb52-662"><a href="#cb52-662" aria-hidden="true" tabindex="-1"></a><span class="st">      T1R [label = 'L: -9 </span><span class="sc">\n</span><span class="st"> w* = "</span>, <span class="fu">round</span>(w_L, <span class="at">digits =</span> <span class="dv">2</span>), <span class="st">"']</span></span>
+<span id="cb52-663"><a href="#cb52-663" aria-hidden="true" tabindex="-1"></a><span class="st">      T1L [label = 'R: 1 , 2 , 6 </span><span class="sc">\n</span><span class="st"> w* = "</span>, <span class="fu">round</span>(w_R, <span class="at">digits =</span> <span class="dv">2</span>), <span class="st">"']</span></span>
+<span id="cb52-664"><a href="#cb52-664" aria-hidden="true" tabindex="-1"></a><span class="st">      T0 [label = '-9, 1 , 2 , 6']</span></span>
+<span id="cb52-665"><a href="#cb52-665" aria-hidden="true" tabindex="-1"></a><span class="st">    edge [penwidth = 0.2, arrowsize = 0.3, len = 0.3]</span></span>
+<span id="cb52-666"><a href="#cb52-666" aria-hidden="true" tabindex="-1"></a><span class="st">      T0-&gt;T1L</span></span>
+<span id="cb52-667"><a href="#cb52-667" aria-hidden="true" tabindex="-1"></a><span class="st">      T0-&gt;T1R</span></span>
+<span id="cb52-668"><a href="#cb52-668" aria-hidden="true" tabindex="-1"></a><span class="st">    { rank = same; T1R; T1L}</span></span>
+<span id="cb52-669"><a href="#cb52-669" aria-hidden="true" tabindex="-1"></a><span class="st">  }</span></span>
+<span id="cb52-670"><a href="#cb52-670" aria-hidden="true" tabindex="-1"></a><span class="st">  "</span></span>
+<span id="cb52-671"><a href="#cb52-671" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb52-672"><a href="#cb52-672" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-673"><a href="#cb52-673" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb52-674"><a href="#cb52-674" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-675"><a href="#cb52-675" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-676"><a href="#cb52-676" aria-hidden="true" tabindex="-1"></a>We now use $w^*$ from this tree to update our prediction according to @eq-update. </span>
+<span id="cb52-677"><a href="#cb52-677" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-678"><a href="#cb52-678" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb52-679"><a href="#cb52-679" aria-hidden="true" tabindex="-1"></a>$f_{i,b} = f_{i,b-1} + \eta \cdot w_j^*$</span>
+<span id="cb52-680"><a href="#cb52-680" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb52-681"><a href="#cb52-681" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-684"><a href="#cb52-684" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-685"><a href="#cb52-685" aria-hidden="true" tabindex="-1"></a>measures_1 <span class="ot">&lt;-</span> <span class="fu">get_info</span>(data, <span class="dv">2</span>, lambda, gamma)</span>
+<span id="cb52-686"><a href="#cb52-686" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-687"><a href="#cb52-687" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-688"><a href="#cb52-688" aria-hidden="true" tabindex="-1"></a>Since the first observation is in $L$, </span>
+<span id="cb52-689"><a href="#cb52-689" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-690"><a href="#cb52-690" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-691"><a href="#cb52-691" aria-hidden="true" tabindex="-1"></a>f_{i = 1,b = 1} = <span class="in">`r f_0`</span> + <span class="in">`r eta`</span> \times <span class="in">`r round(measures_1$w_L, digits = 2)`</span> = <span class="in">`r round(f_0 + eta * measures_1$w_L, digits = 2)`</span> </span>
+<span id="cb52-692"><a href="#cb52-692" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-693"><a href="#cb52-693" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-694"><a href="#cb52-694" aria-hidden="true" tabindex="-1"></a>Since the second, third, and fourth observations are in $R$,</span>
+<span id="cb52-695"><a href="#cb52-695" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-696"><a href="#cb52-696" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-697"><a href="#cb52-697" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb52-698"><a href="#cb52-698" aria-hidden="true" tabindex="-1"></a>f_{i = 2,b = 1} = <span class="in">`r f_0`</span> + <span class="in">`r eta`</span> \times <span class="in">`r round(measures_1$w_R, digits = 2)`</span> = <span class="in">`r round(f_0 + eta * measures_1$w_R, digits = 2)`</span> <span class="sc">\\</span></span>
+<span id="cb52-699"><a href="#cb52-699" aria-hidden="true" tabindex="-1"></a>f_{i = 3,b = 1} = <span class="in">`r f_0`</span> + <span class="in">`r eta`</span> \times <span class="in">`r round(measures_1$w_R, digits = 2)`</span>  = <span class="in">`r round(f_0 + eta * measures_1$w_R, digits = 2)`</span><span class="sc">\\</span></span>
+<span id="cb52-700"><a href="#cb52-700" aria-hidden="true" tabindex="-1"></a>f_{i = 4,b = 1} = <span class="in">`r f_0`</span> + <span class="in">`r eta`</span> \times <span class="in">`r round(measures_1$w_R, digits = 2)`</span> = <span class="in">`r round(f_0 + eta * measures_1$w_R, digits = 2)`</span></span>
+<span id="cb52-701"><a href="#cb52-701" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb52-702"><a href="#cb52-702" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-703"><a href="#cb52-703" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-706"><a href="#cb52-706" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-707"><a href="#cb52-707" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb52-708"><a href="#cb52-708" aria-hidden="true" tabindex="-1"></a>  .[, f_0 <span class="sc">:</span><span class="er">=</span> f_0] <span class="sc">%&gt;%</span> </span>
+<span id="cb52-709"><a href="#cb52-709" aria-hidden="true" tabindex="-1"></a>  .[<span class="dv">1</span>, f_1 <span class="sc">:</span><span class="er">=</span> f_0 <span class="sc">+</span> measures_1<span class="sc">$</span>w_L <span class="sc">*</span> eta] <span class="sc">%&gt;%</span></span>
+<span id="cb52-710"><a href="#cb52-710" aria-hidden="true" tabindex="-1"></a>  .[<span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>, f_1 <span class="sc">:</span><span class="er">=</span> f_0 <span class="sc">+</span> measures_1<span class="sc">$</span>w_R <span class="sc">*</span> eta]</span>
+<span id="cb52-711"><a href="#cb52-711" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-712"><a href="#cb52-712" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-713"><a href="#cb52-713" aria-hidden="true" tabindex="-1"></a>The prediction updates can be seen below. Though small, we made small improvements in our prediction.</span>
+<span id="cb52-714"><a href="#cb52-714" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-717"><a href="#cb52-717" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-718"><a href="#cb52-718" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true </span></span>
+<span id="cb52-719"><a href="#cb52-719" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-720"><a href="#cb52-720" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> data) <span class="sc">+</span></span>
+<span id="cb52-721"><a href="#cb52-721" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> y, <span class="at">x =</span> x, <span class="at">color =</span> <span class="st">"observed"</span>)) <span class="sc">+</span></span>
+<span id="cb52-722"><a href="#cb52-722" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> f_1, <span class="at">x =</span> x, <span class="at">color =</span> <span class="st">"after (f1)"</span>)) <span class="sc">+</span></span>
+<span id="cb52-723"><a href="#cb52-723" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> f_0, <span class="at">x =</span> x, <span class="at">color =</span> <span class="st">"before (f0)"</span>)) <span class="sc">+</span></span>
+<span id="cb52-724"><a href="#cb52-724" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(</span>
+<span id="cb52-725"><a href="#cb52-725" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> </span>
+<span id="cb52-726"><a href="#cb52-726" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(</span>
+<span id="cb52-727"><a href="#cb52-727" aria-hidden="true" tabindex="-1"></a>        <span class="st">"before (f0)"</span> <span class="ot">=</span> <span class="st">"blue"</span>, </span>
+<span id="cb52-728"><a href="#cb52-728" aria-hidden="true" tabindex="-1"></a>        <span class="st">"after (f1)"</span> <span class="ot">=</span> <span class="st">"red"</span>,</span>
+<span id="cb52-729"><a href="#cb52-729" aria-hidden="true" tabindex="-1"></a>        <span class="st">"observed"</span> <span class="ot">=</span> <span class="st">"black"</span></span>
+<span id="cb52-730"><a href="#cb52-730" aria-hidden="true" tabindex="-1"></a>      ), </span>
+<span id="cb52-731"><a href="#cb52-731" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">""</span></span>
+<span id="cb52-732"><a href="#cb52-732" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb52-733"><a href="#cb52-733" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(</span>
+<span id="cb52-734"><a href="#cb52-734" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">y =</span> f_0, <span class="at">x =</span> x, <span class="at">yend =</span> f_1, <span class="at">xend =</span> x), </span>
+<span id="cb52-735"><a href="#cb52-735" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"blue"</span>,</span>
+<span id="cb52-736"><a href="#cb52-736" aria-hidden="true" tabindex="-1"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.1</span>, <span class="st">"cm"</span>))</span>
+<span id="cb52-737"><a href="#cb52-737" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb52-738"><a href="#cb52-738" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb52-739"><a href="#cb52-739" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-740"><a href="#cb52-740" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-741"><a href="#cb52-741" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-742"><a href="#cb52-742" aria-hidden="true" tabindex="-1"></a>Now, we move on to $b=2$. We first update residuals:</span>
+<span id="cb52-743"><a href="#cb52-743" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-746"><a href="#cb52-746" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-747"><a href="#cb52-747" aria-hidden="true" tabindex="-1"></a>data[, resid <span class="sc">:</span><span class="er">=</span> y <span class="sc">-</span> f_1]</span>
+<span id="cb52-748"><a href="#cb52-748" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-749"><a href="#cb52-749" aria-hidden="true" tabindex="-1"></a>data</span>
+<span id="cb52-750"><a href="#cb52-750" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-751"><a href="#cb52-751" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-752"><a href="#cb52-752" aria-hidden="true" tabindex="-1"></a>Just like at $b=1$, all the possible splits are {<span class="in">`x`</span>, 2}, {<span class="in">`x`</span>, 5}, {<span class="in">`x`</span>, 7}. Let's find the gain for each split.</span>
+<span id="cb52-753"><a href="#cb52-753" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-756"><a href="#cb52-756" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-757"><a href="#cb52-757" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(</span>
+<span id="cb52-758"><a href="#cb52-758" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">5</span>, <span class="dv">7</span>),</span>
+<span id="cb52-759"><a href="#cb52-759" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(x) <span class="fu">get_info</span>(data, x, lambda, gamma)<span class="sc">$</span>gain</span>
+<span id="cb52-760"><a href="#cb52-760" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb52-761"><a href="#cb52-761" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-762"><a href="#cb52-762" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-763"><a href="#cb52-763" aria-hidden="true" tabindex="-1"></a>So, the first split is again the best split. Should we split the right leaf, which has the observations except the first one?</span>
+<span id="cb52-764"><a href="#cb52-764" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-767"><a href="#cb52-767" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-768"><a href="#cb52-768" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(</span>
+<span id="cb52-769"><a href="#cb52-769" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">7</span>),</span>
+<span id="cb52-770"><a href="#cb52-770" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(x) <span class="fu">get_info</span>(data[<span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>, ], x, lambda, gamma)<span class="sc">$</span>gain</span>
+<span id="cb52-771"><a href="#cb52-771" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb52-772"><a href="#cb52-772" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-773"><a href="#cb52-773" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-774"><a href="#cb52-774" aria-hidden="true" tabindex="-1"></a>All the splits have negative gains. So, we do not split this leaf just like at $b=1$. </span>
+<span id="cb52-775"><a href="#cb52-775" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-776"><a href="#cb52-776" aria-hidden="true" tabindex="-1"></a>So, the final tree for this iteration ($b = 2$) is</span>
+<span id="cb52-777"><a href="#cb52-777" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-780"><a href="#cb52-780" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-781"><a href="#cb52-781" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb52-782"><a href="#cb52-782" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 2</span></span>
+<span id="cb52-783"><a href="#cb52-783" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 4</span></span>
+<span id="cb52-784"><a href="#cb52-784" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-785"><a href="#cb52-785" aria-hidden="true" tabindex="-1"></a>measures_b2 <span class="ot">&lt;-</span> <span class="fu">get_info</span>(data, <span class="dv">2</span>, lambda, gamma)</span>
+<span id="cb52-786"><a href="#cb52-786" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-787"><a href="#cb52-787" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-788"><a href="#cb52-788" aria-hidden="true" tabindex="-1"></a>DiagrammeR<span class="sc">::</span><span class="fu">grViz</span>(</span>
+<span id="cb52-789"><a href="#cb52-789" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(</span>
+<span id="cb52-790"><a href="#cb52-790" aria-hidden="true" tabindex="-1"></a>  <span class="st">"</span></span>
+<span id="cb52-791"><a href="#cb52-791" aria-hidden="true" tabindex="-1"></a><span class="st">  digraph {</span></span>
+<span id="cb52-792"><a href="#cb52-792" aria-hidden="true" tabindex="-1"></a><span class="st">    graph [ranksep = 0.2]</span></span>
+<span id="cb52-793"><a href="#cb52-793" aria-hidden="true" tabindex="-1"></a><span class="st">    node [shape = box, width = 0.4, height = 0.15, fontsize = 3, fixedsize = TRUE, penwidth = 0.2]</span></span>
+<span id="cb52-794"><a href="#cb52-794" aria-hidden="true" tabindex="-1"></a><span class="st">      T1R [label = 'L: -8.18 </span><span class="sc">\n</span><span class="st"> w* = "</span>, <span class="fu">round</span>(measures_b2<span class="sc">$</span>w_L, <span class="at">digits =</span> <span class="dv">2</span>), <span class="st">"']</span></span>
+<span id="cb52-795"><a href="#cb52-795" aria-hidden="true" tabindex="-1"></a><span class="st">      T1L [label = 'R: 0.71 , 1.71 , 5.71 </span><span class="sc">\n</span><span class="st"> w* = "</span>, <span class="fu">round</span>(measures_b2<span class="sc">$</span>w_R, <span class="at">digits =</span> <span class="dv">2</span>), <span class="st">"']</span></span>
+<span id="cb52-796"><a href="#cb52-796" aria-hidden="true" tabindex="-1"></a><span class="st">      T0 [label = '-8.18, 0.71 , 1.71 , 5.71']</span></span>
+<span id="cb52-797"><a href="#cb52-797" aria-hidden="true" tabindex="-1"></a><span class="st">    edge [penwidth = 0.2, arrowsize = 0.3, len = 0.3]</span></span>
+<span id="cb52-798"><a href="#cb52-798" aria-hidden="true" tabindex="-1"></a><span class="st">      T0-&gt;T1L</span></span>
+<span id="cb52-799"><a href="#cb52-799" aria-hidden="true" tabindex="-1"></a><span class="st">      T0-&gt;T1R</span></span>
+<span id="cb52-800"><a href="#cb52-800" aria-hidden="true" tabindex="-1"></a><span class="st">    { rank = same; T1R; T1L}</span></span>
+<span id="cb52-801"><a href="#cb52-801" aria-hidden="true" tabindex="-1"></a><span class="st">  }</span></span>
+<span id="cb52-802"><a href="#cb52-802" aria-hidden="true" tabindex="-1"></a><span class="st">  "</span></span>
+<span id="cb52-803"><a href="#cb52-803" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb52-804"><a href="#cb52-804" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-805"><a href="#cb52-805" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb52-806"><a href="#cb52-806" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-807"><a href="#cb52-807" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-808"><a href="#cb52-808" aria-hidden="true" tabindex="-1"></a>Let's now update our predictions.</span>
+<span id="cb52-809"><a href="#cb52-809" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-812"><a href="#cb52-812" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-813"><a href="#cb52-813" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb52-814"><a href="#cb52-814" aria-hidden="true" tabindex="-1"></a>  .[<span class="dv">1</span>, f_2 <span class="sc">:</span><span class="er">=</span> f_1 <span class="sc">+</span> measures_b2<span class="sc">$</span>w_L <span class="sc">*</span> eta] <span class="sc">%&gt;%</span>  </span>
+<span id="cb52-815"><a href="#cb52-815" aria-hidden="true" tabindex="-1"></a>  .[<span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>, f_2 <span class="sc">:</span><span class="er">=</span> f_1 <span class="sc">+</span> measures_b2<span class="sc">$</span>w_R <span class="sc">*</span> eta] </span>
+<span id="cb52-816"><a href="#cb52-816" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-817"><a href="#cb52-817" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-820"><a href="#cb52-820" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-821"><a href="#cb52-821" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true </span></span>
+<span id="cb52-822"><a href="#cb52-822" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-823"><a href="#cb52-823" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> data) <span class="sc">+</span></span>
+<span id="cb52-824"><a href="#cb52-824" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> y, <span class="at">x =</span> x, <span class="at">color =</span> <span class="st">"observed"</span>), <span class="at">shape =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb52-825"><a href="#cb52-825" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> f_2, <span class="at">x =</span> x, <span class="at">color =</span> <span class="st">"f2"</span>)) <span class="sc">+</span></span>
+<span id="cb52-826"><a href="#cb52-826" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> f_1, <span class="at">x =</span> x, <span class="at">color =</span> <span class="st">"f1"</span>)) <span class="sc">+</span></span>
+<span id="cb52-827"><a href="#cb52-827" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> f_0, <span class="at">x =</span> x, <span class="at">color =</span> <span class="st">"f0"</span>)) <span class="sc">+</span></span>
+<span id="cb52-828"><a href="#cb52-828" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(</span>
+<span id="cb52-829"><a href="#cb52-829" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> </span>
+<span id="cb52-830"><a href="#cb52-830" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(</span>
+<span id="cb52-831"><a href="#cb52-831" aria-hidden="true" tabindex="-1"></a>        <span class="st">"f0"</span> <span class="ot">=</span> <span class="st">"blue"</span>, </span>
+<span id="cb52-832"><a href="#cb52-832" aria-hidden="true" tabindex="-1"></a>        <span class="st">"f1"</span> <span class="ot">=</span> <span class="st">"red"</span>,</span>
+<span id="cb52-833"><a href="#cb52-833" aria-hidden="true" tabindex="-1"></a>        <span class="st">"f2"</span> <span class="ot">=</span> <span class="st">"red"</span>,</span>
+<span id="cb52-834"><a href="#cb52-834" aria-hidden="true" tabindex="-1"></a>        <span class="st">"observed"</span> <span class="ot">=</span> <span class="st">"black"</span></span>
+<span id="cb52-835"><a href="#cb52-835" aria-hidden="true" tabindex="-1"></a>      ), </span>
+<span id="cb52-836"><a href="#cb52-836" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">""</span></span>
+<span id="cb52-837"><a href="#cb52-837" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb52-838"><a href="#cb52-838" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(</span>
+<span id="cb52-839"><a href="#cb52-839" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">y =</span> f_0, <span class="at">x =</span> x, <span class="at">yend =</span> f_1, <span class="at">xend =</span> x), </span>
+<span id="cb52-840"><a href="#cb52-840" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"blue"</span>,</span>
+<span id="cb52-841"><a href="#cb52-841" aria-hidden="true" tabindex="-1"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.2</span>, <span class="st">"cm"</span>))</span>
+<span id="cb52-842"><a href="#cb52-842" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb52-843"><a href="#cb52-843" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(</span>
+<span id="cb52-844"><a href="#cb52-844" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">y =</span> f_1, <span class="at">x =</span> x, <span class="at">yend =</span> f_2, <span class="at">xend =</span> x), </span>
+<span id="cb52-845"><a href="#cb52-845" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"blue"</span>,</span>
+<span id="cb52-846"><a href="#cb52-846" aria-hidden="true" tabindex="-1"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.2</span>, <span class="st">"cm"</span>))</span>
+<span id="cb52-847"><a href="#cb52-847" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb52-848"><a href="#cb52-848" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb52-849"><a href="#cb52-849" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-850"><a href="#cb52-850" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-851"><a href="#cb52-851" aria-hidden="true" tabindex="-1"></a>Again, we made small improvements in our predictions. This process continues until user-specified stopping criteria is met.</span>
+<span id="cb52-852"><a href="#cb52-852" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-853"><a href="#cb52-853" aria-hidden="true" tabindex="-1"></a>:::{.callout-tip}</span>
+<span id="cb52-854"><a href="#cb52-854" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-855"><a href="#cb52-855" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>$\lambda$: </span>
+<span id="cb52-856"><a href="#cb52-856" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>A higher value of $\lambda$ leads to a lower value of prediction updates ($w^*$).</span>
+<span id="cb52-857"><a href="#cb52-857" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>A higher value of $\lambda$ leads to a lower value of quality score ($Q$), thus leading to a lower value of gain ($G$), which then leads to more aggressive pruning for a given value of $\gamma$.</span>
+<span id="cb52-858"><a href="#cb52-858" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>$\gamma$:</span>
+<span id="cb52-859"><a href="#cb52-859" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>A higher value of $\gamma$ leads to more aggressive pruning.</span>
+<span id="cb52-860"><a href="#cb52-860" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>$\eta$:</span>
+<span id="cb52-861"><a href="#cb52-861" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>A higher value of $\eta$ leads to faster learning.</span>
+<span id="cb52-862"><a href="#cb52-862" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-863"><a href="#cb52-863" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb52-864"><a href="#cb52-864" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-865"><a href="#cb52-865" aria-hidden="true" tabindex="-1"></a><span class="fu">## Implementation </span></span>
+<span id="cb52-866"><a href="#cb52-866" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-867"><a href="#cb52-867" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-868"><a href="#cb52-868" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
+<span id="cb52-869"><a href="#cb52-869" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-870"><a href="#cb52-870" aria-hidden="true" tabindex="-1"></a><span class="fu">## R</span></span>
+<span id="cb52-871"><a href="#cb52-871" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-872"><a href="#cb52-872" aria-hidden="true" tabindex="-1"></a>You can use the <span class="in">`xgboost`</span> package to implement XGB modeling. </span>
+<span id="cb52-873"><a href="#cb52-873" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-876"><a href="#cb52-876" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-877"><a href="#cb52-877" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(xgboost)</span>
+<span id="cb52-878"><a href="#cb52-878" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-879"><a href="#cb52-879" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-880"><a href="#cb52-880" aria-hidden="true" tabindex="-1"></a>The first task is to create a class of matrix called <span class="in">`xgb.DMatrix`</span> using the <span class="in">`xgb.DMatrix()`</span> function. You provide the explanatory variable data matrix to the <span class="in">`data`</span> option and the dependent variable matrix (vector) to the <span class="in">`label`</span> option in <span class="in">`xgb.DMatrix()`</span> like below.</span>
+<span id="cb52-881"><a href="#cb52-881" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-882"><a href="#cb52-882" aria-hidden="true" tabindex="-1"></a>Let's get the <span class="in">`mlb1`</span> data from the <span class="in">`wooldridge`</span> package for demonstration.</span>
+<span id="cb52-883"><a href="#cb52-883" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-886"><a href="#cb52-886" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-887"><a href="#cb52-887" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(wooldridge)</span>
+<span id="cb52-888"><a href="#cb52-888" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(mlb1)</span>
+<span id="cb52-889"><a href="#cb52-889" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-890"><a href="#cb52-890" aria-hidden="true" tabindex="-1"></a>mlb1_dt <span class="ot">&lt;-</span> </span>
+<span id="cb52-891"><a href="#cb52-891" aria-hidden="true" tabindex="-1"></a>  mlb1 <span class="sc">%&gt;%</span> </span>
+<span id="cb52-892"><a href="#cb52-892" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="sc">%&gt;%</span> <span class="co"># turn into data.table </span></span>
+<span id="cb52-893"><a href="#cb52-893" aria-hidden="true" tabindex="-1"></a>  .[, salary <span class="sc">:</span><span class="er">=</span> <span class="cn">NULL</span>] <span class="sc">%&gt;%</span> <span class="co"># remove salary (use lsalary instead)</span></span>
+<span id="cb52-894"><a href="#cb52-894" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>() <span class="co"># remove observations with NA in any of the variables</span></span>
+<span id="cb52-895"><a href="#cb52-895" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-896"><a href="#cb52-896" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-899"><a href="#cb52-899" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-900"><a href="#cb52-900" aria-hidden="true" tabindex="-1"></a>mlb1_dm_X <span class="ot">&lt;-</span> </span>
+<span id="cb52-901"><a href="#cb52-901" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xgb.DMatrix</span>(</span>
+<span id="cb52-902"><a href="#cb52-902" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> <span class="fu">as.matrix</span>(mlb1_dt[, .(hruns, years, rbisyr, allstar, runsyr, hits, bavg)]),</span>
+<span id="cb52-903"><a href="#cb52-903" aria-hidden="true" tabindex="-1"></a>    <span class="at">label =</span> <span class="fu">as.matrix</span>(mlb1_dt[, lsalary])</span>
+<span id="cb52-904"><a href="#cb52-904" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb52-905"><a href="#cb52-905" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-906"><a href="#cb52-906" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-907"><a href="#cb52-907" aria-hidden="true" tabindex="-1"></a>We can then use <span class="in">`xgb.train()`</span> to train a model using the XGB algorithm.</span>
+<span id="cb52-908"><a href="#cb52-908" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-911"><a href="#cb52-911" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-912"><a href="#cb52-912" aria-hidden="true" tabindex="-1"></a>xgb_fit <span class="ot">&lt;-</span></span>
+<span id="cb52-913"><a href="#cb52-913" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xgb.train</span>(</span>
+<span id="cb52-914"><a href="#cb52-914" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> mlb1_dm_X, <span class="co"># independent variable</span></span>
+<span id="cb52-915"><a href="#cb52-915" aria-hidden="true" tabindex="-1"></a>    <span class="at">nrounds =</span> <span class="dv">100</span>, <span class="co"># number of iterations (trees to add)</span></span>
+<span id="cb52-916"><a href="#cb52-916" aria-hidden="true" tabindex="-1"></a>    <span class="at">eta =</span> <span class="dv">1</span>, <span class="co"># learning rate</span></span>
+<span id="cb52-917"><a href="#cb52-917" aria-hidden="true" tabindex="-1"></a>    <span class="at">objective =</span> <span class="st">"reg:squarederror"</span> <span class="co"># objective function</span></span>
+<span id="cb52-918"><a href="#cb52-918" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb52-919"><a href="#cb52-919" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-920"><a href="#cb52-920" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-921"><a href="#cb52-921" aria-hidden="true" tabindex="-1"></a><span class="fu">## Python</span></span>
+<span id="cb52-922"><a href="#cb52-922" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-923"><a href="#cb52-923" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-924"><a href="#cb52-924" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb52-925"><a href="#cb52-925" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-926"><a href="#cb52-926" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-927"><a href="#cb52-927" aria-hidden="true" tabindex="-1"></a><span class="fu">## Resources</span></span>
+<span id="cb52-928"><a href="#cb52-928" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-929"><a href="#cb52-929" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span><span class="co">[</span><span class="ot">A Gentle Introduction to XGBoost for Applied Machine Learning</span><span class="co">](https://machinelearningmastery.com/gentle-introduction-xgboost-applied-machine-learning/)</span></span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
 </div> <!-- /content -->
 
 

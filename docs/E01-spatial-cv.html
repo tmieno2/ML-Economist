@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Introduction to Machine Learning for Economists (Under Construction) - 13&nbsp; Spatial Cross-validation</title>
+<title>Introduction to Machine Learning for Economists (Under Construction) - 14&nbsp; Spatial Cross-validation</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -140,7 +140,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></h1>
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -259,7 +259,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./P04-local-linear-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">LLF</span></a>
+  <a href="./P04-local-linear-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Local Linear Forest</span></a>
   </div>
 </li>
     </ul>
@@ -285,7 +285,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./C02-r-learner.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">S-, X-, T-, and R-learner</span></a>
+  <a href="./C02-xstr-learner.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">S-, X-, T-, and R-learner</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./C03-cf-orf.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Forest-based CATE Estimators</span></a>
   </div>
 </li>
     </ul>
@@ -301,12 +306,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./E01-spatial-cv.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></a>
+  <a href="./E01-spatial-cv.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./E02-grf.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Generalized Random Forest</span></a>
+  <a href="./E02-grf.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Generalized Random Forest</span></a>
   </div>
 </li>
     </ul>
@@ -322,17 +327,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PROG-01-mlr3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Machine Learning with <code>mlr3</code> in R</span></a>
+  <a href="./PROG-01-mlr3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Machine Learning with <code>mlr3</code> in R</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PROG-02-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
+  <a href="./PROG-02-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PROG-03-model-selection-prediction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Model Selection (Prediction)</span></a>
+  <a href="./PROG-03-model-selection-prediction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Model Selection (Prediction)</span></a>
   </div>
 </li>
     </ul>
@@ -367,7 +372,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#hyper-parameter-tuning" id="toc-hyper-parameter-tuning" class="nav-link active" data-scroll-target="#hyper-parameter-tuning"> <span class="header-section-number">13.1</span> Hyper-parameter tuning</a></li>
+  <li><a href="#hyper-parameter-tuning" id="toc-hyper-parameter-tuning" class="nav-link active" data-scroll-target="#hyper-parameter-tuning"> <span class="header-section-number">14.1</span> Hyper-parameter tuning</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/E01-spatial-cv.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
@@ -376,7 +381,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></h1>
+<div class="quarto-title-block"><div><h1 class="title d-none d-lg-block"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
 </div>
 
 
@@ -404,10 +409,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(parallel)</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gstat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div></div><div class="callout-note callout callout-style-default callout-captioned">
+</div></div><div class="callout-note callout callout-style-default no-icon callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
-<i class="callout-icon"></i>
+<i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-caption-container flex-fill">
 Note
@@ -526,7 +531,7 @@ First 10 features:
 10 10 POLYGON ((-90.16514 36.9703...  7.096003 9.627942 101.35216 108.4482</code></pre>
 </div>
 </div>
-<p>We have three main variables, <code>y</code> (dependent variable), <code>x</code> (explanatory variable), and <code>e</code> (error). <a href="#fig-viz">Figure&nbsp;<span>13.1</span></a> shows how they are spatially distributed. It also shows that all of them are spatially positively correlated.</p>
+<p>We have three main variables, <code>y</code> (dependent variable), <code>x</code> (explanatory variable), and <code>e</code> (error). <a href="#fig-viz">Figure&nbsp;<span>14.1</span></a> shows how they are spatially distributed. It also shows that all of them are spatially positively correlated.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -554,7 +559,7 @@ First 10 features:
 <div id="fig-viz" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="E01-spatial-cv_files/figure-html/fig-viz-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 13.1: Visualization of the data</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 14.1: Visualization of the data</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -580,7 +585,7 @@ First 10 features:
 6 &lt;split [750/150]&gt; Fold6 KCV  </code></pre>
 </div>
 </div>
-<p><a href="#fig-kcv">Figure&nbsp;<span>13.2</span></a> is the visualization of the spatial distribution of training and test datasets for each of the five folds for KCV.</p>
+<p><a href="#fig-kcv">Figure&nbsp;<span>14.2</span></a> is the visualization of the spatial distribution of training and test datasets for each of the five folds for KCV.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -606,7 +611,7 @@ First 10 features:
 <div id="fig-kcv" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="E01-spatial-cv_files/figure-html/fig-kcv-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 13.2: Spatial distribution of train and test data points by fold</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 14.2: Spatial distribution of train and test data points by fold</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -632,7 +637,7 @@ First 10 features:
 6 &lt;split [740/160]&gt; Fold6 SKCV </code></pre>
 </div>
 </div>
-<p><a href="#fig-sp-kcv">Figure&nbsp;<span>13.3</span></a> presents the spatial distribution of training and test datasets for each of the five folds for SKCV.</p>
+<p><a href="#fig-sp-kcv">Figure&nbsp;<span>14.3</span></a> presents the spatial distribution of training and test datasets for each of the five folds for SKCV.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -658,7 +663,7 @@ First 10 features:
 <div id="fig-sp-kcv" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="E01-spatial-cv_files/figure-html/fig-sp-kcv-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 13.3: Spatial distribution of spatially clustered train and test data points by fold</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 14.3: Spatial distribution of spatially clustered train and test data points by fold</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -723,7 +728,7 @@ First 10 features:
 </div>
 </div>
 <p>So, indeed KCV provides lower estimate of test MSE than SKCV. Now, it is important to recognize the fundamental difference in what is measured by KCV and SKCV. KCV measures the accuracy of the trained model applied to the new data points that are located inside the area where the train data covers geographically. SKCV, on the other hand, measures the accuracy of the trained model applied to the new data points that are <span style="color:blue"> outside </span> the area where the train data covers geographically. In other words, it measures the modeling accuracy when the trained model is applied to a new region. So, KCV does overstate the accuracy of the model if your interest is applying the model to a new region.</p>
-<p>Let’s look into the SKCV results a bit more. Looking at MSE values by fold for KCV and SKCV, you can notice that MSE is much more variable for SKCV. <a href="#fig-tp-curv">Figure&nbsp;<span>13.4</span></a> plots data points in the test data and the curve fitted on the training data by cross-validation type and fold (Note that <code>Fold1</code> for KCV and SKCV have nothing to do with each other). Since KCV uses randomly split data, all the KCV test datasets are scattered all across the area and they look similar to each other. On the other hand, SKCV test datasets look quite different from each other as they are sampled in a spatially clustered manner. If the original data has no spatial correlation, then SKCV and KCV would have resulted in very simple test datasets. However, since the original data is spatially positively correlated, one packet of a field may look very different from another pocket of the field. By looking at <a href="#fig-tp-curv">Figure&nbsp;<span>13.4</span></a>, you can easily see that <code>FOLD2</code> and <code>FOLD5</code> have very high MSE for SKCV. This observation is confirmed with the MSE value by fold presented above.</p>
+<p>Let’s look into the SKCV results a bit more. Looking at MSE values by fold for KCV and SKCV, you can notice that MSE is much more variable for SKCV. <a href="#fig-tp-curv">Figure&nbsp;<span>14.4</span></a> plots data points in the test data and the curve fitted on the training data by cross-validation type and fold (Note that <code>Fold1</code> for KCV and SKCV have nothing to do with each other). Since KCV uses randomly split data, all the KCV test datasets are scattered all across the area and they look similar to each other. On the other hand, SKCV test datasets look quite different from each other as they are sampled in a spatially clustered manner. If the original data has no spatial correlation, then SKCV and KCV would have resulted in very simple test datasets. However, since the original data is spatially positively correlated, one packet of a field may look very different from another pocket of the field. By looking at <a href="#fig-tp-curv">Figure&nbsp;<span>14.4</span></a>, you can easily see that <code>FOLD2</code> and <code>FOLD5</code> have very high MSE for SKCV. This observation is confirmed with the MSE value by fold presented above.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -761,12 +766,12 @@ First 10 features:
 <div id="fig-tp-curv" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="E01-spatial-cv_files/figure-html/fig-tp-curv-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 13.4: Test data points and the curve fitted on the training dataset</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 14.4: Test data points and the curve fitted on the training dataset</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-<p>This is primarily because of the data imbalance between the training and test datasets, in particular the error term in this case. <a href="#fig-dist-y">Figure&nbsp;<span>13.5</span></a> compares the distribution of the error term for the training and test datasets by fold for SKCV. As you can see, their distributions are very different for <code>FOLD2</code> and <code>FOLD5</code>. In <code>FOLD2</code>, the average of the error term for the training data is much higher than that for the test data. The opposite is true for <code>FOLD5</code>. These differences of course result in large differences in the average value of the dependent variable. This, then, further results in consistent under or over-estimation of the level of the dependent variable. Since squared error is defined as <span class="math inline">\([y_i -\hat{f}(x_i)]^2\)</span>, the consistent bias (you can consider this as bias in intercept in the linear-in-parameter modeling setting) will naturally lead to a higher MSE. That is exactly what is observed for <code>FOLD2</code> and <code>FOLD5</code>.</p>
+<p>This is primarily because of the data imbalance between the training and test datasets, in particular the error term in this case. <a href="#fig-dist-y">Figure&nbsp;<span>14.5</span></a> compares the distribution of the error term for the training and test datasets by fold for SKCV. As you can see, their distributions are very different for <code>FOLD2</code> and <code>FOLD5</code>. In <code>FOLD2</code>, the average of the error term for the training data is much higher than that for the test data. The opposite is true for <code>FOLD5</code>. These differences of course result in large differences in the average value of the dependent variable. This, then, further results in consistent under or over-estimation of the level of the dependent variable. Since squared error is defined as <span class="math inline">\([y_i -\hat{f}(x_i)]^2\)</span>, the consistent bias (you can consider this as bias in intercept in the linear-in-parameter modeling setting) will naturally lead to a higher MSE. That is exactly what is observed for <code>FOLD2</code> and <code>FOLD5</code>.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -791,15 +796,15 @@ First 10 features:
 <div id="fig-dist-y" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="E01-spatial-cv_files/figure-html/fig-dist-y-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 13.5: Distribution of the dependent variable for the training and test dataset by fold</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 14.5: Distribution of the dependent variable for the training and test dataset by fold</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
 <p>While MSE values for <code>FOLD2</code> and <code>FOLD5</code> are high in SKCV, notice that their fitted curves are very much similar to the other folds and trace the true <span class="math inline">\(E[y|x]\)</span> quite well. The culprit of their high MSEs is the consistent difference in the average value of <span class="math inline">\(y\)</span> between the training and test datasets. This means that if your interest is in understanding the causal impact of <span class="math inline">\(x\)</span> on <span class="math inline">\(y\)</span>, then the fitted curves for <code>FOLD2</code> and <code>FOLD5</code> are just as good as those for the other folds despite the fact that their MSE values are much higher than the rest. This illustrates well that MSE is not really a good criteria to rely on if you ultimate interest is in estimating the causal impact of a treatment even though it is a good measure if your ultimate interest in prediction (predicting the <span style="color:blue"> level </span> of the dependent variable).</p>
 <p>Finally, whether KCV is over-optimistic in estimating test MSE than SKCV or not is of little importance for those who are interested in causal inference because how well the trained model predicts the <span style="color:blue"> level </span> of the dependent variable (which MSE measures) is irrelevant. Rather, more critical question is whether the use of KCV leads us to choose sub-optimal hyper parameter values compared to SKCV. This could have a real consequence when we select a model and its hyper-parameter values for the first-stage ML applications in Double Machine Learning methods.</p>
-<section id="hyper-parameter-tuning" class="level2 page-columns page-full" data-number="13.1">
-<h2 data-number="13.1" class="anchored" data-anchor-id="hyper-parameter-tuning"><span class="header-section-number">13.1</span> Hyper-parameter tuning</h2>
+<section id="hyper-parameter-tuning" class="level2 page-columns page-full" data-number="14.1">
+<h2 data-number="14.1" class="anchored" data-anchor-id="hyper-parameter-tuning"><span class="header-section-number">14.1</span> Hyper-parameter tuning</h2>
 <p>Now, let’s see whether KCV and SKCV lead to different tuning results using <code>gam()</code>. Here, we fix <code>k</code> at <span class="math inline">\(50\)</span> and vary <code>sp</code> to find the best <code>sp</code> value. The following function takes an <code>sp</code> value and return MSE values from both KCV and SKCV.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>get_mse <span class="ot">&lt;-</span> <span class="cf">function</span>(sp, kcv_folds, skcv_folds) {</span>
@@ -905,12 +910,12 @@ First 10 features:
 <div id="fig-mse-tune" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="E01-spatial-cv_files/figure-html/fig-mse-tune-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 13.6: Cross-validation results</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 14.6: Cross-validation results</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-<p>So, the <code>sp</code> value that would produce the fitted curve that is closest to the true <span class="math inline">\(E[y|x]\)</span> is 0.5. SKCV suggests that <code>sp</code> value of 2 is optimal. Finally, KCV suggests that <code>sp</code> value of 2.5 is optimal. But, of course this is just a single instance. Let’s run more of the same simulations to see if our guess is correct or not. <a href="#fig-sp-compare">Figure&nbsp;<span>13.7</span></a> presents the optimal <code>sp</code> values estimated by KCV and SKCV plotted against the actual optimal <code>sp</code> value from 100 simulations. Points around the red one-to-one line indicate good predictions by KCV and SKCV.</p>
+<p>So, the <code>sp</code> value that would produce the fitted curve that is closest to the true <span class="math inline">\(E[y|x]\)</span> is 0.5. SKCV suggests that <code>sp</code> value of 2 is optimal. Finally, KCV suggests that <code>sp</code> value of 2.5 is optimal. But, of course this is just a single instance. Let’s run more of the same simulations to see if our guess is correct or not. <a href="#fig-sp-compare">Figure&nbsp;<span>14.7</span></a> presents the optimal <code>sp</code> values estimated by KCV and SKCV plotted against the actual optimal <code>sp</code> value from 100 simulations. Points around the red one-to-one line indicate good predictions by KCV and SKCV.</p>
 <div class="cell" data-hash="E01-spatial-cv_cache/html/fig-sp-compare_db482b7dad84872e4af6eac1ab455771">
 <details>
 <summary>Code</summary>
@@ -1009,7 +1014,7 @@ First 10 features:
 <div id="fig-sp-compare" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="E01-spatial-cv_files/figure-html/fig-sp-compare-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 13.7: Optimal penalization parameter estimated by KCV and SKCV compared against the actual optimal parameter.</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 14.7: Optimal penalization parameter estimated by KCV and SKCV compared against the actual optimal parameter.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -1026,9 +1031,9 @@ First 10 features:
 <p>Taking the derivative of the objective function with respect <span class="math inline">\(x\)</span>,</p>
 <p><span id="eq-foc"><span class="math display">\[
 1 \times 48 - 1 \times 4 \times 2 \times x - 8 = 0
-\tag{13.1}\]</span></span></p>
+\tag{14.1}\]</span></span></p>
 <p>Here, <span class="math inline">\(1 \times 48 - 1 \times 4 \times 2 \times x\)</span> represents the marginal treatment effect of <span class="math inline">\(x\)</span>. Now, note that the intercept (<span class="math inline">\(10\)</span>) goes away and it plays no role in determining the optimal value of the input (<span class="math inline">\(x\)</span>). That is, it is perfectly fine to get the intercept wrong as long as we are estimating the marginal treatment effect of <span class="math inline">\(x\)</span> accurately (as we discussed earlier, MSE is not a good measure for this as it punishes a bias in intercept).</p>
-<p>According to <a href="#eq-foc">Equation&nbsp;<span>13.1</span></a>, optimal <span class="math inline">\(x\)</span> is <span class="math inline">\(5\)</span>. <a href="#fig-opt-x">Figure&nbsp;<span>13.8</span></a> shows the density plot of estimated optimal <span class="math inline">\(x\)</span> by KCV and SKCV. It seems like KCV and SKCV provide similar results and it does not really matter which one to use for <code>sp</code> parameter tuning at least in this particular instance. It is important to note that this result clearly does not generalize. We looked at a very simply toy example. This section was not intended to give you a general advise on which KCV or SKCV you should use. It would be interesting to examine the difference between KCV and SKCV under more complex data generating process using other ML methods.</p>
+<p>According to <a href="#eq-foc">Equation&nbsp;<span>14.1</span></a>, optimal <span class="math inline">\(x\)</span> is <span class="math inline">\(5\)</span>. <a href="#fig-opt-x">Figure&nbsp;<span>14.8</span></a> shows the density plot of estimated optimal <span class="math inline">\(x\)</span> by KCV and SKCV. It seems like KCV and SKCV provide similar results and it does not really matter which one to use for <code>sp</code> parameter tuning at least in this particular instance. It is important to note that this result clearly does not generalize. We looked at a very simply toy example. This section was not intended to give you a general advise on which KCV or SKCV you should use. It would be interesting to examine the difference between KCV and SKCV under more complex data generating process using other ML methods.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -1041,12 +1046,14 @@ First 10 features:
 <div id="fig-opt-x" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="E01-spatial-cv_files/figure-html/fig-opt-x-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 13.8: Accuracy of estimating optimal value of the input (x) by CV type</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 14.8: Accuracy of estimating optimal value of the input (x) by CV type</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
 
+
+<!-- -->
 
 </section>
 
@@ -1081,6 +1088,57 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
   function tippyHover(el, contentFn) {
     const config = {
       allowHTML: true,
@@ -1138,10 +1196,625 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
   <div class="nav-page nav-page-next">
       <a href="./E02-grf.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Generalized Random Forest</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Generalized Random Forest</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
-</nav>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb26" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Spatial Cross-validation</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>K-fold and repeated K-fold cross-validation methods can under-estimate test MSE (that is how good the trained model is in predicting $y$ in a new dataset) when the observations in the train data are not independent with each other. A typical example would be spatial correlation of the error term. In many applications including environmental and agricultural events, spatially correlated error is commonly observed. In order to combat the problem of test MSE underestimation by regular K-fold cross-validation (hereafter, simply KCV), you can use spatial K-fold cross-validation (SKCV) instead. </span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>**Packages to load for replication**</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(spatialsample)</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mgcv)</span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(parallel)</span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gstat)</span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(spatialsample)</span>
+<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb26-30"><a href="#cb26-30" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb26-31"><a href="#cb26-31" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb26-32"><a href="#cb26-32" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb26-33"><a href="#cb26-33" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mgcv)</span>
+<span id="cb26-34"><a href="#cb26-34" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(parallel)</span>
+<span id="cb26-35"><a href="#cb26-35" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gstat)</span>
+<span id="cb26-36"><a href="#cb26-36" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-37"><a href="#cb26-37" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb26-38"><a href="#cb26-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-39"><a href="#cb26-39" aria-hidden="true" tabindex="-1"></a>:::{.callout-note}</span>
+<span id="cb26-40"><a href="#cb26-40" aria-hidden="true" tabindex="-1"></a>**Goals of this section**</span>
+<span id="cb26-41"><a href="#cb26-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-42"><a href="#cb26-42" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>Examine the consequence of using KCV when the data are spatially correlated</span>
+<span id="cb26-43"><a href="#cb26-43" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>Understand how SKCV is conducted and how to implement it in R</span>
+<span id="cb26-44"><a href="#cb26-44" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>Examine the difference in the estimate of MSEs from KCV and spatial KCV</span>
+<span id="cb26-45"><a href="#cb26-45" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>Check if the optimal hyper-parameters suggested by KCV and SKCV are any different</span>
+<span id="cb26-46"><a href="#cb26-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-47"><a href="#cb26-47" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb26-48"><a href="#cb26-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-49"><a href="#cb26-49" aria-hidden="true" tabindex="-1"></a>For this section, we will consider the following data generating process. </span>
+<span id="cb26-50"><a href="#cb26-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-51"><a href="#cb26-51" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb26-52"><a href="#cb26-52" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb26-53"><a href="#cb26-53" aria-hidden="true" tabindex="-1"></a>y = \alpha + \beta_1 x + \beta_2 x^2 + u </span>
+<span id="cb26-54"><a href="#cb26-54" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb26-55"><a href="#cb26-55" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb26-56"><a href="#cb26-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-57"><a href="#cb26-57" aria-hidden="true" tabindex="-1"></a>where $x$ and $u$ are spatially correlated (which makes $y$ spatially correlated).</span>
+<span id="cb26-58"><a href="#cb26-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-59"><a href="#cb26-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-60"><a href="#cb26-60" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb26-61"><a href="#cb26-61" aria-hidden="true" tabindex="-1"></a>**Code to create the dataset**</span>
+<span id="cb26-62"><a href="#cb26-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-65"><a href="#cb26-65" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb26-66"><a href="#cb26-66" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false </span></span>
+<span id="cb26-67"><a href="#cb26-67" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false </span></span>
+<span id="cb26-68"><a href="#cb26-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-69"><a href="#cb26-69" aria-hidden="true" tabindex="-1"></a><span class="co">#=== create grids (on top of IL state border) ===#</span></span>
+<span id="cb26-70"><a href="#cb26-70" aria-hidden="true" tabindex="-1"></a><span class="co"># any spatial object will do. IL state border is picked</span></span>
+<span id="cb26-71"><a href="#cb26-71" aria-hidden="true" tabindex="-1"></a><span class="co"># just because it is easy to get without reading a shapefile</span></span>
+<span id="cb26-72"><a href="#cb26-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-73"><a href="#cb26-73" aria-hidden="true" tabindex="-1"></a>grids_il <span class="ot">&lt;-</span></span>
+<span id="cb26-74"><a href="#cb26-74" aria-hidden="true" tabindex="-1"></a>  tigris<span class="sc">::</span><span class="fu">counties</span>(</span>
+<span id="cb26-75"><a href="#cb26-75" aria-hidden="true" tabindex="-1"></a>    <span class="at">state =</span> <span class="st">"IL"</span>,</span>
+<span id="cb26-76"><a href="#cb26-76" aria-hidden="true" tabindex="-1"></a>    <span class="at">progress_bar =</span> <span class="cn">FALSE</span></span>
+<span id="cb26-77"><a href="#cb26-77" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-78"><a href="#cb26-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb26-79"><a href="#cb26-79" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_make_grid</span>(<span class="at">n =</span> <span class="fu">c</span>(<span class="dv">30</span>, <span class="dv">30</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-80"><a href="#cb26-80" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb26-81"><a href="#cb26-81" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">id :=</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">n</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-82"><a href="#cb26-82" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">geometry =</span> x)</span>
+<span id="cb26-83"><a href="#cb26-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-84"><a href="#cb26-84" aria-hidden="true" tabindex="-1"></a><span class="co">#=== set up a model ===#</span></span>
+<span id="cb26-85"><a href="#cb26-85" aria-hidden="true" tabindex="-1"></a>g_temp <span class="ot">&lt;-</span> </span>
+<span id="cb26-86"><a href="#cb26-86" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gstat</span>(</span>
+<span id="cb26-87"><a href="#cb26-87" aria-hidden="true" tabindex="-1"></a>    <span class="at">formula =</span> z <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb26-88"><a href="#cb26-88" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="sc">~</span> X <span class="sc">+</span> Y,</span>
+<span id="cb26-89"><a href="#cb26-89" aria-hidden="true" tabindex="-1"></a>    <span class="at">beta =</span> <span class="dv">0</span>,</span>
+<span id="cb26-90"><a href="#cb26-90" aria-hidden="true" tabindex="-1"></a>    <span class="at">dummy =</span> T,</span>
+<span id="cb26-91"><a href="#cb26-91" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> <span class="fu">vgm</span>(</span>
+<span id="cb26-92"><a href="#cb26-92" aria-hidden="true" tabindex="-1"></a>      <span class="at">psill =</span> <span class="dv">20</span>,</span>
+<span id="cb26-93"><a href="#cb26-93" aria-hidden="true" tabindex="-1"></a>      <span class="at">range =</span> <span class="dv">100</span>,</span>
+<span id="cb26-94"><a href="#cb26-94" aria-hidden="true" tabindex="-1"></a>      <span class="at">nugget =</span> <span class="dv">0</span>,</span>
+<span id="cb26-95"><a href="#cb26-95" aria-hidden="true" tabindex="-1"></a>      <span class="at">model =</span> <span class="st">"Sph"</span> </span>
+<span id="cb26-96"><a href="#cb26-96" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb26-97"><a href="#cb26-97" aria-hidden="true" tabindex="-1"></a>    <span class="at">nmax =</span> <span class="dv">50</span></span>
+<span id="cb26-98"><a href="#cb26-98" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb26-99"><a href="#cb26-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-100"><a href="#cb26-100" aria-hidden="true" tabindex="-1"></a><span class="co">#=== get coordinates ===#</span></span>
+<span id="cb26-101"><a href="#cb26-101" aria-hidden="true" tabindex="-1"></a>xy <span class="ot">&lt;-</span> </span>
+<span id="cb26-102"><a href="#cb26-102" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_coordinates</span>(<span class="fu">st_centroid</span>(grids_il)) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-103"><a href="#cb26-103" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>()</span>
+<span id="cb26-104"><a href="#cb26-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-105"><a href="#cb26-105" aria-hidden="true" tabindex="-1"></a>gen_data <span class="ot">&lt;-</span> <span class="cf">function</span>(seed) {</span>
+<span id="cb26-106"><a href="#cb26-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-107"><a href="#cb26-107" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(seed)</span>
+<span id="cb26-108"><a href="#cb26-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-109"><a href="#cb26-109" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== generate error ===#</span></span>
+<span id="cb26-110"><a href="#cb26-110" aria-hidden="true" tabindex="-1"></a>  error <span class="ot">&lt;-</span> </span>
+<span id="cb26-111"><a href="#cb26-111" aria-hidden="true" tabindex="-1"></a>    <span class="fu">predict</span>(g_temp, <span class="at">newdata =</span> xy, <span class="at">nsim =</span> <span class="dv">1</span>, <span class="at">debug.level =</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-112"><a href="#cb26-112" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.table</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb26-113"><a href="#cb26-113" aria-hidden="true" tabindex="-1"></a>    <span class="co">#=== normalize ===#</span></span>
+<span id="cb26-114"><a href="#cb26-114" aria-hidden="true" tabindex="-1"></a>    .[, sim1 <span class="sc">:</span><span class="er">=</span> (sim1 <span class="sc">-</span> <span class="fu">mean</span>(sim1))<span class="sc">/</span><span class="fu">sd</span>(sim1)]</span>
+<span id="cb26-115"><a href="#cb26-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-116"><a href="#cb26-116" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== generate x ===#</span></span>
+<span id="cb26-117"><a href="#cb26-117" aria-hidden="true" tabindex="-1"></a>  var <span class="ot">&lt;-</span> </span>
+<span id="cb26-118"><a href="#cb26-118" aria-hidden="true" tabindex="-1"></a>    <span class="fu">predict</span>(g_temp, <span class="at">newdata =</span> xy, <span class="at">nsim =</span> <span class="dv">1</span>, <span class="at">debug.level =</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-119"><a href="#cb26-119" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.table</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb26-120"><a href="#cb26-120" aria-hidden="true" tabindex="-1"></a>    <span class="co">#=== normalize ===#</span></span>
+<span id="cb26-121"><a href="#cb26-121" aria-hidden="true" tabindex="-1"></a>    .[, sim1 <span class="sc">:</span><span class="er">=</span> <span class="fu">pnorm</span>(sim1, <span class="at">mean =</span> <span class="fu">mean</span>(sim1), <span class="at">sd =</span> <span class="fu">sd</span>(sim1))]</span>
+<span id="cb26-122"><a href="#cb26-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-123"><a href="#cb26-123" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== assign the generated values to the data ===#</span></span>
+<span id="cb26-124"><a href="#cb26-124" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> </span>
+<span id="cb26-125"><a href="#cb26-125" aria-hidden="true" tabindex="-1"></a>    grids_il <span class="sc">%&gt;%</span> </span>
+<span id="cb26-126"><a href="#cb26-126" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb26-127"><a href="#cb26-127" aria-hidden="true" tabindex="-1"></a>      <span class="at">e =</span> error[, sim1] <span class="sc">*</span> <span class="dv">30</span>, <span class="co"># N(0, 400)</span></span>
+<span id="cb26-128"><a href="#cb26-128" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> var[, sim1] <span class="sc">*</span> <span class="dv">10</span>, <span class="co"># ranges from 0 to 10</span></span>
+<span id="cb26-129"><a href="#cb26-129" aria-hidden="true" tabindex="-1"></a>      <span class="at">y_det =</span> <span class="dv">10</span> <span class="sc">+</span> <span class="dv">48</span> <span class="sc">*</span> x <span class="sc">-</span> <span class="dv">4</span> <span class="sc">*</span> x<span class="sc">^</span><span class="dv">2</span>,</span>
+<span id="cb26-130"><a href="#cb26-130" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> y_det <span class="sc">+</span> e</span>
+<span id="cb26-131"><a href="#cb26-131" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb26-132"><a href="#cb26-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-133"><a href="#cb26-133" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(data)</span>
+<span id="cb26-134"><a href="#cb26-134" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb26-135"><a href="#cb26-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-136"><a href="#cb26-136" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-137"><a href="#cb26-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-138"><a href="#cb26-138" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb26-139"><a href="#cb26-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-140"><a href="#cb26-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-141"><a href="#cb26-141" aria-hidden="true" tabindex="-1"></a>Here is the data we are going to work with (see the side note for the code to define <span class="in">`gen_data`</span>, which takes a seed value and generate a spatial dataset):</span>
+<span id="cb26-142"><a href="#cb26-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-145"><a href="#cb26-145" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb26-146"><a href="#cb26-146" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb26-147"><a href="#cb26-147" aria-hidden="true" tabindex="-1"></a>train_data  <span class="ot">&lt;-</span> <span class="fu">gen_data</span>(<span class="at">seed =</span> <span class="dv">47823</span>)</span>
+<span id="cb26-148"><a href="#cb26-148" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb26-149"><a href="#cb26-149" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-150"><a href="#cb26-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-151"><a href="#cb26-151" aria-hidden="true" tabindex="-1"></a>We have three main variables, <span class="in">`y`</span> (dependent variable), <span class="in">`x`</span> (explanatory variable), and <span class="in">`e`</span> (error). @fig-viz shows how they are spatially distributed. It also shows that all of them are spatially positively correlated.</span>
+<span id="cb26-152"><a href="#cb26-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-155"><a href="#cb26-155" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb26-156"><a href="#cb26-156" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Visualization of the data</span></span>
+<span id="cb26-157"><a href="#cb26-157" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-viz </span></span>
+<span id="cb26-158"><a href="#cb26-158" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb26-159"><a href="#cb26-159" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-160"><a href="#cb26-160" aria-hidden="true" tabindex="-1"></a>g_error <span class="ot">&lt;-</span></span>
+<span id="cb26-161"><a href="#cb26-161" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">data =</span> train_data) <span class="sc">+</span></span>
+<span id="cb26-162"><a href="#cb26-162" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> e), <span class="at">color =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb26-163"><a href="#cb26-163" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>() <span class="sc">+</span></span>
+<span id="cb26-164"><a href="#cb26-164" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()</span>
+<span id="cb26-165"><a href="#cb26-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-166"><a href="#cb26-166" aria-hidden="true" tabindex="-1"></a>g_x <span class="ot">&lt;-</span></span>
+<span id="cb26-167"><a href="#cb26-167" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">data =</span> train_data) <span class="sc">+</span></span>
+<span id="cb26-168"><a href="#cb26-168" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> x), <span class="at">color =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb26-169"><a href="#cb26-169" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>() <span class="sc">+</span></span>
+<span id="cb26-170"><a href="#cb26-170" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()</span>
+<span id="cb26-171"><a href="#cb26-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-172"><a href="#cb26-172" aria-hidden="true" tabindex="-1"></a>g_y <span class="ot">&lt;-</span></span>
+<span id="cb26-173"><a href="#cb26-173" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">data =</span> train_data) <span class="sc">+</span></span>
+<span id="cb26-174"><a href="#cb26-174" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> y), <span class="at">color =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb26-175"><a href="#cb26-175" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>() <span class="sc">+</span></span>
+<span id="cb26-176"><a href="#cb26-176" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()</span>
+<span id="cb26-177"><a href="#cb26-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-178"><a href="#cb26-178" aria-hidden="true" tabindex="-1"></a>g_y <span class="sc">|</span> g_x <span class="sc">|</span> g_error  </span>
+<span id="cb26-179"><a href="#cb26-179" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-180"><a href="#cb26-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-181"><a href="#cb26-181" aria-hidden="true" tabindex="-1"></a>We are going to use <span class="in">`gam()`</span> with <span class="in">`k`</span> $= 30$ and <span class="in">`sp`</span> $= 0$ as the model in conducting KCV and spatial KCV. Let's first create folds for KCV and SKCV. First, here is KCV folds.</span>
+<span id="cb26-182"><a href="#cb26-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-185"><a href="#cb26-185" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb26-186"><a href="#cb26-186" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">93043</span>)</span>
+<span id="cb26-187"><a href="#cb26-187" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb26-188"><a href="#cb26-188" aria-hidden="true" tabindex="-1"></a>kcv_folds <span class="ot">&lt;-</span> </span>
+<span id="cb26-189"><a href="#cb26-189" aria-hidden="true" tabindex="-1"></a>  rsample<span class="sc">::</span><span class="fu">vfold_cv</span>(train_data, <span class="at">v =</span> <span class="dv">6</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-190"><a href="#cb26-190" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">type :=</span> <span class="st">"KCV"</span>)</span>
+<span id="cb26-191"><a href="#cb26-191" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb26-192"><a href="#cb26-192" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-193"><a href="#cb26-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-194"><a href="#cb26-194" aria-hidden="true" tabindex="-1"></a>@fig-kcv is the visualization of the spatial distribution of training and test datasets for each of the five folds for KCV.</span>
+<span id="cb26-195"><a href="#cb26-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-198"><a href="#cb26-198" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb26-199"><a href="#cb26-199" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Spatial distribution of train and test data points by fold</span></span>
+<span id="cb26-200"><a href="#cb26-200" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-kcv</span></span>
+<span id="cb26-201"><a href="#cb26-201" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb26-202"><a href="#cb26-202" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb26-203"><a href="#cb26-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-204"><a href="#cb26-204" aria-hidden="true" tabindex="-1"></a>plot_kcv_data <span class="ot">&lt;-</span></span>
+<span id="cb26-205"><a href="#cb26-205" aria-hidden="true" tabindex="-1"></a>  kcv_folds <span class="sc">%&gt;%</span> </span>
+<span id="cb26-206"><a href="#cb26-206" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb26-207"><a href="#cb26-207" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">folds =</span> <span class="fu">list</span>(</span>
+<span id="cb26-208"><a href="#cb26-208" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rbind</span>(</span>
+<span id="cb26-209"><a href="#cb26-209" aria-hidden="true" tabindex="-1"></a>      <span class="fu">analysis</span>(splits) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">type =</span> <span class="st">"training"</span>),</span>
+<span id="cb26-210"><a href="#cb26-210" aria-hidden="true" tabindex="-1"></a>      <span class="fu">assessment</span>(splits) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">type =</span> <span class="st">"test"</span>)</span>
+<span id="cb26-211"><a href="#cb26-211" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb26-212"><a href="#cb26-212" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-213"><a href="#cb26-213" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(id, folds) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-214"><a href="#cb26-214" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb26-215"><a href="#cb26-215" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>()</span>
+<span id="cb26-216"><a href="#cb26-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-217"><a href="#cb26-217" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(plot_kcv_data) <span class="sc">+</span></span>
+<span id="cb26-218"><a href="#cb26-218" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> type), <span class="at">color =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb26-219"><a href="#cb26-219" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(id <span class="sc">~</span> .) <span class="sc">+</span></span>
+<span id="cb26-220"><a href="#cb26-220" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()</span>
+<span id="cb26-221"><a href="#cb26-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-222"><a href="#cb26-222" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-223"><a href="#cb26-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-224"><a href="#cb26-224" aria-hidden="true" tabindex="-1"></a>Now, let's create a five spatially clustered folds using the <span class="in">`spatialsample`</span> package for SKCV.</span>
+<span id="cb26-225"><a href="#cb26-225" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-228"><a href="#cb26-228" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb26-229"><a href="#cb26-229" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">482943</span>)</span>
+<span id="cb26-230"><a href="#cb26-230" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb26-231"><a href="#cb26-231" aria-hidden="true" tabindex="-1"></a>skcv_folds <span class="ot">&lt;-</span> </span>
+<span id="cb26-232"><a href="#cb26-232" aria-hidden="true" tabindex="-1"></a>  <span class="fu">spatial_clustering_cv</span>(train_data, <span class="at">v =</span> <span class="dv">6</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-233"><a href="#cb26-233" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">type :=</span> <span class="st">"SKCV"</span>)</span>
+<span id="cb26-234"><a href="#cb26-234" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb26-235"><a href="#cb26-235" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-236"><a href="#cb26-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-237"><a href="#cb26-237" aria-hidden="true" tabindex="-1"></a>@fig-sp-kcv presents the spatial distribution of training and test datasets for each of the five folds for SKCV.</span>
+<span id="cb26-238"><a href="#cb26-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-241"><a href="#cb26-241" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb26-242"><a href="#cb26-242" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Spatial distribution of spatially clustered train and test data points by fold </span></span>
+<span id="cb26-243"><a href="#cb26-243" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-sp-kcv</span></span>
+<span id="cb26-244"><a href="#cb26-244" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb26-245"><a href="#cb26-245" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb26-246"><a href="#cb26-246" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-247"><a href="#cb26-247" aria-hidden="true" tabindex="-1"></a>plot_kcv_data <span class="ot">&lt;-</span></span>
+<span id="cb26-248"><a href="#cb26-248" aria-hidden="true" tabindex="-1"></a>  skcv_folds <span class="sc">%&gt;%</span> </span>
+<span id="cb26-249"><a href="#cb26-249" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb26-250"><a href="#cb26-250" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">folds =</span> <span class="fu">list</span>(</span>
+<span id="cb26-251"><a href="#cb26-251" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rbind</span>(</span>
+<span id="cb26-252"><a href="#cb26-252" aria-hidden="true" tabindex="-1"></a>      <span class="fu">analysis</span>(splits) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">type =</span> <span class="st">"training"</span>),</span>
+<span id="cb26-253"><a href="#cb26-253" aria-hidden="true" tabindex="-1"></a>      <span class="fu">assessment</span>(splits) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">type =</span> <span class="st">"test"</span>)</span>
+<span id="cb26-254"><a href="#cb26-254" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb26-255"><a href="#cb26-255" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-256"><a href="#cb26-256" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(id, folds) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-257"><a href="#cb26-257" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb26-258"><a href="#cb26-258" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>()</span>
+<span id="cb26-259"><a href="#cb26-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-260"><a href="#cb26-260" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(plot_kcv_data) <span class="sc">+</span></span>
+<span id="cb26-261"><a href="#cb26-261" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> type), <span class="at">color =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb26-262"><a href="#cb26-262" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(id <span class="sc">~</span> .) <span class="sc">+</span></span>
+<span id="cb26-263"><a href="#cb26-263" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()</span>
+<span id="cb26-264"><a href="#cb26-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-265"><a href="#cb26-265" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-266"><a href="#cb26-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-267"><a href="#cb26-267" aria-hidden="true" tabindex="-1"></a>Let's now implement KCV and SKCV. Since we observe the true generating process, we can calculate how good the fitted curve is compared to true $E<span class="co">[</span><span class="ot">y|X</span><span class="co">]</span>$ in addition to observed $y$ for the left-out samples in each fold. </span>
+<span id="cb26-268"><a href="#cb26-268" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-271"><a href="#cb26-271" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb26-272"><a href="#cb26-272" aria-hidden="true" tabindex="-1"></a><span class="co">#=== conduct CV ===#</span></span>
+<span id="cb26-273"><a href="#cb26-273" aria-hidden="true" tabindex="-1"></a>cv_results <span class="ot">&lt;-</span></span>
+<span id="cb26-274"><a href="#cb26-274" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbind</span>(kcv_folds, skcv_folds) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-275"><a href="#cb26-275" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== make it possible to apply function row by row ===#</span></span>
+<span id="cb26-276"><a href="#cb26-276" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb26-277"><a href="#cb26-277" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb26-278"><a href="#cb26-278" aria-hidden="true" tabindex="-1"></a>    <span class="at">trainining_data =</span> <span class="fu">list</span>(<span class="fu">analysis</span>(splits)),</span>
+<span id="cb26-279"><a href="#cb26-279" aria-hidden="true" tabindex="-1"></a>    <span class="at">test_data =</span> <span class="fu">list</span>(<span class="fu">assessment</span>(splits))</span>
+<span id="cb26-280"><a href="#cb26-280" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-281"><a href="#cb26-281" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== train the model ===#</span></span>
+<span id="cb26-282"><a href="#cb26-282" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">gam_fit =</span> <span class="fu">list</span>(</span>
+<span id="cb26-283"><a href="#cb26-283" aria-hidden="true" tabindex="-1"></a>    <span class="fu">gam</span>(y <span class="sc">~</span> <span class="fu">s</span>(x, <span class="at">k =</span> <span class="dv">6</span>), <span class="at">data =</span> trainining_data)</span>
+<span id="cb26-284"><a href="#cb26-284" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-285"><a href="#cb26-285" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== get mse ===#</span></span>
+<span id="cb26-286"><a href="#cb26-286" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mse_data =</span> <span class="fu">list</span>(</span>
+<span id="cb26-287"><a href="#cb26-287" aria-hidden="true" tabindex="-1"></a>    test_data <span class="sc">%&gt;%</span> </span>
+<span id="cb26-288"><a href="#cb26-288" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.table</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb26-289"><a href="#cb26-289" aria-hidden="true" tabindex="-1"></a>    .[, <span class="at">y_hat :=</span> <span class="fu">predict</span>(gam_fit, <span class="at">newdata =</span> .)] <span class="sc">%&gt;%</span> </span>
+<span id="cb26-290"><a href="#cb26-290" aria-hidden="true" tabindex="-1"></a>    .[, .(</span>
+<span id="cb26-291"><a href="#cb26-291" aria-hidden="true" tabindex="-1"></a>      <span class="at">mse_obs =</span> <span class="fu">mean</span>((y <span class="sc">-</span> y_hat)<span class="sc">^</span><span class="dv">2</span>), <span class="co"># MSE</span></span>
+<span id="cb26-292"><a href="#cb26-292" aria-hidden="true" tabindex="-1"></a>      <span class="at">mse_true =</span> <span class="fu">mean</span>((y_det <span class="sc">-</span> y_hat)<span class="sc">^</span><span class="dv">2</span>) <span class="co"># deviation from E[y|x]</span></span>
+<span id="cb26-293"><a href="#cb26-293" aria-hidden="true" tabindex="-1"></a>    )]</span>
+<span id="cb26-294"><a href="#cb26-294" aria-hidden="true" tabindex="-1"></a>  )) </span>
+<span id="cb26-295"><a href="#cb26-295" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-296"><a href="#cb26-296" aria-hidden="true" tabindex="-1"></a><span class="co">#=== MSE summary ===#</span></span>
+<span id="cb26-297"><a href="#cb26-297" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb26-298"><a href="#cb26-298" aria-hidden="true" tabindex="-1"></a>mse_summary <span class="ot">&lt;-</span> </span>
+<span id="cb26-299"><a href="#cb26-299" aria-hidden="true" tabindex="-1"></a>  cv_results <span class="sc">%&gt;%</span> </span>
+<span id="cb26-300"><a href="#cb26-300" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(id, type, mse_data) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-301"><a href="#cb26-301" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb26-302"><a href="#cb26-302" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>()</span>
+<span id="cb26-303"><a href="#cb26-303" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb26-304"><a href="#cb26-304" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-305"><a href="#cb26-305" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-306"><a href="#cb26-306" aria-hidden="true" tabindex="-1"></a>You can see that MSE values (<span class="in">`mse_obs`</span>) are mostly greater and also more variable for SKCV. By averaging MSE over folds by CV type,</span>
+<span id="cb26-307"><a href="#cb26-307" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-310"><a href="#cb26-310" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb26-311"><a href="#cb26-311" aria-hidden="true" tabindex="-1"></a>mse_summary[, .(<span class="at">mse_obs =</span> <span class="fu">mean</span>(mse_obs)), by <span class="ot">=</span> type]</span>
+<span id="cb26-312"><a href="#cb26-312" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-313"><a href="#cb26-313" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-314"><a href="#cb26-314" aria-hidden="true" tabindex="-1"></a>So, indeed KCV provides lower estimate of test MSE than SKCV. Now, it is important to recognize the fundamental difference in what is measured by KCV and SKCV. KCV measures the accuracy of the trained model applied to the new data points that are located inside the area where the train data covers geographically. SKCV, on the other hand, measures the accuracy of the trained model applied to the new data points that are <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> outside <span class="kw">&lt;/span&gt;</span> the area where the train data covers geographically. In other words, it measures the modeling accuracy when the trained model is applied to a new region. So, KCV does overstate the accuracy of the model if your interest is applying the model to a new region. </span>
+<span id="cb26-315"><a href="#cb26-315" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-316"><a href="#cb26-316" aria-hidden="true" tabindex="-1"></a>Let's look into the SKCV results a bit more. Looking at MSE values by fold  for KCV and SKCV, you can notice that MSE is much more variable for SKCV. @fig-tp-curv plots data points in the test data and the curve fitted on the training data by cross-validation type and fold (Note that <span class="in">`Fold1`</span> for KCV and SKCV have nothing to do with each other). Since KCV uses randomly split data, all the KCV test datasets are scattered all across the area and they look similar to each other. On the other hand, SKCV test datasets look quite different from each other as they are sampled in a spatially clustered manner. If the original data has no spatial correlation, then SKCV and KCV would have resulted in very simple test datasets. However, since the original data is spatially positively correlated, one packet of a field may look very different from another pocket of the field. By looking at @fig-tp-curv, you can easily see that <span class="in">`FOLD2`</span> and <span class="in">`FOLD5`</span> have very high MSE for SKCV. This observation is confirmed with the MSE value by fold presented above. </span>
+<span id="cb26-317"><a href="#cb26-317" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-318"><a href="#cb26-318" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-321"><a href="#cb26-321" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb26-322"><a href="#cb26-322" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Test data points and the curve fitted on the training dataset</span></span>
+<span id="cb26-323"><a href="#cb26-323" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-tp-curv</span></span>
+<span id="cb26-324"><a href="#cb26-324" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb26-325"><a href="#cb26-325" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false </span></span>
+<span id="cb26-326"><a href="#cb26-326" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-327"><a href="#cb26-327" aria-hidden="true" tabindex="-1"></a>pred_data <span class="ot">&lt;-</span></span>
+<span id="cb26-328"><a href="#cb26-328" aria-hidden="true" tabindex="-1"></a>  cv_results <span class="sc">%&gt;%</span> </span>
+<span id="cb26-329"><a href="#cb26-329" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">eval_data =</span> <span class="fu">list</span>(</span>
+<span id="cb26-330"><a href="#cb26-330" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.table</span>(</span>
+<span id="cb26-331"><a href="#cb26-331" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="fu">seq</span>(<span class="fu">min</span>(train_data<span class="sc">$</span>x), <span class="fu">max</span>(train_data<span class="sc">$</span>x), <span class="at">length =</span> <span class="dv">100</span>)</span>
+<span id="cb26-332"><a href="#cb26-332" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-333"><a href="#cb26-333" aria-hidden="true" tabindex="-1"></a>    .[, <span class="at">y_hat :=</span> <span class="fu">predict</span>(gam_fit, <span class="at">newdata =</span> .)]</span>
+<span id="cb26-334"><a href="#cb26-334" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-335"><a href="#cb26-335" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(id, type, eval_data) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-336"><a href="#cb26-336" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>()</span>
+<span id="cb26-337"><a href="#cb26-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-338"><a href="#cb26-338" aria-hidden="true" tabindex="-1"></a>raw_test_data <span class="ot">&lt;-</span></span>
+<span id="cb26-339"><a href="#cb26-339" aria-hidden="true" tabindex="-1"></a>  cv_results <span class="sc">%&gt;%</span> </span>
+<span id="cb26-340"><a href="#cb26-340" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(id, type, test_data) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-341"><a href="#cb26-341" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>()</span>
+<span id="cb26-342"><a href="#cb26-342" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-343"><a href="#cb26-343" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb26-344"><a href="#cb26-344" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(</span>
+<span id="cb26-345"><a href="#cb26-345" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> raw_test_data, </span>
+<span id="cb26-346"><a href="#cb26-346" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">y =</span> y, <span class="at">x =</span> x),</span>
+<span id="cb26-347"><a href="#cb26-347" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"darkgrey"</span>,</span>
+<span id="cb26-348"><a href="#cb26-348" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.7</span></span>
+<span id="cb26-349"><a href="#cb26-349" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb26-350"><a href="#cb26-350" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(</span>
+<span id="cb26-351"><a href="#cb26-351" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> pred_data, <span class="fu">aes</span>(<span class="at">y =</span> y_hat, <span class="at">x =</span> x), </span>
+<span id="cb26-352"><a href="#cb26-352" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"red"</span></span>
+<span id="cb26-353"><a href="#cb26-353" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb26-354"><a href="#cb26-354" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(id <span class="sc">~</span> type) <span class="sc">+</span></span>
+<span id="cb26-355"><a href="#cb26-355" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb26-356"><a href="#cb26-356" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-357"><a href="#cb26-357" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-358"><a href="#cb26-358" aria-hidden="true" tabindex="-1"></a>This is primarily because of the data imbalance between the training and test datasets, in particular the error term in this case. @fig-dist-y compares the distribution of the error term for the training and test datasets by fold for SKCV. As you can see, their distributions are very different for <span class="in">`FOLD2`</span> and <span class="in">`FOLD5`</span>. In <span class="in">`FOLD2`</span>, the average of the error term for the training data is much higher than that for the test data. The opposite is true for <span class="in">`FOLD5`</span>. These differences of course result in large differences in the average value of the dependent variable. This, then, further results in consistent under or over-estimation of the level of the dependent variable. Since squared error is defined as $<span class="co">[</span><span class="ot">y_i -\hat{f}(x_i)</span><span class="co">]</span>^2$, the consistent bias (you can consider this as bias in intercept in the linear-in-parameter modeling setting) will naturally lead to a higher MSE. That is exactly what is observed for <span class="in">`FOLD2`</span> and <span class="in">`FOLD5`</span>. </span>
+<span id="cb26-359"><a href="#cb26-359" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-362"><a href="#cb26-362" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb26-363"><a href="#cb26-363" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Distribution of the dependent variable for the training and test dataset by fold</span></span>
+<span id="cb26-364"><a href="#cb26-364" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-dist-y</span></span>
+<span id="cb26-365"><a href="#cb26-365" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb26-366"><a href="#cb26-366" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb26-367"><a href="#cb26-367" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-368"><a href="#cb26-368" aria-hidden="true" tabindex="-1"></a>plot_data_split <span class="ot">&lt;-</span></span>
+<span id="cb26-369"><a href="#cb26-369" aria-hidden="true" tabindex="-1"></a>  cv_results <span class="sc">%&gt;%</span></span>
+<span id="cb26-370"><a href="#cb26-370" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(type <span class="sc">==</span> <span class="st">"SKCV"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-371"><a href="#cb26-371" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(id, trainining_data, test_data) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-372"><a href="#cb26-372" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb26-373"><a href="#cb26-373" aria-hidden="true" tabindex="-1"></a>  <span class="fu">melt</span>(<span class="at">id.var =</span> <span class="st">"id"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-374"><a href="#cb26-374" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>() </span>
+<span id="cb26-375"><a href="#cb26-375" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-376"><a href="#cb26-376" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb26-377"><a href="#cb26-377" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(</span>
+<span id="cb26-378"><a href="#cb26-378" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> plot_data_split, </span>
+<span id="cb26-379"><a href="#cb26-379" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> e, <span class="at">fill =</span> variable),</span>
+<span id="cb26-380"><a href="#cb26-380" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.4</span></span>
+<span id="cb26-381"><a href="#cb26-381" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb26-382"><a href="#cb26-382" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(id <span class="sc">~</span> .) <span class="sc">+</span></span>
+<span id="cb26-383"><a href="#cb26-383" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb26-384"><a href="#cb26-384" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-385"><a href="#cb26-385" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-386"><a href="#cb26-386" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-387"><a href="#cb26-387" aria-hidden="true" tabindex="-1"></a>While MSE values for <span class="in">`FOLD2`</span> and <span class="in">`FOLD5`</span> are high in SKCV, notice that their fitted curves are very much similar to the other folds and trace the true $E<span class="co">[</span><span class="ot">y|x</span><span class="co">]</span>$ quite well. The culprit of their high MSEs is the consistent difference in the average value of $y$ between the training and test datasets. This means that if your interest is in understanding the causal impact of $x$ on $y$, then the fitted curves for <span class="in">`FOLD2`</span> and <span class="in">`FOLD5`</span> are just as good as those for the other folds despite the fact that their MSE values are much higher than the rest. This illustrates well that MSE is not really a good criteria to rely on if you ultimate interest is in estimating the causal impact of a treatment even though it is a good measure if your ultimate interest in prediction (predicting the <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> level <span class="kw">&lt;/span&gt;</span> of the dependent variable). </span>
+<span id="cb26-388"><a href="#cb26-388" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-389"><a href="#cb26-389" aria-hidden="true" tabindex="-1"></a>Finally, whether KCV is over-optimistic in estimating test MSE than SKCV or not is of little importance for those who are interested in causal inference because how well the trained model predicts the <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> level <span class="kw">&lt;/span&gt;</span> of the dependent variable (which MSE measures) is irrelevant. Rather, more critical question is whether the use of KCV leads us to choose sub-optimal hyper parameter values compared to SKCV. This could have a real consequence when we select a model and its hyper-parameter values for the first-stage ML applications in Double Machine Learning methods. </span>
+<span id="cb26-390"><a href="#cb26-390" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-391"><a href="#cb26-391" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-392"><a href="#cb26-392" aria-hidden="true" tabindex="-1"></a><span class="fu">## Hyper-parameter tuning</span></span>
+<span id="cb26-393"><a href="#cb26-393" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-394"><a href="#cb26-394" aria-hidden="true" tabindex="-1"></a>Now, let's see whether KCV and SKCV lead to different tuning results using <span class="in">`gam()`</span>. Here, we fix <span class="in">`k`</span> at $50$ and vary <span class="in">`sp`</span> to find the best <span class="in">`sp`</span> value. The following function takes an <span class="in">`sp`</span> value and return MSE values from both KCV and SKCV.</span>
+<span id="cb26-395"><a href="#cb26-395" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-398"><a href="#cb26-398" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb26-399"><a href="#cb26-399" aria-hidden="true" tabindex="-1"></a>get_mse <span class="ot">&lt;-</span> <span class="cf">function</span>(sp, kcv_folds, skcv_folds) {</span>
+<span id="cb26-400"><a href="#cb26-400" aria-hidden="true" tabindex="-1"></a>  cv_results <span class="ot">&lt;-</span></span>
+<span id="cb26-401"><a href="#cb26-401" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rbind</span>(kcv_folds, skcv_folds) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-402"><a href="#cb26-402" aria-hidden="true" tabindex="-1"></a>    <span class="co">#=== make it possible to apply function row by row ===#</span></span>
+<span id="cb26-403"><a href="#cb26-403" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb26-404"><a href="#cb26-404" aria-hidden="true" tabindex="-1"></a>    <span class="co">#=== get mse ===#</span></span>
+<span id="cb26-405"><a href="#cb26-405" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">mse_data =</span> <span class="fu">list</span>(</span>
+<span id="cb26-406"><a href="#cb26-406" aria-hidden="true" tabindex="-1"></a>      <span class="fu">assessment</span>(splits) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-407"><a href="#cb26-407" aria-hidden="true" tabindex="-1"></a>      <span class="fu">data.table</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb26-408"><a href="#cb26-408" aria-hidden="true" tabindex="-1"></a>      .[, <span class="at">y_hat :=</span> <span class="fu">predict</span>( <span class="co"># predict y based on the fitted model</span></span>
+<span id="cb26-409"><a href="#cb26-409" aria-hidden="true" tabindex="-1"></a>        <span class="co">#=== train the model ===#</span></span>
+<span id="cb26-410"><a href="#cb26-410" aria-hidden="true" tabindex="-1"></a>        <span class="fu">gam</span>(y <span class="sc">~</span> <span class="fu">s</span>(x, <span class="at">k =</span> <span class="dv">50</span>, <span class="at">sp =</span> sp), <span class="at">data =</span> <span class="fu">analysis</span>(splits)), </span>
+<span id="cb26-411"><a href="#cb26-411" aria-hidden="true" tabindex="-1"></a>        <span class="at">newdata =</span> .)</span>
+<span id="cb26-412"><a href="#cb26-412" aria-hidden="true" tabindex="-1"></a>      ] <span class="sc">%&gt;%</span> </span>
+<span id="cb26-413"><a href="#cb26-413" aria-hidden="true" tabindex="-1"></a>      .[, .(</span>
+<span id="cb26-414"><a href="#cb26-414" aria-hidden="true" tabindex="-1"></a>        <span class="at">mse_obs =</span> <span class="fu">mean</span>((y <span class="sc">-</span> y_hat)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb26-415"><a href="#cb26-415" aria-hidden="true" tabindex="-1"></a>      )]</span>
+<span id="cb26-416"><a href="#cb26-416" aria-hidden="true" tabindex="-1"></a>    )) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-417"><a href="#cb26-417" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(id, type, mse_data) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-418"><a href="#cb26-418" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unnest</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb26-419"><a href="#cb26-419" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.table</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb26-420"><a href="#cb26-420" aria-hidden="true" tabindex="-1"></a>    .[, sp_v <span class="sc">:</span><span class="er">=</span> sp] <span class="sc">%&gt;%</span></span>
+<span id="cb26-421"><a href="#cb26-421" aria-hidden="true" tabindex="-1"></a>    .[]</span>
+<span id="cb26-422"><a href="#cb26-422" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-423"><a href="#cb26-423" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(cv_results)</span>
+<span id="cb26-424"><a href="#cb26-424" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-425"><a href="#cb26-425" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb26-426"><a href="#cb26-426" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-427"><a href="#cb26-427" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-428"><a href="#cb26-428" aria-hidden="true" tabindex="-1"></a>Here is an example at <span class="in">`sp`</span> $= 0.5$.</span>
+<span id="cb26-431"><a href="#cb26-431" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb26-432"><a href="#cb26-432" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb26-433"><a href="#cb26-433" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-434"><a href="#cb26-434" aria-hidden="true" tabindex="-1"></a><span class="fu">get_mse</span>(<span class="fl">0.5</span>, kcv_folds, skcv_folds)</span>
+<span id="cb26-435"><a href="#cb26-435" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-436"><a href="#cb26-436" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-437"><a href="#cb26-437" aria-hidden="true" tabindex="-1"></a>Let's try <span class="in">`sp`</span> values ranging from 0 to 5.</span>
+<span id="cb26-438"><a href="#cb26-438" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-441"><a href="#cb26-441" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb26-442"><a href="#cb26-442" aria-hidden="true" tabindex="-1"></a>sp_seq <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fu">seq</span>(<span class="fl">0.5</span>, <span class="dv">5</span>, <span class="at">by =</span> <span class="fl">0.25</span>))</span>
+<span id="cb26-443"><a href="#cb26-443" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-444"><a href="#cb26-444" aria-hidden="true" tabindex="-1"></a>cv_results <span class="ot">&lt;-</span></span>
+<span id="cb26-445"><a href="#cb26-445" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mclapply</span>(</span>
+<span id="cb26-446"><a href="#cb26-446" aria-hidden="true" tabindex="-1"></a>    sp_seq,</span>
+<span id="cb26-447"><a href="#cb26-447" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) <span class="fu">get_mse</span>(x, kcv_folds, skcv_folds),</span>
+<span id="cb26-448"><a href="#cb26-448" aria-hidden="true" tabindex="-1"></a>    <span class="at">mc.cores =</span> <span class="fu">detectCores</span>() <span class="sc">/</span> <span class="dv">4</span> <span class="sc">*</span> <span class="dv">3</span></span>
+<span id="cb26-449"><a href="#cb26-449" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-450"><a href="#cb26-450" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbindlist</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb26-451"><a href="#cb26-451" aria-hidden="true" tabindex="-1"></a>  .[, .(<span class="at">mse =</span> <span class="fu">mean</span>(mse_obs)), by <span class="ot">=</span> .(type, sp_v)]</span>
+<span id="cb26-452"><a href="#cb26-452" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-453"><a href="#cb26-453" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-454"><a href="#cb26-454" aria-hidden="true" tabindex="-1"></a>Now, let's see what value of <span class="in">`sp`</span> would have been the best to estimate $E<span class="co">[</span><span class="ot">y|x</span><span class="co">]</span>$ (this is what we really want to know, but can't in practice because you do not observe the true data generating process unlike the simulation we are running here). </span>
+<span id="cb26-455"><a href="#cb26-455" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-456"><a href="#cb26-456" aria-hidden="true" tabindex="-1"></a>We will fit <span class="in">`gam()`</span> at the same sequence of <span class="in">`sp`</span> values used just above using the entire training dataset and check what <span class="in">`sp`</span> value minimizes the prediction error from true $E<span class="co">[</span><span class="ot">y|x</span><span class="co">]</span>$.</span>
+<span id="cb26-457"><a href="#cb26-457" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-458"><a href="#cb26-458" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb26-459"><a href="#cb26-459" aria-hidden="true" tabindex="-1"></a>Note that since we are testing against the true $E<span class="co">[</span><span class="ot">y|x</span><span class="co">]</span>$, we can simply use the training dataset instead of using independent test datasets. Of course, you cannot do this in practice. </span>
+<span id="cb26-460"><a href="#cb26-460" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb26-461"><a href="#cb26-461" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-464"><a href="#cb26-464" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb26-465"><a href="#cb26-465" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb26-466"><a href="#cb26-466" aria-hidden="true" tabindex="-1"></a>mse_e <span class="ot">&lt;-</span></span>
+<span id="cb26-467"><a href="#cb26-467" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>(</span>
+<span id="cb26-468"><a href="#cb26-468" aria-hidden="true" tabindex="-1"></a>    <span class="at">sp_v =</span> sp_seq</span>
+<span id="cb26-469"><a href="#cb26-469" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-470"><a href="#cb26-470" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb26-471"><a href="#cb26-471" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">fitted_values =</span> <span class="fu">list</span>(</span>
+<span id="cb26-472"><a href="#cb26-472" aria-hidden="true" tabindex="-1"></a>    <span class="fu">gam</span>(y <span class="sc">~</span> <span class="fu">s</span>(x, <span class="at">k =</span> <span class="dv">50</span>), <span class="at">sp =</span> sp_v, <span class="at">data =</span> train_data)<span class="sc">$</span>fitted.value</span>
+<span id="cb26-473"><a href="#cb26-473" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-474"><a href="#cb26-474" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mse =</span> <span class="fu">mean</span>((train_data<span class="sc">$</span>y_det <span class="sc">-</span> fitted_values)<span class="sc">^</span><span class="dv">2</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb26-475"><a href="#cb26-475" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb26-476"><a href="#cb26-476" aria-hidden="true" tabindex="-1"></a>  .[, .(sp_v, mse)] <span class="sc">%&gt;%</span> </span>
+<span id="cb26-477"><a href="#cb26-477" aria-hidden="true" tabindex="-1"></a>  .[, <span class="at">type :=</span> <span class="st">"Test"</span>]</span>
+<span id="cb26-478"><a href="#cb26-478" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb26-479"><a href="#cb26-479" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-480"><a href="#cb26-480" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-481"><a href="#cb26-481" aria-hidden="true" tabindex="-1"></a>Let's combine all the results and see how they are different. </span>
+<span id="cb26-482"><a href="#cb26-482" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-485"><a href="#cb26-485" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb26-486"><a href="#cb26-486" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Cross-validation results </span></span>
+<span id="cb26-487"><a href="#cb26-487" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-mse-tune</span></span>
+<span id="cb26-488"><a href="#cb26-488" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb26-489"><a href="#cb26-489" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-490"><a href="#cb26-490" aria-hidden="true" tabindex="-1"></a>all_mse <span class="ot">&lt;-</span> <span class="fu">rbind</span>(mse_e, cv_results)</span>
+<span id="cb26-491"><a href="#cb26-491" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-492"><a href="#cb26-492" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb26-493"><a href="#cb26-493" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> all_mse, <span class="fu">aes</span>(<span class="at">y =</span> mse, <span class="at">x =</span> sp_v)) <span class="sc">+</span></span>
+<span id="cb26-494"><a href="#cb26-494" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> all_mse, <span class="fu">aes</span>(<span class="at">y =</span> mse, <span class="at">x =</span> sp_v)) <span class="sc">+</span></span>
+<span id="cb26-495"><a href="#cb26-495" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(</span>
+<span id="cb26-496"><a href="#cb26-496" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> all_mse[, .SD[<span class="fu">which.min</span>(mse), ], <span class="at">by =</span> type], </span>
+<span id="cb26-497"><a href="#cb26-497" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">y =</span> mse, <span class="at">x =</span> sp_v),</span>
+<span id="cb26-498"><a href="#cb26-498" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"red"</span>,</span>
+<span id="cb26-499"><a href="#cb26-499" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">2</span></span>
+<span id="cb26-500"><a href="#cb26-500" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb26-501"><a href="#cb26-501" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(type <span class="sc">~</span> ., <span class="at">scale =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb26-502"><a href="#cb26-502" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb26-503"><a href="#cb26-503" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-504"><a href="#cb26-504" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-505"><a href="#cb26-505" aria-hidden="true" tabindex="-1"></a>So, the <span class="in">`sp`</span> value that would produce the fitted curve that is closest to the true $E<span class="co">[</span><span class="ot">y|x</span><span class="co">]</span>$ is <span class="in">`r mse_e[which.min(mse), sp_v]`</span>. SKCV suggests that <span class="in">`sp`</span> value of <span class="in">`r all_mse[type == "SKCV", ] %&gt;% .[which.min(mse), sp_v]`</span> is optimal. Finally, KCV suggests that <span class="in">`sp`</span> value of <span class="in">`r all_mse[type == "KCV", ] %&gt;% .[which.min(mse), sp_v]`</span> is optimal. But, of course this is just a single instance. Let's run more of the same simulations to see if our guess is correct or not. @fig-sp-compare presents the optimal <span class="in">`sp`</span> values estimated by KCV and SKCV plotted against the actual optimal <span class="in">`sp`</span> value from 100 simulations. Points around the red one-to-one line indicate good predictions by KCV and SKCV.</span>
+<span id="cb26-506"><a href="#cb26-506" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-507"><a href="#cb26-507" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-510"><a href="#cb26-510" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb26-511"><a href="#cb26-511" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Optimal penalization parameter estimated by KCV and SKCV compared against the actual optimal parameter.</span></span>
+<span id="cb26-512"><a href="#cb26-512" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-sp-compare</span></span>
+<span id="cb26-513"><a href="#cb26-513" aria-hidden="true" tabindex="-1"></a><span class="co">#| cache: true</span></span>
+<span id="cb26-514"><a href="#cb26-514" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb26-515"><a href="#cb26-515" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-516"><a href="#cb26-516" aria-hidden="true" tabindex="-1"></a>run_cv_sim <span class="ot">&lt;-</span> <span class="cf">function</span>(i)</span>
+<span id="cb26-517"><a href="#cb26-517" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb26-518"><a href="#cb26-518" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-519"><a href="#cb26-519" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(i)</span>
+<span id="cb26-520"><a href="#cb26-520" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-521"><a href="#cb26-521" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== create the training data ===#</span></span>
+<span id="cb26-522"><a href="#cb26-522" aria-hidden="true" tabindex="-1"></a>  training_data  <span class="ot">&lt;-</span> <span class="fu">gen_data</span>(<span class="at">seed =</span> <span class="fu">runif</span>(<span class="dv">1</span>) <span class="sc">*</span> <span class="dv">1000</span>)</span>
+<span id="cb26-523"><a href="#cb26-523" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-524"><a href="#cb26-524" aria-hidden="true" tabindex="-1"></a>  <span class="co">#--------------------------</span></span>
+<span id="cb26-525"><a href="#cb26-525" aria-hidden="true" tabindex="-1"></a>  <span class="co"># prepare data for CV</span></span>
+<span id="cb26-526"><a href="#cb26-526" aria-hidden="true" tabindex="-1"></a>  <span class="co">#--------------------------</span></span>
+<span id="cb26-527"><a href="#cb26-527" aria-hidden="true" tabindex="-1"></a>  kcv_folds <span class="ot">&lt;-</span> </span>
+<span id="cb26-528"><a href="#cb26-528" aria-hidden="true" tabindex="-1"></a>    rsample<span class="sc">::</span><span class="fu">vfold_cv</span>(training_data, <span class="at">v =</span> <span class="dv">6</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-529"><a href="#cb26-529" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">type :=</span> <span class="st">"KCV"</span>)</span>
+<span id="cb26-530"><a href="#cb26-530" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-531"><a href="#cb26-531" aria-hidden="true" tabindex="-1"></a>  skcv_folds <span class="ot">&lt;-</span> </span>
+<span id="cb26-532"><a href="#cb26-532" aria-hidden="true" tabindex="-1"></a>    <span class="fu">spatial_clustering_cv</span>(training_data, <span class="at">v =</span> <span class="dv">6</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-533"><a href="#cb26-533" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">type :=</span> <span class="st">"SKCV"</span>)</span>
+<span id="cb26-534"><a href="#cb26-534" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-535"><a href="#cb26-535" aria-hidden="true" tabindex="-1"></a>  <span class="co">#--------------------------</span></span>
+<span id="cb26-536"><a href="#cb26-536" aria-hidden="true" tabindex="-1"></a>  <span class="co"># run KCV and SKCV</span></span>
+<span id="cb26-537"><a href="#cb26-537" aria-hidden="true" tabindex="-1"></a>  <span class="co">#--------------------------  </span></span>
+<span id="cb26-538"><a href="#cb26-538" aria-hidden="true" tabindex="-1"></a>  cv_results <span class="ot">&lt;-</span></span>
+<span id="cb26-539"><a href="#cb26-539" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lapply</span>(</span>
+<span id="cb26-540"><a href="#cb26-540" aria-hidden="true" tabindex="-1"></a>      sp_seq,</span>
+<span id="cb26-541"><a href="#cb26-541" aria-hidden="true" tabindex="-1"></a>      <span class="cf">function</span>(x) <span class="fu">get_mse</span>(x, kcv_folds, skcv_folds)</span>
+<span id="cb26-542"><a href="#cb26-542" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-543"><a href="#cb26-543" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rbindlist</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb26-544"><a href="#cb26-544" aria-hidden="true" tabindex="-1"></a>    .[, .(<span class="at">mse =</span> <span class="fu">mean</span>(mse_obs)), by <span class="ot">=</span> .(type, sp_v)] <span class="sc">%&gt;%</span> </span>
+<span id="cb26-545"><a href="#cb26-545" aria-hidden="true" tabindex="-1"></a>    .[, .SD[<span class="fu">which.min</span>(mse)], by <span class="ot">=</span> .(type)]</span>
+<span id="cb26-546"><a href="#cb26-546" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-547"><a href="#cb26-547" aria-hidden="true" tabindex="-1"></a>  <span class="co">#--------------------------</span></span>
+<span id="cb26-548"><a href="#cb26-548" aria-hidden="true" tabindex="-1"></a>  <span class="co"># gam fits on the entire train dataset</span></span>
+<span id="cb26-549"><a href="#cb26-549" aria-hidden="true" tabindex="-1"></a>  <span class="co">#--------------------------</span></span>
+<span id="cb26-550"><a href="#cb26-550" aria-hidden="true" tabindex="-1"></a>  gam_fits <span class="ot">&lt;-</span></span>
+<span id="cb26-551"><a href="#cb26-551" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.table</span>(</span>
+<span id="cb26-552"><a href="#cb26-552" aria-hidden="true" tabindex="-1"></a>      <span class="at">sp_v =</span> sp_seq</span>
+<span id="cb26-553"><a href="#cb26-553" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-554"><a href="#cb26-554" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb26-555"><a href="#cb26-555" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">gam_fit =</span> <span class="fu">list</span>(</span>
+<span id="cb26-556"><a href="#cb26-556" aria-hidden="true" tabindex="-1"></a>      <span class="fu">gam</span>(y <span class="sc">~</span> <span class="fu">s</span>(x, <span class="at">k =</span> <span class="dv">50</span>), <span class="at">sp =</span> sp_v, <span class="at">data =</span> training_data)</span>
+<span id="cb26-557"><a href="#cb26-557" aria-hidden="true" tabindex="-1"></a>    )) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-558"><a href="#cb26-558" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">mse =</span> <span class="fu">mean</span>((training_data<span class="sc">$</span>y_det <span class="sc">-</span> gam_fit<span class="sc">$</span>fitted.value)<span class="sc">^</span><span class="dv">2</span>)) </span>
+<span id="cb26-559"><a href="#cb26-559" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-560"><a href="#cb26-560" aria-hidden="true" tabindex="-1"></a>  <span class="co">#--------------------------</span></span>
+<span id="cb26-561"><a href="#cb26-561" aria-hidden="true" tabindex="-1"></a>  <span class="co">#  Level 2 comment out</span></span>
+<span id="cb26-562"><a href="#cb26-562" aria-hidden="true" tabindex="-1"></a>  <span class="co">#--------------------------</span></span>
+<span id="cb26-563"><a href="#cb26-563" aria-hidden="true" tabindex="-1"></a>  opt_x_data <span class="ot">&lt;-</span></span>
+<span id="cb26-564"><a href="#cb26-564" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(cv_results, gam_fits, <span class="at">by =</span> <span class="st">"sp_v"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-565"><a href="#cb26-565" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb26-566"><a href="#cb26-566" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">opt_x =</span> </span>
+<span id="cb26-567"><a href="#cb26-567" aria-hidden="true" tabindex="-1"></a>      <span class="fu">data.table</span>(</span>
+<span id="cb26-568"><a href="#cb26-568" aria-hidden="true" tabindex="-1"></a>        <span class="at">x =</span> <span class="fu">seq</span>(<span class="fu">min</span>(training_data<span class="sc">$</span>x), <span class="fu">max</span>(training_data<span class="sc">$</span>x), <span class="at">length =</span> <span class="dv">100</span>)</span>
+<span id="cb26-569"><a href="#cb26-569" aria-hidden="true" tabindex="-1"></a>      ) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-570"><a href="#cb26-570" aria-hidden="true" tabindex="-1"></a>      .[, <span class="at">y_hat :=</span> <span class="fu">predict</span>(gam_fit, <span class="at">newdata =</span> .)] <span class="sc">%&gt;%</span> </span>
+<span id="cb26-571"><a href="#cb26-571" aria-hidden="true" tabindex="-1"></a>      .[, <span class="at">pi_hat :=</span> y_hat <span class="sc">-</span> <span class="dv">8</span> <span class="sc">*</span> x] <span class="sc">%&gt;%</span> </span>
+<span id="cb26-572"><a href="#cb26-572" aria-hidden="true" tabindex="-1"></a>      .[<span class="fu">which.max</span>(pi_hat), x]</span>
+<span id="cb26-573"><a href="#cb26-573" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-574"><a href="#cb26-574" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.table</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb26-575"><a href="#cb26-575" aria-hidden="true" tabindex="-1"></a>    .[, .(type, opt_x)]</span>
+<span id="cb26-576"><a href="#cb26-576" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-577"><a href="#cb26-577" aria-hidden="true" tabindex="-1"></a>  <span class="co">#--------------------------</span></span>
+<span id="cb26-578"><a href="#cb26-578" aria-hidden="true" tabindex="-1"></a>  <span class="co"># best sp</span></span>
+<span id="cb26-579"><a href="#cb26-579" aria-hidden="true" tabindex="-1"></a>  <span class="co">#--------------------------</span></span>
+<span id="cb26-580"><a href="#cb26-580" aria-hidden="true" tabindex="-1"></a>  best_sp <span class="ot">&lt;-</span></span>
+<span id="cb26-581"><a href="#cb26-581" aria-hidden="true" tabindex="-1"></a>    gam_fits <span class="sc">%&gt;%</span> </span>
+<span id="cb26-582"><a href="#cb26-582" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.table</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb26-583"><a href="#cb26-583" aria-hidden="true" tabindex="-1"></a>    .[<span class="fu">which.min</span>(mse), sp_v]</span>
+<span id="cb26-584"><a href="#cb26-584" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-585"><a href="#cb26-585" aria-hidden="true" tabindex="-1"></a>  return_results <span class="ot">&lt;-</span> </span>
+<span id="cb26-586"><a href="#cb26-586" aria-hidden="true" tabindex="-1"></a>    cv_results <span class="sc">%&gt;%</span> </span>
+<span id="cb26-587"><a href="#cb26-587" aria-hidden="true" tabindex="-1"></a>    .[, sp_best <span class="sc">:</span><span class="er">=</span> best_sp] <span class="sc">%&gt;%</span> </span>
+<span id="cb26-588"><a href="#cb26-588" aria-hidden="true" tabindex="-1"></a>    opt_x_data[., on <span class="ot">=</span> <span class="st">"type"</span>]</span>
+<span id="cb26-589"><a href="#cb26-589" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-590"><a href="#cb26-590" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(return_results)</span>
+<span id="cb26-591"><a href="#cb26-591" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb26-592"><a href="#cb26-592" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-593"><a href="#cb26-593" aria-hidden="true" tabindex="-1"></a>sim_results <span class="ot">&lt;-</span></span>
+<span id="cb26-594"><a href="#cb26-594" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mclapply</span>(</span>
+<span id="cb26-595"><a href="#cb26-595" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>,</span>
+<span id="cb26-596"><a href="#cb26-596" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) <span class="fu">run_cv_sim</span>(x),</span>
+<span id="cb26-597"><a href="#cb26-597" aria-hidden="true" tabindex="-1"></a>    <span class="at">mc.cores =</span> <span class="fu">detectCores</span>() <span class="sc">*</span> <span class="dv">3</span> <span class="sc">/</span> <span class="dv">4</span></span>
+<span id="cb26-598"><a href="#cb26-598" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-599"><a href="#cb26-599" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbindlist</span>(<span class="at">idcol =</span> <span class="st">"sim"</span>)</span>
+<span id="cb26-600"><a href="#cb26-600" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-601"><a href="#cb26-601" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> sim_results[, .N, <span class="at">by =</span> .(sp_v, type, sp_best)]) <span class="sc">+</span></span>
+<span id="cb26-602"><a href="#cb26-602" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> sp_v, <span class="at">y =</span> sp_best, <span class="at">size =</span> N)) <span class="sc">+</span></span>
+<span id="cb26-603"><a href="#cb26-603" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb26-604"><a href="#cb26-604" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(type <span class="sc">~</span> .) <span class="sc">+</span></span>
+<span id="cb26-605"><a href="#cb26-605" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb26-606"><a href="#cb26-606" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-607"><a href="#cb26-607" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-608"><a href="#cb26-608" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-609"><a href="#cb26-609" aria-hidden="true" tabindex="-1"></a>KCV seems to underestimate the optimal value of <span class="in">`sp`</span>. While SKCV seems to be less biased, it is not doing a great job just like KCV. </span>
+<span id="cb26-610"><a href="#cb26-610" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-611"><a href="#cb26-611" aria-hidden="true" tabindex="-1"></a>This was an interesting experiment. However, how consequential is it in terms of treatment effect estimation? When the actual optimal <span class="in">`sp`</span> value is 5 and KCV is suggesting <span class="in">`sp`</span> value of 0.05 (in many cases), using <span class="in">`sp`</span> = 0 as the final model leads to a model that is terrible at treatment effect estimation? To see this, let's consider a simple economic problem. Suppose $y$ and $x$ are an output and input, respectively. Further suppose that the price of $y$ is 1 and the cost of $x$ is 8. We would like to solve the following profit maximization problem:</span>
+<span id="cb26-612"><a href="#cb26-612" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-613"><a href="#cb26-613" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb26-614"><a href="#cb26-614" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb26-615"><a href="#cb26-615" aria-hidden="true" tabindex="-1"></a> &amp; Max_{x} 4 \times y - 2 \times x <span class="sc">\\</span></span>
+<span id="cb26-616"><a href="#cb26-616" aria-hidden="true" tabindex="-1"></a>\Rightarrow &amp; Max_{x} 1 \times (10 + 48 \times x - 4 \times x^2) - 8 \times x </span>
+<span id="cb26-617"><a href="#cb26-617" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb26-618"><a href="#cb26-618" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb26-619"><a href="#cb26-619" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-620"><a href="#cb26-620" aria-hidden="true" tabindex="-1"></a>Here, $1 \times (10 + 48 \times x - 4 \times x^2)$ is the revenue and $8 \times x$ is the cost (the difference is the profit). </span>
+<span id="cb26-621"><a href="#cb26-621" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-622"><a href="#cb26-622" aria-hidden="true" tabindex="-1"></a>Taking the derivative of the objective function with respect $x$, </span>
+<span id="cb26-623"><a href="#cb26-623" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-624"><a href="#cb26-624" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb26-625"><a href="#cb26-625" aria-hidden="true" tabindex="-1"></a>1 \times 48 - 1 \times 4 \times 2 \times x - 8 = 0</span>
+<span id="cb26-626"><a href="#cb26-626" aria-hidden="true" tabindex="-1"></a>$$ {#eq-foc}</span>
+<span id="cb26-627"><a href="#cb26-627" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-628"><a href="#cb26-628" aria-hidden="true" tabindex="-1"></a>Here, $1 \times 48 - 1 \times 4 \times 2 \times x$ represents the marginal treatment effect of $x$. Now, note that the intercept ($10$) goes away and it plays no role in determining the optimal value of the input ($x$). That is, it is perfectly fine to get the intercept wrong as long as we are estimating the marginal treatment effect of $x$ accurately (as we discussed earlier, MSE is not a good measure for this as it punishes a bias in intercept).  </span>
+<span id="cb26-629"><a href="#cb26-629" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-630"><a href="#cb26-630" aria-hidden="true" tabindex="-1"></a>According to @eq-foc, optimal $x$ is $5$. @fig-opt-x shows the density plot of estimated optimal $x$ by KCV and SKCV. It seems like KCV and SKCV provide similar results and it does not really matter which one to use for <span class="in">`sp`</span> parameter tuning at least in this particular instance. It is important to note that this result clearly does not generalize. We looked at a very simply toy example. This section was not intended to give you a general advise on which KCV or SKCV you should use. It would be interesting to examine the difference between KCV and SKCV under more complex data generating process using other ML methods. </span>
+<span id="cb26-631"><a href="#cb26-631" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-634"><a href="#cb26-634" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb26-635"><a href="#cb26-635" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Accuracy of estimating optimal value of the input (x) by CV type</span></span>
+<span id="cb26-636"><a href="#cb26-636" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-opt-x</span></span>
+<span id="cb26-637"><a href="#cb26-637" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb26-638"><a href="#cb26-638" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-639"><a href="#cb26-639" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sim_results) <span class="sc">+</span></span>
+<span id="cb26-640"><a href="#cb26-640" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="fu">aes</span>(<span class="at">x =</span> opt_x, <span class="at">fill =</span> type), <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb26-641"><a href="#cb26-641" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_discrete</span>(<span class="at">name =</span> <span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb26-642"><a href="#cb26-642" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb26-643"><a href="#cb26-643" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-644"><a href="#cb26-644" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-645"><a href="#cb26-645" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-646"><a href="#cb26-646" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb26-647"><a href="#cb26-647" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-648"><a href="#cb26-648" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-649"><a href="#cb26-649" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-650"><a href="#cb26-650" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-651"><a href="#cb26-651" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-652"><a href="#cb26-652" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-653"><a href="#cb26-653" aria-hidden="true" tabindex="-1"></a></span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
 </div> <!-- /content -->
 
 

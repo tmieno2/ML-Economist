@@ -1,6 +1,6 @@
 # Primer on method of moment
 
-Method of moment is a class of statistical methods that derive estimators from moment conditions. We will go over the basic concepts of method of moments here because it will help us understand how double machine learning methods.
+Method of moment is a class of statistical methods that derive estimators from moment conditions. We will go over the basic concepts of method of moments here because it will help us understand how double machine learning methods work.
 
 ## Moments 
 
@@ -100,6 +100,12 @@ $$
 
 <span style="color:blue">Step 3</span>: Well, the equation is already solve with respect to $\theta$.
 
+$$
+\begin{aligned}
+\hat{\theta} = \frac{1}{n}\sum_{i=1}^N x_i
+\end{aligned}
+$$
+
 The method of moment estimator of the expected value of a random variable is sample mean ($\frac{1}{n}\sum_{i=1}^N x_i$).
 
 ```{r}
@@ -114,7 +120,7 @@ theta_hat_mm <- mean(x)
 
 Now, let's look at an estimation task that is more familiar and relevant to our work: estimating the coefficients of a linear model. 
 
-Consider the following liner model.
+Consider the following linear model.
 
 $$
 \begin{aligned}

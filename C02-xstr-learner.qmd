@@ -1,16 +1,16 @@
 # S-, X-, T-, and R-learner {#sec-het-dml}
 
-In this section, we look at the S-, X-, T-, and R-learner, which are method that estimate heterogeneous treatment effects when the treatment is binary. While X-leaner and T-learner cannot be extended to continuous treatment cases, S-learner and R-learner can be. Mathematical notations used in this chapter closely follow those of [@kunzel_metalearners_2019] and [@nie_quasi-oracle_2021].
+In this section, we look at the S-, X-, T-, and R-learner, which are method that estimate heterogeneous treatment effects when the treatment is binary. While X-learner and T-learner cannot be extended to continuous treatment cases, S-learner and R-learner can be. Mathematical notations used in this chapter closely follow those of [@kunzel_metalearners_2019] and [@nie_quasi-oracle_2021].
 
 
 :::{.callout-important}
 
-# What you will learn
+## What you will learn
 :::
 
 :::{.callout-tip}
 
-# Key points
+## Key points
 
 + R-learner is the same as DML approaches by @Chernozhukov2018 except that CATE is estiamted at the second instead of ATE.
 + In most practical cases, R-learner performs better than S-, X-, and T-learners. 
@@ -78,14 +78,14 @@ $$
 
 ## S-, T-, and X-Learner
 
-### S-leaner
+### S-learner
 
-S-leaner estimates CATE by taking the following steps:
+S-learner estimates CATE by taking the following steps:
 
 1. Regress $Y$ on $W$ and $X$ to estimate $E[Y|W,X]$ using any appropriate ML regression methods and call it $\hat{\mu}(W,X)$.
 2. Estimate $\hat{\theta}(X)$ as $\hat{\mu}(W=1,X)-\hat{\mu}(W=0,X)$
 
-In this approach, no special treatment is given to $W$. It is just a covariate along with others ($X$). This approach is named S-leaner by @kunzel_metalearners_2019 because it involves estimating a <span style='color:blue'>s</span>ingle response function.
+In this approach, no special treatment is given to $W$. It is just a covariate along with others ($X$). This approach is named S-learner by @kunzel_metalearners_2019 because it involves estimating a <span style='color:red'>s</span>ingle response function.
 
 ### T-learner
 
@@ -93,7 +93,7 @@ In this approach, no special treatment is given to $W$. It is just a covariate a
 2. Regress $Y$ on $W$ and $X$ using the control  observations to estimate $\mu_0(X)$ using any appropriate ML regression methods.
 3. Estimate $\hat{\theta}(X)$ as $\hat{\mu}_1(X)-\hat{\mu}(X)$
 
-This approach is named T-leaner by @kunzel_metalearners_2019 because it involves estimating <span style='color:blue'>t</span>wo functions.
+This approach is named T-learner by @kunzel_metalearners_2019 because it involves estimating <span style='color:red'>t</span>wo functions.
 
 ### X-learner
 
@@ -204,7 +204,7 @@ tau_hat_data <-
   .[, tau_hat_T := mu_1_hat - mu_0_hat]
 ```
 
-As you can see, T-leaner is heavily biased. This is because of the unreliable estimation of $\mu_1(X)$ due to lack of observations in the treated group.
+As you can see, T-learner is heavily biased. This is because of the unreliable estimation of $\mu_1(X)$ due to lack of observations in the treated group.
 
 ```{r}
 ggplot(data = tau_hat_data) +
@@ -476,10 +476,11 @@ gen_data_A <- function(N){
 ```
 
 ```{r}
+#| eval: false
+#| echo: false
+
 library(rlearner)
 data <- gen_data_A(N)
-
-rboost_fit 
 
 #--------------------------
 # R-learner
@@ -660,7 +661,7 @@ from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test, d_train, d_test= train_test_split(r.X, r.y, r.d,  test_size = 0.5, random_state = 8923)
 ```
 
-Here, to train a linear DML model, we use the Python `econml` package, which offers one of the most comprehensive sets of off-the-shelf R-leaner (DML) methods [@econml]. We can use the `DML` class to implement linear DML.
+Here, to train a linear DML model, we use the Python `econml` package, which offers one of the most comprehensive sets of off-the-shelf R-learner (DML) methods [@econml]. We can use the `DML` class to implement linear DML.
 
 ```{python}
 #| eval: false

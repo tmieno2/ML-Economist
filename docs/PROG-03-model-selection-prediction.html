@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Introduction to Machine Learning for Economists (Under Construction) - 17&nbsp; Model Selection (Prediction)</title>
+<title>Introduction to Machine Learning for Economists (Under Construction) - 18&nbsp; Model Selection (Prediction)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -140,7 +140,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Model Selection (Prediction)</span></h1>
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Model Selection (Prediction)</span></h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -259,7 +259,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./P04-local-linear-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">LLF</span></a>
+  <a href="./P04-local-linear-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Local Linear Forest</span></a>
   </div>
 </li>
     </ul>
@@ -285,7 +285,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./C02-r-learner.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">S-, X-, T-, and R-learner</span></a>
+  <a href="./C02-xstr-learner.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">S-, X-, T-, and R-learner</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./C03-cf-orf.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Forest-based CATE Estimators</span></a>
   </div>
 </li>
     </ul>
@@ -301,12 +306,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./E01-spatial-cv.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></a>
+  <a href="./E01-spatial-cv.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./E02-grf.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Generalized Random Forest</span></a>
+  <a href="./E02-grf.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Generalized Random Forest</span></a>
   </div>
 </li>
     </ul>
@@ -322,17 +327,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PROG-01-mlr3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Machine Learning with <code>mlr3</code> in R</span></a>
+  <a href="./PROG-01-mlr3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Machine Learning with <code>mlr3</code> in R</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PROG-02-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
+  <a href="./PROG-02-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PROG-03-model-selection-prediction.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Model Selection (Prediction)</span></a>
+  <a href="./PROG-03-model-selection-prediction.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Model Selection (Prediction)</span></a>
   </div>
 </li>
     </ul>
@@ -367,9 +372,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#python-implementation" id="toc-python-implementation" class="nav-link active" data-scroll-target="#python-implementation"> <span class="header-section-number">17.1</span> Python implementation</a></li>
-  <li><a href="#reticulate-implementation-in-r" id="toc-reticulate-implementation-in-r" class="nav-link" data-scroll-target="#reticulate-implementation-in-r"> <span class="header-section-number">17.2</span> <code>reticulate</code> implementation in R</a></li>
-  <li><a href="#r-implementation-using-mlr3" id="toc-r-implementation-using-mlr3" class="nav-link" data-scroll-target="#r-implementation-using-mlr3"> <span class="header-section-number">17.3</span> R implementation using <code>mlr3</code></a></li>
+  <li><a href="#python-implementation" id="toc-python-implementation" class="nav-link active" data-scroll-target="#python-implementation"> <span class="header-section-number">18.1</span> Python implementation</a></li>
+  <li><a href="#reticulate-implementation-in-r" id="toc-reticulate-implementation-in-r" class="nav-link" data-scroll-target="#reticulate-implementation-in-r"> <span class="header-section-number">18.2</span> <code>reticulate</code> implementation in R</a></li>
+  <li><a href="#r-implementation-using-mlr3" id="toc-r-implementation-using-mlr3" class="nav-link" data-scroll-target="#r-implementation-using-mlr3"> <span class="header-section-number">18.3</span> R implementation using <code>mlr3</code></a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/PROG-03-model-selection-prediction.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
@@ -378,7 +383,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Model Selection (Prediction)</span></h1>
+<div class="quarto-title-block"><div><h1 class="title d-none d-lg-block"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Model Selection (Prediction)</span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
 </div>
 
 
@@ -393,8 +398,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </header>
 
 <p>When you use a DML approach, the first stage estimations are prediction tasks. In this section, R and python codes (and the <code>reticulate</code> version of the python codes) to select a model for the first stage estimations are presented.</p>
-<section id="python-implementation" class="level2 page-columns page-full" data-number="17.1">
-<h2 data-number="17.1" class="anchored" data-anchor-id="python-implementation"><span class="header-section-number">17.1</span> Python implementation</h2>
+<section id="python-implementation" class="level2 page-columns page-full" data-number="18.1">
+<h2 data-number="18.1" class="anchored" data-anchor-id="python-implementation"><span class="header-section-number">18.1</span> Python implementation</h2>
 <p>Suppose you are considering multiple classes of estimators with various sets of hyper-parameter values for each model class. We can use <code>GridSearchCVList()</code> from the <code>econml</code> pacakge to conduct cross-validation to see which model works the best in predicting <span class="math inline">\(E[Y|X, W]\)</span> and <span class="math inline">\(E[T|X, W]\)</span> in terms of CV MSE. <code>GridSearchCVList()</code> is an extension of <code>GridSearchCV()</code> from the <code>sklearn</code> package. While <code>GridSearchCV()</code> conducts CV for a <span style="color:blue"> single</span> model class with various sets of hyper-parameter values, <code>GridSearchCVList()</code> conducts CV for <span style="color:blue"> multiple</span> classes of models with various sets of hyper-parameter values.</p>
 <p>Let’s go through an example use of <code>GridSearchCVList()</code>. First, we import all the functions we will be using.</p>
 <div class="cell">
@@ -524,8 +529,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>est.fit(Y, T, X<span class="op">=</span>X, W<span class="op">=</span>X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="reticulate-implementation-in-r" class="level2 page-columns page-full" data-number="17.2">
-<h2 data-number="17.2" class="anchored" data-anchor-id="reticulate-implementation-in-r"><span class="header-section-number">17.2</span> <code>reticulate</code> implementation in R</h2>
+<section id="reticulate-implementation-in-r" class="level2 page-columns page-full" data-number="18.2">
+<h2 data-number="18.2" class="anchored" data-anchor-id="reticulate-implementation-in-r"><span class="header-section-number">18.2</span> <code>reticulate</code> implementation in R</h2>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p><strong>Packages to load for replication</strong></p>
@@ -640,8 +645,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb13-101"><a href="#cb13-101" aria-hidden="true" tabindex="-1"></a>est<span class="sc">$</span><span class="fu">fit</span>(Y, T, <span class="at">X=</span>X, <span class="at">W=</span>X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="r-implementation-using-mlr3" class="level2" data-number="17.3">
-<h2 data-number="17.3" class="anchored" data-anchor-id="r-implementation-using-mlr3"><span class="header-section-number">17.3</span> R implementation using <code>mlr3</code></h2>
+<section id="r-implementation-using-mlr3" class="level2" data-number="18.3">
+<h2 data-number="18.3" class="anchored" data-anchor-id="r-implementation-using-mlr3"><span class="header-section-number">18.3</span> R implementation using <code>mlr3</code></h2>
 <p>You can use <code>benchmark_grid()</code> and <code>benchmark()</code> to imitate <code>GridSearchCVList()</code> from the Python <code>econml</code> package with a bit of extra coding.</p>
 <p>Let’s use <code>mtcars</code> data for demonstration.</p>
 <div class="cell">
@@ -745,80 +750,80 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="co">#=== benchmark implementation ===#</span></span>
 <span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>bmr_results <span class="ot">&lt;-</span> <span class="fu">benchmark</span>(benchmark_design)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>INFO  [11:24:42.054] [mlr3] Running benchmark with 72 resampling iterations 
-INFO  [11:24:42.086] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
-INFO  [11:24:42.117] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
-INFO  [11:24:42.126] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
-INFO  [11:24:42.136] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
-INFO  [11:24:42.144] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
-INFO  [11:24:42.170] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
-INFO  [11:24:42.180] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
-INFO  [11:24:42.192] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
-INFO  [11:24:42.202] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
-INFO  [11:24:42.213] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
-INFO  [11:24:42.225] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
-INFO  [11:24:42.234] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
-INFO  [11:24:42.411] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
-INFO  [11:24:42.422] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
-INFO  [11:24:42.450] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
-INFO  [11:24:42.462] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
-INFO  [11:24:42.475] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
-INFO  [11:24:42.507] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
-INFO  [11:24:42.516] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
-INFO  [11:24:42.547] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
-INFO  [11:24:42.557] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
-INFO  [11:24:42.583] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
-INFO  [11:24:42.592] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
-INFO  [11:24:42.621] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
-INFO  [11:24:42.631] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
-INFO  [11:24:42.644] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
-INFO  [11:24:42.654] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
-INFO  [11:24:42.672] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
-INFO  [11:24:42.701] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
-INFO  [11:24:42.713] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
-INFO  [11:24:42.726] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
-INFO  [11:24:42.737] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
-INFO  [11:24:42.750] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
-INFO  [11:24:42.760] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
-INFO  [11:24:42.772] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
-INFO  [11:24:42.784] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
-INFO  [11:24:42.819] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
-INFO  [11:24:42.831] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
-INFO  [11:24:42.844] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
-INFO  [11:24:42.873] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
-INFO  [11:24:42.900] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
-INFO  [11:24:42.911] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
-INFO  [11:24:42.923] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
-INFO  [11:24:42.957] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
-INFO  [11:24:42.966] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
-INFO  [11:24:42.977] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
-INFO  [11:24:42.989] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
-INFO  [11:24:43.016] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
-INFO  [11:24:43.029] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
-INFO  [11:24:43.060] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
-INFO  [11:24:43.071] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
-INFO  [11:24:43.080] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
-INFO  [11:24:43.089] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
-INFO  [11:24:43.100] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
-INFO  [11:24:43.111] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
-INFO  [11:24:43.122] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
-INFO  [11:24:43.133] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
-INFO  [11:24:43.142] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
-INFO  [11:24:43.169] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
-INFO  [11:24:43.184] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
-INFO  [11:24:43.193] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
-INFO  [11:24:43.205] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
-INFO  [11:24:43.216] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
-INFO  [11:24:43.228] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
-INFO  [11:24:43.240] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
-INFO  [11:24:43.249] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
-INFO  [11:24:43.278] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
-INFO  [11:24:43.288] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
-INFO  [11:24:43.300] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
-INFO  [11:24:43.312] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
-INFO  [11:24:43.327] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
-INFO  [11:24:43.336] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
-INFO  [11:24:43.350] [mlr3] Finished benchmark </code></pre>
+<pre><code>INFO  [09:57:05.725] [mlr3] Running benchmark with 72 resampling iterations 
+INFO  [09:57:05.757] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
+INFO  [09:57:05.787] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
+INFO  [09:57:05.796] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
+INFO  [09:57:05.806] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
+INFO  [09:57:05.814] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
+INFO  [09:57:05.843] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
+INFO  [09:57:05.853] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
+INFO  [09:57:05.866] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
+INFO  [09:57:05.875] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
+INFO  [09:57:05.885] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
+INFO  [09:57:05.897] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
+INFO  [09:57:05.905] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
+INFO  [09:57:06.084] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
+INFO  [09:57:06.096] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
+INFO  [09:57:06.123] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
+INFO  [09:57:06.132] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
+INFO  [09:57:06.144] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
+INFO  [09:57:06.174] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
+INFO  [09:57:06.182] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
+INFO  [09:57:06.212] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
+INFO  [09:57:06.222] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
+INFO  [09:57:06.249] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
+INFO  [09:57:06.257] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
+INFO  [09:57:06.285] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
+INFO  [09:57:06.294] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
+INFO  [09:57:06.306] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
+INFO  [09:57:06.315] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
+INFO  [09:57:06.332] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
+INFO  [09:57:06.360] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
+INFO  [09:57:06.371] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
+INFO  [09:57:06.384] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
+INFO  [09:57:06.395] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
+INFO  [09:57:06.408] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
+INFO  [09:57:06.417] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
+INFO  [09:57:06.429] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
+INFO  [09:57:06.441] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
+INFO  [09:57:06.476] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
+INFO  [09:57:06.488] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
+INFO  [09:57:06.500] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
+INFO  [09:57:06.529] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
+INFO  [09:57:06.556] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
+INFO  [09:57:06.568] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
+INFO  [09:57:06.579] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
+INFO  [09:57:06.613] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
+INFO  [09:57:06.622] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
+INFO  [09:57:06.633] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
+INFO  [09:57:06.645] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
+INFO  [09:57:06.672] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
+INFO  [09:57:06.683] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
+INFO  [09:57:06.714] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
+INFO  [09:57:06.725] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
+INFO  [09:57:06.734] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
+INFO  [09:57:06.743] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
+INFO  [09:57:06.753] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
+INFO  [09:57:06.764] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
+INFO  [09:57:06.775] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
+INFO  [09:57:06.787] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
+INFO  [09:57:06.795] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
+INFO  [09:57:06.822] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
+INFO  [09:57:06.837] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
+INFO  [09:57:06.846] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
+INFO  [09:57:06.858] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
+INFO  [09:57:06.870] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
+INFO  [09:57:06.881] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
+INFO  [09:57:06.892] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
+INFO  [09:57:06.901] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
+INFO  [09:57:06.928] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 2/3) 
+INFO  [09:57:06.937] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 1/3) 
+INFO  [09:57:06.948] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 1/3) 
+INFO  [09:57:06.959] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 3/3) 
+INFO  [09:57:06.974] [mlr3] Applying learner 'regr.ranger' on task 'regression' (iter 3/3) 
+INFO  [09:57:06.983] [mlr3] Applying learner 'regr.xgboost' on task 'regression' (iter 2/3) 
+INFO  [09:57:06.996] [mlr3] Finished benchmark </code></pre>
 </div>
 </div>
 <p>We can calculate MSE for each of the learners using the <code>aggregate()</code> method with <code>msr("regr.mse")</code>.</p>
@@ -892,6 +897,8 @@ INFO  [11:24:43.350] [mlr3] Finished benchmark </code></pre>
 </div>
 
 
+<!-- -->
+
 </section>
 
 </main> <!-- /main -->
@@ -925,6 +932,57 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
   function tippyHover(el, contentFn) {
     const config = {
       allowHTML: true,
@@ -977,7 +1035,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="./PROG-02-reticulate.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Running Python from R</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Running Python from R</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
@@ -985,7 +1043,413 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         <span class="nav-page-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Monte Carlo (MC) Simulation</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
-</nav>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb27" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Model Selection (Prediction)</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>When you use a DML approach, the first stage estimations are prediction tasks. In this section, R and python codes (and the <span class="in">`reticulate`</span> version of the python codes) to select a model for the first stage estimations are presented.</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="fu">## Python implementation</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>Suppose you are considering multiple classes of estimators with various sets of hyper-parameter values for each model class. We can use <span class="in">`GridSearchCVList()`</span> from the <span class="in">`econml`</span> pacakge to conduct cross-validation to see which model works the best in predicting $E<span class="co">[</span><span class="ot">Y|X, W</span><span class="co">]</span>$ and $E<span class="co">[</span><span class="ot">T|X, W</span><span class="co">]</span>$ in terms of CV MSE. <span class="in">`GridSearchCVList()`</span> is an extension of <span class="in">`GridSearchCV()`</span> from the <span class="in">`sklearn`</span> package. While <span class="in">`GridSearchCV()`</span> conducts CV for a <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> single<span class="kw">&lt;/span&gt;</span> model class with various sets of hyper-parameter values, <span class="in">`GridSearchCVList()`</span> conducts CV for <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> multiple<span class="kw">&lt;/span&gt;</span> classes of models with various sets of hyper-parameter values.</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>Let's go through an example use of <span class="in">`GridSearchCVList()`</span>. First, we import all the functions we will be using. </span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestRegressor</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> GradientBoostingRegressor</span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> Lasso</span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> RepeatedKFold</span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> econml.sklearn_extensions.model_selection <span class="im">import</span> GridSearchCVList</span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>Let's also generate synthetic dataset using <span class="in">`make_regression()`</span>.</span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb27-26"><a href="#cb27-26" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> make_regression</span>
+<span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb27-28"><a href="#cb27-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-29"><a href="#cb27-29" aria-hidden="true" tabindex="-1"></a><span class="co">#=== set parameters for data generation ===#</span></span>
+<span id="cb27-30"><a href="#cb27-30" aria-hidden="true" tabindex="-1"></a>n_samples, n_features, n_informative, noise <span class="op">=</span> <span class="dv">2000</span>, <span class="dv">20</span>, <span class="dv">15</span>, <span class="dv">2</span></span>
+<span id="cb27-31"><a href="#cb27-31" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.RandomState(<span class="dv">8934</span>)</span>
+<span id="cb27-32"><a href="#cb27-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-33"><a href="#cb27-33" aria-hidden="true" tabindex="-1"></a><span class="co">#=== generate synthetic data ===#</span></span>
+<span id="cb27-34"><a href="#cb27-34" aria-hidden="true" tabindex="-1"></a>XT, y <span class="op">=</span> make_regression(</span>
+<span id="cb27-35"><a href="#cb27-35" aria-hidden="true" tabindex="-1"></a>  n_samples, </span>
+<span id="cb27-36"><a href="#cb27-36" aria-hidden="true" tabindex="-1"></a>  n_features, </span>
+<span id="cb27-37"><a href="#cb27-37" aria-hidden="true" tabindex="-1"></a>  n_informative <span class="op">=</span> n_informative, </span>
+<span id="cb27-38"><a href="#cb27-38" aria-hidden="true" tabindex="-1"></a>  noise <span class="op">=</span> noise, </span>
+<span id="cb27-39"><a href="#cb27-39" aria-hidden="true" tabindex="-1"></a>  random_state <span class="op">=</span> rng</span>
+<span id="cb27-40"><a href="#cb27-40" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb27-41"><a href="#cb27-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-42"><a href="#cb27-42" aria-hidden="true" tabindex="-1"></a>T <span class="op">=</span> XT[:, <span class="dv">0</span>] <span class="co"># first column as the treatment variable</span></span>
+<span id="cb27-43"><a href="#cb27-43" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> XT[:, <span class="dv">1</span>:] <span class="co"># the rest as X</span></span>
+<span id="cb27-44"><a href="#cb27-44" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-45"><a href="#cb27-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-46"><a href="#cb27-46" aria-hidden="true" tabindex="-1"></a>Some of the key parameters for <span class="in">`GridSearchCVList()`</span> are:</span>
+<span id="cb27-47"><a href="#cb27-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-48"><a href="#cb27-48" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span><span class="in">`estimator_list`</span>: List of estimators. Each estimator needs to implement the scikit-learn estimator interface. </span>
+<span id="cb27-49"><a href="#cb27-49" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span><span class="in">`param_grid`</span>: List of the name of parameters to tune with their values for each model. </span>
+<span id="cb27-50"><a href="#cb27-50" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span><span class="in">`cv`</span>: Specification of how CV is conducted</span>
+<span id="cb27-51"><a href="#cb27-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-52"><a href="#cb27-52" aria-hidden="true" tabindex="-1"></a>Let's define them one by one.</span>
+<span id="cb27-53"><a href="#cb27-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-54"><a href="#cb27-54" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; </span><span class="in">`estimator_list`</span></span>
+<span id="cb27-55"><a href="#cb27-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-58"><a href="#cb27-58" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb27-59"><a href="#cb27-59" aria-hidden="true" tabindex="-1"></a>est_list <span class="op">=</span> [</span>
+<span id="cb27-60"><a href="#cb27-60" aria-hidden="true" tabindex="-1"></a>    Lasso(max_iter<span class="op">=</span><span class="dv">1000</span>), </span>
+<span id="cb27-61"><a href="#cb27-61" aria-hidden="true" tabindex="-1"></a>    GradientBoostingRegressor(),</span>
+<span id="cb27-62"><a href="#cb27-62" aria-hidden="true" tabindex="-1"></a>    RandomForestRegressor(min_samples_leaf <span class="op">=</span> <span class="dv">5</span>)</span>
+<span id="cb27-63"><a href="#cb27-63" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb27-64"><a href="#cb27-64" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-65"><a href="#cb27-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-66"><a href="#cb27-66" aria-hidden="true" tabindex="-1"></a>So, the model classes we consider are lasso, random forest, and boosted forest. Note that you can fix the value of parameters that you do not vary in CV. For example, <span class="in">`RandomForestRegressor(min_samples_leaf = 5)`</span> sets <span class="in">`min_samples_leaf`</span> at 5. </span>
+<span id="cb27-67"><a href="#cb27-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-68"><a href="#cb27-68" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; </span><span class="in">`param_grid`</span></span>
+<span id="cb27-69"><a href="#cb27-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-72"><a href="#cb27-72" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb27-73"><a href="#cb27-73" aria-hidden="true" tabindex="-1"></a>par_grid_list <span class="op">=</span> [</span>
+<span id="cb27-74"><a href="#cb27-74" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"alpha"</span>: [<span class="fl">0.001</span>, <span class="fl">0.01</span>, <span class="fl">0.1</span>, <span class="dv">1</span>, <span class="dv">10</span>]},</span>
+<span id="cb27-75"><a href="#cb27-75" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"max_depth"</span>: [<span class="dv">3</span>, <span class="dv">5</span>, <span class="va">None</span>], <span class="st">"n_estimators"</span>: [<span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">200</span>]},</span>
+<span id="cb27-76"><a href="#cb27-76" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"max_depth"</span>: [<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">10</span>], <span class="st">"max_features"</span>: [<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">20</span>]},</span>
+<span id="cb27-77"><a href="#cb27-77" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb27-78"><a href="#cb27-78" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-79"><a href="#cb27-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-80"><a href="#cb27-80" aria-hidden="true" tabindex="-1"></a>The $n$th entry of <span class="in">`param_grid`</span> is for the $n$th entry of <span class="in">`estimator_list`</span>. For example, two hyper-parameters will be tried for <span class="in">`RandomForestRegressor()`</span>: <span class="in">`max_depth`</span> and <span class="in">`max_features`</span>. The complete combinations of the values from the parameters will be evaluated. For example, here are all the set of parameter values tried for <span class="in">`RandomForestRegressor()`</span>.</span>
+<span id="cb27-81"><a href="#cb27-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-84"><a href="#cb27-84" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb27-85"><a href="#cb27-85" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false </span></span>
+<span id="cb27-86"><a href="#cb27-86" aria-hidden="true" tabindex="-1"></a>max_depth <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">10</span>)</span>
+<span id="cb27-87"><a href="#cb27-87" aria-hidden="true" tabindex="-1"></a>max_features <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">20</span>)</span>
+<span id="cb27-88"><a href="#cb27-88" aria-hidden="true" tabindex="-1"></a><span class="fu">expand.grid</span>(<span class="at">max_depth =</span> max_depth, <span class="at">max_features =</span> max_features)</span>
+<span id="cb27-89"><a href="#cb27-89" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-90"><a href="#cb27-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-91"><a href="#cb27-91" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; </span><span class="in">`cv`</span></span>
+<span id="cb27-92"><a href="#cb27-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-95"><a href="#cb27-95" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb27-96"><a href="#cb27-96" aria-hidden="true" tabindex="-1"></a>rk_cv <span class="op">=</span> RepeatedKFold(n_splits <span class="op">=</span> <span class="dv">4</span>, n_repeats <span class="op">=</span> <span class="dv">3</span>, random_state <span class="op">=</span> <span class="dv">123</span>)</span>
+<span id="cb27-97"><a href="#cb27-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-98"><a href="#cb27-98" aria-hidden="true" tabindex="-1"></a><span class="co">#=== check the number of splits ===#  </span></span>
+<span id="cb27-99"><a href="#cb27-99" aria-hidden="true" tabindex="-1"></a>rk_cv.get_n_splits()</span>
+<span id="cb27-100"><a href="#cb27-100" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-101"><a href="#cb27-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-102"><a href="#cb27-102" aria-hidden="true" tabindex="-1"></a>Cross-validation specification can be done using the <span class="in">`sklearn.model_selection`</span> module. Here, we are using <span class="in">`RepeatedKFold`</span>, and it is a 4-fold CV repeated 2 times.</span>
+<span id="cb27-103"><a href="#cb27-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-104"><a href="#cb27-104" aria-hidden="true" tabindex="-1"></a>Let's now specify <span class="in">`GridSearchCVList()`</span> using the above parameters.</span>
+<span id="cb27-105"><a href="#cb27-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-108"><a href="#cb27-108" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb27-109"><a href="#cb27-109" aria-hidden="true" tabindex="-1"></a>first_stage <span class="op">=</span> GridSearchCVList(</span>
+<span id="cb27-110"><a href="#cb27-110" aria-hidden="true" tabindex="-1"></a>    estimator_list <span class="op">=</span> est_list,</span>
+<span id="cb27-111"><a href="#cb27-111" aria-hidden="true" tabindex="-1"></a>    param_grid_list<span class="op">=</span> par_grid_list,</span>
+<span id="cb27-112"><a href="#cb27-112" aria-hidden="true" tabindex="-1"></a>    cv <span class="op">=</span> rk_cv,</span>
+<span id="cb27-113"><a href="#cb27-113" aria-hidden="true" tabindex="-1"></a>    scoring <span class="op">=</span> <span class="st">"neg_mean_squared_error"</span></span>
+<span id="cb27-114"><a href="#cb27-114" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb27-115"><a href="#cb27-115" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-116"><a href="#cb27-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-117"><a href="#cb27-117" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb27-118"><a href="#cb27-118" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">scoring</span><span class="co">](https://scikit-learn.org/stable/modules/model_evaluation.html#scoring-parameter)</span></span>
+<span id="cb27-119"><a href="#cb27-119" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb27-120"><a href="#cb27-120" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb27-121"><a href="#cb27-121" aria-hidden="true" tabindex="-1"></a>We now conduct CV with the <span class="in">`fit()`</span> method and then access the best estimator by referring to <span class="in">`best_estimator_`</span> attribute.</span>
+<span id="cb27-122"><a href="#cb27-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-125"><a href="#cb27-125" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb27-126"><a href="#cb27-126" aria-hidden="true" tabindex="-1"></a><span class="co">#| cache: true </span></span>
+<span id="cb27-127"><a href="#cb27-127" aria-hidden="true" tabindex="-1"></a>model_y <span class="op">=</span> first_stage.fit(X, y).best_estimator_</span>
+<span id="cb27-128"><a href="#cb27-128" aria-hidden="true" tabindex="-1"></a>model_y</span>
+<span id="cb27-129"><a href="#cb27-129" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-130"><a href="#cb27-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-131"><a href="#cb27-131" aria-hidden="true" tabindex="-1"></a>We do the same for $T$.</span>
+<span id="cb27-132"><a href="#cb27-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-135"><a href="#cb27-135" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb27-136"><a href="#cb27-136" aria-hidden="true" tabindex="-1"></a><span class="co">#| cache: true </span></span>
+<span id="cb27-137"><a href="#cb27-137" aria-hidden="true" tabindex="-1"></a>model_t <span class="op">=</span> first_stage.fit(X, T).best_estimator_</span>
+<span id="cb27-138"><a href="#cb27-138" aria-hidden="true" tabindex="-1"></a>model_t</span>
+<span id="cb27-139"><a href="#cb27-139" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-140"><a href="#cb27-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-141"><a href="#cb27-141" aria-hidden="true" tabindex="-1"></a>We can now run DML with the best first stage models like below.</span>
+<span id="cb27-142"><a href="#cb27-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-145"><a href="#cb27-145" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb27-146"><a href="#cb27-146" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false </span></span>
+<span id="cb27-147"><a href="#cb27-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-148"><a href="#cb27-148" aria-hidden="true" tabindex="-1"></a><span class="co">#=== set up a linear DML ===#</span></span>
+<span id="cb27-149"><a href="#cb27-149" aria-hidden="true" tabindex="-1"></a>est <span class="op">=</span> LinearDML(</span>
+<span id="cb27-150"><a href="#cb27-150" aria-hidden="true" tabindex="-1"></a>    model_y<span class="op">=</span>model_y, </span>
+<span id="cb27-151"><a href="#cb27-151" aria-hidden="true" tabindex="-1"></a>    model_t<span class="op">=</span>model_t</span>
+<span id="cb27-152"><a href="#cb27-152" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb27-153"><a href="#cb27-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-154"><a href="#cb27-154" aria-hidden="true" tabindex="-1"></a><span class="co">#=== train ===#</span></span>
+<span id="cb27-155"><a href="#cb27-155" aria-hidden="true" tabindex="-1"></a>est.fit(Y, T, X<span class="op">=</span>X, W<span class="op">=</span>X)</span>
+<span id="cb27-156"><a href="#cb27-156" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-157"><a href="#cb27-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-158"><a href="#cb27-158" aria-hidden="true" tabindex="-1"></a><span class="fu">## `reticulate` implementation in R</span></span>
+<span id="cb27-159"><a href="#cb27-159" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-160"><a href="#cb27-160" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb27-161"><a href="#cb27-161" aria-hidden="true" tabindex="-1"></a>**Packages to load for replication**</span>
+<span id="cb27-162"><a href="#cb27-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-165"><a href="#cb27-165" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb27-166"><a href="#cb27-166" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb27-167"><a href="#cb27-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-168"><a href="#cb27-168" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb27-169"><a href="#cb27-169" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reticulate)</span>
+<span id="cb27-170"><a href="#cb27-170" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlr3verse)</span>
+<span id="cb27-171"><a href="#cb27-171" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb27-172"><a href="#cb27-172" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-173"><a href="#cb27-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-176"><a href="#cb27-176" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb27-177"><a href="#cb27-177" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb27-178"><a href="#cb27-178" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb27-179"><a href="#cb27-179" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reticulate)</span>
+<span id="cb27-180"><a href="#cb27-180" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlr3verse)</span>
+<span id="cb27-181"><a href="#cb27-181" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb27-182"><a href="#cb27-182" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-183"><a href="#cb27-183" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb27-184"><a href="#cb27-184" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-185"><a href="#cb27-185" aria-hidden="true" tabindex="-1"></a>Here is the R codes that does the same thing as above using the <span class="in">`reticulate`</span> package without needing to interact with Python console directly.</span>
+<span id="cb27-186"><a href="#cb27-186" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-189"><a href="#cb27-189" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb27-190"><a href="#cb27-190" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false </span></span>
+<span id="cb27-191"><a href="#cb27-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-192"><a href="#cb27-192" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
+<span id="cb27-193"><a href="#cb27-193" aria-hidden="true" tabindex="-1"></a><span class="co"># Import modules  </span></span>
+<span id="cb27-194"><a href="#cb27-194" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
+<span id="cb27-195"><a href="#cb27-195" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reticulate)</span>
+<span id="cb27-196"><a href="#cb27-196" aria-hidden="true" tabindex="-1"></a>sk_ensemble <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"sklearn.ensemble"</span>) </span>
+<span id="cb27-197"><a href="#cb27-197" aria-hidden="true" tabindex="-1"></a>sk_lm <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"sklearn.linear_model"</span>)</span>
+<span id="cb27-198"><a href="#cb27-198" aria-hidden="true" tabindex="-1"></a>sk_ms <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"sklearn.model_selection"</span>)</span>
+<span id="cb27-199"><a href="#cb27-199" aria-hidden="true" tabindex="-1"></a>econml_sk_ms <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"econml.sklearn_extensions.model_selection"</span>)</span>
+<span id="cb27-200"><a href="#cb27-200" aria-hidden="true" tabindex="-1"></a>econml_dml <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"econml.dml"</span>)</span>
+<span id="cb27-201"><a href="#cb27-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-202"><a href="#cb27-202" aria-hidden="true" tabindex="-1"></a>sk_data <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"sklearn.datasets"</span>)</span>
+<span id="cb27-203"><a href="#cb27-203" aria-hidden="true" tabindex="-1"></a>make_regression <span class="ot">&lt;-</span> sk_data<span class="sc">$</span>make_regression</span>
+<span id="cb27-204"><a href="#cb27-204" aria-hidden="true" tabindex="-1"></a>np <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"numpy"</span>)</span>
+<span id="cb27-205"><a href="#cb27-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-206"><a href="#cb27-206" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
+<span id="cb27-207"><a href="#cb27-207" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate synthetic data</span></span>
+<span id="cb27-208"><a href="#cb27-208" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
+<span id="cb27-209"><a href="#cb27-209" aria-hidden="true" tabindex="-1"></a><span class="co">#=== set parameters for data generation ===#</span></span>
+<span id="cb27-210"><a href="#cb27-210" aria-hidden="true" tabindex="-1"></a>n_samples <span class="ot">&lt;-</span> 2000L</span>
+<span id="cb27-211"><a href="#cb27-211" aria-hidden="true" tabindex="-1"></a>n_features <span class="ot">&lt;-</span> 20L</span>
+<span id="cb27-212"><a href="#cb27-212" aria-hidden="true" tabindex="-1"></a>n_informative <span class="ot">&lt;-</span> 15L</span>
+<span id="cb27-213"><a href="#cb27-213" aria-hidden="true" tabindex="-1"></a>noise <span class="ot">&lt;-</span> 2L</span>
+<span id="cb27-214"><a href="#cb27-214" aria-hidden="true" tabindex="-1"></a>rng <span class="ot">&lt;-</span> np<span class="sc">$</span>random<span class="sc">$</span><span class="fu">RandomState</span>(8934L)</span>
+<span id="cb27-215"><a href="#cb27-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-216"><a href="#cb27-216" aria-hidden="true" tabindex="-1"></a><span class="co">#=== generate synthetic data ===#</span></span>
+<span id="cb27-217"><a href="#cb27-217" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span></span>
+<span id="cb27-218"><a href="#cb27-218" aria-hidden="true" tabindex="-1"></a>  <span class="fu">make_regression</span>(</span>
+<span id="cb27-219"><a href="#cb27-219" aria-hidden="true" tabindex="-1"></a>    n_samples, </span>
+<span id="cb27-220"><a href="#cb27-220" aria-hidden="true" tabindex="-1"></a>    n_features, </span>
+<span id="cb27-221"><a href="#cb27-221" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_informative =</span> n_informative, </span>
+<span id="cb27-222"><a href="#cb27-222" aria-hidden="true" tabindex="-1"></a>    <span class="at">noise =</span> noise, </span>
+<span id="cb27-223"><a href="#cb27-223" aria-hidden="true" tabindex="-1"></a>    <span class="at">random_state =</span> rng</span>
+<span id="cb27-224"><a href="#cb27-224" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb27-225"><a href="#cb27-225" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-226"><a href="#cb27-226" aria-hidden="true" tabindex="-1"></a><span class="co">#=== Create data matrices ===#</span></span>
+<span id="cb27-227"><a href="#cb27-227" aria-hidden="true" tabindex="-1"></a>XT <span class="ot">&lt;-</span> data[[<span class="dv">1</span>]]</span>
+<span id="cb27-228"><a href="#cb27-228" aria-hidden="true" tabindex="-1"></a>T <span class="ot">&lt;-</span> XT[, <span class="dv">1</span>]</span>
+<span id="cb27-229"><a href="#cb27-229" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> XT[, <span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb27-230"><a href="#cb27-230" aria-hidden="true" tabindex="-1"></a>Y  <span class="ot">&lt;-</span> data[[<span class="dv">2</span>]]</span>
+<span id="cb27-231"><a href="#cb27-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-232"><a href="#cb27-232" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
+<span id="cb27-233"><a href="#cb27-233" aria-hidden="true" tabindex="-1"></a><span class="co"># Set up GridSearchCVList</span></span>
+<span id="cb27-234"><a href="#cb27-234" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
+<span id="cb27-235"><a href="#cb27-235" aria-hidden="true" tabindex="-1"></a><span class="co">#=== list of estimators ===#</span></span>
+<span id="cb27-236"><a href="#cb27-236" aria-hidden="true" tabindex="-1"></a>est_list <span class="ot">&lt;-</span> </span>
+<span id="cb27-237"><a href="#cb27-237" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(</span>
+<span id="cb27-238"><a href="#cb27-238" aria-hidden="true" tabindex="-1"></a>    sk_lm<span class="sc">$</span><span class="fu">Lasso</span>(<span class="at">max_iter=</span>1000L), </span>
+<span id="cb27-239"><a href="#cb27-239" aria-hidden="true" tabindex="-1"></a>    sk_ensemble<span class="sc">$</span><span class="fu">GradientBoostingRegressor</span>(),</span>
+<span id="cb27-240"><a href="#cb27-240" aria-hidden="true" tabindex="-1"></a>    sk_ensemble<span class="sc">$</span><span class="fu">RandomForestRegressor</span>(<span class="at">min_samples_leaf =</span> 5L)</span>
+<span id="cb27-241"><a href="#cb27-241" aria-hidden="true" tabindex="-1"></a>  ) </span>
+<span id="cb27-242"><a href="#cb27-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-243"><a href="#cb27-243" aria-hidden="true" tabindex="-1"></a><span class="co">#=== list of parameter values ===#</span></span>
+<span id="cb27-244"><a href="#cb27-244" aria-hidden="true" tabindex="-1"></a>par_grid_list <span class="ot">&lt;-</span> </span>
+<span id="cb27-245"><a href="#cb27-245" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb27-246"><a href="#cb27-246" aria-hidden="true" tabindex="-1"></a>    <span class="fu">list</span>(<span class="at">alpha =</span> <span class="fu">c</span>(<span class="fl">0.001</span>, <span class="fl">0.01</span>, <span class="fl">0.1</span>, <span class="dv">1</span>, <span class="dv">10</span>)),</span>
+<span id="cb27-247"><a href="#cb27-247" aria-hidden="true" tabindex="-1"></a>    <span class="fu">list</span>(</span>
+<span id="cb27-248"><a href="#cb27-248" aria-hidden="true" tabindex="-1"></a>      <span class="at">max_depth =</span> <span class="fu">as.integer</span>(<span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">10</span>)), </span>
+<span id="cb27-249"><a href="#cb27-249" aria-hidden="true" tabindex="-1"></a>      <span class="at">n_estimators =</span> <span class="fu">as.integer</span>(<span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">200</span>))</span>
+<span id="cb27-250"><a href="#cb27-250" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb27-251"><a href="#cb27-251" aria-hidden="true" tabindex="-1"></a>    <span class="fu">list</span>(</span>
+<span id="cb27-252"><a href="#cb27-252" aria-hidden="true" tabindex="-1"></a>      <span class="at">max_depth =</span> <span class="fu">as.integer</span>(<span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">10</span>)), </span>
+<span id="cb27-253"><a href="#cb27-253" aria-hidden="true" tabindex="-1"></a>      <span class="at">max_features =</span> <span class="fu">as.integer</span>(<span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">20</span>))</span>
+<span id="cb27-254"><a href="#cb27-254" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb27-255"><a href="#cb27-255" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb27-256"><a href="#cb27-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-257"><a href="#cb27-257" aria-hidden="true" tabindex="-1"></a><span class="co">#=== CV specification ===#</span></span>
+<span id="cb27-258"><a href="#cb27-258" aria-hidden="true" tabindex="-1"></a>rk_cv <span class="ot">&lt;-</span> </span>
+<span id="cb27-259"><a href="#cb27-259" aria-hidden="true" tabindex="-1"></a>  sk_ms<span class="sc">$</span><span class="fu">RepeatedKFold</span>(</span>
+<span id="cb27-260"><a href="#cb27-260" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_splits =</span> 4L, </span>
+<span id="cb27-261"><a href="#cb27-261" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_repeats =</span> 2L, </span>
+<span id="cb27-262"><a href="#cb27-262" aria-hidden="true" tabindex="-1"></a>    <span class="at">random_state =</span> 123L</span>
+<span id="cb27-263"><a href="#cb27-263" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb27-264"><a href="#cb27-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-265"><a href="#cb27-265" aria-hidden="true" tabindex="-1"></a><span class="co">#=== set up a GridSearchCVList ===#</span></span>
+<span id="cb27-266"><a href="#cb27-266" aria-hidden="true" tabindex="-1"></a>first_stage <span class="ot">&lt;-</span></span>
+<span id="cb27-267"><a href="#cb27-267" aria-hidden="true" tabindex="-1"></a>  econml_sk_ms<span class="sc">$</span><span class="fu">GridSearchCVList</span>(</span>
+<span id="cb27-268"><a href="#cb27-268" aria-hidden="true" tabindex="-1"></a>    <span class="at">estimator_list =</span> est_list,</span>
+<span id="cb27-269"><a href="#cb27-269" aria-hidden="true" tabindex="-1"></a>    <span class="at">param_grid_list =</span> par_grid_list,</span>
+<span id="cb27-270"><a href="#cb27-270" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv =</span> rk_cv</span>
+<span id="cb27-271"><a href="#cb27-271" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb27-272"><a href="#cb27-272" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-273"><a href="#cb27-273" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
+<span id="cb27-274"><a href="#cb27-274" aria-hidden="true" tabindex="-1"></a><span class="co"># Run CV</span></span>
+<span id="cb27-275"><a href="#cb27-275" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
+<span id="cb27-276"><a href="#cb27-276" aria-hidden="true" tabindex="-1"></a><span class="co">#=== Y ===#</span></span>
+<span id="cb27-277"><a href="#cb27-277" aria-hidden="true" tabindex="-1"></a>model_y <span class="ot">&lt;-</span> first_stage<span class="sc">$</span><span class="fu">fit</span>(X, Y)<span class="sc">$</span>best_estimator_</span>
+<span id="cb27-278"><a href="#cb27-278" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-279"><a href="#cb27-279" aria-hidden="true" tabindex="-1"></a><span class="co">#=== T ===#</span></span>
+<span id="cb27-280"><a href="#cb27-280" aria-hidden="true" tabindex="-1"></a>model_t <span class="ot">&lt;-</span> first_stage<span class="sc">$</span><span class="fu">fit</span>(X, T)<span class="sc">$</span>best_estimator_</span>
+<span id="cb27-281"><a href="#cb27-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-282"><a href="#cb27-282" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
+<span id="cb27-283"><a href="#cb27-283" aria-hidden="true" tabindex="-1"></a><span class="co"># DML</span></span>
+<span id="cb27-284"><a href="#cb27-284" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
+<span id="cb27-285"><a href="#cb27-285" aria-hidden="true" tabindex="-1"></a><span class="co">#=== set up a linear DML ===#</span></span>
+<span id="cb27-286"><a href="#cb27-286" aria-hidden="true" tabindex="-1"></a>est <span class="ot">=</span> econml_dml<span class="sc">$</span><span class="fu">LinearDML</span>(</span>
+<span id="cb27-287"><a href="#cb27-287" aria-hidden="true" tabindex="-1"></a>    <span class="at">model_y =</span> model_y, </span>
+<span id="cb27-288"><a href="#cb27-288" aria-hidden="true" tabindex="-1"></a>    <span class="at">model_t =</span> model_t</span>
+<span id="cb27-289"><a href="#cb27-289" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb27-290"><a href="#cb27-290" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-291"><a href="#cb27-291" aria-hidden="true" tabindex="-1"></a><span class="co">#=== train ===#</span></span>
+<span id="cb27-292"><a href="#cb27-292" aria-hidden="true" tabindex="-1"></a>est<span class="sc">$</span><span class="fu">fit</span>(Y, T, <span class="at">X=</span>X, <span class="at">W=</span>X)</span>
+<span id="cb27-293"><a href="#cb27-293" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-294"><a href="#cb27-294" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-295"><a href="#cb27-295" aria-hidden="true" tabindex="-1"></a><span class="fu">## R implementation using `mlr3`</span></span>
+<span id="cb27-296"><a href="#cb27-296" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-297"><a href="#cb27-297" aria-hidden="true" tabindex="-1"></a>You can use <span class="in">`benchmark_grid()`</span> and <span class="in">`benchmark()`</span> to imitate <span class="in">`GridSearchCVList()`</span> from the Python <span class="in">`econml`</span> package with a bit of extra coding. </span>
+<span id="cb27-298"><a href="#cb27-298" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-299"><a href="#cb27-299" aria-hidden="true" tabindex="-1"></a>Let's use <span class="in">`mtcars`</span> data for demonstration.</span>
+<span id="cb27-300"><a href="#cb27-300" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-303"><a href="#cb27-303" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb27-304"><a href="#cb27-304" aria-hidden="true" tabindex="-1"></a><span class="co">#=== load the mtcars data ===#</span></span>
+<span id="cb27-305"><a href="#cb27-305" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"mtcars"</span>, <span class="at">package =</span> <span class="st">"datasets"</span>)</span>
+<span id="cb27-306"><a href="#cb27-306" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-307"><a href="#cb27-307" aria-hidden="true" tabindex="-1"></a>reg_task <span class="ot">&lt;-</span></span>
+<span id="cb27-308"><a href="#cb27-308" aria-hidden="true" tabindex="-1"></a>  TaskRegr<span class="sc">$</span><span class="fu">new</span>(</span>
+<span id="cb27-309"><a href="#cb27-309" aria-hidden="true" tabindex="-1"></a>    <span class="at">id =</span> <span class="st">"regression"</span>,</span>
+<span id="cb27-310"><a href="#cb27-310" aria-hidden="true" tabindex="-1"></a>    <span class="at">backend =</span> mtcars,</span>
+<span id="cb27-311"><a href="#cb27-311" aria-hidden="true" tabindex="-1"></a>    <span class="at">target =</span> <span class="st">"mpg"</span></span>
+<span id="cb27-312"><a href="#cb27-312" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb27-313"><a href="#cb27-313" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-314"><a href="#cb27-314" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-315"><a href="#cb27-315" aria-hidden="true" tabindex="-1"></a>We can create a list of learners that vary in the value of hyper-parameters we would like to tune. Suppose you are interested in using random forest and extreme gradient boosting. We can create such a list for each of them and then combine. Let's do that for random forest first. It is much like what we did for <span class="in">`GridSearchCVList()`</span> above.</span>
+<span id="cb27-316"><a href="#cb27-316" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-317"><a href="#cb27-317" aria-hidden="true" tabindex="-1"></a>First create a sequence of values for parameters to be tuned. </span>
+<span id="cb27-318"><a href="#cb27-318" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-321"><a href="#cb27-321" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb27-322"><a href="#cb27-322" aria-hidden="true" tabindex="-1"></a><span class="co">#=== sequence of values ===#</span></span>
+<span id="cb27-323"><a href="#cb27-323" aria-hidden="true" tabindex="-1"></a>mtry_seq <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">5</span>)</span>
+<span id="cb27-324"><a href="#cb27-324" aria-hidden="true" tabindex="-1"></a>min_node_size_seq <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">20</span>)</span>
+<span id="cb27-325"><a href="#cb27-325" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-326"><a href="#cb27-326" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-327"><a href="#cb27-327" aria-hidden="true" tabindex="-1"></a>We can create a grid of values ourselves. </span>
+<span id="cb27-328"><a href="#cb27-328" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-331"><a href="#cb27-331" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb27-332"><a href="#cb27-332" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb27-333"><a href="#cb27-333" aria-hidden="true" tabindex="-1"></a>search_space_ranger <span class="ot">&lt;-</span> </span>
+<span id="cb27-334"><a href="#cb27-334" aria-hidden="true" tabindex="-1"></a>  data.table<span class="sc">::</span><span class="fu">CJ</span>(</span>
+<span id="cb27-335"><a href="#cb27-335" aria-hidden="true" tabindex="-1"></a>    <span class="at">mtry =</span> mtry_seq,</span>
+<span id="cb27-336"><a href="#cb27-336" aria-hidden="true" tabindex="-1"></a>    <span class="at">min_node_size =</span> min_node_size_seq</span>
+<span id="cb27-337"><a href="#cb27-337" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb27-338"><a href="#cb27-338" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb27-339"><a href="#cb27-339" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-340"><a href="#cb27-340" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-341"><a href="#cb27-341" aria-hidden="true" tabindex="-1"></a>We now loop over the row of <span class="in">`search_space_ranger`</span> to create learners with each pair (row) stored in <span class="in">`search_space_ranger`</span>.</span>
+<span id="cb27-342"><a href="#cb27-342" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-345"><a href="#cb27-345" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb27-346"><a href="#cb27-346" aria-hidden="true" tabindex="-1"></a>lrn_list_ranger <span class="ot">&lt;-</span></span>
+<span id="cb27-347"><a href="#cb27-347" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb27-348"><a href="#cb27-348" aria-hidden="true" tabindex="-1"></a>    <span class="fu">seq_len</span>(<span class="fu">nrow</span>(search_space_ranger)),</span>
+<span id="cb27-349"><a href="#cb27-349" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) {</span>
+<span id="cb27-350"><a href="#cb27-350" aria-hidden="true" tabindex="-1"></a>      <span class="fu">lrn</span>(</span>
+<span id="cb27-351"><a href="#cb27-351" aria-hidden="true" tabindex="-1"></a>        <span class="st">"regr.ranger"</span>, </span>
+<span id="cb27-352"><a href="#cb27-352" aria-hidden="true" tabindex="-1"></a>        <span class="at">mtry =</span> search_space_ranger[x, mtry], </span>
+<span id="cb27-353"><a href="#cb27-353" aria-hidden="true" tabindex="-1"></a>        <span class="at">min.node.size =</span> search_space_ranger[x, min_node_size]</span>
+<span id="cb27-354"><a href="#cb27-354" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb27-355"><a href="#cb27-355" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb27-356"><a href="#cb27-356" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb27-357"><a href="#cb27-357" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-358"><a href="#cb27-358" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-359"><a href="#cb27-359" aria-hidden="true" tabindex="-1"></a>We can do the same for xgboost.</span>
+<span id="cb27-360"><a href="#cb27-360" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-363"><a href="#cb27-363" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb27-364"><a href="#cb27-364" aria-hidden="true" tabindex="-1"></a><span class="co">#=== sequence of values ===#</span></span>
+<span id="cb27-365"><a href="#cb27-365" aria-hidden="true" tabindex="-1"></a>nrounds_seq <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">400</span>, <span class="at">by =</span> <span class="dv">100</span>)</span>
+<span id="cb27-366"><a href="#cb27-366" aria-hidden="true" tabindex="-1"></a>eta_seq <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.01</span>, <span class="dv">1</span>, <span class="at">length =</span> <span class="dv">5</span>)</span>
+<span id="cb27-367"><a href="#cb27-367" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-368"><a href="#cb27-368" aria-hidden="true" tabindex="-1"></a><span class="co">#=== define the grid ===#</span></span>
+<span id="cb27-369"><a href="#cb27-369" aria-hidden="true" tabindex="-1"></a>search_space_xgb <span class="ot">&lt;-</span> </span>
+<span id="cb27-370"><a href="#cb27-370" aria-hidden="true" tabindex="-1"></a>  data.table<span class="sc">::</span><span class="fu">CJ</span>(</span>
+<span id="cb27-371"><a href="#cb27-371" aria-hidden="true" tabindex="-1"></a>    <span class="at">nrounds =</span> nrounds_seq,</span>
+<span id="cb27-372"><a href="#cb27-372" aria-hidden="true" tabindex="-1"></a>    <span class="at">eta =</span> eta_seq</span>
+<span id="cb27-373"><a href="#cb27-373" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb27-374"><a href="#cb27-374" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-375"><a href="#cb27-375" aria-hidden="true" tabindex="-1"></a>lrn_list_xgboost <span class="ot">&lt;-</span></span>
+<span id="cb27-376"><a href="#cb27-376" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb27-377"><a href="#cb27-377" aria-hidden="true" tabindex="-1"></a>    <span class="fu">seq_len</span>(<span class="fu">nrow</span>(search_space_xgb)),</span>
+<span id="cb27-378"><a href="#cb27-378" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) {</span>
+<span id="cb27-379"><a href="#cb27-379" aria-hidden="true" tabindex="-1"></a>      <span class="fu">lrn</span>(</span>
+<span id="cb27-380"><a href="#cb27-380" aria-hidden="true" tabindex="-1"></a>        <span class="st">"regr.xgboost"</span>,</span>
+<span id="cb27-381"><a href="#cb27-381" aria-hidden="true" tabindex="-1"></a>        <span class="at">nrounds =</span> search_space_xgb[x, nrounds],</span>
+<span id="cb27-382"><a href="#cb27-382" aria-hidden="true" tabindex="-1"></a>        <span class="at">eta =</span> search_space_xgb[x, eta]</span>
+<span id="cb27-383"><a href="#cb27-383" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb27-384"><a href="#cb27-384" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb27-385"><a href="#cb27-385" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb27-386"><a href="#cb27-386" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-387"><a href="#cb27-387" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-388"><a href="#cb27-388" aria-hidden="true" tabindex="-1"></a>Now, we combine all the learners we want to evaluate.</span>
+<span id="cb27-389"><a href="#cb27-389" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-392"><a href="#cb27-392" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb27-393"><a href="#cb27-393" aria-hidden="true" tabindex="-1"></a>all_learners <span class="ot">&lt;-</span> <span class="fu">c</span>(lrn_list_ranger,lrn_list_xgboost)</span>
+<span id="cb27-394"><a href="#cb27-394" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-395"><a href="#cb27-395" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-396"><a href="#cb27-396" aria-hidden="true" tabindex="-1"></a>We need all the learners to use the same resampled datasets. So, we need to used an instantiated resampling. </span>
+<span id="cb27-397"><a href="#cb27-397" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-400"><a href="#cb27-400" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb27-401"><a href="#cb27-401" aria-hidden="true" tabindex="-1"></a>resampling <span class="ot">&lt;-</span> <span class="fu">rsmp</span>(<span class="st">"cv"</span>, <span class="at">folds =</span> <span class="dv">3</span>)</span>
+<span id="cb27-402"><a href="#cb27-402" aria-hidden="true" tabindex="-1"></a>resampling<span class="sc">$</span><span class="fu">instantiate</span>(reg_task)</span>
+<span id="cb27-403"><a href="#cb27-403" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-404"><a href="#cb27-404" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-405"><a href="#cb27-405" aria-hidden="true" tabindex="-1"></a>We can then supply <span class="in">`all_learners`</span> to <span class="in">`benchmark_grid()`</span> along with a task and resampling method, and ten call <span class="in">`benchmark()`</span> on it.</span>
+<span id="cb27-406"><a href="#cb27-406" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-409"><a href="#cb27-409" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb27-410"><a href="#cb27-410" aria-hidden="true" tabindex="-1"></a><span class="co">#=== benchmark design ===#</span></span>
+<span id="cb27-411"><a href="#cb27-411" aria-hidden="true" tabindex="-1"></a>benchmark_design <span class="ot">&lt;-</span> </span>
+<span id="cb27-412"><a href="#cb27-412" aria-hidden="true" tabindex="-1"></a>  <span class="fu">benchmark_grid</span>(</span>
+<span id="cb27-413"><a href="#cb27-413" aria-hidden="true" tabindex="-1"></a>    <span class="at">task =</span> reg_task, </span>
+<span id="cb27-414"><a href="#cb27-414" aria-hidden="true" tabindex="-1"></a>    <span class="at">learners =</span> all_learners,</span>
+<span id="cb27-415"><a href="#cb27-415" aria-hidden="true" tabindex="-1"></a>    <span class="at">resampling =</span> resampling</span>
+<span id="cb27-416"><a href="#cb27-416" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb27-417"><a href="#cb27-417" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-418"><a href="#cb27-418" aria-hidden="true" tabindex="-1"></a><span class="co">#=== benchmark implementation ===#</span></span>
+<span id="cb27-419"><a href="#cb27-419" aria-hidden="true" tabindex="-1"></a>bmr_results <span class="ot">&lt;-</span> <span class="fu">benchmark</span>(benchmark_design)</span>
+<span id="cb27-420"><a href="#cb27-420" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-421"><a href="#cb27-421" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-422"><a href="#cb27-422" aria-hidden="true" tabindex="-1"></a>We can calculate MSE for each of the learners using the <span class="in">`aggregate()`</span> method with <span class="in">`msr("regr.mse")`</span>.</span>
+<span id="cb27-423"><a href="#cb27-423" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-426"><a href="#cb27-426" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb27-427"><a href="#cb27-427" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb27-428"><a href="#cb27-428" aria-hidden="true" tabindex="-1"></a>bmr_perf <span class="ot">&lt;-</span> bmr_results<span class="sc">$</span><span class="fu">aggregate</span>(<span class="fu">msr</span>(<span class="st">"regr.mse"</span>))</span>
+<span id="cb27-429"><a href="#cb27-429" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb27-430"><a href="#cb27-430" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-431"><a href="#cb27-431" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-432"><a href="#cb27-432" aria-hidden="true" tabindex="-1"></a>We then pick the best learner which minimized <span class="in">`regr.mse`</span>.</span>
+<span id="cb27-433"><a href="#cb27-433" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-436"><a href="#cb27-436" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb27-437"><a href="#cb27-437" aria-hidden="true" tabindex="-1"></a><span class="co">#=== get the index ===#</span></span>
+<span id="cb27-438"><a href="#cb27-438" aria-hidden="true" tabindex="-1"></a>best_nr <span class="ot">&lt;-</span> <span class="fu">as.data.table</span>(bmr_perf) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-439"><a href="#cb27-439" aria-hidden="true" tabindex="-1"></a>  .[<span class="fu">which.min</span>(regr.mse), nr]</span>
+<span id="cb27-440"><a href="#cb27-440" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-441"><a href="#cb27-441" aria-hidden="true" tabindex="-1"></a><span class="co">#=== get the best learner by the index ===#</span></span>
+<span id="cb27-442"><a href="#cb27-442" aria-hidden="true" tabindex="-1"></a>best_learner <span class="ot">&lt;-</span> all_learners[[best_nr]] </span>
+<span id="cb27-443"><a href="#cb27-443" aria-hidden="true" tabindex="-1"></a><span class="in">```</span> </span>
+<span id="cb27-444"><a href="#cb27-444" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-445"><a href="#cb27-445" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-446"><a href="#cb27-446" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-447"><a href="#cb27-447" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-448"><a href="#cb27-448" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-449"><a href="#cb27-449" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-450"><a href="#cb27-450" aria-hidden="true" tabindex="-1"></a></span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
 </div> <!-- /content -->
 
 

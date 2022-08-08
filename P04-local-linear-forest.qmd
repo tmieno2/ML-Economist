@@ -1,10 +1,54 @@
-# LLF
+# Local Linear Forest
 
 Local linear forest (LLF) is an extension of random forest (RF) and also a generalized random forest (GRF) [@friedberg2020local]. We first see that RF is actually a special case of local constant regression. We will then see how LLF builds on RF from the view point of a local regression method.
 
-::: {.column-margin}
-See @sec-local for local constant regression.
+:::{.callout-important}
+
+## What you will learn
+
++ How LLF works in relation to RF and local regression
++ How LLF performs compared to RF
++ How the idea of LLF can be applied to other GRF methods
++ How to train LLF using R and Python
+
 :::
+
+:::{.callout-tip}
+
+## Background knowledge
+
++ (necessary) random forest (@sec-rf)
++ (necessary) local regression (@sec-local)
++ (preferred) generalized random forest (@sec-grf)
++ (preferred) ridge regression (@sec-ridge-en)
+
+:::
+
+::: {.callout-note}
+
+## Packages to load for replication
+
+```{r}
+#| include: false
+
+library(tidyverse)
+library(data.table)
+library(grf)
+library(parallel)
+library(gt)
+```
+
+```{r}
+#| eval: false
+
+library(tidyverse)
+library(data.table)
+library(grf)
+library(parallel)
+library(gt)
+```
+:::
+
 
 ## Theoretical background
 
@@ -100,7 +144,447 @@ $$
 \end{aligned}
 $$
 
+:::{.callout-tip}
+
+## Terminology alert
+
+Using local linear regression at the time of prediction is termed <span style="color:blue"> local linear correction </span>by the authors of the `grf` package.
+:::
+
+
+## Implementation: Training and Prediction
+
+LLF can be implemented using `ll_linear_forest()` from the `grf` package. 
+
+```{r}
+ll_linear_forest()
+
+```
+
+
 ## Performance comparison: LLF v.s. RF
+
+First, let's consider the following DGP that is used in @friedberg2020local.
+
+### DGP 1
+
+:::{.callout-note}
+
+## DGP 1
+
+$$
+\begin{aligned}
+y_i = log(1+exp(6x)) + \varepsilon
+\end{aligned}
+$$
+
++ $\{X_1, \dots, X_10\} \sim U[-1, 1]^{10}$
++ $\varepsilon \sim N(0, 20)$
+
+:::
+
+We consider the following four methods presented in @tab-methods.
+
+```{r}
+#| echo: false 
+#| tab-cap: Four methods of prediction
+#| label: tab-methods
+
+tribble(
+  ~ Method, ~ `Split on outcome`, ~ `Linear Correction`,
+  1, "No", "No",
+  2, "No", "X1",
+  3, "Yes", "All",
+  4, "Yes", "X1"
+) %>% 
+gt() %>% 
+cols_align(
+  align = "center"
+)
+```
+
+Method 1 is equivalent to a standard RF estimation. Method 2 grows trees like RF, but make local linear corrections on $X_1$ at the time of prediction. This means that at the prediction stage, only $X_1$ is used in @eq-ll instead of using all of $10$ variables in $X$. Since we know $X_1$ is the only variable that affects $y$ in DGP 1, this way of linear correction should perform better than using all of the $10$ variables in $X$. Of course, in practice, you do not get to do this. Method 3 splits on the residuals from ridge regression, and uses all of the $10$ variables in $X$ for linear correction. Method 4 splits on the residuals from ridge regression and uses only $X1$ for local linear correction. 
+
+@fig-comp-rf-llf presents how $\hat{y}(X)$ for the test data (black dots) changes according to the value of $X_1$ and $E[y|X]$ (red line). Note that heterogeneity in $\hat{y}(X)$ at the same value of $X_1$ occurs dues to modeling error: the trained model attributed some of the variations in observed $y$ to other variables than $X_1$ even though $X_1$ is the only variable that is actually affecting $y$ as you can see in DGP 1. @fig-comp-rf-llf indicates that irrespective of whether you split on $y$ or residuals from ridge regression, linear correction on $X1$ can substantially reduce bias. Method 4 seems to perform slightly better than Method 2 in this instance. However, when all the variables in $X$ (that include many irrelevant variables) are used for linear correction (Method 3), its benefit disappears, performing about the same as Method 1. Comparing Methods 2 and 4, the benefit of split on residual is not clear at least in this instance. Let's run MC simulations to have a better picture of the relative performance of the four methods. In each iteration, we calculate RMSE of $y$ prediction for each method.
+
+```{r }
+#| code-fold: true
+#| fig-cap: Comparison of predicted values
+#| label: fig-comp-rf-llf
+
+#--------------------------
+# Generate data
+#--------------------------
+set.seed(78234)
+
+K <- 10
+N <- 1000
+
+X <- matrix(runif(N*K, -1, 1), nrow = N)
+y <- log(1 + exp(6 * X[, 1])) + sqrt(20) * rnorm(N)
+
+X_test <- matrix(runif(N*K, -1, 1), nrow = N)
+x_seq <- seq(-1, 1, length = N)
+X_test[, 1] <- x_seq
+ey <- log(1 + exp(6 * x_seq))
+
+true_data <- data.table(x = x_seq, y = ey)
+
+#--------------------------
+# Train on outcome and ridge residuals 
+#--------------------------
+llf_trained <-
+  grf::ll_regression_forest(
+    X = X,
+    Y = y,
+    enable.ll.split = TRUE
+  )
+
+rf_trained <-
+  grf::regression_forest(
+    X = X,
+    Y = y
+  )
+
+#--------------------------
+# Predictions with and without linear correction
+#--------------------------
+rf_results <-
+  data.table(
+    x = x_seq,
+    y_hat = 
+      predict(
+        rf_trained, 
+        newdata = X_test
+      )$predictions,
+    type = "Method 1: Split on outcome \n without linear correction"
+  )
+
+rf_results_lc <-
+  data.table(
+    x = x_seq,
+    y_hat = 
+      predict(
+        rf_trained, 
+        newdata = X_test, 
+        linear.correction.variables = 1
+      )$predictions,
+    type = "Method 2: Split on outcome \n with linear correction on X1"
+  )
+
+llf_results_nlc <-
+  data.table(
+    x = x_seq,
+    y_hat = 
+      predict(
+        llf_trained, 
+        newdata = X_test
+      )$predictions,
+    type = "Method 3: Split on residual \n with linear correction on all X"
+  )
+
+llf_results_lc <-
+  data.table(
+    x = x_seq,
+    y_hat = 
+      predict(
+        llf_trained, 
+        newdata = X_test, 
+        linear.correction.variables = 1
+      )$predictions,
+    type = "Method 4: Split on residual \n with linear correction on X1"
+  )
+
+#--------------------------
+# Combine the results and plot
+#--------------------------
+all_results <- rbind(rf_results, rf_results_lc, llf_results_nlc, llf_results_lc)
+
+ggplot() + 
+  geom_point(data = all_results, aes(y = y_hat, x = x), size = 0.5) +
+  geom_line(data = true_data, aes(y = y, x = x), color = "red") +
+  facet_wrap(type ~ ., nrow = 2) +
+  ylab("Predicted Value") +
+  xlab("X1") +
+  theme_bw() 
+```
+
+@fig-mc-four-methods presents the distribution of RMSE for each method over $200$ iterations. As you can see, Method 4 works the best under DGP 1. However, Method 2 also works quite well and the benefit of split on residual is rather small. This is actually expected based on how DGP 1 is specified. We now look at a different DGP that illustrates when split on residuals is likely to be beneficial.
+
+```{r}
+#| eval: false 
+#| code-fold: true
+
+# This function runs an experiment run above with a different dataset drawn from DGP 1 and returns rmse for each method
+
+run_llf_sim <- function(i){
+
+  print(i)
+
+  X <- matrix(runif(N*K, -1, 1), nrow = N)
+  y <- log(1 + exp(6 * X[, 1])) + sqrt(20) * rnorm(N)
+
+  X_test <- matrix(runif(N*K, -1, 1), nrow = N)
+  x_seq <- seq(-1, 1, length = N)
+  X_test[, 1] <- x_seq
+  ey <- log(1 + exp(6 * x_seq))
+
+  true_data <- data.table(x = x_seq, y = ey)
+
+  #--------------------------
+  # Train on outcome and ridge residuals 
+  #--------------------------
+  llf_trained <-
+    grf::ll_regression_forest(
+      X = X,
+      Y = y,
+      enable.ll.split = TRUE
+    )
+
+  rf_trained <-
+    grf::regression_forest(
+      X = X,
+      Y = y
+    )
+
+  #--------------------------
+  # Predictions with and without linear correction
+  #--------------------------
+  rf_results <-
+    data.table(
+      x = x_seq,
+      y_hat = 
+        predict(
+          rf_trained, 
+          newdata = X_test
+        )$predictions,
+      ey = ey
+    ) %>% 
+    .[, .(rmse = sqrt(mean((y_hat - ey)^2)))] %>% 
+    .[, type := "Method 1: Split on outcome \n without linear correction"] 
+      
+  rf_results_lc <-
+    data.table(
+      x = x_seq,
+      y_hat = 
+        predict(
+          rf_trained, 
+          newdata = X_test, 
+          linear.correction.variables = 1
+        )$predictions,
+      ey = ey
+    ) %>% 
+    .[, .(rmse = sqrt(mean((y_hat - ey)^2)))] %>%
+    .[, type := "Method 2: Split on outcome \n with linear correction on X1"]
+
+  llf_results_nlc <-
+    data.table(
+      x = x_seq,
+      y_hat = 
+        predict(
+          llf_trained, 
+          newdata = X_test
+        )$predictions,
+      ey = ey
+    ) %>% 
+    .[, .(rmse = sqrt(mean((y_hat - ey)^2)))] %>% 
+    .[, type := "Method 3: Split on residual \n with linear correction on all X"]
+
+  llf_results_lc <-
+    data.table(
+      x = x_seq,
+      y_hat = 
+        predict(
+          llf_trained, 
+          newdata = X_test, 
+          linear.correction.variables = 1
+        )$predictions,
+      ey = ey
+    ) %>% 
+    .[, .(rmse = sqrt(mean((y_hat - ey)^2)))] %>% 
+    .[, type := "Method 4: Split on residual \n with linear correction on X1"]
+
+  #--------------------------
+  # Combine the results and plot
+  #--------------------------
+  all_results <- 
+    rbind(rf_results, rf_results_lc, llf_results_nlc, llf_results_lc)
+
+  return(all_results)
+}
+
+# mc_results_1 <-
+#   lapply(
+#     1:200,
+#     function(x) run_llf_sim(x)
+#   ) %>% 
+#   rbindlist()
+
+set.seed(2134)
+
+mc_results_1 <-
+  mclapply(
+    1:200,
+    function(x) run_llf_sim(x),
+    mc.cores = 12
+  ) %>% 
+  rbindlist()
+
+g_mc_llf_1 <- 
+  ggplot(data = mc_results_1) + 
+  geom_density(aes(x = rmse, fill = type), alpha = 0.4) +
+  theme_bw() +
+  scale_fill_discrete(
+    name = "",
+    guide = guide_legend(
+      nrow = 2
+    )
+  ) +
+  theme(legend.position = "bottom")
+
+g_mc_llf_1
+
+saveRDS(g_mc_llf_1, "LectureNotes/Data/g_mc_llf_1.rds")
+```
+
+```{r}
+#| echo: false
+#| fig-cap: MC simulations results
+#| label: fig-mc-four-methods
+
+g_mc_llf_1 <- readRDS("Data/g_mc_llf_1.rds")
+
+g_mc_llf_1
+```
+
+### DGP 2
+
+In this section, we work on the following DGP. 
+
+:::{.callout-note}
+
+## DGP 2
+
+$$
+\begin{aligned}
+y_i = 10\cdot sin(\pi x_{i,1}x_{i,2}) + 20(x_{i,3}-0.5)^2 + 10 x_{i,4} + 5 C_{i,5} + \varepsilon
+\end{aligned}
+$$
+
++ $\{X_1, \dots, X_5\} \sim U[0, 1]^5$
++ $\varepsilon \sim N(0, \sigma^2)$
+
+:::
+
+This DGP is helpful in illustrating the power of split on residuals. 
+
+We first generate training and test datasets.
+
+```{r}
+N <- 1000
+K <- 5
+sigma <- sqrt(20)
+
+make_data <- function(N, sigma, K)
+{
+  data <-
+    matrix(runif(N * K), nrow = N) %>% 
+    data.table() %>% 
+    setnames(names(.), gsub("V", "x", names(.))) %>% 
+    .[, ey := 10*sin(pi*x1*x2) + 20*(x3-0.5)^2 + 10*x4 + 5*x5] %>% 
+    .[, y := ey + sigma * rnorm(N)]
+
+  return(data)
+}
+
+data_train <- make_data(N, sigma, K)
+data_test <- make_data(N, sigma, K)
+```
+
+Let's train RF and LLF using `data_train`.
+
+```{r training}
+#=== RF ===#
+rf_trained <-
+  grf::regression_forest(
+    X = data_train[, .(x1, x2, x3, x4, x5)],
+    Y = data_train[, y]
+  )
+
+#=== LLF ===#
+llf_traiend <-
+  grf::ll_regression_forest(
+    X = data_train[, .(x1, x2, x3, x4, x5)] %>% as.matrix(),
+    Y = data_train[, y],
+    enable.ll.split = TRUE,
+    ll.split.weight.penalty = TRUE
+  )
+```
+
+We now predict $y$ on the test data (`data_test`) based on RF and LLF with linear corrections on all the variables. 
+
+```{r predictions}
+pred_data <-
+  data_test %>% 
+  .[, y_hat_rf := predict(
+    rf_trained, 
+    newdata = data_test[, .(x1, x2, x3, x4, x5)],
+    linear.correction.variables = 1:K
+  )] %>% 
+  .[, y_hat_llf := predict(
+    llf_traiend, 
+    newdata = data_test[, .(x1, x2, x3, x4, x5)]
+  )$predictions
+  ] %>% 
+  .[, .(ey, y_hat_rf, y_hat_llf)] %>% 
+  melt(id.var = "ey") 
+```
+
+@tab-rf-llf-dgp2 shows the RMSE values for RF and LLF. Since both methods here use linear correction at the time of prediction, the observed difference in their performance is attributable to the way splitting is done: split on outcome or residuals.
+
+```{r}
+#| code-fold: true
+#| tab-cap: Performance measured by RMSE
+#| label: tab-rf-llf-dgp2
+pred_data %>% 
+.[, .(rmse = sqrt(sum((value - ey)^2))), by = variable] %>% 
+.[, variable := c("RF", "LLF")] %>% 
+setnames(names(.), c("Method", "RMSE")) %>% 
+gt()
+```
+
+Looking at how splits are done is very insightful in understanding what gives the edge to splitting on residuals. @fig-dif-splits shows what variables are used to split nodes at various depths. When split on outcome, $X_4$ is used most often at the first depth because it is a highly influential variable. On the other hand, when split on residuals, $X_1$ is used most often at the first depth. This is because when ridge regression is run on the parent node, much of the linear signals does not remain in the residuals (signals from $X_4$ and $X_5$). So, the trees grown focus more on complicated non-linear and interactive signals. Note that signals from $X_4$ and $X_5$ will be caught anyway at the prediction stage because of local linear correction. So, if you are doing linear correction, then you should not "waste" trees on linear signals. This is the motivation of split on residuals.
+
+```{r split-decision}
+#| code-fold: true
+#| fig-cap: Difference in splitting
+#| label: fig-dif-split
+
+rf_split <-
+  split_frequencies(rf_trained) %>% 
+  data.table() %>% 
+  .[, Depth := 1:.N] %>% 
+  melt(id.var = "Depth") %>% 
+  .[, value := value /sum(value), by = Depth] %>% 
+  .[, type := "Split on Outcome"]
+
+llf_split <-
+  split_frequencies(llf_traiend) %>% 
+  data.table() %>% 
+  .[, Depth := 1:.N] %>% 
+  melt(id.var = "Depth") %>% 
+  .[, value := value /sum(value), by = Depth] %>% 
+  .[, type := "Split on Residual"]
+
+rbind(rf_split, llf_split) %>% 
+  .[, Variable := gsub("V", "X", variable)] %>% 
+  ggplot(data = .) + 
+  geom_tile(aes(y = Depth, x = Variable, fill = value)) +
+  facet_grid(type ~ .) +
+  scale_fill_viridis_c() +
+  theme_bw()
+
+```
 
 For more extensive performance comparison via MC simulations, see @friedberg2020local. 
 
@@ -119,6 +603,9 @@ Let's code the modified process for LLF to aid our understanding of them.
 
 You can use `ll_regression_forest()` from the `grf` package to train LLF for R and `GRFForestLocalLinearRegressor()` from the `skgrf` package for Python.
 
+## References {.unnumbered}
+
+<div id="refs"></div>
 
 
 

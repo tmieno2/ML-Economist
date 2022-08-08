@@ -1,0 +1,2173 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-0.9.629">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Introduction to Machine Learning for Economists (Under Construction) – 12&nbsp; S-, X-, T-, and R-learner</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./C03-cf-orf.html" rel="next">
+<link href="./C01-dml.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<link href="style.css" rel="stylesheet" type="text/css">
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-45VKT2HZSL"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+
+  gtag('config', 'G-45VKT2HZSL');
+</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating slimcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">S-, X-, T-, and R-learner</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">
+      Introduction to Machine Learning for Economists (Under Construction)
+      </a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/tmieno2/ML-Economist" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+    <a href="" title="Share" id="sidebar-tool-dropdown-0" class="sidebar-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-share"></i></a>
+    <ul class="dropdown-menu" aria-labelledby="sidebar-tool-dropdown-0">
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=|url|">
+            <i class="bi bi-bi-twitter pe-1"></i>
+          Twitter
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
+            <i class="bi bi-bi-facebook pe-1"></i>
+          Facebook
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://www.linkedin.com/sharing/share-offsite/?url=|url|">
+            <i class="bi bi-bi-linkedin pe-1"></i>
+          LinkedIn
+          </a>
+        </li>
+    </ul>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Welcome</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./H00-preface.html" class="sidebar-item-text sidebar-link">Preface</a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Basics</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./B01-nonlinear.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Non-linear function estimation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./B02-bias-variance-tradeoff.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Bias-variance Trade-off</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./B03-cross-validation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Cross-validation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./B04-regularization.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Regression Shrinkage Methods</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./B05-bootstrap.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Bootstrap</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Prediction ML</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./P01-random-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Random Forest</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./P02-boosted-regression-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Boosted Regression Forest</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./P03-xgb.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Extreme Gradient Boosting</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./P04-local-linear-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Local Linear Forest</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="./C0P-causal-ml.html" class="sidebar-item-text sidebar-link">Causal Machine Learning (CML) Methods</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./C00-why-not-this.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Why can't we just do this?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./C01-dml.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Double Machine Learning</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./C02-xstr-learner.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">S-, X-, T-, and R-learner</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./C03-cf-orf.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Forest-based CATE Estimators</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="./E0P-extensions.html" class="sidebar-item-text sidebar-link">Extensions</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./E01-spatial-cv.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./E02-grf.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Generalized Random Forest</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="./PROG-00-programming.html" class="sidebar-item-text sidebar-link">Programming Guide</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PROG-01-mlr3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Machine Learning with `mlr3` in R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PROG-02-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PROG-03-model-selection-prediction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Model Selection (Prediction)</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">Appendices</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./A01-mc-simulation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Monte Carlo (MC) Simulation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./A02-method-of-moment.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Primer on method of moment</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#motivation" id="toc-motivation" class="nav-link active" data-scroll-target="#motivation"> <span class="header-section-number">12.1</span> Motivation</a></li>
+  <li><a href="#modeling-framework" id="toc-modeling-framework" class="nav-link" data-scroll-target="#modeling-framework"> <span class="header-section-number">12.2</span> Modeling Framework</a></li>
+  <li><a href="#s--t--and-x-learner" id="toc-s--t--and-x-learner" class="nav-link" data-scroll-target="#s--t--and-x-learner"> <span class="header-section-number">12.3</span> S-, T-, and X-Learner</a>
+  <ul class="collapse">
+  <li><a href="#s-leaner" id="toc-s-leaner" class="nav-link" data-scroll-target="#s-leaner"> <span class="header-section-number">12.3.1</span> S-leaner</a></li>
+  <li><a href="#t-learner" id="toc-t-learner" class="nav-link" data-scroll-target="#t-learner"> <span class="header-section-number">12.3.2</span> T-learner</a></li>
+  <li><a href="#x-learner" id="toc-x-learner" class="nav-link" data-scroll-target="#x-learner"> <span class="header-section-number">12.3.3</span> X-learner</a></li>
+  </ul></li>
+  <li><a href="#t-learner-v.s.-x-learner" id="toc-t-learner-v.s.-x-learner" class="nav-link" data-scroll-target="#t-learner-v.s.-x-learner"> <span class="header-section-number">12.4</span> T-learner v.s. X-learner</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/C02-xstr-learner.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title"><span id="sec-het-dml" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">S-, X-, T-, and R-learner</span></span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<p>In this section, we look at the S-, X-, T-, and R-learner, which are method that estimate heterogeneous treatment effects when the treatment is binary. While X-leaner and T-learner cannot be extended to continuous treatment cases, S-learner and R-learner can be. Mathematical notations used in this chapter closely follow those of <span class="citation" data-cites="kunzel_metalearners_2019">(<a href="#ref-kunzel_metalearners_2019" role="doc-biblioref">Künzel et al. 2019</a>)</span> and <span class="citation" data-cites="nie_quasi-oracle_2021">(<a href="#ref-nie_quasi-oracle_2021" role="doc-biblioref">Nie and Wager 2021</a>)</span>.</p>
+<div class="callout-important callout callout-style-default no-icon callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+What you will learn
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+</div>
+</div>
+<div class="callout-tip callout callout-style-default no-icon callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Key points
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>R-learner is the same as DML approaches by <span class="citation" data-cites="Chernozhukov2018">Chernozhukov et al. (<a href="#ref-Chernozhukov2018" role="doc-biblioref">2018</a>)</span> except that CATE is estiamted at the second instead of ATE.</li>
+<li>In most practical cases, R-learner performs better than S-, X-, and T-learners.</li>
+<li>S- and T-learners are especially undesirable due to its tendency to underestimate CATE</li>
+</ul>
+</div>
+</div>
+<section id="motivation" class="level2 page-columns page-full" data-number="12.1">
+<h2 data-number="12.1" class="anchored" data-anchor-id="motivation"><span class="header-section-number">12.1</span> Motivation</h2>
+<p>In <a href="C01-dml.html"><span>Chapter&nbsp;11</span></a>, the basic idea of double machine learning (DML) methods was introduced when the treatment effect is homogeneous. We now turn our focus to the task of estimating heterogeneous treatment effects: the impact of a treatment varies based on observed attributes of the subjects. Heterogeneous treatment effect is also referred to as <span style="color:blue"> conditional </span> average treatment effect (CATE).</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><span style="color:blue"> Conditional </span> on observed attributes.</p>
+</div></div><p>Understanding how treatment effects vary can be highly valuable in many circumstances.</p>
+<p><span style="color:blue"> Example 1: </span> If we come to know a particular drug is effective on elderly people but detrimental to kids, then doctors can make a smart decision of prescribing the drug to elderly people, but not to kids.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>In this example, the heterogeneity driver is age.</p>
+</div></div><p><span style="color:blue"> Example 2: </span> If we come to know that fertilizer is more effective in increasing corn yield in soil type A than B, then farmers can apply more fertilizer on the parts of the field where soil type is A but less on where soil type is B.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>In this example, the heterogeneity driver is soil type.</p>
+</div></div><p>As you can see in these examples, knowledge on the heterogeneity of the treatment effect and its drivers can help decision makers smart-target treatments and policies.</p>
+</section>
+<section id="modeling-framework" class="level2" data-number="12.2">
+<h2 data-number="12.2" class="anchored" data-anchor-id="modeling-framework"><span class="header-section-number">12.2</span> Modeling Framework</h2>
+<p>The model of interest in general form is as follows:</p>
+<p><span id="eq-model-framework"><span class="math display">\[
+\begin{aligned}
+Y_i &amp; = \theta(X_i)\cdot T_i + g(X_i, W_i) + \varepsilon_i \\
+T_i &amp; = f(X_i, W_i) + \eta_i
+\end{aligned}
+\tag{12.1}\]</span></span></p>
+<ul>
+<li><span class="math inline">\(Y\)</span>: dependent variable</li>
+<li><span class="math inline">\(T\)</span>: treatment variable</li>
+<li><span class="math inline">\(X\)</span>: collection of variables that affect Y indirectly through the treatment (<span class="math inline">\(\theta(X)\cdot T\)</span>) and directly (<span class="math inline">\(g(X, W)\)</span>) independent of the treatment</li>
+<li><span class="math inline">\(W\)</span>: collection of variables that affect directly (<span class="math inline">\(g(X, W)\)</span>) independent of the treatment, but not through the treatment</li>
+</ul>
+<p>Here are the assumptions:</p>
+<ul>
+<li><span class="math inline">\(E[\varepsilon|X, W] = 0\)</span></li>
+<li><span class="math inline">\(E[\eta|X, W] = 0\)</span></li>
+<li><span class="math inline">\(E[\eta\cdot\varepsilon|X, W] = 0\)</span></li>
+</ul>
+<p>For the notational convenicence, let <span class="math inline">\(\mu_1(X)\)</span> and <span class="math inline">\(\mu_0(X)\)</span> denote the expected value of the potential conditional outcomes:</p>
+<p><span class="math display">\[
+\begin{align}
+\mu_1(X) &amp; = E[Y|W=1, X] = g(X, W)\\
+\mu_0(X) &amp; = E[Y|W=0, X] =  \theta(X) + g(X, W)
+\end{align}
+\]</span></p>
+</section>
+<section id="s--t--and-x-learner" class="level2 page-columns page-full" data-number="12.3">
+<h2 data-number="12.3" class="anchored" data-anchor-id="s--t--and-x-learner"><span class="header-section-number">12.3</span> S-, T-, and X-Learner</h2>
+<section id="s-leaner" class="level3" data-number="12.3.1">
+<h3 data-number="12.3.1" class="anchored" data-anchor-id="s-leaner"><span class="header-section-number">12.3.1</span> S-leaner</h3>
+<p>S-leaner estimates CATE by taking the following steps:</p>
+<ol type="1">
+<li>Regress <span class="math inline">\(Y\)</span> on <span class="math inline">\(W\)</span> and <span class="math inline">\(X\)</span> to estimate <span class="math inline">\(E[Y|W,X]\)</span> using any appropriate ML regression methods and call it <span class="math inline">\(\hat{\mu}(W,X)\)</span>.</li>
+<li>Estimate <span class="math inline">\(\hat{\theta}(X)\)</span> as <span class="math inline">\(\hat{\mu}(W=1,X)-\hat{\mu}(W=0,X)\)</span></li>
+</ol>
+<p>In this approach, no special treatment is given to <span class="math inline">\(W\)</span>. It is just a covariate along with others (<span class="math inline">\(X\)</span>). This approach is named S-leaner by <span class="citation" data-cites="kunzel_metalearners_2019">Künzel et al. (<a href="#ref-kunzel_metalearners_2019" role="doc-biblioref">2019</a>)</span> because it involves estimating a <span style="color:red">s</span>ingle response function.</p>
+</section>
+<section id="t-learner" class="level3" data-number="12.3.2">
+<h3 data-number="12.3.2" class="anchored" data-anchor-id="t-learner"><span class="header-section-number">12.3.2</span> T-learner</h3>
+<ol type="1">
+<li>Regress <span class="math inline">\(Y\)</span> on <span class="math inline">\(W\)</span> and <span class="math inline">\(X\)</span> using the treated observations to estimate <span class="math inline">\(\mu_1(X)\)</span> using any appropriate ML regression methods.</li>
+<li>Regress <span class="math inline">\(Y\)</span> on <span class="math inline">\(W\)</span> and <span class="math inline">\(X\)</span> using the control observations to estimate <span class="math inline">\(\mu_0(X)\)</span> using any appropriate ML regression methods.</li>
+<li>Estimate <span class="math inline">\(\hat{\theta}(X)\)</span> as <span class="math inline">\(\hat{\mu}_1(X)-\hat{\mu}(X)\)</span></li>
+</ol>
+<p>This approach is named T-leaner by <span class="citation" data-cites="kunzel_metalearners_2019">Künzel et al. (<a href="#ref-kunzel_metalearners_2019" role="doc-biblioref">2019</a>)</span> because it involves estimating <span style="color:red">t</span>wo functions.</p>
+</section>
+<section id="x-learner" class="level3 page-columns page-full" data-number="12.3.3">
+<h3 data-number="12.3.3" class="anchored" data-anchor-id="x-learner"><span class="header-section-number">12.3.3</span> X-learner</h3>
+<ol type="1">
+<li>Estimate <span class="math inline">\(\mu_1(X)\)</span> and <span class="math inline">\(\mu_0(X)\)</span> using any appropriate ML regression methods. (Steps 1 and 2 of the T-learner)</li>
+<li>Impute individual treatment effect for the treated and control groups as follows</li>
+</ol>
+<p><span class="math display">\[
+\begin{align}
+\tilde{D}_i^1(X_i) = Y^1_i - \hat{\mu}_0(X_i)\\
+\tilde{D}_i^0(X_i) =  \hat{\mu}_1(X_i) - Y^0_i
+\end{align}
+\]</span></p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>This is similar to cross-fitting we saw in <a href="C01-dml.html"><span>Chapter&nbsp;11</span></a>, where the folds are the treated and control groups.</p>
+</div></div><ol start="3" type="1">
+<li></li>
+</ol>
+<ul>
+<li><p>Regress <span class="math inline">\(\tilde{D}_i^1(X_i)\)</span> on <span class="math inline">\(X\)</span> using the observations in the treated group and denote the predicted value as <span class="math inline">\(\hat{\theta}_1(X)\)</span></p></li>
+<li><p>Regress <span class="math inline">\(\tilde{D}_i^0(X_i)\)</span> on <span class="math inline">\(X\)</span> using the observations in the control group and denote the predicted value as <span class="math inline">\(\hat{\theta}_0(X)\)</span></p></li>
+</ul>
+<ol start="4" type="1">
+<li>Calculate <span class="math inline">\(\hat{\theta}(X)\)</span> as their weighted average</li>
+</ol>
+<p><span id="eq-final-X"><span class="math display">\[
+\begin{align}
+\hat{\theta}(X) = g(X)\cdot\hat{\theta}_0(X) + [1-g(X)]\cdot\hat{\theta}_1(X)
+\end{align}
+\tag{12.2}\]</span></span></p>
+<p>Any value of <span class="math inline">\(g(X)\)</span> is acceptable. One option of <span class="math inline">\(g(X)\)</span> may be the estimated propensity score <span class="math inline">\(E[W|X]\)</span>.</p>
+</section>
+</section>
+<section id="t-learner-v.s.-x-learner" class="level2 page-columns page-full" data-number="12.4">
+<h2 data-number="12.4" class="anchored" data-anchor-id="t-learner-v.s.-x-learner"><span class="header-section-number">12.4</span> T-learner v.s. X-learner</h2>
+<p>Here, an advantage of X-learner over T-learner is demonstrated (This example also serves as an illustration of how these learners are implemented). Specifically, X-learner can be particularly useful when the control-treatment assignments in the sample are unbalanced. For example, it is often the case that there are plenty of observations in the control group, while there are not many treated observations. For the purpose of illustration, consider a rather extreme case where there are only 10 observations in the treated group, while there are 300 observations in the control group. We use the following toy data generating process:</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><strong>Packages to load for replication</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ranger)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rlearner)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mgcv)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div></div><p><span class="math display">\[
+\begin{align}
+y = \tau W + |x| + v
+\end{align}
+\]</span></p>
+<p>where <span class="math inline">\(\tau = 1\)</span>. So, the treatment effect is not heterogeneous. For the purpose of illustrating the advantage of X-learner over T-learner, it is convenient if the underlying model is simpler.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">4345</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>N_trt <span class="ot">&lt;-</span> <span class="dv">20</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>N_ctrl <span class="ot">&lt;-</span> <span class="dv">300</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> N_trt <span class="sc">+</span> N_ctrl</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> </span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>(</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">W =</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">1</span>,N_trt), <span class="fu">rep</span>(<span class="dv">0</span>, N_ctrl)),</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">"Treated"</span>, N_trt), <span class="fu">rep</span>(<span class="st">"Control"</span>, N_ctrl)),</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">runif</span>(N)<span class="sc">-</span><span class="dv">1</span>,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">v =</span> <span class="fu">rnorm</span>(N) <span class="sc">/</span> <span class="dv">2</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  .[, y <span class="sc">:</span><span class="er">=</span> W <span class="sc">+</span> <span class="fu">abs</span>(x) <span class="sc">+</span> v]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> data) <span class="sc">+</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> y, <span class="at">x =</span> x, <span class="at">color =</span> type))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="C02-xstr-learner_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Let’s first estimate <span class="math inline">\(\mu_1(X)\)</span> and <span class="math inline">\(\mu_0(X)\)</span> (Step 1). Since we have only <span class="math inline">\(20\)</span> observations in the treated group, we will use a linear regression to avoid over-fitting (following the example in <span class="citation" data-cites="kunzel_metalearners_2019">Künzel et al. (<a href="#ref-kunzel_metalearners_2019" role="doc-biblioref">2019</a>)</span>).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>mu_1_trained <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x, <span class="at">data =</span> data[type <span class="sc">==</span> <span class="st">"Treated"</span>, ])</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>mu_0_trained <span class="ot">&lt;-</span> <span class="fu">gam</span>(y <span class="sc">~</span> <span class="fu">s</span>(x, <span class="at">k =</span> <span class="dv">4</span>), <span class="at">data =</span> data[type <span class="sc">==</span> <span class="st">"Control"</span>, ])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now that <span class="math inline">\(\mu_1(X)\)</span> and <span class="math inline">\(\mu_0(X)\)</span> are estimated, we can estimate <span class="math inline">\(\hat{\theta}(X)\)</span> by T-learner.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>x_seq <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">x =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="at">length =</span> <span class="dv">100</span>))</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#=== T-learner ===#</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>tau_hat_data <span class="ot">&lt;-</span> </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  x_seq <span class="sc">%&gt;%</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  .[, mu_1_hat <span class="sc">:</span><span class="er">=</span> <span class="fu">predict</span>(mu_1_trained, <span class="at">newdata =</span> x_seq)] <span class="sc">%&gt;%</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  .[, mu_0_hat <span class="sc">:</span><span class="er">=</span> <span class="fu">predict</span>(mu_0_trained, <span class="at">newdata =</span> x_seq)] <span class="sc">%&gt;%</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  .[, tau_hat_T <span class="sc">:</span><span class="er">=</span> mu_1_hat <span class="sc">-</span> mu_0_hat]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>As you can see, T-leaner is heavily biased. This is because of the unreliable estimation of <span class="math inline">\(\mu_1(X)\)</span> due to lack of observations in the treated group.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> tau_hat_data) <span class="sc">+</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> tau_hat_T, <span class="at">x =</span> x))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="C02-xstr-learner_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Now, let’s move on to X-learner. We impute individual treatment effects (Step 2).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== mu (treated) ===#</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>mu_hat_1 <span class="ot">&lt;-</span> <span class="fu">predict</span>(mu_0_trained, <span class="at">newdata =</span> data[type <span class="sc">==</span> <span class="st">"Treated"</span>, ])</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#=== mu (control) ===#</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>mu_hat_0 <span class="ot">&lt;-</span> <span class="fu">predict</span>(mu_1_trained, <span class="at">newdata =</span> data[type <span class="sc">==</span> <span class="st">"Control"</span>, ])</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#=== assign the values ===#</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>data[type <span class="sc">==</span> <span class="st">"Treated"</span>, mu_hat <span class="sc">:</span><span class="er">=</span> mu_hat_1]</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>data[type <span class="sc">==</span> <span class="st">"Control"</span>, mu_hat <span class="sc">:</span><span class="er">=</span> mu_hat_0]</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">#=== find individual TE ===#</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>data[, D <span class="sc">:</span><span class="er">=</span> <span class="fu">ifelse</span>(type <span class="sc">==</span> <span class="st">"Treated"</span>, y <span class="sc">-</span> mu_hat, mu_hat <span class="sc">-</span> y)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can now regress <span class="math inline">\(D\)</span> on <span class="math inline">\(X\)</span> (Step 3),</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># tau (treated)</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>tau_1_trained <span class="ot">&lt;-</span> <span class="fu">lm</span>(D <span class="sc">~</span> x, <span class="at">data =</span> data[type <span class="sc">==</span> <span class="st">"Treated"</span>, ])</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#=== estimate tau_1 ===#</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>tau_hat_data[, tau_hat_1 <span class="sc">:</span><span class="er">=</span> <span class="fu">predict</span>(tau_1_trained, <span class="at">newdata =</span> tau_hat_data)]</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co"># tau (control)</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>tau_0_trained <span class="ot">&lt;-</span> <span class="fu">gam</span>(D <span class="sc">~</span> <span class="fu">s</span>(x, <span class="at">k =</span> <span class="dv">4</span>), <span class="at">data =</span> data[type <span class="sc">==</span> <span class="st">"Control"</span>, ])</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co">#=== estimate tau_1 ===#</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>tau_hat_data[, tau_hat_0 <span class="sc">:</span><span class="er">=</span> <span class="fu">predict</span>(tau_0_trained, <span class="at">newdata =</span> tau_hat_data)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> tau_hat_data) <span class="sc">+</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> tau_hat_1, <span class="at">x =</span> x, <span class="at">color =</span> <span class="st">"Treated"</span>)) <span class="sc">+</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> tau_hat_0, <span class="at">x =</span> x, <span class="at">color =</span> <span class="st">"Control"</span>)) <span class="sc">+</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Treated"</span> <span class="ot">=</span> <span class="st">"blue"</span>, <span class="st">"Control"</span> <span class="ot">=</span> <span class="st">"red"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="C02-xstr-learner_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Let’s use propensity score as <span class="math inline">\(g(X)\)</span> in Step 4.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>w_gam_trained <span class="ot">&lt;-</span> </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gam</span>(</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    W <span class="sc">~</span> <span class="fu">s</span>(x, <span class="at">k =</span> <span class="dv">4</span>), </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> data, </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"probit"</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s predict <span class="math inline">\(E[W|X]\)</span> at each value of <span class="math inline">\(X\)</span> at which we are estiamting <span class="math inline">\(\tau\)</span>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>tau_hat_data[, g_x <span class="sc">:</span><span class="er">=</span> <span class="fu">predict</span>(w_gam_trained, <span class="at">newdata =</span> tau_hat_data, <span class="at">type =</span> <span class="st">"response"</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>As you can see below, the mean value of <span class="math inline">\(g(x)\)</span> is small because the treatment probability is very low (it is only <span class="math inline">\(20\)</span> out of <span class="math inline">\(320\)</span>).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(tau_hat_data[, g_x])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.06451538</code></pre>
+</div>
+</div>
+<p>This number is basically <span class="math inline">\(20/320\)</span>. So, in this example, we could have just used the proportion of the treated observations. Notice that <span class="math inline">\(g(X)\)</span> is multiplied to <span class="math inline">\(\hat{\theta}_0(X)\)</span> in <a href="#eq-final-X">Equation&nbsp;<span>12.2</span></a>. So, we are giving a lower weight to <span class="math inline">\(\hat{\theta}_0(X)\)</span>. This is because <span class="math inline">\(\hat{\theta}_0(X)\)</span> is less reliable because <span class="math inline">\(\hat{\mu}_1(X)\)</span> is less reliable due to the lack of samples in the treated group.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>tau_hat_data[, tau_hat_X <span class="sc">:</span><span class="er">=</span> g_x <span class="sc">*</span> tau_hat_0 <span class="sc">+</span> (<span class="dv">1</span><span class="sc">-</span>g_x) <span class="sc">*</span> tau_hat_1]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>As you can see, X-learner outperforms T-learner in this particualr instance at least in terms of point estimates of <span class="math inline">\(\tau(X)\)</span>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> tau_hat_data) <span class="sc">+</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> tau_hat_T, <span class="at">x =</span> x, <span class="at">color =</span> <span class="st">"T-learner"</span>)) <span class="sc">+</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> tau_hat_X, <span class="at">x =</span> x, <span class="at">color =</span> <span class="st">"X-learner"</span>)) <span class="sc">+</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">1</span>, <span class="fu">aes</span>(<span class="at">color =</span> <span class="st">"True Treatment Effect"</span>)) <span class="sc">+</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> <span class="fu">c</span>(</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"T-learner"</span> <span class="ot">=</span> <span class="st">"red"</span>, </span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"X-learner"</span> <span class="ot">=</span> <span class="st">"blue"</span>, </span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"True Treatment Effect"</span> <span class="ot">=</span> <span class="st">"black"</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>      ),</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">""</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Treatment Effect"</span>) <span class="sc">+</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="C02-xstr-learner_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+
+<!-- Let $e(X)$ denote the propensity score $pr(W=1|X) = E[W|X]$.　
+
+Under the unconfoundedness assumption,
+
+$E[\varepsilon(W_i)|X_i, W_i] = 0$, where $\varepsilon_i(w) = Y_i(w) - {\mu_0(X_i)} + w\tau(X_i)$ 
+
++ $Y_i(0) = {\mu_0(X_i)} + 0\cdot \tau(X_i) = \mu_0(X_i) + \varepsilon_i$
++ $Y_i(1) = {\mu_0(X_i)} + 1\cdot \tau(X_i) = \mu_0(X_i) + \tau(X_i)  + \varepsilon_i$
+
+Conditional mean outcome (averaged across both treated and untreated) denoted by $m(x)$ is
+
+
+
+$$
+\begin{align}
+m(x) = E[Y|X=x] = \mu_0(x) + e(x)\cdot \tau(x)
+\end{align}
+$$
+
+
+
+Note that that observed outcome can be written as follows:
+
+
+
+$$
+\begin{align}
+Y_i =  \mu_0(X_i) + W_i \tau(X_i)  + \varepsilon_i 
+\end{align}
+$$
+
+
+
+Subtracting $m(X_i)$ from both sides,
+
+$Y_i - m(X_i) = [W_i - e(X_i)]\cdot \tau(X_i) + \varepsilon_i$
+
+This is termed **Robinson transformation**, which is originally proposed by @robinson1998.
+
+According to Robins (2004), 
+
+$\tau(X_i) = argmin_{\tau}\large\{\normalsize E\large(\normalsize[\{Y_i-m(X_i)\}-{W_i - e(X_i)}\tau]^2\large)\large\}$
+
+So, if we were to know $m(X_i)$ and $e(X_i)$ for some reason, we can estimate $\tau(X_i)$ by solving the following sample analog of the loss minimization problem:
+
+$\tilde{\tau}(X_i)= argmin_{\tau}\large\{\normalsize \frac{1}{n}\sum_{i=1}^{n}\normalsize[\{Y_i-m(X_i)\}-\{W_i - e(X_i)\}\tau]^2+\Lambda_n(\tau)\large\}$
+
+where $\Lambda_n(\tau)$ is interpreted as a regularizer on the complexity of the $\tau$ function.
+
+Of course the problem is that we do not know $m(X_i)$ and $e^*(X_i)$, so the above solution is not feasible.
+
+## R-learner {#sec-r-learner}
+
+### Theoretical background
+
+Under the assumptions,
+
+
+
+$$
+\begin{aligned}
+E[Y|X, W] = \theta(X)\cdot f(X,W) + g(X,W)
+\end{aligned}
+$$ {#eq-yxw}
+
+
+
+:::{.column-margin}
+$f(X,W) = E[T|X,W]$ 
+:::
+
+Let, $l(X,W)$ denote $E[Y|X, W]$. Taking the difference of @eq-model-framework and @eq-yxw on both sides,
+
+
+
+$$
+\begin{aligned}
+Y_i - l(X_i,Y_i) & = \theta(X_i)\cdot T_i + g(X_i,W_i) + \varepsilon_i - [\theta(X_i)\cdot f(X_i,W_i) + g(X_i,W_i)] \\
+\Rightarrow Y_i - l(X_i,Y_i) & = \theta(X_i)\cdot (T_i -f(X_i,W_i)) + \varepsilon_i \\
+\end{aligned}
+$$
+
+
+
+:::{.column-margin}
+This is akin to residualization/orthogonalization seen in the DML approach in @sec-dml.
+:::
+
+So, the problem of identifying $\theta(X)$ reduces to estimating the following model:
+
+
+
+$$
+\begin{aligned}
+Y_i - l(X_i,Y_i) & = \theta(X_i)\cdot (T_i -f(X_i,W_i)) + \varepsilon_i
+\end{aligned}
+$$
+
+
+
+Since $E[(T_i -f(X_i,W_i))\cdot\varepsilon_i|X] = E[\eta_i\cdot\varepsilon_i|X] = 0$ by assumption, we can regress $\tilde{Y}_i$ on $X_i$ and $\tilde{T}_i$ to estimate $\theta(X)$. Specifically, we can minimize the following objective function:
+
+
+$$
+\begin{aligned}
+Min_{\theta(X)}\sum_{i=1}^N \large(\normalsize[Y_i - l(X_i,Y_i)] - [\theta(X_i)\cdot (T_i -f(X_i,W_i))]\large)^2 
+\end{aligned}
+$$ {#eq-est-equation}
+
+
+
+### Estimation steps {#sec-est-steps}
+
+In practice, we of course do not observe $l(X,W)$ $( \equiv E[Y|X, W])$ and $f(X,W)$ $(\equiv E[T|X, W])$. So, we first need to estimate them using the data at hand to construct $\hat{\tilde{Y}}$ and $\hat{\tilde{T}}$. You can use any suitable statistical methods to estimate $E[Y|X, W]$ and $f(X,W)$. Some machine learning methods allow you to estimate them without assuming any functional form or structural assumptions. If you believe they are linear functions of $X$ and $W$, you could alternatively use lasso or other linear models. @nie_quasi-oracle_2021 proposes that the estimation of $l(X,W)$ and $f(X,W)$ is done by cross-fitting (see @sec-cf) to avoid over-fitting bias. Let $I_{-i}$ denote all the observations that belong to the folds that $i$ does <span style="color:blue"> not </span> belong to. Further, let $\hat{f}(X_i, W_i)^{I_{-i}}$ and $\hat{g}(X_i, W_i)^{I_{-i}}$ denote $f(X_i, W_i)$ and $g(X_i, W_i)$ estimated using $I_{-i}$. 
+
+::: {.column-margin}
+Just like the DML approach discussed in @sec-dml, both $Y$ and $T$ are orthogonalized.
+:::
+
+Then the quality of fit (explaining the heterogeneity in the impact of treatment) can be expressed as follows, which is the empirical version of @eq-est-equation:
+
+
+
+$$
+\begin{aligned}
+\sum_{i=1}^N [Y_i - \hat{f}(X_i,W_i)^{I_{-i}} - \theta(X)\cdot (T_i - \hat{g}(X_i,W_i)^{I_{-i}})]^2
+\end{aligned}
+$$
+
+
+
+This is called <span style="color:blue"> R-score</span>, and it can be used for causal model selection, which is covered later. 
+
+The final stage of the R-learner is to estimate $\theta(X)$ by minimizing the R-score plus the regularization term (if desirable).
+
+
+
+$$
+\begin{aligned}
+\hat{\theta}(X) = argmin_{\theta(X)}\;\;\sum_{i=1}^N [Y_i - \hat{f}(X_i,W_i)^{I_{-i}} - \theta(X)\cdot (T_i - \hat{g}(X_i,W_i)^{I_{-i}})]^2 + \Lambda(\theta(X))
+\end{aligned}
+$$
+
+
+
+where $\Lambda(\theta(X))$ is the penalty on the complexity of $\theta(X)$. For example, if you choose to use lasso, then $\Lambda(\theta(X))$ is the L1 norm. You have lots of freedom as to what model you use in the final stage. The `econml` package offers several off-the-shelf choices of R-learner (DML) approaches that differ in the model used at the final stage, including causal forest, lasso, etc.
+
+### R-learner by hand
+
+This section goes through the estimation steps provided above to further the understanding of how R-learner works.
+
+## Comparing the learners
+
+
+
+$$
+\begin{aligned}
+Y_i =\theta(X_i)\cdot T + \alpha g(X_i) + \mu_i
+\end{aligned}
+$$
+
+
+
++ $X_i = \{X_{i,1}, X_{i,2}, X_{i,3}, X_{i,4}, X_{i,5}\}$
++ $T_i|X_i \sim Bernouli(f(X_i))$
++ $\mu_i|X_i \sim N(0,1)$
+
+:::{.callout-note}
+
+## Case A
+
+
+
+$$
+\begin{aligned}
+g(X_i) & = sin(\pi X_{i,1}X_{i,2}) + 2(X_{i,3}-0.5)^2 + X_{i,4} + 0.5 X_{i,5}\\
+e(X_i) & = max(0.1, min(sin(\pi X_{i,1}X_{i,2}), 0.9)) \\
+\theta(X_i) & = (X_{i,1}, X_{i,2}) / 2 \\
+X_i & \sim Uni(0,1)^5
+\end{aligned}
+$$
+
+
+
+:::
+  
+
+::: {.cell}
+
+```{.r .cell-code  code-fold="true"}
+gen_data_A <- function(N){
+  data <-
+    data.table(
+      x1 = runif(N),
+      x2 = runif(N),
+      x3 = runif(N),
+      x4 = runif(N),
+      x5 = runif(N),
+      u = rnorm(N)
+    ) %>% 
+    .[, `:=`(
+      g_x = sin(pi * x1*x2) + 2*(x3-0.5)^2 + x4 + 0.5*x5,
+      e_x = pmax(0.1, pmin(sin(pi * x1*x2), 0.9)),
+      theta_x = (x1+x2)/2
+    )] %>% 
+    .[, t := as.numeric(runif(N) < e_x)] %>% 
+    .[, y := theta_x * t + g_x + u]
+
+  return(data)
+}
+```
+:::
+
+::: {.cell}
+
+:::
+
+
+:::{.callout-note}
+
+## Case B (randomized trial)
+
+
+
+$$
+\begin{aligned}
+g(X_i) & = max(X_{i,1} + X_{i,2}, X_{i,3}, 0) + max(X_{i,4}+ X_{i,5},0)\\
+e(X_i) & = 1/2 \\
+\theta(X_i) & = X_{i,1} + log(1+exp(X_{i,2})) \\
+X_i & \sim N(0,I_5)
+\end{aligned}
+$$
+
+
+
+:::
+ 
+
+::: {.cell}
+
+```{.r .cell-code  code-fold="true"}
+gen_data_B <- function(N){
+  data <-
+    data.table(
+      x1 = rnorm(N),
+      x2 = rnorm(N),
+      x3 = rnorm(N),
+      x4 = rnorm(N),
+      x5 = rnorm(N),
+      u = rnorm(N)
+    ) %>% 
+    .[, `:=`(
+      g_x = pmax(x1 + x2, x3) + pmax(x4 + x5, 0),
+      e_x = 1/2,
+      theta_x = x1+log(1 + exp(x2))
+    )] %>% 
+    .[, t := (runif(N) < e_x)] %>% 
+    .[, y := theta_x * t + g_x + u]
+
+  return(data)
+}
+```
+:::
+
+
+
+## X-, S-, T-, R-learner in Python
+
+We saw a general R-learner framework for CATE estimation. We now look at an example of Linear DML, which uses a linear model at the final stage. So, we are assuming that $\theta(X)$ can be written as follows in @eq-model-framework:
+
+
+
+$$
+\begin{aligned}
+\theta(X) = \alpha + \beta_1 x_1 + \beta_2 x_2 + \dots + \beta_k x_k
+\end{aligned}
+$$
+
+
+
+where $x_1$ through $x_k$ are the drivers of heterogeneity in treatment effects and $\beta_1$ through $\beta_k$ are their coefficients.
+
+::: {.column-margin}
+**Packages to load for replication**
+
+
+
+
+::: {.cell}
+
+```{.r .cell-code}
+library(data.table)
+library(magick)
+library(fixest)
+library(officer)
+library(dplyr)
+library(ggplot2)
+library(reticulate)
+library(DoubleML)
+library(MASS)
+```
+:::
+
+:::
+
+We use both Python and R for this demonstration. So, let's set things up for that.
+
+
+::: {.cell}
+
+```{.r .cell-code}
+library(reticulate)
+use_virtualenv("ml-learning")
+```
+:::
+
+
+For this demonstration, we use synthetic data according to the following data generating process:
+
+
+
+$$
+\begin{aligned}
+y_i = exp(x_{i,1}) d_i + x_{i,1} + \frac{1}{4}\cdot\frac{exp(x_{i,3})}{1 + exp(x_{i,3})} + \mu_i \\
+d_i = \frac{exp(x_{i,1})}{1 + exp(x_{i,1})} + \frac{1}{4}\cdot x_{i,3}+ \eta_i
+\end{aligned}
+$$
+
+
+
+Note that this is the same data generating process used in @sec-dml except that the impact of the treatment ($d$) now depends on $x_1$. We can use `gen_data()` function that is defined in @sec-dml-naive.
+
+
+::: {.cell}
+
+```{.r .cell-code}
+#=== sample size ===#
+N <- 1000 
+
+#=== generate data ===#
+synth_data <-
+  gen_data(
+    te_formula = formula(~ I(exp(x1)*d)),
+    n_obs = N *2
+  )
+
+X <- dplyr::select(synth_data, starts_with("x")) %>% as.matrix()
+y <- synth_data[, y]
+d <- synth_data[, d]
+```
+:::
+
+
+We now split the data into training and test datasets. 
+
+
+::: {.cell}
+
+```{.python .cell-code}
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test, d_train, d_test= train_test_split(r.X, r.y, r.d,  test_size = 0.5, random_state = 8923)
+```
+:::
+
+
+Here, to train a linear DML model, we use the Python `econml` package, which offers one of the most comprehensive sets of off-the-shelf R-leaner (DML) methods [@econml]. We can use the `DML` class to implement linear DML.
+
+
+::: {.cell}
+
+```{.python .cell-code}
+from econml.dml import DML
+```
+:::
+
+
+::: {.column-margin}
+`DML` is a child class of `_Rlearner`, which is a private class. The `DML` class has several child classes: `LinearDML`, `SpatseLinearDML`, `NonParamDML`, and `CausalForestDML`. 
+:::
+
+As we saw above in @sec-est-steps, we need to specify three models:
+
++ `model_y`: model for estimating $E[Y|X,W]$
++ `model_t`: model for estimating $E[T|X,W]$
++ `model_final`: model for estimating $\theta(X)$
+
+In this example, let's use gradient boosting regression for both `model_y` and `model_t` and use lasso with cross-validation for `model_final`. Let's import `GradientBoostingRegressor()` and `LassoCV()` from the `scikitlearn` package.
+
+
+::: {.cell}
+
+```{.python .cell-code}
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.linear_model import LassoCV
+```
+:::
+
+
+We can now set up our DML framework like below:
+
+
+::: {.cell}
+
+```{.python .cell-code}
+est = DML(
+    model_y = GradientBoostingRegressor(),
+    model_t = GradientBoostingRegressor(),
+    model_final = LassoCV(fit_intercept = False) 
+  )
+```
+:::
+
+
+Note that no training has happened yet at this point. We simply created a recipe. Once we provide ingredients (data), we can cook (train) with the `fit()` method. 
+
+
+::: {.cell}
+
+```{.python .cell-code}
+est.fit(y_train, d_train, X = X_train, W = X_train)
+```
+:::
+
+
++ first argument: dependent variable
++ second argument: treatment variable 
++ `X`: variables that drive treatment effect heterogeneity
++ `W`: variables that affect the dependent variable directly
+
+::: {.column-margin}
+Here, we set `X = W`.
+:::
+
+Once, the training is done. We can use the `effect()` method to predict $\theta(X)$.
+
+
+::: {.cell}
+
+```{.python .cell-code}
+te_test = est.effect(X_test)
+```
+:::
+
+
+@fig-est-theta-hat presents the estimated and true marginal treatment effect ($\theta(X)$) as a function of `x1`. 
+
+
+::: {.cell}
+
+```{.r .cell-code}
+plot_data <- 
+  data.table(
+    x1 = py$X_test[, 1],
+    te = py$te_test
+  )
+
+ggplot(plot_data) +
+  geom_point(aes(y = te, x = x1)) +
+  geom_line(aes(y = exp(x1), x = x1), color = "blue") +
+  theme_bw()
+```
+:::
+
+::: {.cell}
+::: {.cell-output-display}
+![Estimated and true marginal treatment effects](C02-xstr-learner_files/figure-html/fig-est-theta-hat-1.png){#fig-est-theta-hat width=672}
+:::
+:::
+
+
+Since we forced $\theta(X)$ to be linear in `x1`, it is not surprising that the estimated MTE looks linear in `x1` even though the true MTE is an exponential function of `x1`. In the next chapter (@sec-forest-cate), we discuss CATE estimators based on forest, which estimates $\theta(X)$ non-parametrically, relaxing the assumption of $\theta(X)$ being linear-in-parameter.
+
+:::{.callout-tip}
+There are many more variations in DML than the one presented here. For those who are interested, I recommend going through examples presented [here](https://github.com/microsoft/EconML/blob/main/notebooks/Double%20Machine%20Learning%20Examples.ipynb) for `DML`
+:::
+
+
+
+
+
+
+
+
+
+:::{#quarto-navigation-envelope .hidden}
+[Introduction to Machine Learning for Economists (Under Construction)]{.hidden render-id="quarto-int-sidebar-title"}
+[Introduction to Machine Learning for Economists (Under Construction)]{.hidden render-id="quarto-int-navbar-title"}
+[<span class='chapter-number'>13</span>  <span class='chapter-title'>Forest-based CATE Estimators</span>]{.hidden render-id="quarto-int-next"}
+[<span class='chapter-number'>11</span>  <span class='chapter-title'>Double Machine Learning</span>]{.hidden render-id="quarto-int-prev"}
+[Welcome]{.hidden render-id="quarto-int-sidebar:/index.html"}
+[Preface]{.hidden render-id="quarto-int-sidebar:/H00-preface.html"}
+[---]{.hidden render-id="quarto-int-sidebar:undefined"}
+[Basics]{.hidden render-id="quarto-int-sidebar:quarto-sidebar-section-1"}
+[<span class='chapter-number'>1</span>  <span class='chapter-title'>Non-linear function estimation</span>]{.hidden render-id="quarto-int-sidebar:/B01-nonlinear.html"}
+[<span class='chapter-number'>2</span>  <span class='chapter-title'>Bias-variance Trade-off</span>]{.hidden render-id="quarto-int-sidebar:/B02-bias-variance-tradeoff.html"}
+[<span class='chapter-number'>3</span>  <span class='chapter-title'>Cross-validation</span>]{.hidden render-id="quarto-int-sidebar:/B03-cross-validation.html"}
+[<span class='chapter-number'>4</span>  <span class='chapter-title'>Regression Shrinkage Methods</span>]{.hidden render-id="quarto-int-sidebar:/B04-regularization.html"}
+[<span class='chapter-number'>5</span>  <span class='chapter-title'>Bootstrap</span>]{.hidden render-id="quarto-int-sidebar:/B05-bootstrap.html"}
+[Prediction ML]{.hidden render-id="quarto-int-sidebar:quarto-sidebar-section-2"}
+[<span class='chapter-number'>6</span>  <span class='chapter-title'>Random Forest</span>]{.hidden render-id="quarto-int-sidebar:/P01-random-forest.html"}
+[<span class='chapter-number'>7</span>  <span class='chapter-title'>Boosted Regression Forest</span>]{.hidden render-id="quarto-int-sidebar:/P02-boosted-regression-forest.html"}
+[<span class='chapter-number'>8</span>  <span class='chapter-title'>Extreme Gradient Boosting</span>]{.hidden render-id="quarto-int-sidebar:/P03-xgb.html"}
+[<span class='chapter-number'>9</span>  <span class='chapter-title'>Local Linear Forest</span>]{.hidden render-id="quarto-int-sidebar:/P04-local-linear-forest.html"}
+[Causal Machine Learning (CML) Methods]{.hidden render-id="quarto-int-sidebar:quarto-sidebar-section-3"}
+[<span class='chapter-number'>10</span>  <span class='chapter-title'>Why can't we just do this?</span>]{.hidden render-id="quarto-int-sidebar:/C00-why-not-this.html"}
+[<span class='chapter-number'>11</span>  <span class='chapter-title'>Double Machine Learning</span>]{.hidden render-id="quarto-int-sidebar:/C01-dml.html"}
+[<span class='chapter-number'>12</span>  <span class='chapter-title'>S-, X-, T-, and R-learner</span>]{.hidden render-id="quarto-int-sidebar:/C02-xstr-learner.html"}
+[<span class='chapter-number'>13</span>  <span class='chapter-title'>Forest-based CATE Estimators</span>]{.hidden render-id="quarto-int-sidebar:/C03-cf-orf.html"}
+[Extensions]{.hidden render-id="quarto-int-sidebar:quarto-sidebar-section-4"}
+[<span class='chapter-number'>14</span>  <span class='chapter-title'>Spatial Cross-validation</span>]{.hidden render-id="quarto-int-sidebar:/E01-spatial-cv.html"}
+[<span class='chapter-number'>15</span>  <span class='chapter-title'>Generalized Random Forest</span>]{.hidden render-id="quarto-int-sidebar:/E02-grf.html"}
+[Programming Guide]{.hidden render-id="quarto-int-sidebar:quarto-sidebar-section-5"}
+[<span class='chapter-number'>16</span>  <span class='chapter-title'>Machine Learning with `mlr3` in R</span>]{.hidden render-id="quarto-int-sidebar:/PROG-01-mlr3.html"}
+[<span class='chapter-number'>17</span>  <span class='chapter-title'>Running Python from R</span>]{.hidden render-id="quarto-int-sidebar:/PROG-02-reticulate.html"}
+[<span class='chapter-number'>18</span>  <span class='chapter-title'>Model Selection (Prediction)</span>]{.hidden render-id="quarto-int-sidebar:/PROG-03-model-selection-prediction.html"}
+[Appendices]{.hidden render-id="quarto-int-sidebar:quarto-sidebar-section-6"}
+[<span class='chapter-number'>A</span>  <span class='chapter-title'>Monte Carlo (MC) Simulation</span>]{.hidden render-id="quarto-int-sidebar:/A01-mc-simulation.html"}
+[<span class='chapter-number'>B</span>  <span class='chapter-title'>Primer on method of moment</span>]{.hidden render-id="quarto-int-sidebar:/A02-method-of-moment.html"}
+:::
+
+
+
+:::{#quarto-meta-markdown .hidden}
+[Introduction to Machine Learning for Economists (Under Construction) - [[12]{.chapter-number}  [S-, X-, T-, and R-learner]{.chapter-title}]{#sec-het-dml .quarto-section-identifier}]{.hidden render-id="quarto-metatitle"}
+[Introduction to Machine Learning for Economists (Under Construction)]{.hidden render-id="quarto-metasitename"}
+:::
+
+
+
+
+<!-- -->
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-Chernozhukov2018" class="csl-entry" role="doc-biblioentry">
+Chernozhukov, Victor, Denis Chetverikov, Mert Demirer, Esther Duflo, Christian Hansen, Whitney Newey, and James Robins. 2018. <span>“<span class="nocase">Double/debiased machine learning for treatment and structural parameters</span>.”</span> <em>The Econometrics Journal</em> 21 (1): C1–68. <a href="https://doi.org/10.1111/ectj.12097">https://doi.org/10.1111/ectj.12097</a>.
+</div>
+<div id="ref-kunzel_metalearners_2019" class="csl-entry" role="doc-biblioentry">
+Künzel, Sören R., Jasjeet S. Sekhon, Peter J. Bickel, and Bin Yu. 2019. <span>“Metalearners for Estimating Heterogeneous Treatment Effects Using Machine Learning.”</span> <em>Proceedings of the National Academy of Sciences</em> 116 (10): 4156–65. <a href="https://doi.org/10.1073/pnas.1804597116">https://doi.org/10.1073/pnas.1804597116</a>.
+</div>
+<div id="ref-nie_quasi-oracle_2021" class="csl-entry" role="doc-biblioentry">
+Nie, X, and S Wager. 2021. <span>“Quasi-Oracle Estimation of Heterogeneous Treatment Effects.”</span> <em>Biometrika</em> 108 (2): 299–319. <a href="https://doi.org/10.1093/biomet/asaa076">https://doi.org/10.1093/biomet/asaa076</a>.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./C01-dml.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Double Machine Learning</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./C03-cf-orf.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Forest-based CATE Estimators</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb16" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># S-, X-, T-, and R-learner {#sec-het-dml}</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>In this section, we look at the S-, X-, T-, and R-learner, which are method that estimate heterogeneous treatment effects when the treatment is binary. While X-leaner and T-learner cannot be extended to continuous treatment cases, S-learner and R-learner can be. Mathematical notations used in this chapter closely follow those of <span class="co">[</span><span class="ot">@kunzel_metalearners_2019</span><span class="co">]</span> and <span class="co">[</span><span class="ot">@nie_quasi-oracle_2021</span><span class="co">]</span>.</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>:::{.callout-important}</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="fu">## What you will learn</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>:::{.callout-tip}</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="fu">## Key points</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>R-learner is the same as DML approaches by @Chernozhukov2018 except that CATE is estiamted at the second instead of ATE.</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>In most practical cases, R-learner performs better than S-, X-, and T-learners. </span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>S- and T-learners are especially undesirable due to its tendency to underestimate CATE</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a><span class="fu">## Motivation</span></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>In @sec-dml, the basic idea of double machine learning (DML) methods was introduced when the treatment effect is homogeneous. We now turn our focus to the task of estimating heterogeneous treatment effects: the impact of a treatment varies based on observed attributes of the subjects. Heterogeneous treatment effect is also referred to as <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> conditional <span class="kw">&lt;/span&gt;</span> average treatment effect (CATE).</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> Conditional <span class="kw">&lt;/span&gt;</span> on observed attributes.</span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>Understanding how treatment effects vary can be highly valuable in many circumstances. </span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> Example 1: <span class="kw">&lt;/span&gt;</span></span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>If we come to know a particular drug is effective on elderly people but detrimental to kids, then doctors can make a smart decision of prescribing the drug to elderly people, but not to kids. </span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>In this example, the heterogeneity driver is age.</span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> Example 2: <span class="kw">&lt;/span&gt;</span></span>
+<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a>If we come to know that fertilizer is more effective in increasing corn yield in soil type A than B, then farmers can apply more fertilizer on the parts of the field where soil type is A but less on where soil type is B. </span>
+<span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a>In this example, the heterogeneity driver is soil type.</span>
+<span id="cb16-43"><a href="#cb16-43" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb16-44"><a href="#cb16-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-45"><a href="#cb16-45" aria-hidden="true" tabindex="-1"></a>As you can see in these examples, knowledge on the heterogeneity of the treatment effect and its drivers can help decision makers smart-target treatments and policies. </span>
+<span id="cb16-46"><a href="#cb16-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-47"><a href="#cb16-47" aria-hidden="true" tabindex="-1"></a><span class="fu">## Modeling Framework</span></span>
+<span id="cb16-48"><a href="#cb16-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-49"><a href="#cb16-49" aria-hidden="true" tabindex="-1"></a>The model of interest in general form is as follows:</span>
+<span id="cb16-50"><a href="#cb16-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-51"><a href="#cb16-51" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-52"><a href="#cb16-52" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb16-53"><a href="#cb16-53" aria-hidden="true" tabindex="-1"></a>Y_i &amp; = \theta(X_i)\cdot T_i + g(X_i, W_i) + \varepsilon_i <span class="sc">\\</span></span>
+<span id="cb16-54"><a href="#cb16-54" aria-hidden="true" tabindex="-1"></a>T_i &amp; = f(X_i, W_i) + \eta_i </span>
+<span id="cb16-55"><a href="#cb16-55" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb16-56"><a href="#cb16-56" aria-hidden="true" tabindex="-1"></a>$$ {#eq-model-framework}</span>
+<span id="cb16-57"><a href="#cb16-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-58"><a href="#cb16-58" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>$Y$: dependent variable</span>
+<span id="cb16-59"><a href="#cb16-59" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>$T$: treatment variable</span>
+<span id="cb16-60"><a href="#cb16-60" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>$X$: collection of variables that affect Y indirectly through the treatment ($\theta(X)\cdot T$) and directly ($g(X, W)$) independent of the treatment</span>
+<span id="cb16-61"><a href="#cb16-61" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>$W$: collection of variables that affect directly ($g(X, W)$) independent of the treatment, but not through the treatment</span>
+<span id="cb16-62"><a href="#cb16-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-63"><a href="#cb16-63" aria-hidden="true" tabindex="-1"></a>Here are the assumptions:</span>
+<span id="cb16-64"><a href="#cb16-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-65"><a href="#cb16-65" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>$E<span class="co">[</span><span class="ot">\varepsilon|X, W</span><span class="co">]</span> = 0$</span>
+<span id="cb16-66"><a href="#cb16-66" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>$E<span class="co">[</span><span class="ot">\eta|X, W</span><span class="co">]</span> = 0$</span>
+<span id="cb16-67"><a href="#cb16-67" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>$E<span class="co">[</span><span class="ot">\eta\cdot\varepsilon|X, W</span><span class="co">]</span> = 0$</span>
+<span id="cb16-68"><a href="#cb16-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-69"><a href="#cb16-69" aria-hidden="true" tabindex="-1"></a>For the notational convenicence, let $\mu_1(X)$ and $\mu_0(X)$ denote the expected value of the potential conditional outcomes:</span>
+<span id="cb16-70"><a href="#cb16-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-71"><a href="#cb16-71" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-72"><a href="#cb16-72" aria-hidden="true" tabindex="-1"></a>\begin{align}</span>
+<span id="cb16-73"><a href="#cb16-73" aria-hidden="true" tabindex="-1"></a>\mu_1(X) &amp; = E<span class="co">[</span><span class="ot">Y|W=1, X</span><span class="co">]</span> = g(X, W)<span class="sc">\\</span> </span>
+<span id="cb16-74"><a href="#cb16-74" aria-hidden="true" tabindex="-1"></a>\mu_0(X) &amp; = E<span class="co">[</span><span class="ot">Y|W=0, X</span><span class="co">]</span> =  \theta(X) + g(X, W)</span>
+<span id="cb16-75"><a href="#cb16-75" aria-hidden="true" tabindex="-1"></a>\end{align}</span>
+<span id="cb16-76"><a href="#cb16-76" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-77"><a href="#cb16-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-78"><a href="#cb16-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-79"><a href="#cb16-79" aria-hidden="true" tabindex="-1"></a><span class="fu">## S-, T-, and X-Learner</span></span>
+<span id="cb16-80"><a href="#cb16-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-81"><a href="#cb16-81" aria-hidden="true" tabindex="-1"></a><span class="fu">### S-leaner</span></span>
+<span id="cb16-82"><a href="#cb16-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-83"><a href="#cb16-83" aria-hidden="true" tabindex="-1"></a>S-leaner estimates CATE by taking the following steps:</span>
+<span id="cb16-84"><a href="#cb16-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-85"><a href="#cb16-85" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Regress $Y$ on $W$ and $X$ to estimate $E<span class="co">[</span><span class="ot">Y|W,X</span><span class="co">]</span>$ using any appropriate ML regression methods and call it $\hat{\mu}(W,X)$.</span>
+<span id="cb16-86"><a href="#cb16-86" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Estimate $\hat{\theta}(X)$ as $\hat{\mu}(W=1,X)-\hat{\mu}(W=0,X)$</span>
+<span id="cb16-87"><a href="#cb16-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-88"><a href="#cb16-88" aria-hidden="true" tabindex="-1"></a>In this approach, no special treatment is given to $W$. It is just a covariate along with others ($X$). This approach is named S-leaner by @kunzel_metalearners_2019 because it involves estimating a <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">'color:red'</span><span class="kw">&gt;</span>s<span class="kw">&lt;/span&gt;</span>ingle response function.</span>
+<span id="cb16-89"><a href="#cb16-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-90"><a href="#cb16-90" aria-hidden="true" tabindex="-1"></a><span class="fu">### T-learner</span></span>
+<span id="cb16-91"><a href="#cb16-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-92"><a href="#cb16-92" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Regress $Y$ on $W$ and $X$ using the treated observations to estimate $\mu_1(X)$ using any appropriate ML regression methods.</span>
+<span id="cb16-93"><a href="#cb16-93" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Regress $Y$ on $W$ and $X$ using the control  observations to estimate $\mu_0(X)$ using any appropriate ML regression methods.</span>
+<span id="cb16-94"><a href="#cb16-94" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Estimate $\hat{\theta}(X)$ as $\hat{\mu}_1(X)-\hat{\mu}(X)$</span>
+<span id="cb16-95"><a href="#cb16-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-96"><a href="#cb16-96" aria-hidden="true" tabindex="-1"></a>This approach is named T-leaner by @kunzel_metalearners_2019 because it involves estimating <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">'color:red'</span><span class="kw">&gt;</span>t<span class="kw">&lt;/span&gt;</span>wo functions.</span>
+<span id="cb16-97"><a href="#cb16-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-98"><a href="#cb16-98" aria-hidden="true" tabindex="-1"></a><span class="fu">### X-learner</span></span>
+<span id="cb16-99"><a href="#cb16-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-100"><a href="#cb16-100" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Estimate $\mu_1(X)$ and $\mu_0(X)$ using any appropriate ML regression methods. (Steps 1 and 2 of the T-learner)</span>
+<span id="cb16-101"><a href="#cb16-101" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Impute individual treatment effect for the treated and control groups as follows</span>
+<span id="cb16-102"><a href="#cb16-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-103"><a href="#cb16-103" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-104"><a href="#cb16-104" aria-hidden="true" tabindex="-1"></a>\begin{align}</span>
+<span id="cb16-105"><a href="#cb16-105" aria-hidden="true" tabindex="-1"></a>\tilde{D}_i^1(X_i) = Y^1_i - \hat{\mu}_0(X_i)<span class="sc">\\</span></span>
+<span id="cb16-106"><a href="#cb16-106" aria-hidden="true" tabindex="-1"></a>\tilde{D}_i^0(X_i) =  \hat{\mu}_1(X_i) - Y^0_i </span>
+<span id="cb16-107"><a href="#cb16-107" aria-hidden="true" tabindex="-1"></a>\end{align}</span>
+<span id="cb16-108"><a href="#cb16-108" aria-hidden="true" tabindex="-1"></a>$$ </span>
+<span id="cb16-109"><a href="#cb16-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-110"><a href="#cb16-110" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb16-111"><a href="#cb16-111" aria-hidden="true" tabindex="-1"></a>This is similar to cross-fitting we saw in @sec-dml, where the folds are the treated and control groups.</span>
+<span id="cb16-112"><a href="#cb16-112" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb16-113"><a href="#cb16-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-114"><a href="#cb16-114" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span></span>
+<span id="cb16-115"><a href="#cb16-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-116"><a href="#cb16-116" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>Regress $\tilde{D}_i^1(X_i)$ on $X$ using the observations in the treated group and denote the predicted value as $\hat{\theta}_1(X)$</span>
+<span id="cb16-117"><a href="#cb16-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-118"><a href="#cb16-118" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>Regress $\tilde{D}_i^0(X_i)$ on $X$ using the observations in the control group and denote the predicted value as $\hat{\theta}_0(X)$</span>
+<span id="cb16-119"><a href="#cb16-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-120"><a href="#cb16-120" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Calculate $\hat{\theta}(X)$ as their weighted average</span>
+<span id="cb16-121"><a href="#cb16-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-122"><a href="#cb16-122" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-123"><a href="#cb16-123" aria-hidden="true" tabindex="-1"></a>\begin{align}</span>
+<span id="cb16-124"><a href="#cb16-124" aria-hidden="true" tabindex="-1"></a>\hat{\theta}(X) = g(X)\cdot\hat{\theta}_0(X) + [1-g(X)]\cdot\hat{\theta}_1(X)</span>
+<span id="cb16-125"><a href="#cb16-125" aria-hidden="true" tabindex="-1"></a>\end{align}</span>
+<span id="cb16-126"><a href="#cb16-126" aria-hidden="true" tabindex="-1"></a>$$ {#eq-final-X}</span>
+<span id="cb16-127"><a href="#cb16-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-128"><a href="#cb16-128" aria-hidden="true" tabindex="-1"></a>Any value of $g(X)$ is acceptable. One option of $g(X)$ may be the estimated propensity score $E<span class="co">[</span><span class="ot">W|X</span><span class="co">]</span>$.</span>
+<span id="cb16-129"><a href="#cb16-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-130"><a href="#cb16-130" aria-hidden="true" tabindex="-1"></a><span class="fu">## T-learner v.s. X-learner</span></span>
+<span id="cb16-131"><a href="#cb16-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-132"><a href="#cb16-132" aria-hidden="true" tabindex="-1"></a>Here, an advantage of X-learner over T-learner is demonstrated (This example also serves as an illustration of how these learners are implemented). Specifically, X-learner can be particularly useful when the control-treatment assignments in the sample are unbalanced. For example, it is often the case that there are plenty of observations in the control group, while there are not many treated observations. For the purpose of illustration, consider a rather extreme case where there are only 10 observations in the treated group, while there are 300 observations in the control group. We use the following toy data generating process:</span>
+<span id="cb16-133"><a href="#cb16-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-134"><a href="#cb16-134" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb16-135"><a href="#cb16-135" aria-hidden="true" tabindex="-1"></a>**Packages to load for replication**</span>
+<span id="cb16-136"><a href="#cb16-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-139"><a href="#cb16-139" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-140"><a href="#cb16-140" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb16-141"><a href="#cb16-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-142"><a href="#cb16-142" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb16-143"><a href="#cb16-143" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb16-144"><a href="#cb16-144" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ranger)</span>
+<span id="cb16-145"><a href="#cb16-145" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rlearner)</span>
+<span id="cb16-146"><a href="#cb16-146" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mgcv)</span>
+<span id="cb16-147"><a href="#cb16-147" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-148"><a href="#cb16-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-151"><a href="#cb16-151" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-152"><a href="#cb16-152" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb16-153"><a href="#cb16-153" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb16-154"><a href="#cb16-154" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb16-155"><a href="#cb16-155" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ranger)</span>
+<span id="cb16-156"><a href="#cb16-156" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rlearner)</span>
+<span id="cb16-157"><a href="#cb16-157" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mgcv)</span>
+<span id="cb16-158"><a href="#cb16-158" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-159"><a href="#cb16-159" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb16-160"><a href="#cb16-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-161"><a href="#cb16-161" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-162"><a href="#cb16-162" aria-hidden="true" tabindex="-1"></a>\begin{align}</span>
+<span id="cb16-163"><a href="#cb16-163" aria-hidden="true" tabindex="-1"></a>y = \tau W + |x| + v</span>
+<span id="cb16-164"><a href="#cb16-164" aria-hidden="true" tabindex="-1"></a>\end{align}</span>
+<span id="cb16-165"><a href="#cb16-165" aria-hidden="true" tabindex="-1"></a>$$ </span>
+<span id="cb16-166"><a href="#cb16-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-167"><a href="#cb16-167" aria-hidden="true" tabindex="-1"></a>where $\tau = 1$. So, the treatment effect is not heterogeneous. For the purpose of illustrating the advantage of X-learner over T-learner, it is convenient if the underlying model is simpler.</span>
+<span id="cb16-168"><a href="#cb16-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-171"><a href="#cb16-171" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-172"><a href="#cb16-172" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">4345</span>)</span>
+<span id="cb16-173"><a href="#cb16-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-174"><a href="#cb16-174" aria-hidden="true" tabindex="-1"></a>N_trt <span class="ot">&lt;-</span> <span class="dv">20</span></span>
+<span id="cb16-175"><a href="#cb16-175" aria-hidden="true" tabindex="-1"></a>N_ctrl <span class="ot">&lt;-</span> <span class="dv">300</span></span>
+<span id="cb16-176"><a href="#cb16-176" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> N_trt <span class="sc">+</span> N_ctrl</span>
+<span id="cb16-177"><a href="#cb16-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-178"><a href="#cb16-178" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> </span>
+<span id="cb16-179"><a href="#cb16-179" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>(</span>
+<span id="cb16-180"><a href="#cb16-180" aria-hidden="true" tabindex="-1"></a>    <span class="at">W =</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">1</span>,N_trt), <span class="fu">rep</span>(<span class="dv">0</span>, N_ctrl)),</span>
+<span id="cb16-181"><a href="#cb16-181" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">"Treated"</span>, N_trt), <span class="fu">rep</span>(<span class="st">"Control"</span>, N_ctrl)),</span>
+<span id="cb16-182"><a href="#cb16-182" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">runif</span>(N)<span class="sc">-</span><span class="dv">1</span>,</span>
+<span id="cb16-183"><a href="#cb16-183" aria-hidden="true" tabindex="-1"></a>    <span class="at">v =</span> <span class="fu">rnorm</span>(N) <span class="sc">/</span> <span class="dv">2</span></span>
+<span id="cb16-184"><a href="#cb16-184" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-185"><a href="#cb16-185" aria-hidden="true" tabindex="-1"></a>  .[, y <span class="sc">:</span><span class="er">=</span> W <span class="sc">+</span> <span class="fu">abs</span>(x) <span class="sc">+</span> v]</span>
+<span id="cb16-186"><a href="#cb16-186" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-187"><a href="#cb16-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-190"><a href="#cb16-190" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-191"><a href="#cb16-191" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> data) <span class="sc">+</span></span>
+<span id="cb16-192"><a href="#cb16-192" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> y, <span class="at">x =</span> x, <span class="at">color =</span> type))</span>
+<span id="cb16-193"><a href="#cb16-193" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-194"><a href="#cb16-194" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-195"><a href="#cb16-195" aria-hidden="true" tabindex="-1"></a>Let's first estimate $\mu_1(X)$ and $\mu_0(X)$ (Step 1). Since we have only $<span class="in">`r N_trt`</span>$ observations in the treated group, we will use a linear regression to avoid over-fitting (following the example in @kunzel_metalearners_2019).</span>
+<span id="cb16-196"><a href="#cb16-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-199"><a href="#cb16-199" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-200"><a href="#cb16-200" aria-hidden="true" tabindex="-1"></a>mu_1_trained <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x, <span class="at">data =</span> data[type <span class="sc">==</span> <span class="st">"Treated"</span>, ])</span>
+<span id="cb16-201"><a href="#cb16-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-202"><a href="#cb16-202" aria-hidden="true" tabindex="-1"></a>mu_0_trained <span class="ot">&lt;-</span> <span class="fu">gam</span>(y <span class="sc">~</span> <span class="fu">s</span>(x, <span class="at">k =</span> <span class="dv">4</span>), <span class="at">data =</span> data[type <span class="sc">==</span> <span class="st">"Control"</span>, ])</span>
+<span id="cb16-203"><a href="#cb16-203" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-204"><a href="#cb16-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-205"><a href="#cb16-205" aria-hidden="true" tabindex="-1"></a>Now that  $\mu_1(X)$ and $\mu_0(X)$ are estimated, we can estimate $\hat{\theta}(X)$ by T-learner.</span>
+<span id="cb16-206"><a href="#cb16-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-209"><a href="#cb16-209" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-210"><a href="#cb16-210" aria-hidden="true" tabindex="-1"></a>x_seq <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">x =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="at">length =</span> <span class="dv">100</span>))</span>
+<span id="cb16-211"><a href="#cb16-211" aria-hidden="true" tabindex="-1"></a><span class="co">#=== T-learner ===#</span></span>
+<span id="cb16-212"><a href="#cb16-212" aria-hidden="true" tabindex="-1"></a>tau_hat_data <span class="ot">&lt;-</span> </span>
+<span id="cb16-213"><a href="#cb16-213" aria-hidden="true" tabindex="-1"></a>  x_seq <span class="sc">%&gt;%</span></span>
+<span id="cb16-214"><a href="#cb16-214" aria-hidden="true" tabindex="-1"></a>  .[, mu_1_hat <span class="sc">:</span><span class="er">=</span> <span class="fu">predict</span>(mu_1_trained, <span class="at">newdata =</span> x_seq)] <span class="sc">%&gt;%</span></span>
+<span id="cb16-215"><a href="#cb16-215" aria-hidden="true" tabindex="-1"></a>  .[, mu_0_hat <span class="sc">:</span><span class="er">=</span> <span class="fu">predict</span>(mu_0_trained, <span class="at">newdata =</span> x_seq)] <span class="sc">%&gt;%</span></span>
+<span id="cb16-216"><a href="#cb16-216" aria-hidden="true" tabindex="-1"></a>  .[, tau_hat_T <span class="sc">:</span><span class="er">=</span> mu_1_hat <span class="sc">-</span> mu_0_hat]</span>
+<span id="cb16-217"><a href="#cb16-217" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-218"><a href="#cb16-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-219"><a href="#cb16-219" aria-hidden="true" tabindex="-1"></a>As you can see, T-leaner is heavily biased. This is because of the unreliable estimation of $\mu_1(X)$ due to lack of observations in the treated group.</span>
+<span id="cb16-220"><a href="#cb16-220" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-223"><a href="#cb16-223" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-224"><a href="#cb16-224" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> tau_hat_data) <span class="sc">+</span></span>
+<span id="cb16-225"><a href="#cb16-225" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> tau_hat_T, <span class="at">x =</span> x))</span>
+<span id="cb16-226"><a href="#cb16-226" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-227"><a href="#cb16-227" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-228"><a href="#cb16-228" aria-hidden="true" tabindex="-1"></a>Now, let's move on to X-learner. We impute individual treatment effects (Step 2).</span>
+<span id="cb16-229"><a href="#cb16-229" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-232"><a href="#cb16-232" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-233"><a href="#cb16-233" aria-hidden="true" tabindex="-1"></a><span class="co">#=== mu (treated) ===#</span></span>
+<span id="cb16-234"><a href="#cb16-234" aria-hidden="true" tabindex="-1"></a>mu_hat_1 <span class="ot">&lt;-</span> <span class="fu">predict</span>(mu_0_trained, <span class="at">newdata =</span> data[type <span class="sc">==</span> <span class="st">"Treated"</span>, ])</span>
+<span id="cb16-235"><a href="#cb16-235" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-236"><a href="#cb16-236" aria-hidden="true" tabindex="-1"></a><span class="co">#=== mu (control) ===#</span></span>
+<span id="cb16-237"><a href="#cb16-237" aria-hidden="true" tabindex="-1"></a>mu_hat_0 <span class="ot">&lt;-</span> <span class="fu">predict</span>(mu_1_trained, <span class="at">newdata =</span> data[type <span class="sc">==</span> <span class="st">"Control"</span>, ])</span>
+<span id="cb16-238"><a href="#cb16-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-239"><a href="#cb16-239" aria-hidden="true" tabindex="-1"></a><span class="co">#=== assign the values ===#</span></span>
+<span id="cb16-240"><a href="#cb16-240" aria-hidden="true" tabindex="-1"></a>data[type <span class="sc">==</span> <span class="st">"Treated"</span>, mu_hat <span class="sc">:</span><span class="er">=</span> mu_hat_1]</span>
+<span id="cb16-241"><a href="#cb16-241" aria-hidden="true" tabindex="-1"></a>data[type <span class="sc">==</span> <span class="st">"Control"</span>, mu_hat <span class="sc">:</span><span class="er">=</span> mu_hat_0]</span>
+<span id="cb16-242"><a href="#cb16-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-243"><a href="#cb16-243" aria-hidden="true" tabindex="-1"></a><span class="co">#=== find individual TE ===#</span></span>
+<span id="cb16-244"><a href="#cb16-244" aria-hidden="true" tabindex="-1"></a>data[, D <span class="sc">:</span><span class="er">=</span> <span class="fu">ifelse</span>(type <span class="sc">==</span> <span class="st">"Treated"</span>, y <span class="sc">-</span> mu_hat, mu_hat <span class="sc">-</span> y)]</span>
+<span id="cb16-245"><a href="#cb16-245" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-246"><a href="#cb16-246" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-247"><a href="#cb16-247" aria-hidden="true" tabindex="-1"></a>We can now regress $D$ on $X$ (Step 3),</span>
+<span id="cb16-248"><a href="#cb16-248" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-251"><a href="#cb16-251" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-252"><a href="#cb16-252" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
+<span id="cb16-253"><a href="#cb16-253" aria-hidden="true" tabindex="-1"></a><span class="co"># tau (treated)</span></span>
+<span id="cb16-254"><a href="#cb16-254" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
+<span id="cb16-255"><a href="#cb16-255" aria-hidden="true" tabindex="-1"></a>tau_1_trained <span class="ot">&lt;-</span> <span class="fu">lm</span>(D <span class="sc">~</span> x, <span class="at">data =</span> data[type <span class="sc">==</span> <span class="st">"Treated"</span>, ])</span>
+<span id="cb16-256"><a href="#cb16-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-257"><a href="#cb16-257" aria-hidden="true" tabindex="-1"></a><span class="co">#=== estimate tau_1 ===#</span></span>
+<span id="cb16-258"><a href="#cb16-258" aria-hidden="true" tabindex="-1"></a>tau_hat_data[, tau_hat_1 <span class="sc">:</span><span class="er">=</span> <span class="fu">predict</span>(tau_1_trained, <span class="at">newdata =</span> tau_hat_data)]</span>
+<span id="cb16-259"><a href="#cb16-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-260"><a href="#cb16-260" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
+<span id="cb16-261"><a href="#cb16-261" aria-hidden="true" tabindex="-1"></a><span class="co"># tau (control)</span></span>
+<span id="cb16-262"><a href="#cb16-262" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
+<span id="cb16-263"><a href="#cb16-263" aria-hidden="true" tabindex="-1"></a>tau_0_trained <span class="ot">&lt;-</span> <span class="fu">gam</span>(D <span class="sc">~</span> <span class="fu">s</span>(x, <span class="at">k =</span> <span class="dv">4</span>), <span class="at">data =</span> data[type <span class="sc">==</span> <span class="st">"Control"</span>, ])</span>
+<span id="cb16-264"><a href="#cb16-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-265"><a href="#cb16-265" aria-hidden="true" tabindex="-1"></a><span class="co">#=== estimate tau_1 ===#</span></span>
+<span id="cb16-266"><a href="#cb16-266" aria-hidden="true" tabindex="-1"></a>tau_hat_data[, tau_hat_0 <span class="sc">:</span><span class="er">=</span> <span class="fu">predict</span>(tau_0_trained, <span class="at">newdata =</span> tau_hat_data)]</span>
+<span id="cb16-267"><a href="#cb16-267" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-268"><a href="#cb16-268" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-271"><a href="#cb16-271" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-272"><a href="#cb16-272" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> tau_hat_data) <span class="sc">+</span></span>
+<span id="cb16-273"><a href="#cb16-273" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> tau_hat_1, <span class="at">x =</span> x, <span class="at">color =</span> <span class="st">"Treated"</span>)) <span class="sc">+</span></span>
+<span id="cb16-274"><a href="#cb16-274" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> tau_hat_0, <span class="at">x =</span> x, <span class="at">color =</span> <span class="st">"Control"</span>)) <span class="sc">+</span></span>
+<span id="cb16-275"><a href="#cb16-275" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Treated"</span> <span class="ot">=</span> <span class="st">"blue"</span>, <span class="st">"Control"</span> <span class="ot">=</span> <span class="st">"red"</span>))</span>
+<span id="cb16-276"><a href="#cb16-276" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-277"><a href="#cb16-277" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-278"><a href="#cb16-278" aria-hidden="true" tabindex="-1"></a>Let's use propensity score as $g(X)$ in Step 4.</span>
+<span id="cb16-279"><a href="#cb16-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-282"><a href="#cb16-282" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-283"><a href="#cb16-283" aria-hidden="true" tabindex="-1"></a>w_gam_trained <span class="ot">&lt;-</span> </span>
+<span id="cb16-284"><a href="#cb16-284" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gam</span>(</span>
+<span id="cb16-285"><a href="#cb16-285" aria-hidden="true" tabindex="-1"></a>    W <span class="sc">~</span> <span class="fu">s</span>(x, <span class="at">k =</span> <span class="dv">4</span>), </span>
+<span id="cb16-286"><a href="#cb16-286" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> data, </span>
+<span id="cb16-287"><a href="#cb16-287" aria-hidden="true" tabindex="-1"></a>    <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"probit"</span>)</span>
+<span id="cb16-288"><a href="#cb16-288" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-289"><a href="#cb16-289" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-290"><a href="#cb16-290" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-291"><a href="#cb16-291" aria-hidden="true" tabindex="-1"></a>Let's predict $E<span class="co">[</span><span class="ot">W|X</span><span class="co">]</span>$ at each value of $X$ at which we are estiamting $\tau$. </span>
+<span id="cb16-292"><a href="#cb16-292" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-295"><a href="#cb16-295" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-296"><a href="#cb16-296" aria-hidden="true" tabindex="-1"></a>tau_hat_data[, g_x <span class="sc">:</span><span class="er">=</span> <span class="fu">predict</span>(w_gam_trained, <span class="at">newdata =</span> tau_hat_data, <span class="at">type =</span> <span class="st">"response"</span>)]</span>
+<span id="cb16-297"><a href="#cb16-297" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-298"><a href="#cb16-298" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-299"><a href="#cb16-299" aria-hidden="true" tabindex="-1"></a>As you can see below, the mean value of $g(x)$ is small because the treatment probability is very low (it is only $<span class="in">`r N_trt`</span>$ out of $<span class="in">`r N`</span>$).</span>
+<span id="cb16-300"><a href="#cb16-300" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-303"><a href="#cb16-303" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-304"><a href="#cb16-304" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(tau_hat_data[, g_x])</span>
+<span id="cb16-305"><a href="#cb16-305" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-306"><a href="#cb16-306" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-307"><a href="#cb16-307" aria-hidden="true" tabindex="-1"></a>This number is basically $<span class="in">`r N_trt`</span>/320$. So, in this example, we could have just used the proportion of the treated observations. Notice that $g(X)$ is multiplied to $\hat{\theta}_0(X)$ in @eq-final-X. So, we are giving a lower weight to $\hat{\theta}_0(X)$. This is because $\hat{\theta}_0(X)$ is less reliable because $\hat{\mu}_1(X)$ is less reliable due to the lack of samples in the treated group. </span>
+<span id="cb16-308"><a href="#cb16-308" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-311"><a href="#cb16-311" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-312"><a href="#cb16-312" aria-hidden="true" tabindex="-1"></a>tau_hat_data[, tau_hat_X <span class="sc">:</span><span class="er">=</span> g_x <span class="sc">*</span> tau_hat_0 <span class="sc">+</span> (<span class="dv">1</span><span class="sc">-</span>g_x) <span class="sc">*</span> tau_hat_1]</span>
+<span id="cb16-313"><a href="#cb16-313" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-314"><a href="#cb16-314" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-315"><a href="#cb16-315" aria-hidden="true" tabindex="-1"></a>As you can see, X-learner outperforms T-learner in this particualr instance at least in terms of point estimates of $\tau(X)$. </span>
+<span id="cb16-316"><a href="#cb16-316" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-319"><a href="#cb16-319" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-320"><a href="#cb16-320" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> tau_hat_data) <span class="sc">+</span></span>
+<span id="cb16-321"><a href="#cb16-321" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> tau_hat_T, <span class="at">x =</span> x, <span class="at">color =</span> <span class="st">"T-learner"</span>)) <span class="sc">+</span></span>
+<span id="cb16-322"><a href="#cb16-322" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> tau_hat_X, <span class="at">x =</span> x, <span class="at">color =</span> <span class="st">"X-learner"</span>)) <span class="sc">+</span></span>
+<span id="cb16-323"><a href="#cb16-323" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">1</span>, <span class="fu">aes</span>(<span class="at">color =</span> <span class="st">"True Treatment Effect"</span>)) <span class="sc">+</span></span>
+<span id="cb16-324"><a href="#cb16-324" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(</span>
+<span id="cb16-325"><a href="#cb16-325" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> <span class="fu">c</span>(</span>
+<span id="cb16-326"><a href="#cb16-326" aria-hidden="true" tabindex="-1"></a>        <span class="st">"T-learner"</span> <span class="ot">=</span> <span class="st">"red"</span>, </span>
+<span id="cb16-327"><a href="#cb16-327" aria-hidden="true" tabindex="-1"></a>        <span class="st">"X-learner"</span> <span class="ot">=</span> <span class="st">"blue"</span>, </span>
+<span id="cb16-328"><a href="#cb16-328" aria-hidden="true" tabindex="-1"></a>        <span class="st">"True Treatment Effect"</span> <span class="ot">=</span> <span class="st">"black"</span></span>
+<span id="cb16-329"><a href="#cb16-329" aria-hidden="true" tabindex="-1"></a>      ),</span>
+<span id="cb16-330"><a href="#cb16-330" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">""</span></span>
+<span id="cb16-331"><a href="#cb16-331" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb16-332"><a href="#cb16-332" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Treatment Effect"</span>) <span class="sc">+</span></span>
+<span id="cb16-333"><a href="#cb16-333" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb16-334"><a href="#cb16-334" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span>
+<span id="cb16-335"><a href="#cb16-335" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-336"><a href="#cb16-336" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-337"><a href="#cb16-337" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- Let $e(X)$ denote the propensity score $pr(W=1|X) = E[W|X]$.　</span></span>
+<span id="cb16-338"><a href="#cb16-338" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-339"><a href="#cb16-339" aria-hidden="true" tabindex="-1"></a><span class="co">Under the unconfoundedness assumption,</span></span>
+<span id="cb16-340"><a href="#cb16-340" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-341"><a href="#cb16-341" aria-hidden="true" tabindex="-1"></a><span class="co">$E[\varepsilon(W_i)|X_i, W_i] = 0$, where $\varepsilon_i(w) = Y_i(w) - {\mu_0(X_i)} + w\tau(X_i)$ </span></span>
+<span id="cb16-342"><a href="#cb16-342" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-343"><a href="#cb16-343" aria-hidden="true" tabindex="-1"></a><span class="co">+ $Y_i(0) = {\mu_0(X_i)} + 0\cdot \tau(X_i) = \mu_0(X_i) + \varepsilon_i$</span></span>
+<span id="cb16-344"><a href="#cb16-344" aria-hidden="true" tabindex="-1"></a><span class="co">+ $Y_i(1) = {\mu_0(X_i)} + 1\cdot \tau(X_i) = \mu_0(X_i) + \tau(X_i)  + \varepsilon_i$</span></span>
+<span id="cb16-345"><a href="#cb16-345" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-346"><a href="#cb16-346" aria-hidden="true" tabindex="-1"></a><span class="co">Conditional mean outcome (averaged across both treated and untreated) denoted by $m(x)$ is</span></span>
+<span id="cb16-347"><a href="#cb16-347" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-348"><a href="#cb16-348" aria-hidden="true" tabindex="-1"></a><span class="co">$$</span></span>
+<span id="cb16-349"><a href="#cb16-349" aria-hidden="true" tabindex="-1"></a><span class="co">\begin{align}</span></span>
+<span id="cb16-350"><a href="#cb16-350" aria-hidden="true" tabindex="-1"></a><span class="co">m(x) = E[Y|X=x] = \mu_0(x) + e(x)\cdot \tau(x)</span></span>
+<span id="cb16-351"><a href="#cb16-351" aria-hidden="true" tabindex="-1"></a><span class="co">\end{align}</span></span>
+<span id="cb16-352"><a href="#cb16-352" aria-hidden="true" tabindex="-1"></a><span class="co">$$</span></span>
+<span id="cb16-353"><a href="#cb16-353" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-354"><a href="#cb16-354" aria-hidden="true" tabindex="-1"></a><span class="co">Note that that observed outcome can be written as follows:</span></span>
+<span id="cb16-355"><a href="#cb16-355" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-356"><a href="#cb16-356" aria-hidden="true" tabindex="-1"></a><span class="co">$$</span></span>
+<span id="cb16-357"><a href="#cb16-357" aria-hidden="true" tabindex="-1"></a><span class="co">\begin{align}</span></span>
+<span id="cb16-358"><a href="#cb16-358" aria-hidden="true" tabindex="-1"></a><span class="co">Y_i =  \mu_0(X_i) + W_i \tau(X_i)  + \varepsilon_i </span></span>
+<span id="cb16-359"><a href="#cb16-359" aria-hidden="true" tabindex="-1"></a><span class="co">\end{align}</span></span>
+<span id="cb16-360"><a href="#cb16-360" aria-hidden="true" tabindex="-1"></a><span class="co">$$</span></span>
+<span id="cb16-361"><a href="#cb16-361" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-362"><a href="#cb16-362" aria-hidden="true" tabindex="-1"></a><span class="co">Subtracting $m(X_i)$ from both sides,</span></span>
+<span id="cb16-363"><a href="#cb16-363" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-364"><a href="#cb16-364" aria-hidden="true" tabindex="-1"></a><span class="co">$Y_i - m(X_i) = [W_i - e(X_i)]\cdot \tau(X_i) + \varepsilon_i$</span></span>
+<span id="cb16-365"><a href="#cb16-365" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-366"><a href="#cb16-366" aria-hidden="true" tabindex="-1"></a><span class="co">This is termed **Robinson transformation**, which is originally proposed by @robinson1998.</span></span>
+<span id="cb16-367"><a href="#cb16-367" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-368"><a href="#cb16-368" aria-hidden="true" tabindex="-1"></a><span class="co">According to Robins (2004), </span></span>
+<span id="cb16-369"><a href="#cb16-369" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-370"><a href="#cb16-370" aria-hidden="true" tabindex="-1"></a><span class="co">$\tau(X_i) = argmin_{\tau}\large\{\normalsize E\large(\normalsize[\{Y_i-m(X_i)\}-{W_i - e(X_i)}\tau]^2\large)\large\}$</span></span>
+<span id="cb16-371"><a href="#cb16-371" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-372"><a href="#cb16-372" aria-hidden="true" tabindex="-1"></a><span class="co">So, if we were to know $m(X_i)$ and $e(X_i)$ for some reason, we can estimate $\tau(X_i)$ by solving the following sample analog of the loss minimization problem:</span></span>
+<span id="cb16-373"><a href="#cb16-373" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-374"><a href="#cb16-374" aria-hidden="true" tabindex="-1"></a><span class="co">$\tilde{\tau}(X_i)= argmin_{\tau}\large\{\normalsize \frac{1}{n}\sum_{i=1}^{n}\normalsize[\{Y_i-m(X_i)\}-\{W_i - e(X_i)\}\tau]^2+\Lambda_n(\tau)\large\}$</span></span>
+<span id="cb16-375"><a href="#cb16-375" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-376"><a href="#cb16-376" aria-hidden="true" tabindex="-1"></a><span class="co">where $\Lambda_n(\tau)$ is interpreted as a regularizer on the complexity of the $\tau$ function.</span></span>
+<span id="cb16-377"><a href="#cb16-377" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-378"><a href="#cb16-378" aria-hidden="true" tabindex="-1"></a><span class="co">Of course the problem is that we do not know $m(X_i)$ and $e^*(X_i)$, so the above solution is not feasible.</span></span>
+<span id="cb16-379"><a href="#cb16-379" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-380"><a href="#cb16-380" aria-hidden="true" tabindex="-1"></a><span class="co">## R-learner {#sec-r-learner}</span></span>
+<span id="cb16-381"><a href="#cb16-381" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-382"><a href="#cb16-382" aria-hidden="true" tabindex="-1"></a><span class="al">###</span><span class="co"> Theoretical background</span></span>
+<span id="cb16-383"><a href="#cb16-383" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-384"><a href="#cb16-384" aria-hidden="true" tabindex="-1"></a><span class="co">Under the assumptions,</span></span>
+<span id="cb16-385"><a href="#cb16-385" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-386"><a href="#cb16-386" aria-hidden="true" tabindex="-1"></a><span class="co">$$</span></span>
+<span id="cb16-387"><a href="#cb16-387" aria-hidden="true" tabindex="-1"></a><span class="co">\begin{aligned}</span></span>
+<span id="cb16-388"><a href="#cb16-388" aria-hidden="true" tabindex="-1"></a><span class="co">E[Y|X, W] = \theta(X)\cdot f(X,W) + g(X,W)</span></span>
+<span id="cb16-389"><a href="#cb16-389" aria-hidden="true" tabindex="-1"></a><span class="co">\end{aligned}</span></span>
+<span id="cb16-390"><a href="#cb16-390" aria-hidden="true" tabindex="-1"></a><span class="co">$$ {#eq-yxw}</span></span>
+<span id="cb16-391"><a href="#cb16-391" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-392"><a href="#cb16-392" aria-hidden="true" tabindex="-1"></a><span class="co">:::{.column-margin}</span></span>
+<span id="cb16-393"><a href="#cb16-393" aria-hidden="true" tabindex="-1"></a><span class="co">$f(X,W) = E[T|X,W]$ </span></span>
+<span id="cb16-394"><a href="#cb16-394" aria-hidden="true" tabindex="-1"></a><span class="co">:::</span></span>
+<span id="cb16-395"><a href="#cb16-395" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-396"><a href="#cb16-396" aria-hidden="true" tabindex="-1"></a><span class="co">Let, $l(X,W)$ denote $E[Y|X, W]$. Taking the difference of @eq-model-framework and @eq-yxw on both sides,</span></span>
+<span id="cb16-397"><a href="#cb16-397" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-398"><a href="#cb16-398" aria-hidden="true" tabindex="-1"></a><span class="co">$$</span></span>
+<span id="cb16-399"><a href="#cb16-399" aria-hidden="true" tabindex="-1"></a><span class="co">\begin{aligned}</span></span>
+<span id="cb16-400"><a href="#cb16-400" aria-hidden="true" tabindex="-1"></a><span class="co">Y_i - l(X_i,Y_i) &amp; = \theta(X_i)\cdot T_i + g(X_i,W_i) + \varepsilon_i - [\theta(X_i)\cdot f(X_i,W_i) + g(X_i,W_i)] \\</span></span>
+<span id="cb16-401"><a href="#cb16-401" aria-hidden="true" tabindex="-1"></a><span class="co">\Rightarrow Y_i - l(X_i,Y_i) &amp; = \theta(X_i)\cdot (T_i -f(X_i,W_i)) + \varepsilon_i \\</span></span>
+<span id="cb16-402"><a href="#cb16-402" aria-hidden="true" tabindex="-1"></a><span class="co">\end{aligned}</span></span>
+<span id="cb16-403"><a href="#cb16-403" aria-hidden="true" tabindex="-1"></a><span class="co">$$</span></span>
+<span id="cb16-404"><a href="#cb16-404" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-405"><a href="#cb16-405" aria-hidden="true" tabindex="-1"></a><span class="co">:::{.column-margin}</span></span>
+<span id="cb16-406"><a href="#cb16-406" aria-hidden="true" tabindex="-1"></a><span class="co">This is akin to residualization/orthogonalization seen in the DML approach in @sec-dml.</span></span>
+<span id="cb16-407"><a href="#cb16-407" aria-hidden="true" tabindex="-1"></a><span class="co">:::</span></span>
+<span id="cb16-408"><a href="#cb16-408" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-409"><a href="#cb16-409" aria-hidden="true" tabindex="-1"></a><span class="co">So, the problem of identifying $\theta(X)$ reduces to estimating the following model:</span></span>
+<span id="cb16-410"><a href="#cb16-410" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-411"><a href="#cb16-411" aria-hidden="true" tabindex="-1"></a><span class="co">$$</span></span>
+<span id="cb16-412"><a href="#cb16-412" aria-hidden="true" tabindex="-1"></a><span class="co">\begin{aligned}</span></span>
+<span id="cb16-413"><a href="#cb16-413" aria-hidden="true" tabindex="-1"></a><span class="co">Y_i - l(X_i,Y_i) &amp; = \theta(X_i)\cdot (T_i -f(X_i,W_i)) + \varepsilon_i</span></span>
+<span id="cb16-414"><a href="#cb16-414" aria-hidden="true" tabindex="-1"></a><span class="co">\end{aligned}</span></span>
+<span id="cb16-415"><a href="#cb16-415" aria-hidden="true" tabindex="-1"></a><span class="co">$$</span></span>
+<span id="cb16-416"><a href="#cb16-416" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-417"><a href="#cb16-417" aria-hidden="true" tabindex="-1"></a><span class="co">Since $E[(T_i -f(X_i,W_i))\cdot\varepsilon_i|X] = E[\eta_i\cdot\varepsilon_i|X] = 0$ by assumption, we can regress $\tilde{Y}_i$ on $X_i$ and $\tilde{T}_i$ to estimate $\theta(X)$. Specifically, we can minimize the following objective function:</span></span>
+<span id="cb16-418"><a href="#cb16-418" aria-hidden="true" tabindex="-1"></a><span class="co">$$</span></span>
+<span id="cb16-419"><a href="#cb16-419" aria-hidden="true" tabindex="-1"></a><span class="co">\begin{aligned}</span></span>
+<span id="cb16-420"><a href="#cb16-420" aria-hidden="true" tabindex="-1"></a><span class="co">Min_{\theta(X)}\sum_{i=1}^N \large(\normalsize[Y_i - l(X_i,Y_i)] - [\theta(X_i)\cdot (T_i -f(X_i,W_i))]\large)^2 </span></span>
+<span id="cb16-421"><a href="#cb16-421" aria-hidden="true" tabindex="-1"></a><span class="co">\end{aligned}</span></span>
+<span id="cb16-422"><a href="#cb16-422" aria-hidden="true" tabindex="-1"></a><span class="co">$$ {#eq-est-equation}</span></span>
+<span id="cb16-423"><a href="#cb16-423" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-424"><a href="#cb16-424" aria-hidden="true" tabindex="-1"></a><span class="al">###</span><span class="co"> Estimation steps {#sec-est-steps}</span></span>
+<span id="cb16-425"><a href="#cb16-425" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-426"><a href="#cb16-426" aria-hidden="true" tabindex="-1"></a><span class="co">In practice, we of course do not observe $l(X,W)$ $( \equiv E[Y|X, W])$ and $f(X,W)$ $(\equiv E[T|X, W])$. So, we first need to estimate them using the data at hand to construct $\hat{\tilde{Y}}$ and $\hat{\tilde{T}}$. You can use any suitable statistical methods to estimate $E[Y|X, W]$ and $f(X,W)$. Some machine learning methods allow you to estimate them without assuming any functional form or structural assumptions. If you believe they are linear functions of $X$ and $W$, you could alternatively use lasso or other linear models. @nie_quasi-oracle_2021 proposes that the estimation of $l(X,W)$ and $f(X,W)$ is done by cross-fitting (see @sec-cf) to avoid over-fitting bias. Let $I_{-i}$ denote all the observations that belong to the folds that $i$ does &lt;span style="color:blue"&gt; not &lt;/span&gt; belong to. Further, let $\hat{f}(X_i, W_i)^{I_{-i}}$ and $\hat{g}(X_i, W_i)^{I_{-i}}$ denote $f(X_i, W_i)$ and $g(X_i, W_i)$ estimated using $I_{-i}$. </span></span>
+<span id="cb16-427"><a href="#cb16-427" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-428"><a href="#cb16-428" aria-hidden="true" tabindex="-1"></a><span class="co">::: {.column-margin}</span></span>
+<span id="cb16-429"><a href="#cb16-429" aria-hidden="true" tabindex="-1"></a><span class="co">Just like the DML approach discussed in @sec-dml, both $Y$ and $T$ are orthogonalized.</span></span>
+<span id="cb16-430"><a href="#cb16-430" aria-hidden="true" tabindex="-1"></a><span class="co">:::</span></span>
+<span id="cb16-431"><a href="#cb16-431" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-432"><a href="#cb16-432" aria-hidden="true" tabindex="-1"></a><span class="co">Then the quality of fit (explaining the heterogeneity in the impact of treatment) can be expressed as follows, which is the empirical version of @eq-est-equation:</span></span>
+<span id="cb16-433"><a href="#cb16-433" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-434"><a href="#cb16-434" aria-hidden="true" tabindex="-1"></a><span class="co">$$</span></span>
+<span id="cb16-435"><a href="#cb16-435" aria-hidden="true" tabindex="-1"></a><span class="co">\begin{aligned}</span></span>
+<span id="cb16-436"><a href="#cb16-436" aria-hidden="true" tabindex="-1"></a><span class="co">\sum_{i=1}^N [Y_i - \hat{f}(X_i,W_i)^{I_{-i}} - \theta(X)\cdot (T_i - \hat{g}(X_i,W_i)^{I_{-i}})]^2</span></span>
+<span id="cb16-437"><a href="#cb16-437" aria-hidden="true" tabindex="-1"></a><span class="co">\end{aligned}</span></span>
+<span id="cb16-438"><a href="#cb16-438" aria-hidden="true" tabindex="-1"></a><span class="co">$$</span></span>
+<span id="cb16-439"><a href="#cb16-439" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-440"><a href="#cb16-440" aria-hidden="true" tabindex="-1"></a><span class="co">This is called &lt;span style="color:blue"&gt; R-score&lt;/span&gt;, and it can be used for causal model selection, which is covered later. </span></span>
+<span id="cb16-441"><a href="#cb16-441" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-442"><a href="#cb16-442" aria-hidden="true" tabindex="-1"></a><span class="co">The final stage of the R-learner is to estimate $\theta(X)$ by minimizing the R-score plus the regularization term (if desirable).</span></span>
+<span id="cb16-443"><a href="#cb16-443" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-444"><a href="#cb16-444" aria-hidden="true" tabindex="-1"></a><span class="co">$$</span></span>
+<span id="cb16-445"><a href="#cb16-445" aria-hidden="true" tabindex="-1"></a><span class="co">\begin{aligned}</span></span>
+<span id="cb16-446"><a href="#cb16-446" aria-hidden="true" tabindex="-1"></a><span class="co">\hat{\theta}(X) = argmin_{\theta(X)}\;\;\sum_{i=1}^N [Y_i - \hat{f}(X_i,W_i)^{I_{-i}} - \theta(X)\cdot (T_i - \hat{g}(X_i,W_i)^{I_{-i}})]^2 + \Lambda(\theta(X))</span></span>
+<span id="cb16-447"><a href="#cb16-447" aria-hidden="true" tabindex="-1"></a><span class="co">\end{aligned}</span></span>
+<span id="cb16-448"><a href="#cb16-448" aria-hidden="true" tabindex="-1"></a><span class="co">$$</span></span>
+<span id="cb16-449"><a href="#cb16-449" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-450"><a href="#cb16-450" aria-hidden="true" tabindex="-1"></a><span class="co">where $\Lambda(\theta(X))$ is the penalty on the complexity of $\theta(X)$. For example, if you choose to use lasso, then $\Lambda(\theta(X))$ is the L1 norm. You have lots of freedom as to what model you use in the final stage. The `econml` package offers several off-the-shelf choices of R-learner (DML) approaches that differ in the model used at the final stage, including causal forest, lasso, etc.</span></span>
+<span id="cb16-451"><a href="#cb16-451" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-452"><a href="#cb16-452" aria-hidden="true" tabindex="-1"></a><span class="al">###</span><span class="co"> R-learner by hand</span></span>
+<span id="cb16-453"><a href="#cb16-453" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-454"><a href="#cb16-454" aria-hidden="true" tabindex="-1"></a><span class="co">This section goes through the estimation steps provided above to further the understanding of how R-learner works.</span></span>
+<span id="cb16-455"><a href="#cb16-455" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-456"><a href="#cb16-456" aria-hidden="true" tabindex="-1"></a><span class="co">## Comparing the learners</span></span>
+<span id="cb16-457"><a href="#cb16-457" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-458"><a href="#cb16-458" aria-hidden="true" tabindex="-1"></a><span class="co">$$</span></span>
+<span id="cb16-459"><a href="#cb16-459" aria-hidden="true" tabindex="-1"></a><span class="co">\begin{aligned}</span></span>
+<span id="cb16-460"><a href="#cb16-460" aria-hidden="true" tabindex="-1"></a><span class="co">Y_i =\theta(X_i)\cdot T + \alpha g(X_i) + \mu_i</span></span>
+<span id="cb16-461"><a href="#cb16-461" aria-hidden="true" tabindex="-1"></a><span class="co">\end{aligned}</span></span>
+<span id="cb16-462"><a href="#cb16-462" aria-hidden="true" tabindex="-1"></a><span class="co">$$</span></span>
+<span id="cb16-463"><a href="#cb16-463" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-464"><a href="#cb16-464" aria-hidden="true" tabindex="-1"></a><span class="co">+ $X_i = \{X_{i,1}, X_{i,2}, X_{i,3}, X_{i,4}, X_{i,5}\}$</span></span>
+<span id="cb16-465"><a href="#cb16-465" aria-hidden="true" tabindex="-1"></a><span class="co">+ $T_i|X_i \sim Bernouli(f(X_i))$</span></span>
+<span id="cb16-466"><a href="#cb16-466" aria-hidden="true" tabindex="-1"></a><span class="co">+ $\mu_i|X_i \sim N(0,1)$</span></span>
+<span id="cb16-467"><a href="#cb16-467" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-468"><a href="#cb16-468" aria-hidden="true" tabindex="-1"></a><span class="co">:::{.callout-note}</span></span>
+<span id="cb16-469"><a href="#cb16-469" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-470"><a href="#cb16-470" aria-hidden="true" tabindex="-1"></a><span class="co">## Case A</span></span>
+<span id="cb16-471"><a href="#cb16-471" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-472"><a href="#cb16-472" aria-hidden="true" tabindex="-1"></a><span class="co">$$</span></span>
+<span id="cb16-473"><a href="#cb16-473" aria-hidden="true" tabindex="-1"></a><span class="co">\begin{aligned}</span></span>
+<span id="cb16-474"><a href="#cb16-474" aria-hidden="true" tabindex="-1"></a><span class="co">g(X_i) &amp; = sin(\pi X_{i,1}X_{i,2}) + 2(X_{i,3}-0.5)^2 + X_{i,4} + 0.5 X_{i,5}\\</span></span>
+<span id="cb16-475"><a href="#cb16-475" aria-hidden="true" tabindex="-1"></a><span class="co">e(X_i) &amp; = max(0.1, min(sin(\pi X_{i,1}X_{i,2}), 0.9)) \\</span></span>
+<span id="cb16-476"><a href="#cb16-476" aria-hidden="true" tabindex="-1"></a><span class="co">\theta(X_i) &amp; = (X_{i,1}, X_{i,2}) / 2 \\</span></span>
+<span id="cb16-477"><a href="#cb16-477" aria-hidden="true" tabindex="-1"></a><span class="co">X_i &amp; \sim Uni(0,1)^5</span></span>
+<span id="cb16-478"><a href="#cb16-478" aria-hidden="true" tabindex="-1"></a><span class="co">\end{aligned}</span></span>
+<span id="cb16-479"><a href="#cb16-479" aria-hidden="true" tabindex="-1"></a><span class="co">$$</span></span>
+<span id="cb16-480"><a href="#cb16-480" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-481"><a href="#cb16-481" aria-hidden="true" tabindex="-1"></a><span class="co">:::</span></span>
+<span id="cb16-482"><a href="#cb16-482" aria-hidden="true" tabindex="-1"></a><span class="co">  </span></span>
+<span id="cb16-485"><a href="#cb16-485" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-486"><a href="#cb16-486" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true </span></span>
+<span id="cb16-487"><a href="#cb16-487" aria-hidden="true" tabindex="-1"></a><span class="co">gen_data_A &lt;- function(N){</span></span>
+<span id="cb16-488"><a href="#cb16-488" aria-hidden="true" tabindex="-1"></a><span class="co">  data &lt;-</span></span>
+<span id="cb16-489"><a href="#cb16-489" aria-hidden="true" tabindex="-1"></a><span class="co">    data.table(</span></span>
+<span id="cb16-490"><a href="#cb16-490" aria-hidden="true" tabindex="-1"></a><span class="co">      x1 = runif(N),</span></span>
+<span id="cb16-491"><a href="#cb16-491" aria-hidden="true" tabindex="-1"></a><span class="co">      x2 = runif(N),</span></span>
+<span id="cb16-492"><a href="#cb16-492" aria-hidden="true" tabindex="-1"></a><span class="co">      x3 = runif(N),</span></span>
+<span id="cb16-493"><a href="#cb16-493" aria-hidden="true" tabindex="-1"></a><span class="co">      x4 = runif(N),</span></span>
+<span id="cb16-494"><a href="#cb16-494" aria-hidden="true" tabindex="-1"></a><span class="co">      x5 = runif(N),</span></span>
+<span id="cb16-495"><a href="#cb16-495" aria-hidden="true" tabindex="-1"></a><span class="co">      u = rnorm(N)</span></span>
+<span id="cb16-496"><a href="#cb16-496" aria-hidden="true" tabindex="-1"></a><span class="co">    ) %&gt;% </span></span>
+<span id="cb16-497"><a href="#cb16-497" aria-hidden="true" tabindex="-1"></a><span class="co">    .[, `:=`(</span></span>
+<span id="cb16-498"><a href="#cb16-498" aria-hidden="true" tabindex="-1"></a><span class="co">      g_x = sin(pi * x1*x2) + 2*(x3-0.5)^2 + x4 + 0.5*x5,</span></span>
+<span id="cb16-499"><a href="#cb16-499" aria-hidden="true" tabindex="-1"></a><span class="co">      e_x = pmax(0.1, pmin(sin(pi * x1*x2), 0.9)),</span></span>
+<span id="cb16-500"><a href="#cb16-500" aria-hidden="true" tabindex="-1"></a><span class="co">      theta_x = (x1+x2)/2</span></span>
+<span id="cb16-501"><a href="#cb16-501" aria-hidden="true" tabindex="-1"></a><span class="co">    )] %&gt;% </span></span>
+<span id="cb16-502"><a href="#cb16-502" aria-hidden="true" tabindex="-1"></a><span class="co">    .[, t := as.numeric(runif(N) &lt; e_x)] %&gt;% </span></span>
+<span id="cb16-503"><a href="#cb16-503" aria-hidden="true" tabindex="-1"></a><span class="co">    .[, y := theta_x * t + g_x + u]</span></span>
+<span id="cb16-504"><a href="#cb16-504" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-505"><a href="#cb16-505" aria-hidden="true" tabindex="-1"></a><span class="co">  return(data)</span></span>
+<span id="cb16-506"><a href="#cb16-506" aria-hidden="true" tabindex="-1"></a><span class="co">}</span></span>
+<span id="cb16-507"><a href="#cb16-507" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-508"><a href="#cb16-508" aria-hidden="true" tabindex="-1"></a><span class="co">```</span></span>
+<span id="cb16-509"><a href="#cb16-509" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-512"><a href="#cb16-512" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-513"><a href="#cb16-513" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb16-514"><a href="#cb16-514" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb16-515"><a href="#cb16-515" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-516"><a href="#cb16-516" aria-hidden="true" tabindex="-1"></a><span class="co">library(rlearner)</span></span>
+<span id="cb16-517"><a href="#cb16-517" aria-hidden="true" tabindex="-1"></a><span class="co">data &lt;- gen_data_A(N)</span></span>
+<span id="cb16-518"><a href="#cb16-518" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-519"><a href="#cb16-519" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
+<span id="cb16-520"><a href="#cb16-520" aria-hidden="true" tabindex="-1"></a><span class="co"># R-learner</span></span>
+<span id="cb16-521"><a href="#cb16-521" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
+<span id="cb16-522"><a href="#cb16-522" aria-hidden="true" tabindex="-1"></a><span class="co">rboost_fit &lt;- </span></span>
+<span id="cb16-523"><a href="#cb16-523" aria-hidden="true" tabindex="-1"></a><span class="co">  rboost(</span></span>
+<span id="cb16-524"><a href="#cb16-524" aria-hidden="true" tabindex="-1"></a><span class="co">    data[, .(x1, x2, x3, x4, x5)] %&gt;% as.matrix(), </span></span>
+<span id="cb16-525"><a href="#cb16-525" aria-hidden="true" tabindex="-1"></a><span class="co">    data$t, </span></span>
+<span id="cb16-526"><a href="#cb16-526" aria-hidden="true" tabindex="-1"></a><span class="co">    data$y</span></span>
+<span id="cb16-527"><a href="#cb16-527" aria-hidden="true" tabindex="-1"></a><span class="co">  )</span></span>
+<span id="cb16-528"><a href="#cb16-528" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-529"><a href="#cb16-529" aria-hidden="true" tabindex="-1"></a><span class="co">rboost_est &lt;- predict(rboost_fit, data$x)</span></span>
+<span id="cb16-530"><a href="#cb16-530" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-531"><a href="#cb16-531" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
+<span id="cb16-532"><a href="#cb16-532" aria-hidden="true" tabindex="-1"></a><span class="co"># S-learner</span></span>
+<span id="cb16-533"><a href="#cb16-533" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
+<span id="cb16-534"><a href="#cb16-534" aria-hidden="true" tabindex="-1"></a><span class="co">sboost_fit &lt;- </span></span>
+<span id="cb16-535"><a href="#cb16-535" aria-hidden="true" tabindex="-1"></a><span class="co">  sboost(</span></span>
+<span id="cb16-536"><a href="#cb16-536" aria-hidden="true" tabindex="-1"></a><span class="co">    data[, .(x1, x2, x3, x4, x5)] %&gt;% as.matrix(), </span></span>
+<span id="cb16-537"><a href="#cb16-537" aria-hidden="true" tabindex="-1"></a><span class="co">    data$t, </span></span>
+<span id="cb16-538"><a href="#cb16-538" aria-hidden="true" tabindex="-1"></a><span class="co">    data$y</span></span>
+<span id="cb16-539"><a href="#cb16-539" aria-hidden="true" tabindex="-1"></a><span class="co">  )</span></span>
+<span id="cb16-540"><a href="#cb16-540" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-541"><a href="#cb16-541" aria-hidden="true" tabindex="-1"></a><span class="co">sboost_est &lt;- predict(rboost_fit, data$x)</span></span>
+<span id="cb16-542"><a href="#cb16-542" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-543"><a href="#cb16-543" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
+<span id="cb16-544"><a href="#cb16-544" aria-hidden="true" tabindex="-1"></a><span class="co"># T-learner</span></span>
+<span id="cb16-545"><a href="#cb16-545" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
+<span id="cb16-546"><a href="#cb16-546" aria-hidden="true" tabindex="-1"></a><span class="co">tboost_fit &lt;- </span></span>
+<span id="cb16-547"><a href="#cb16-547" aria-hidden="true" tabindex="-1"></a><span class="co">  tboost(</span></span>
+<span id="cb16-548"><a href="#cb16-548" aria-hidden="true" tabindex="-1"></a><span class="co">    data[, .(x1, x2, x3, x4, x5)] %&gt;% as.matrix(), </span></span>
+<span id="cb16-549"><a href="#cb16-549" aria-hidden="true" tabindex="-1"></a><span class="co">    data$t, </span></span>
+<span id="cb16-550"><a href="#cb16-550" aria-hidden="true" tabindex="-1"></a><span class="co">    data$y</span></span>
+<span id="cb16-551"><a href="#cb16-551" aria-hidden="true" tabindex="-1"></a><span class="co">  )</span></span>
+<span id="cb16-552"><a href="#cb16-552" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-553"><a href="#cb16-553" aria-hidden="true" tabindex="-1"></a><span class="co">tboost_est &lt;- predict(rboost_fit, data$x)</span></span>
+<span id="cb16-554"><a href="#cb16-554" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-555"><a href="#cb16-555" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
+<span id="cb16-556"><a href="#cb16-556" aria-hidden="true" tabindex="-1"></a><span class="co"># X-learner</span></span>
+<span id="cb16-557"><a href="#cb16-557" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
+<span id="cb16-558"><a href="#cb16-558" aria-hidden="true" tabindex="-1"></a><span class="co">xboost_fit &lt;- </span></span>
+<span id="cb16-559"><a href="#cb16-559" aria-hidden="true" tabindex="-1"></a><span class="co">  xboost(</span></span>
+<span id="cb16-560"><a href="#cb16-560" aria-hidden="true" tabindex="-1"></a><span class="co">    data[, .(x1, x2, x3, x4, x5)] %&gt;% as.matrix(), </span></span>
+<span id="cb16-561"><a href="#cb16-561" aria-hidden="true" tabindex="-1"></a><span class="co">    data$t, </span></span>
+<span id="cb16-562"><a href="#cb16-562" aria-hidden="true" tabindex="-1"></a><span class="co">    data$y</span></span>
+<span id="cb16-563"><a href="#cb16-563" aria-hidden="true" tabindex="-1"></a><span class="co">  )</span></span>
+<span id="cb16-564"><a href="#cb16-564" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-565"><a href="#cb16-565" aria-hidden="true" tabindex="-1"></a><span class="co">xboost_est &lt;- predict(rboost_fit, data$x)</span></span>
+<span id="cb16-566"><a href="#cb16-566" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-567"><a href="#cb16-567" aria-hidden="true" tabindex="-1"></a><span class="co">```</span></span>
+<span id="cb16-568"><a href="#cb16-568" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-569"><a href="#cb16-569" aria-hidden="true" tabindex="-1"></a><span class="co">:::{.callout-note}</span></span>
+<span id="cb16-570"><a href="#cb16-570" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-571"><a href="#cb16-571" aria-hidden="true" tabindex="-1"></a><span class="co">## Case B (randomized trial)</span></span>
+<span id="cb16-572"><a href="#cb16-572" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-573"><a href="#cb16-573" aria-hidden="true" tabindex="-1"></a><span class="co">$$</span></span>
+<span id="cb16-574"><a href="#cb16-574" aria-hidden="true" tabindex="-1"></a><span class="co">\begin{aligned}</span></span>
+<span id="cb16-575"><a href="#cb16-575" aria-hidden="true" tabindex="-1"></a><span class="co">g(X_i) &amp; = max(X_{i,1} + X_{i,2}, X_{i,3}, 0) + max(X_{i,4}+ X_{i,5},0)\\</span></span>
+<span id="cb16-576"><a href="#cb16-576" aria-hidden="true" tabindex="-1"></a><span class="co">e(X_i) &amp; = 1/2 \\</span></span>
+<span id="cb16-577"><a href="#cb16-577" aria-hidden="true" tabindex="-1"></a><span class="co">\theta(X_i) &amp; = X_{i,1} + log(1+exp(X_{i,2})) \\</span></span>
+<span id="cb16-578"><a href="#cb16-578" aria-hidden="true" tabindex="-1"></a><span class="co">X_i &amp; \sim N(0,I_5)</span></span>
+<span id="cb16-579"><a href="#cb16-579" aria-hidden="true" tabindex="-1"></a><span class="co">\end{aligned}</span></span>
+<span id="cb16-580"><a href="#cb16-580" aria-hidden="true" tabindex="-1"></a><span class="co">$$</span></span>
+<span id="cb16-581"><a href="#cb16-581" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-582"><a href="#cb16-582" aria-hidden="true" tabindex="-1"></a><span class="co">:::</span></span>
+<span id="cb16-583"><a href="#cb16-583" aria-hidden="true" tabindex="-1"></a><span class="co"> </span></span>
+<span id="cb16-586"><a href="#cb16-586" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-587"><a href="#cb16-587" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true </span></span>
+<span id="cb16-588"><a href="#cb16-588" aria-hidden="true" tabindex="-1"></a><span class="co">gen_data_B &lt;- function(N){</span></span>
+<span id="cb16-589"><a href="#cb16-589" aria-hidden="true" tabindex="-1"></a><span class="co">  data &lt;-</span></span>
+<span id="cb16-590"><a href="#cb16-590" aria-hidden="true" tabindex="-1"></a><span class="co">    data.table(</span></span>
+<span id="cb16-591"><a href="#cb16-591" aria-hidden="true" tabindex="-1"></a><span class="co">      x1 = rnorm(N),</span></span>
+<span id="cb16-592"><a href="#cb16-592" aria-hidden="true" tabindex="-1"></a><span class="co">      x2 = rnorm(N),</span></span>
+<span id="cb16-593"><a href="#cb16-593" aria-hidden="true" tabindex="-1"></a><span class="co">      x3 = rnorm(N),</span></span>
+<span id="cb16-594"><a href="#cb16-594" aria-hidden="true" tabindex="-1"></a><span class="co">      x4 = rnorm(N),</span></span>
+<span id="cb16-595"><a href="#cb16-595" aria-hidden="true" tabindex="-1"></a><span class="co">      x5 = rnorm(N),</span></span>
+<span id="cb16-596"><a href="#cb16-596" aria-hidden="true" tabindex="-1"></a><span class="co">      u = rnorm(N)</span></span>
+<span id="cb16-597"><a href="#cb16-597" aria-hidden="true" tabindex="-1"></a><span class="co">    ) %&gt;% </span></span>
+<span id="cb16-598"><a href="#cb16-598" aria-hidden="true" tabindex="-1"></a><span class="co">    .[, `:=`(</span></span>
+<span id="cb16-599"><a href="#cb16-599" aria-hidden="true" tabindex="-1"></a><span class="co">      g_x = pmax(x1 + x2, x3) + pmax(x4 + x5, 0),</span></span>
+<span id="cb16-600"><a href="#cb16-600" aria-hidden="true" tabindex="-1"></a><span class="co">      e_x = 1/2,</span></span>
+<span id="cb16-601"><a href="#cb16-601" aria-hidden="true" tabindex="-1"></a><span class="co">      theta_x = x1+log(1 + exp(x2))</span></span>
+<span id="cb16-602"><a href="#cb16-602" aria-hidden="true" tabindex="-1"></a><span class="co">    )] %&gt;% </span></span>
+<span id="cb16-603"><a href="#cb16-603" aria-hidden="true" tabindex="-1"></a><span class="co">    .[, t := (runif(N) &lt; e_x)] %&gt;% </span></span>
+<span id="cb16-604"><a href="#cb16-604" aria-hidden="true" tabindex="-1"></a><span class="co">    .[, y := theta_x * t + g_x + u]</span></span>
+<span id="cb16-605"><a href="#cb16-605" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-606"><a href="#cb16-606" aria-hidden="true" tabindex="-1"></a><span class="co">  return(data)</span></span>
+<span id="cb16-607"><a href="#cb16-607" aria-hidden="true" tabindex="-1"></a><span class="co">}</span></span>
+<span id="cb16-608"><a href="#cb16-608" aria-hidden="true" tabindex="-1"></a><span class="co">```</span></span>
+<span id="cb16-609"><a href="#cb16-609" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-610"><a href="#cb16-610" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-611"><a href="#cb16-611" aria-hidden="true" tabindex="-1"></a><span class="co">## X-, S-, T-, R-learner in Python</span></span>
+<span id="cb16-612"><a href="#cb16-612" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-613"><a href="#cb16-613" aria-hidden="true" tabindex="-1"></a><span class="co">We saw a general R-learner framework for CATE estimation. We now look at an example of Linear DML, which uses a linear model at the final stage. So, we are assuming that $\theta(X)$ can be written as follows in @eq-model-framework:</span></span>
+<span id="cb16-614"><a href="#cb16-614" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-615"><a href="#cb16-615" aria-hidden="true" tabindex="-1"></a><span class="co">$$</span></span>
+<span id="cb16-616"><a href="#cb16-616" aria-hidden="true" tabindex="-1"></a><span class="co">\begin{aligned}</span></span>
+<span id="cb16-617"><a href="#cb16-617" aria-hidden="true" tabindex="-1"></a><span class="co">\theta(X) = \alpha + \beta_1 x_1 + \beta_2 x_2 + \dots + \beta_k x_k</span></span>
+<span id="cb16-618"><a href="#cb16-618" aria-hidden="true" tabindex="-1"></a><span class="co">\end{aligned}</span></span>
+<span id="cb16-619"><a href="#cb16-619" aria-hidden="true" tabindex="-1"></a><span class="co">$$</span></span>
+<span id="cb16-620"><a href="#cb16-620" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-621"><a href="#cb16-621" aria-hidden="true" tabindex="-1"></a><span class="co">where $x_1$ through $x_k$ are the drivers of heterogeneity in treatment effects and $\beta_1$ through $\beta_k$ are their coefficients.</span></span>
+<span id="cb16-622"><a href="#cb16-622" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-623"><a href="#cb16-623" aria-hidden="true" tabindex="-1"></a><span class="co">::: {.column-margin}</span></span>
+<span id="cb16-624"><a href="#cb16-624" aria-hidden="true" tabindex="-1"></a><span class="co">**Packages to load for replication**</span></span>
+<span id="cb16-625"><a href="#cb16-625" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-626"><a href="#cb16-626" aria-hidden="true" tabindex="-1"></a><span class="co">```{r }</span></span>
+<span id="cb16-627"><a href="#cb16-627" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb16-628"><a href="#cb16-628" aria-hidden="true" tabindex="-1"></a><span class="co">library(data.table)</span></span>
+<span id="cb16-629"><a href="#cb16-629" aria-hidden="true" tabindex="-1"></a><span class="co">library(magick)</span></span>
+<span id="cb16-630"><a href="#cb16-630" aria-hidden="true" tabindex="-1"></a><span class="co">library(fixest)</span></span>
+<span id="cb16-631"><a href="#cb16-631" aria-hidden="true" tabindex="-1"></a><span class="co">library(officer)</span></span>
+<span id="cb16-632"><a href="#cb16-632" aria-hidden="true" tabindex="-1"></a><span class="co">library(dplyr)</span></span>
+<span id="cb16-633"><a href="#cb16-633" aria-hidden="true" tabindex="-1"></a><span class="co">library(ggplot2)</span></span>
+<span id="cb16-634"><a href="#cb16-634" aria-hidden="true" tabindex="-1"></a><span class="co">library(reticulate)</span></span>
+<span id="cb16-635"><a href="#cb16-635" aria-hidden="true" tabindex="-1"></a><span class="co">library(DoubleML)</span></span>
+<span id="cb16-636"><a href="#cb16-636" aria-hidden="true" tabindex="-1"></a><span class="co">library(MASS)</span></span>
+<span id="cb16-637"><a href="#cb16-637" aria-hidden="true" tabindex="-1"></a><span class="co">```</span></span>
+<span id="cb16-638"><a href="#cb16-638" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-641"><a href="#cb16-641" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-642"><a href="#cb16-642" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb16-643"><a href="#cb16-643" aria-hidden="true" tabindex="-1"></a><span class="co">library(data.table)</span></span>
+<span id="cb16-644"><a href="#cb16-644" aria-hidden="true" tabindex="-1"></a><span class="co">library(magick)</span></span>
+<span id="cb16-645"><a href="#cb16-645" aria-hidden="true" tabindex="-1"></a><span class="co">library(fixest)</span></span>
+<span id="cb16-646"><a href="#cb16-646" aria-hidden="true" tabindex="-1"></a><span class="co">library(officer)</span></span>
+<span id="cb16-647"><a href="#cb16-647" aria-hidden="true" tabindex="-1"></a><span class="co">library(dplyr)</span></span>
+<span id="cb16-648"><a href="#cb16-648" aria-hidden="true" tabindex="-1"></a><span class="co">library(ggplot2)</span></span>
+<span id="cb16-649"><a href="#cb16-649" aria-hidden="true" tabindex="-1"></a><span class="co">library(reticulate)</span></span>
+<span id="cb16-650"><a href="#cb16-650" aria-hidden="true" tabindex="-1"></a><span class="co">library(DoubleML)</span></span>
+<span id="cb16-651"><a href="#cb16-651" aria-hidden="true" tabindex="-1"></a><span class="co">library(MASS)</span></span>
+<span id="cb16-652"><a href="#cb16-652" aria-hidden="true" tabindex="-1"></a><span class="co">```</span></span>
+<span id="cb16-653"><a href="#cb16-653" aria-hidden="true" tabindex="-1"></a><span class="co">:::</span></span>
+<span id="cb16-654"><a href="#cb16-654" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-655"><a href="#cb16-655" aria-hidden="true" tabindex="-1"></a><span class="co">We use both Python and R for this demonstration. So, let's set things up for that.</span></span>
+<span id="cb16-656"><a href="#cb16-656" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-659"><a href="#cb16-659" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-660"><a href="#cb16-660" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false </span></span>
+<span id="cb16-661"><a href="#cb16-661" aria-hidden="true" tabindex="-1"></a><span class="co">library(reticulate)</span></span>
+<span id="cb16-662"><a href="#cb16-662" aria-hidden="true" tabindex="-1"></a><span class="co">use_virtualenv("ml-learning")</span></span>
+<span id="cb16-663"><a href="#cb16-663" aria-hidden="true" tabindex="-1"></a><span class="co">```</span></span>
+<span id="cb16-664"><a href="#cb16-664" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-665"><a href="#cb16-665" aria-hidden="true" tabindex="-1"></a><span class="co">For this demonstration, we use synthetic data according to the following data generating process:</span></span>
+<span id="cb16-666"><a href="#cb16-666" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-667"><a href="#cb16-667" aria-hidden="true" tabindex="-1"></a><span class="co">$$</span></span>
+<span id="cb16-668"><a href="#cb16-668" aria-hidden="true" tabindex="-1"></a><span class="co">\begin{aligned}</span></span>
+<span id="cb16-669"><a href="#cb16-669" aria-hidden="true" tabindex="-1"></a><span class="co">y_i = exp(x_{i,1}) d_i + x_{i,1} + \frac{1}{4}\cdot\frac{exp(x_{i,3})}{1 + exp(x_{i,3})} + \mu_i \\</span></span>
+<span id="cb16-670"><a href="#cb16-670" aria-hidden="true" tabindex="-1"></a><span class="co">d_i = \frac{exp(x_{i,1})}{1 + exp(x_{i,1})} + \frac{1}{4}\cdot x_{i,3}+ \eta_i</span></span>
+<span id="cb16-671"><a href="#cb16-671" aria-hidden="true" tabindex="-1"></a><span class="co">\end{aligned}</span></span>
+<span id="cb16-672"><a href="#cb16-672" aria-hidden="true" tabindex="-1"></a><span class="co">$$</span></span>
+<span id="cb16-673"><a href="#cb16-673" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-674"><a href="#cb16-674" aria-hidden="true" tabindex="-1"></a><span class="co">Note that this is the same data generating process used in @sec-dml except that the impact of the treatment ($d$) now depends on $x_1$. We can use `gen_data()` function that is defined in @sec-dml-naive.</span></span>
+<span id="cb16-675"><a href="#cb16-675" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-678"><a href="#cb16-678" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-679"><a href="#cb16-679" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false </span></span>
+<span id="cb16-680"><a href="#cb16-680" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-681"><a href="#cb16-681" aria-hidden="true" tabindex="-1"></a><span class="co">#=== sample size ===#</span></span>
+<span id="cb16-682"><a href="#cb16-682" aria-hidden="true" tabindex="-1"></a><span class="co">N &lt;- 1000 </span></span>
+<span id="cb16-683"><a href="#cb16-683" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-684"><a href="#cb16-684" aria-hidden="true" tabindex="-1"></a><span class="co">#=== generate data ===#</span></span>
+<span id="cb16-685"><a href="#cb16-685" aria-hidden="true" tabindex="-1"></a><span class="co">synth_data &lt;-</span></span>
+<span id="cb16-686"><a href="#cb16-686" aria-hidden="true" tabindex="-1"></a><span class="co">  gen_data(</span></span>
+<span id="cb16-687"><a href="#cb16-687" aria-hidden="true" tabindex="-1"></a><span class="co">    te_formula = formula(~ I(exp(x1)*d)),</span></span>
+<span id="cb16-688"><a href="#cb16-688" aria-hidden="true" tabindex="-1"></a><span class="co">    n_obs = N *2</span></span>
+<span id="cb16-689"><a href="#cb16-689" aria-hidden="true" tabindex="-1"></a><span class="co">  )</span></span>
+<span id="cb16-690"><a href="#cb16-690" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-691"><a href="#cb16-691" aria-hidden="true" tabindex="-1"></a><span class="co">X &lt;- dplyr::select(synth_data, starts_with("x")) %&gt;% as.matrix()</span></span>
+<span id="cb16-692"><a href="#cb16-692" aria-hidden="true" tabindex="-1"></a><span class="co">y &lt;- synth_data[, y]</span></span>
+<span id="cb16-693"><a href="#cb16-693" aria-hidden="true" tabindex="-1"></a><span class="co">d &lt;- synth_data[, d]</span></span>
+<span id="cb16-694"><a href="#cb16-694" aria-hidden="true" tabindex="-1"></a><span class="co">```</span></span>
+<span id="cb16-695"><a href="#cb16-695" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-696"><a href="#cb16-696" aria-hidden="true" tabindex="-1"></a><span class="co">We now split the data into training and test datasets. </span></span>
+<span id="cb16-697"><a href="#cb16-697" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-700"><a href="#cb16-700" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb16-701"><a href="#cb16-701" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb16-702"><a href="#cb16-702" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-703"><a href="#cb16-703" aria-hidden="true" tabindex="-1"></a><span class="co">from sklearn.model_selection import train_test_split</span></span>
+<span id="cb16-704"><a href="#cb16-704" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-705"><a href="#cb16-705" aria-hidden="true" tabindex="-1"></a><span class="co">X_train, X_test, y_train, y_test, d_train, d_test= train_test_split(r.X, r.y, r.d,  test_size = 0.5, random_state = 8923)</span></span>
+<span id="cb16-706"><a href="#cb16-706" aria-hidden="true" tabindex="-1"></a><span class="co">```</span></span>
+<span id="cb16-707"><a href="#cb16-707" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-708"><a href="#cb16-708" aria-hidden="true" tabindex="-1"></a><span class="co">Here, to train a linear DML model, we use the Python `econml` package, which offers one of the most comprehensive sets of off-the-shelf R-leaner (DML) methods [@econml]. We can use the `DML` class to implement linear DML.</span></span>
+<span id="cb16-709"><a href="#cb16-709" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-712"><a href="#cb16-712" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb16-713"><a href="#cb16-713" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb16-714"><a href="#cb16-714" aria-hidden="true" tabindex="-1"></a><span class="co">from econml.dml import DML</span></span>
+<span id="cb16-715"><a href="#cb16-715" aria-hidden="true" tabindex="-1"></a><span class="co">```</span></span>
+<span id="cb16-716"><a href="#cb16-716" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-717"><a href="#cb16-717" aria-hidden="true" tabindex="-1"></a><span class="co">::: {.column-margin}</span></span>
+<span id="cb16-718"><a href="#cb16-718" aria-hidden="true" tabindex="-1"></a><span class="co">`DML` is a child class of `_Rlearner`, which is a private class. The `DML` class has several child classes: `LinearDML`, `SpatseLinearDML`, `NonParamDML`, and `CausalForestDML`. </span></span>
+<span id="cb16-719"><a href="#cb16-719" aria-hidden="true" tabindex="-1"></a><span class="co">:::</span></span>
+<span id="cb16-720"><a href="#cb16-720" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-721"><a href="#cb16-721" aria-hidden="true" tabindex="-1"></a><span class="co">As we saw above in @sec-est-steps, we need to specify three models:</span></span>
+<span id="cb16-722"><a href="#cb16-722" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-723"><a href="#cb16-723" aria-hidden="true" tabindex="-1"></a><span class="co">+ `model_y`: model for estimating $E[Y|X,W]$</span></span>
+<span id="cb16-724"><a href="#cb16-724" aria-hidden="true" tabindex="-1"></a><span class="co">+ `model_t`: model for estimating $E[T|X,W]$</span></span>
+<span id="cb16-725"><a href="#cb16-725" aria-hidden="true" tabindex="-1"></a><span class="co">+ `model_final`: model for estimating $\theta(X)$</span></span>
+<span id="cb16-726"><a href="#cb16-726" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-727"><a href="#cb16-727" aria-hidden="true" tabindex="-1"></a><span class="co">In this example, let's use gradient boosting regression for both `model_y` and `model_t` and use lasso with cross-validation for `model_final`. Let's import `GradientBoostingRegressor()` and `LassoCV()` from the `scikitlearn` package.</span></span>
+<span id="cb16-728"><a href="#cb16-728" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-731"><a href="#cb16-731" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb16-732"><a href="#cb16-732" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb16-733"><a href="#cb16-733" aria-hidden="true" tabindex="-1"></a><span class="co">from sklearn.ensemble import GradientBoostingRegressor</span></span>
+<span id="cb16-734"><a href="#cb16-734" aria-hidden="true" tabindex="-1"></a><span class="co">from sklearn.linear_model import LassoCV</span></span>
+<span id="cb16-735"><a href="#cb16-735" aria-hidden="true" tabindex="-1"></a><span class="co">```</span></span>
+<span id="cb16-736"><a href="#cb16-736" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-737"><a href="#cb16-737" aria-hidden="true" tabindex="-1"></a><span class="co">We can now set up our DML framework like below:</span></span>
+<span id="cb16-738"><a href="#cb16-738" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-741"><a href="#cb16-741" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb16-742"><a href="#cb16-742" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb16-743"><a href="#cb16-743" aria-hidden="true" tabindex="-1"></a><span class="co">est = DML(</span></span>
+<span id="cb16-744"><a href="#cb16-744" aria-hidden="true" tabindex="-1"></a><span class="co">    model_y = GradientBoostingRegressor(),</span></span>
+<span id="cb16-745"><a href="#cb16-745" aria-hidden="true" tabindex="-1"></a><span class="co">    model_t = GradientBoostingRegressor(),</span></span>
+<span id="cb16-746"><a href="#cb16-746" aria-hidden="true" tabindex="-1"></a><span class="co">    model_final = LassoCV(fit_intercept = False) </span></span>
+<span id="cb16-747"><a href="#cb16-747" aria-hidden="true" tabindex="-1"></a><span class="co">  )</span></span>
+<span id="cb16-748"><a href="#cb16-748" aria-hidden="true" tabindex="-1"></a><span class="co">```</span></span>
+<span id="cb16-749"><a href="#cb16-749" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-750"><a href="#cb16-750" aria-hidden="true" tabindex="-1"></a><span class="co">Note that no training has happened yet at this point. We simply created a recipe. Once we provide ingredients (data), we can cook (train) with the `fit()` method. </span></span>
+<span id="cb16-751"><a href="#cb16-751" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-754"><a href="#cb16-754" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb16-755"><a href="#cb16-755" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb16-756"><a href="#cb16-756" aria-hidden="true" tabindex="-1"></a><span class="co">est.fit(y_train, d_train, X = X_train, W = X_train)</span></span>
+<span id="cb16-757"><a href="#cb16-757" aria-hidden="true" tabindex="-1"></a><span class="co">```</span></span>
+<span id="cb16-758"><a href="#cb16-758" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-759"><a href="#cb16-759" aria-hidden="true" tabindex="-1"></a><span class="co">+ first argument: dependent variable</span></span>
+<span id="cb16-760"><a href="#cb16-760" aria-hidden="true" tabindex="-1"></a><span class="co">+ second argument: treatment variable </span></span>
+<span id="cb16-761"><a href="#cb16-761" aria-hidden="true" tabindex="-1"></a><span class="co">+ `X`: variables that drive treatment effect heterogeneity</span></span>
+<span id="cb16-762"><a href="#cb16-762" aria-hidden="true" tabindex="-1"></a><span class="co">+ `W`: variables that affect the dependent variable directly</span></span>
+<span id="cb16-763"><a href="#cb16-763" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-764"><a href="#cb16-764" aria-hidden="true" tabindex="-1"></a><span class="co">::: {.column-margin}</span></span>
+<span id="cb16-765"><a href="#cb16-765" aria-hidden="true" tabindex="-1"></a><span class="co">Here, we set `X = W`.</span></span>
+<span id="cb16-766"><a href="#cb16-766" aria-hidden="true" tabindex="-1"></a><span class="co">:::</span></span>
+<span id="cb16-767"><a href="#cb16-767" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-768"><a href="#cb16-768" aria-hidden="true" tabindex="-1"></a><span class="co">Once, the training is done. We can use the `effect()` method to predict $\theta(X)$.</span></span>
+<span id="cb16-769"><a href="#cb16-769" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-772"><a href="#cb16-772" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb16-773"><a href="#cb16-773" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb16-774"><a href="#cb16-774" aria-hidden="true" tabindex="-1"></a><span class="co">te_test = est.effect(X_test)</span></span>
+<span id="cb16-775"><a href="#cb16-775" aria-hidden="true" tabindex="-1"></a><span class="co">```</span></span>
+<span id="cb16-776"><a href="#cb16-776" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-777"><a href="#cb16-777" aria-hidden="true" tabindex="-1"></a><span class="co">@fig-est-theta-hat presents the estimated and true marginal treatment effect ($\theta(X)$) as a function of `x1`. </span></span>
+<span id="cb16-778"><a href="#cb16-778" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-781"><a href="#cb16-781" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-782"><a href="#cb16-782" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false </span></span>
+<span id="cb16-783"><a href="#cb16-783" aria-hidden="true" tabindex="-1"></a><span class="co">plot_data &lt;- </span></span>
+<span id="cb16-784"><a href="#cb16-784" aria-hidden="true" tabindex="-1"></a><span class="co">  data.table(</span></span>
+<span id="cb16-785"><a href="#cb16-785" aria-hidden="true" tabindex="-1"></a><span class="co">    x1 = py$X_test[, 1],</span></span>
+<span id="cb16-786"><a href="#cb16-786" aria-hidden="true" tabindex="-1"></a><span class="co">    te = py$te_test</span></span>
+<span id="cb16-787"><a href="#cb16-787" aria-hidden="true" tabindex="-1"></a><span class="co">  )</span></span>
+<span id="cb16-788"><a href="#cb16-788" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-789"><a href="#cb16-789" aria-hidden="true" tabindex="-1"></a><span class="co">ggplot(plot_data) +</span></span>
+<span id="cb16-790"><a href="#cb16-790" aria-hidden="true" tabindex="-1"></a><span class="co">  geom_point(aes(y = te, x = x1)) +</span></span>
+<span id="cb16-791"><a href="#cb16-791" aria-hidden="true" tabindex="-1"></a><span class="co">  geom_line(aes(y = exp(x1), x = x1), color = "blue") +</span></span>
+<span id="cb16-792"><a href="#cb16-792" aria-hidden="true" tabindex="-1"></a><span class="co">  theme_bw()</span></span>
+<span id="cb16-793"><a href="#cb16-793" aria-hidden="true" tabindex="-1"></a><span class="co">```</span></span>
+<span id="cb16-794"><a href="#cb16-794" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-797"><a href="#cb16-797" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-798"><a href="#cb16-798" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Estimated and true marginal treatment effects</span></span>
+<span id="cb16-799"><a href="#cb16-799" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-est-theta-hat</span></span>
+<span id="cb16-800"><a href="#cb16-800" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb16-801"><a href="#cb16-801" aria-hidden="true" tabindex="-1"></a><span class="co"># plot_data &lt;- </span></span>
+<span id="cb16-802"><a href="#cb16-802" aria-hidden="true" tabindex="-1"></a><span class="co">#   data.table(</span></span>
+<span id="cb16-803"><a href="#cb16-803" aria-hidden="true" tabindex="-1"></a><span class="co">#     x1 = py$X_test[, 1],</span></span>
+<span id="cb16-804"><a href="#cb16-804" aria-hidden="true" tabindex="-1"></a><span class="co">#     te = py$te_test</span></span>
+<span id="cb16-805"><a href="#cb16-805" aria-hidden="true" tabindex="-1"></a><span class="co">#   )</span></span>
+<span id="cb16-806"><a href="#cb16-806" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-807"><a href="#cb16-807" aria-hidden="true" tabindex="-1"></a><span class="co"># g_het_te &lt;-</span></span>
+<span id="cb16-808"><a href="#cb16-808" aria-hidden="true" tabindex="-1"></a><span class="co">#   ggplot(plot_data) +</span></span>
+<span id="cb16-809"><a href="#cb16-809" aria-hidden="true" tabindex="-1"></a><span class="co">#   geom_point(aes(y = te, x = x1)) +</span></span>
+<span id="cb16-810"><a href="#cb16-810" aria-hidden="true" tabindex="-1"></a><span class="co">#   geom_line(aes(y = exp(x1), x = x1), color = "blue") +</span></span>
+<span id="cb16-811"><a href="#cb16-811" aria-hidden="true" tabindex="-1"></a><span class="co">#   theme_bw()</span></span>
+<span id="cb16-812"><a href="#cb16-812" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-813"><a href="#cb16-813" aria-hidden="true" tabindex="-1"></a><span class="co">g_het_te &lt;- readRDS("g_hte_te.rds")</span></span>
+<span id="cb16-814"><a href="#cb16-814" aria-hidden="true" tabindex="-1"></a><span class="co">g_het_te</span></span>
+<span id="cb16-815"><a href="#cb16-815" aria-hidden="true" tabindex="-1"></a><span class="co">```</span></span>
+<span id="cb16-816"><a href="#cb16-816" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-817"><a href="#cb16-817" aria-hidden="true" tabindex="-1"></a><span class="co">Since we forced $\theta(X)$ to be linear in `x1`, it is not surprising that the estimated MTE looks linear in `x1` even though the true MTE is an exponential function of `x1`. In the next chapter (@sec-forest-cate), we discuss CATE estimators based on forest, which estimates $\theta(X)$ non-parametrically, relaxing the assumption of $\theta(X)$ being linear-in-parameter.</span></span>
+<span id="cb16-818"><a href="#cb16-818" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-819"><a href="#cb16-819" aria-hidden="true" tabindex="-1"></a><span class="co">:::{.callout-tip}</span></span>
+<span id="cb16-820"><a href="#cb16-820" aria-hidden="true" tabindex="-1"></a><span class="co">There are many more variations in DML than the one presented here. For those who are interested, I recommend going through examples presented [here](https://github.com/microsoft/EconML/blob/main/notebooks/Double%20Machine%20Learning%20Examples.ipynb) for `DML`</span></span>
+<span id="cb16-821"><a href="#cb16-821" aria-hidden="true" tabindex="-1"></a><span class="co">:::</span></span>
+<span id="cb16-822"><a href="#cb16-822" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-823"><a href="#cb16-823" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-824"><a href="#cb16-824" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-825"><a href="#cb16-825" aria-hidden="true" tabindex="-1"></a></span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+</body></html>

@@ -278,7 +278,7 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./P04-local-linear-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">LLF</span></a>
+  <a href="./P04-local-linear-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Local Linear Forest</span></a>
   </div>
 </li>
     </ul>
@@ -304,7 +304,12 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./C02-r-learner.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">S-, X-, T-, and R-learner</span></a>
+  <a href="./C02-xstr-learner.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">S-, X-, T-, and R-learner</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./C03-cf-orf.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Forest-based CATE Estimators</span></a>
   </div>
 </li>
     </ul>
@@ -320,12 +325,12 @@ div.csl-indent {
     <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./E01-spatial-cv.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></a>
+  <a href="./E01-spatial-cv.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./E02-grf.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Generalized Random Forest</span></a>
+  <a href="./E02-grf.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Generalized Random Forest</span></a>
   </div>
 </li>
     </ul>
@@ -341,17 +346,17 @@ div.csl-indent {
     <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PROG-01-mlr3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Machine Learning with <code>mlr3</code> in R</span></a>
+  <a href="./PROG-01-mlr3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Machine Learning with <code>mlr3</code> in R</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PROG-02-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
+  <a href="./PROG-02-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PROG-03-model-selection-prediction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Model Selection (Prediction)</span></a>
+  <a href="./PROG-03-model-selection-prediction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Model Selection (Prediction)</span></a>
   </div>
 </li>
     </ul>
@@ -408,7 +413,7 @@ div.csl-indent {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-cross-validation" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Cross-validation</span></span></h1>
+<div class="quarto-title-block"><div><h1 class="title"><span id="sec-cross-validation" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Cross-validation</span></span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
 </div>
 
 
@@ -458,10 +463,10 @@ div.csl-indent {
 </ul>
 <p>Our goal here is to find the model that would performs the best when applied to the data that has not been seen yet.</p>
 <p>We saw earlier that training MSE is not appropriate for that purpose as picking the model with the lowest training MSE would very much likely to lead you to an over-fitted model. In this lecture, we consider a better way of selecting a model using only train data.</p>
-<div class="callout-important callout callout-style-default callout-captioned">
+<div class="callout-important callout callout-style-default no-icon callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
-<i class="callout-icon"></i>
+<i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-caption-container flex-fill">
 Important
@@ -477,10 +482,10 @@ Important
 <li>Conduct a CV to see which model-hyper-parameter combination minimizes MSE</li>
 <li>Train the best model specification to the entire training dataset, which becomes your final trained model</li>
 </ul>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-note callout callout-style-default no-icon callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
-<i class="callout-icon"></i>
+<i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-caption-container flex-fill">
 Note
@@ -763,10 +768,10 @@ Note
 </section>
 <section id="summary" class="level3" data-number="3.2.3">
 <h3 data-number="3.2.3" class="anchored" data-anchor-id="summary"><span class="header-section-number">3.2.3</span> Summary</h3>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-note callout callout-style-default no-icon callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
-<i class="callout-icon"></i>
+<i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-caption-container flex-fill">
 Note
@@ -776,10 +781,10 @@ Note
 <p>LOOCV is perfectly general and can be applied to any statistical methods.</p>
 </div>
 </div>
-<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout-warning callout callout-style-default no-icon callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
-<i class="callout-icon"></i>
+<i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-caption-container flex-fill">
 Warning
@@ -1039,10 +1044,10 @@ Warning
 <p><img src="B03-cross-validation_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid" width="576"></p>
 </div>
 </div>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-note callout callout-style-default no-icon callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
-<i class="callout-icon"></i>
+<i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-caption-container flex-fill">
 Note
@@ -1345,6 +1350,8 @@ As you can see KCV gives you `sp` that is close to the `sp` based on pure MSE in
 </div>
 
 
+<!-- -->
+
 </section>
 
 </main> <!-- /main -->
@@ -1378,6 +1385,57 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
   function tippyHover(el, contentFn) {
     const config = {
       allowHTML: true,
@@ -1438,7 +1496,698 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Regression Shrinkage Methods</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
-</nav>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb46" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Cross-validation {#sec-cross-validation}</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="fu">## Motivations</span></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>No model works the best all the time, and searching for the best modeling approach and specifications is an essential part of modeling applications. </span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>For example, we may consider five approaches with varying modeling specifications for each of the approaches:</span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>Random Forest (RF)</span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>number of trees (1000, 2000)</span>
+<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>number of variables used in each tree (3, 5, 8)</span>
+<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>and many other hyper parameters</span>
+<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>LASSO</span>
+<span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>penalty parameter (1, 2, 3, etc)</span>
+<span id="cb46-16"><a href="#cb46-16" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>GAM</span>
+<span id="cb46-17"><a href="#cb46-17" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>number of knots</span>
+<span id="cb46-18"><a href="#cb46-18" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>penalty parameter</span>
+<span id="cb46-19"><a href="#cb46-19" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>Boosted Regression Forest (BRF)</span>
+<span id="cb46-20"><a href="#cb46-20" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>number of trees (1000, 2000)</span>
+<span id="cb46-21"><a href="#cb46-21" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>number of variables used in each tree (3, 5, 8)</span>
+<span id="cb46-22"><a href="#cb46-22" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>and many other hyper parameters</span>
+<span id="cb46-23"><a href="#cb46-23" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>Convolutional Neural Network (CNN)</span>
+<span id="cb46-24"><a href="#cb46-24" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>convolution matrix dimension</span>
+<span id="cb46-25"><a href="#cb46-25" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>the order of convolution</span>
+<span id="cb46-26"><a href="#cb46-26" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>learning rate</span>
+<span id="cb46-27"><a href="#cb46-27" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>and many other hyper parameters</span>
+<span id="cb46-28"><a href="#cb46-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-29"><a href="#cb46-29" aria-hidden="true" tabindex="-1"></a>Our goal here is to find the model that would performs the best when applied to the data that has not been seen yet. </span>
+<span id="cb46-30"><a href="#cb46-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-31"><a href="#cb46-31" aria-hidden="true" tabindex="-1"></a>We saw earlier that training MSE is not appropriate for that purpose as picking the model with the lowest training MSE would very much likely to lead you to an over-fitted model. In this lecture, we consider a better way of selecting a model using only train data.</span>
+<span id="cb46-32"><a href="#cb46-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-33"><a href="#cb46-33" aria-hidden="true" tabindex="-1"></a>:::{.callout-important}</span>
+<span id="cb46-34"><a href="#cb46-34" aria-hidden="true" tabindex="-1"></a>**Why CV?**</span>
+<span id="cb46-35"><a href="#cb46-35" aria-hidden="true" tabindex="-1"></a>When the amount of data is limited and you cannot afford to split the data into training and test datasets, you can use a CV to estimate test MSE (by validating a trained model as if you have test data within the training data) for the purpose of picking the right model and hyper-parameter values.</span>
+<span id="cb46-36"><a href="#cb46-36" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb46-37"><a href="#cb46-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-38"><a href="#cb46-38" aria-hidden="true" tabindex="-1"></a>Here is a workflow of identifying the final model and come up with the final trained model.</span>
+<span id="cb46-39"><a href="#cb46-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-40"><a href="#cb46-40" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>Make a list of models (e.g., RF, BRF, NN) with various hyper-parameter values to try for each of of the models (like above)</span>
+<span id="cb46-41"><a href="#cb46-41" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>Conduct a CV to see which model-hyper-parameter combination minimizes MSE</span>
+<span id="cb46-42"><a href="#cb46-42" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>Train the best model specification to the entire training dataset, which becomes your final trained model</span>
+<span id="cb46-43"><a href="#cb46-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-44"><a href="#cb46-44" aria-hidden="true" tabindex="-1"></a>:::{.callout-note}</span>
+<span id="cb46-45"><a href="#cb46-45" aria-hidden="true" tabindex="-1"></a>Note that you do not use any of the models trained during the CV process. They are ran purely for the purpose of finding the best model and hyper-parameter values. </span>
+<span id="cb46-46"><a href="#cb46-46" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb46-47"><a href="#cb46-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-48"><a href="#cb46-48" aria-hidden="true" tabindex="-1"></a><span class="fu">## Leave-One-Out Cross-Validation (LOOCV)</span></span>
+<span id="cb46-49"><a href="#cb46-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-50"><a href="#cb46-50" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb46-51"><a href="#cb46-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-52"><a href="#cb46-52" aria-hidden="true" tabindex="-1"></a>**Packages to load for replication**</span>
+<span id="cb46-53"><a href="#cb46-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-56"><a href="#cb46-56" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-57"><a href="#cb46-57" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb46-58"><a href="#cb46-58" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb46-59"><a href="#cb46-59" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb46-60"><a href="#cb46-60" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mgcv)</span>
+<span id="cb46-61"><a href="#cb46-61" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rsample)</span>
+<span id="cb46-62"><a href="#cb46-62" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(parallel)</span>
+<span id="cb46-63"><a href="#cb46-63" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-64"><a href="#cb46-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-67"><a href="#cb46-67" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-68"><a href="#cb46-68" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb46-69"><a href="#cb46-69" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb46-70"><a href="#cb46-70" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb46-71"><a href="#cb46-71" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mgcv)</span>
+<span id="cb46-72"><a href="#cb46-72" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rsample)</span>
+<span id="cb46-73"><a href="#cb46-73" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(parallel)</span>
+<span id="cb46-74"><a href="#cb46-74" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-75"><a href="#cb46-75" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb46-76"><a href="#cb46-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-77"><a href="#cb46-77" aria-hidden="true" tabindex="-1"></a>Consider a dataset: $D = <span class="sc">\{</span>X_1, y_1<span class="sc">\}</span>, <span class="sc">\{</span>X_2, y_2<span class="sc">\}</span>, </span>
+<span id="cb46-78"><a href="#cb46-78" aria-hidden="true" tabindex="-1"></a>\dots, <span class="sc">\{</span>X_N, y_N<span class="sc">\}</span>$, where $X_i$ is a collection of features and $y_i$ is the dependent variable for $i$th observation. Further, suppose you use $D$ for training ML models and $\hat{f}()$ is a trained model. </span>
+<span id="cb46-79"><a href="#cb46-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-80"><a href="#cb46-80" aria-hidden="true" tabindex="-1"></a>LOOCV leaves out a single observation (say $i$), and train a model (say, GAM with the number of knots of 10) using the all the other observations (-$i$), and then find MSE for the left-out observation. This process is repeated for all the observations, and then the average of the individual MSEs is calculated.</span>
+<span id="cb46-81"><a href="#cb46-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-82"><a href="#cb46-82" aria-hidden="true" tabindex="-1"></a><span class="fu">### R demonstration using `mgcv::gam()`</span></span>
+<span id="cb46-83"><a href="#cb46-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-84"><a href="#cb46-84" aria-hidden="true" tabindex="-1"></a>Let's demonstrate this using R. Here is the dataset we use.</span>
+<span id="cb46-85"><a href="#cb46-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-88"><a href="#cb46-88" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-89"><a href="#cb46-89" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">943843</span>)</span>
+<span id="cb46-90"><a href="#cb46-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-91"><a href="#cb46-91" aria-hidden="true" tabindex="-1"></a><span class="co"># define the data generating process</span></span>
+<span id="cb46-92"><a href="#cb46-92" aria-hidden="true" tabindex="-1"></a><span class="co"># x fixed</span></span>
+<span id="cb46-93"><a href="#cb46-93" aria-hidden="true" tabindex="-1"></a>gen_data <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb46-94"><a href="#cb46-94" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb46-95"><a href="#cb46-95" aria-hidden="true" tabindex="-1"></a>  ey <span class="ot">&lt;-</span> (x <span class="sc">-</span> <span class="fl">2.5</span>)<span class="sc">^</span><span class="dv">3</span> <span class="co"># E[y|x]</span></span>
+<span id="cb46-96"><a href="#cb46-96" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> ey <span class="sc">+</span> <span class="dv">3</span> <span class="sc">*</span> <span class="fu">rnorm</span>(<span class="fu">length</span>(x)) <span class="co"># y = E[y|x] + u</span></span>
+<span id="cb46-97"><a href="#cb46-97" aria-hidden="true" tabindex="-1"></a>  return_data <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">y =</span> y, <span class="at">x =</span> x, <span class="at">ey =</span> ey)</span>
+<span id="cb46-98"><a href="#cb46-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-99"><a href="#cb46-99" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(return_data)</span>
+<span id="cb46-100"><a href="#cb46-100" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb46-101"><a href="#cb46-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-102"><a href="#cb46-102" aria-hidden="true" tabindex="-1"></a><span class="do">## generate train data</span></span>
+<span id="cb46-103"><a href="#cb46-103" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">gen_data</span>(<span class="at">x =</span> <span class="fu">runif</span>(<span class="dv">100</span>) <span class="sc">*</span> <span class="dv">5</span>)</span>
+<span id="cb46-104"><a href="#cb46-104" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-105"><a href="#cb46-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-106"><a href="#cb46-106" aria-hidden="true" tabindex="-1"></a>Visually, here is the relationship between $E<span class="co">[</span><span class="ot">y</span><span class="co">]</span>$ and $x$:</span>
+<span id="cb46-107"><a href="#cb46-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-110"><a href="#cb46-110" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-111"><a href="#cb46-111" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb46-112"><a href="#cb46-112" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 3 </span></span>
+<span id="cb46-113"><a href="#cb46-113" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 5 </span></span>
+<span id="cb46-114"><a href="#cb46-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-115"><a href="#cb46-115" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> data) <span class="sc">+</span></span>
+<span id="cb46-116"><a href="#cb46-116" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> ey, <span class="at">x =</span> x)) <span class="sc">+</span></span>
+<span id="cb46-117"><a href="#cb46-117" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb46-118"><a href="#cb46-118" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-119"><a href="#cb46-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-120"><a href="#cb46-120" aria-hidden="true" tabindex="-1"></a>For example, for the case where the first observation is left out for validation,</span>
+<span id="cb46-121"><a href="#cb46-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-124"><a href="#cb46-124" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-125"><a href="#cb46-125" aria-hidden="true" tabindex="-1"></a><span class="co"># leave out the first observation</span></span>
+<span id="cb46-126"><a href="#cb46-126" aria-hidden="true" tabindex="-1"></a>left_out_observation <span class="ot">&lt;-</span> data[<span class="dv">1</span>, ]</span>
+<span id="cb46-127"><a href="#cb46-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-128"><a href="#cb46-128" aria-hidden="true" tabindex="-1"></a><span class="co"># all the rest</span></span>
+<span id="cb46-129"><a href="#cb46-129" aria-hidden="true" tabindex="-1"></a>train_data <span class="ot">&lt;-</span> data[<span class="sc">-</span><span class="dv">1</span>, ]</span>
+<span id="cb46-130"><a href="#cb46-130" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-131"><a href="#cb46-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-132"><a href="#cb46-132" aria-hidden="true" tabindex="-1"></a>Now we train a gam model using the train_data, predict $y$ for the first observation, and find the MSE. </span>
+<span id="cb46-133"><a href="#cb46-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-136"><a href="#cb46-136" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-137"><a href="#cb46-137" aria-hidden="true" tabindex="-1"></a><span class="co">#=== train the model ===#</span></span>
+<span id="cb46-138"><a href="#cb46-138" aria-hidden="true" tabindex="-1"></a>fitted <span class="ot">&lt;-</span> <span class="fu">gam</span>(y <span class="sc">~</span> <span class="fu">s</span>(x, <span class="at">k =</span> <span class="dv">10</span>), <span class="at">sp =</span> <span class="dv">0</span>, <span class="at">data =</span> train_data)</span>
+<span id="cb46-139"><a href="#cb46-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-140"><a href="#cb46-140" aria-hidden="true" tabindex="-1"></a><span class="co">#=== predict y for the first observation ===#</span></span>
+<span id="cb46-141"><a href="#cb46-141" aria-hidden="true" tabindex="-1"></a>y_fitted <span class="ot">&lt;-</span> <span class="fu">predict</span>(fitted, <span class="at">newdata =</span> left_out_observation)</span>
+<span id="cb46-142"><a href="#cb46-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-143"><a href="#cb46-143" aria-hidden="true" tabindex="-1"></a><span class="co">#=== get MSE ===#</span></span>
+<span id="cb46-144"><a href="#cb46-144" aria-hidden="true" tabindex="-1"></a>MSE <span class="ot">&lt;-</span> (left_out_observation[, y] <span class="sc">-</span> y_fitted) <span class="sc">^</span> <span class="dv">2</span></span>
+<span id="cb46-145"><a href="#cb46-145" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-146"><a href="#cb46-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-147"><a href="#cb46-147" aria-hidden="true" tabindex="-1"></a>As described above, LOOCV repeats this process for every single observation of the data. Now, let's write a function that does the above process for any $i$ you specify.</span>
+<span id="cb46-148"><a href="#cb46-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-151"><a href="#cb46-151" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-152"><a href="#cb46-152" aria-hidden="true" tabindex="-1"></a><span class="co">#=== define the modeling approach ===#</span></span>
+<span id="cb46-153"><a href="#cb46-153" aria-hidden="true" tabindex="-1"></a>gam_k_10 <span class="ot">&lt;-</span> <span class="cf">function</span>(train_data) </span>
+<span id="cb46-154"><a href="#cb46-154" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb46-155"><a href="#cb46-155" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gam</span>(y <span class="sc">~</span> <span class="fu">s</span>(x, <span class="at">k =</span> <span class="dv">30</span>), <span class="at">sp =</span> <span class="dv">0</span>, <span class="at">data =</span> train_data)</span>
+<span id="cb46-156"><a href="#cb46-156" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb46-157"><a href="#cb46-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-158"><a href="#cb46-158" aria-hidden="true" tabindex="-1"></a><span class="co">#=== define the process of getting MSE for ith observation ===#</span></span>
+<span id="cb46-159"><a href="#cb46-159" aria-hidden="true" tabindex="-1"></a>get_mse <span class="ot">&lt;-</span> <span class="cf">function</span>(i, model)</span>
+<span id="cb46-160"><a href="#cb46-160" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb46-161"><a href="#cb46-161" aria-hidden="true" tabindex="-1"></a>  left_out_observation <span class="ot">&lt;-</span> data[i, ]</span>
+<span id="cb46-162"><a href="#cb46-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-163"><a href="#cb46-163" aria-hidden="true" tabindex="-1"></a>  <span class="co"># all the rest</span></span>
+<span id="cb46-164"><a href="#cb46-164" aria-hidden="true" tabindex="-1"></a>  train_data <span class="ot">&lt;-</span> data[<span class="sc">-</span>i, ]</span>
+<span id="cb46-165"><a href="#cb46-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-166"><a href="#cb46-166" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== train the model ===#</span></span>
+<span id="cb46-167"><a href="#cb46-167" aria-hidden="true" tabindex="-1"></a>  fitted <span class="ot">&lt;-</span> <span class="fu">model</span>(train_data)</span>
+<span id="cb46-168"><a href="#cb46-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-169"><a href="#cb46-169" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== predict y for the first observation ===#</span></span>
+<span id="cb46-170"><a href="#cb46-170" aria-hidden="true" tabindex="-1"></a>  y_fitted <span class="ot">&lt;-</span> <span class="fu">predict</span>(fitted, <span class="at">newdata =</span> left_out_observation)</span>
+<span id="cb46-171"><a href="#cb46-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-172"><a href="#cb46-172" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== get MSE ===#</span></span>
+<span id="cb46-173"><a href="#cb46-173" aria-hidden="true" tabindex="-1"></a>  MSE <span class="ot">&lt;-</span> (left_out_observation[, y] <span class="sc">-</span> y_fitted) <span class="sc">^</span> <span class="dv">2</span> </span>
+<span id="cb46-174"><a href="#cb46-174" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-175"><a href="#cb46-175" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(MSE)</span>
+<span id="cb46-176"><a href="#cb46-176" aria-hidden="true" tabindex="-1"></a>} </span>
+<span id="cb46-177"><a href="#cb46-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-178"><a href="#cb46-178" aria-hidden="true" tabindex="-1"></a><span class="in">```</span> </span>
+<span id="cb46-179"><a href="#cb46-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-180"><a href="#cb46-180" aria-hidden="true" tabindex="-1"></a>For example, this gets MSE for the 10th observation.</span>
+<span id="cb46-181"><a href="#cb46-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-184"><a href="#cb46-184" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-185"><a href="#cb46-185" aria-hidden="true" tabindex="-1"></a><span class="fu">get_mse</span>(<span class="dv">10</span>, gam_k_10)</span>
+<span id="cb46-186"><a href="#cb46-186" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-187"><a href="#cb46-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-188"><a href="#cb46-188" aria-hidden="true" tabindex="-1"></a>Let's now loop over $i = 1:100$.</span>
+<span id="cb46-189"><a href="#cb46-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-192"><a href="#cb46-192" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-193"><a href="#cb46-193" aria-hidden="true" tabindex="-1"></a><span class="co">#| cache: true</span></span>
+<span id="cb46-194"><a href="#cb46-194" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-195"><a href="#cb46-195" aria-hidden="true" tabindex="-1"></a>mse_indiv <span class="ot">&lt;-</span></span>
+<span id="cb46-196"><a href="#cb46-196" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb46-197"><a href="#cb46-197" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>,</span>
+<span id="cb46-198"><a href="#cb46-198" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) <span class="fu">get_mse</span>(x, gam_k_10)</span>
+<span id="cb46-199"><a href="#cb46-199" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb46-200"><a href="#cb46-200" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== list to a vector ===#</span></span>
+<span id="cb46-201"><a href="#cb46-201" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unlist</span>() </span>
+<span id="cb46-202"><a href="#cb46-202" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-203"><a href="#cb46-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-204"><a href="#cb46-204" aria-hidden="true" tabindex="-1"></a>Here is the distribution of MSEs.</span>
+<span id="cb46-205"><a href="#cb46-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-208"><a href="#cb46-208" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-209"><a href="#cb46-209" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(mse_indiv)</span>
+<span id="cb46-210"><a href="#cb46-210" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-211"><a href="#cb46-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-212"><a href="#cb46-212" aria-hidden="true" tabindex="-1"></a>We now get the average MSE.</span>
+<span id="cb46-213"><a href="#cb46-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-216"><a href="#cb46-216" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-217"><a href="#cb46-217" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(mse_indiv)</span>
+<span id="cb46-218"><a href="#cb46-218" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-219"><a href="#cb46-219" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-220"><a href="#cb46-220" aria-hidden="true" tabindex="-1"></a><span class="fu">### Selecting the best GAM specification: Illustration</span></span>
+<span id="cb46-221"><a href="#cb46-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-222"><a href="#cb46-222" aria-hidden="true" tabindex="-1"></a>Now, let's try to find the best (among the ones we try) GAM specification using LOOCV. We will try ten different GAM specifications which vary in penalization parameter. Penalization parameter can be set using the <span class="in">`sp`</span> option for <span class="in">`mgcv::gam()`</span>. A greater value of <span class="in">`sp`</span> leads to a more smooth fitted curve.</span>
+<span id="cb46-223"><a href="#cb46-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-226"><a href="#cb46-226" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-227"><a href="#cb46-227" aria-hidden="true" tabindex="-1"></a>specify_gam <span class="ot">&lt;-</span> <span class="cf">function</span>(sp) {</span>
+<span id="cb46-228"><a href="#cb46-228" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(train_data) {</span>
+<span id="cb46-229"><a href="#cb46-229" aria-hidden="true" tabindex="-1"></a>    <span class="fu">gam</span>(y <span class="sc">~</span> <span class="fu">s</span>(x, <span class="at">k =</span> <span class="dv">30</span>), <span class="at">sp =</span> sp, <span class="at">data =</span> train_data)</span>
+<span id="cb46-230"><a href="#cb46-230" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb46-231"><a href="#cb46-231" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb46-232"><a href="#cb46-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-233"><a href="#cb46-233" aria-hidden="true" tabindex="-1"></a>get_mse_by_sp <span class="ot">&lt;-</span> <span class="cf">function</span>(sp)</span>
+<span id="cb46-234"><a href="#cb46-234" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb46-235"><a href="#cb46-235" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-236"><a href="#cb46-236" aria-hidden="true" tabindex="-1"></a>  temp_gam <span class="ot">&lt;-</span> <span class="fu">specify_gam</span>(sp)</span>
+<span id="cb46-237"><a href="#cb46-237" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-238"><a href="#cb46-238" aria-hidden="true" tabindex="-1"></a>  mse_indiv <span class="ot">&lt;-</span></span>
+<span id="cb46-239"><a href="#cb46-239" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lapply</span>(</span>
+<span id="cb46-240"><a href="#cb46-240" aria-hidden="true" tabindex="-1"></a>      <span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>,</span>
+<span id="cb46-241"><a href="#cb46-241" aria-hidden="true" tabindex="-1"></a>      <span class="cf">function</span>(x) <span class="fu">get_mse</span>(x, temp_gam)</span>
+<span id="cb46-242"><a href="#cb46-242" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
+<span id="cb46-243"><a href="#cb46-243" aria-hidden="true" tabindex="-1"></a>    <span class="co">#=== list to a vector ===#</span></span>
+<span id="cb46-244"><a href="#cb46-244" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unlist</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb46-245"><a href="#cb46-245" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mean</span>()</span>
+<span id="cb46-246"><a href="#cb46-246" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-247"><a href="#cb46-247" aria-hidden="true" tabindex="-1"></a>  return_data <span class="ot">&lt;-</span></span>
+<span id="cb46-248"><a href="#cb46-248" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.table</span>(</span>
+<span id="cb46-249"><a href="#cb46-249" aria-hidden="true" tabindex="-1"></a>      <span class="at">mse =</span> mse_indiv,</span>
+<span id="cb46-250"><a href="#cb46-250" aria-hidden="true" tabindex="-1"></a>      <span class="at">sp =</span> sp</span>
+<span id="cb46-251"><a href="#cb46-251" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb46-252"><a href="#cb46-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-253"><a href="#cb46-253" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(return_data)</span>
+<span id="cb46-254"><a href="#cb46-254" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb46-255"><a href="#cb46-255" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-256"><a href="#cb46-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-257"><a href="#cb46-257" aria-hidden="true" tabindex="-1"></a>For example, the following code gets you the average MSE for <span class="in">`sp`</span> $= 3$.</span>
+<span id="cb46-258"><a href="#cb46-258" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-261"><a href="#cb46-261" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-262"><a href="#cb46-262" aria-hidden="true" tabindex="-1"></a><span class="fu">get_mse_by_sp</span>(<span class="dv">3</span>)</span>
+<span id="cb46-263"><a href="#cb46-263" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-264"><a href="#cb46-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-265"><a href="#cb46-265" aria-hidden="true" tabindex="-1"></a>Now, let's loop over ten values of <span class="in">`sp`</span>: <span class="in">`r seq(0, 2, by = 0.2)`</span>.</span>
+<span id="cb46-266"><a href="#cb46-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-269"><a href="#cb46-269" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-270"><a href="#cb46-270" aria-hidden="true" tabindex="-1"></a><span class="co">#| cache: true </span></span>
+<span id="cb46-271"><a href="#cb46-271" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb46-272"><a href="#cb46-272" aria-hidden="true" tabindex="-1"></a>mse_data <span class="ot">&lt;-</span> </span>
+<span id="cb46-273"><a href="#cb46-273" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb46-274"><a href="#cb46-274" aria-hidden="true" tabindex="-1"></a>    <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">2</span>, <span class="at">by =</span> <span class="fl">0.2</span>),</span>
+<span id="cb46-275"><a href="#cb46-275" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) <span class="fu">get_mse_by_sp</span>(x)</span>
+<span id="cb46-276"><a href="#cb46-276" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb46-277"><a href="#cb46-277" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbindlist</span>()</span>
+<span id="cb46-278"><a href="#cb46-278" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb46-279"><a href="#cb46-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-280"><a href="#cb46-280" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-281"><a href="#cb46-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-284"><a href="#cb46-284" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-285"><a href="#cb46-285" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb46-286"><a href="#cb46-286" aria-hidden="true" tabindex="-1"></a>best_sp <span class="ot">&lt;-</span> mse_data[mse <span class="sc">==</span> <span class="fu">min</span>(mse), ] <span class="sc">%&gt;%</span> .[, sp]</span>
+<span id="cb46-287"><a href="#cb46-287" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-288"><a href="#cb46-288" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-289"><a href="#cb46-289" aria-hidden="true" tabindex="-1"></a>So, according to the LOOCV, we should pick <span class="in">`sp`</span> $= <span class="in">`r best_sp`</span>$ as the penalty parameter.</span>
+<span id="cb46-290"><a href="#cb46-290" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-291"><a href="#cb46-291" aria-hidden="true" tabindex="-1"></a>Now, that we know <span class="in">`sp`</span> $= <span class="in">`r best_sp`</span>$ produces the lowest LOOCV MSE, we rerun <span class="in">`gam()`</span> using the entire dataset (not leaving out any of the observations) and make it our final trained model.</span>
+<span id="cb46-292"><a href="#cb46-292" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-295"><a href="#cb46-295" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-296"><a href="#cb46-296" aria-hidden="true" tabindex="-1"></a>final_gam_spec <span class="ot">&lt;-</span> <span class="fu">specify_gam</span>(<span class="at">sp =</span> <span class="dv">1</span>)</span>
+<span id="cb46-297"><a href="#cb46-297" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-298"><a href="#cb46-298" aria-hidden="true" tabindex="-1"></a>fit_gam <span class="ot">&lt;-</span> <span class="fu">final_gam_spec</span>(train_data)</span>
+<span id="cb46-299"><a href="#cb46-299" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-300"><a href="#cb46-300" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-301"><a href="#cb46-301" aria-hidden="true" tabindex="-1"></a>Here is what the fitted curve looks like:</span>
+<span id="cb46-302"><a href="#cb46-302" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-305"><a href="#cb46-305" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-306"><a href="#cb46-306" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit_gam)</span>
+<span id="cb46-307"><a href="#cb46-307" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-308"><a href="#cb46-308" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-309"><a href="#cb46-309" aria-hidden="true" tabindex="-1"></a>Looks good. By the way, here are the fitted curves for some other <span class="in">`sp`</span> values.</span>
+<span id="cb46-310"><a href="#cb46-310" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-313"><a href="#cb46-313" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-314"><a href="#cb46-314" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb46-315"><a href="#cb46-315" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-fitted-penalization-others</span></span>
+<span id="cb46-316"><a href="#cb46-316" aria-hidden="true" tabindex="-1"></a><span class="co">#| layout-ncol: 2</span></span>
+<span id="cb46-317"><a href="#cb46-317" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Fitted curves at various penalization parameters</span></span>
+<span id="cb46-318"><a href="#cb46-318" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-subcap: </span></span>
+<span id="cb46-319"><a href="#cb46-319" aria-hidden="true" tabindex="-1"></a><span class="co">#|   - "sp = 0"</span></span>
+<span id="cb46-320"><a href="#cb46-320" aria-hidden="true" tabindex="-1"></a><span class="co">#|   - "sp = 0.6"</span></span>
+<span id="cb46-321"><a href="#cb46-321" aria-hidden="true" tabindex="-1"></a><span class="co">#|   - "sp = 1"</span></span>
+<span id="cb46-322"><a href="#cb46-322" aria-hidden="true" tabindex="-1"></a><span class="co">#|   - "sp = 2"</span></span>
+<span id="cb46-323"><a href="#cb46-323" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-324"><a href="#cb46-324" aria-hidden="true" tabindex="-1"></a>fitted_curves <span class="ot">&lt;-</span> </span>
+<span id="cb46-325"><a href="#cb46-325" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb46-326"><a href="#cb46-326" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.6</span>, <span class="dv">1</span>, <span class="dv">2</span>),</span>
+<span id="cb46-327"><a href="#cb46-327" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) {</span>
+<span id="cb46-328"><a href="#cb46-328" aria-hidden="true" tabindex="-1"></a>      temp_gam <span class="ot">&lt;-</span> <span class="fu">specify_gam</span>(<span class="at">sp =</span> x)</span>
+<span id="cb46-329"><a href="#cb46-329" aria-hidden="true" tabindex="-1"></a>      fit_gam <span class="ot">&lt;-</span> <span class="fu">temp_gam</span>(train_data)   </span>
+<span id="cb46-330"><a href="#cb46-330" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb46-331"><a href="#cb46-331" aria-hidden="true" tabindex="-1"></a>  )  </span>
+<span id="cb46-332"><a href="#cb46-332" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-333"><a href="#cb46-333" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (plot <span class="cf">in</span> fitted_curves) {</span>
+<span id="cb46-334"><a href="#cb46-334" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(plot)</span>
+<span id="cb46-335"><a href="#cb46-335" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb46-336"><a href="#cb46-336" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-337"><a href="#cb46-337" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-338"><a href="#cb46-338" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-339"><a href="#cb46-339" aria-hidden="true" tabindex="-1"></a>LOOCV is perfectly general and can be applied to any statistical methods. However, it can be extremely computationally burdensome because you need to fit the same model for as many as the number of observations. So, if you have 10,000 observations, then you need to fit the model 10,000 times, which can take a long long time. </span>
+<span id="cb46-340"><a href="#cb46-340" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-341"><a href="#cb46-341" aria-hidden="true" tabindex="-1"></a><span class="fu">### Summary</span></span>
+<span id="cb46-342"><a href="#cb46-342" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-343"><a href="#cb46-343" aria-hidden="true" tabindex="-1"></a>:::{.callout-note}</span>
+<span id="cb46-344"><a href="#cb46-344" aria-hidden="true" tabindex="-1"></a>LOOCV is perfectly general and can be applied to any statistical methods. </span>
+<span id="cb46-345"><a href="#cb46-345" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb46-346"><a href="#cb46-346" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-347"><a href="#cb46-347" aria-hidden="true" tabindex="-1"></a>:::{.callout-warning}</span>
+<span id="cb46-348"><a href="#cb46-348" aria-hidden="true" tabindex="-1"></a>LOOCV can be highly computation-intensive when the dataset is large</span>
+<span id="cb46-349"><a href="#cb46-349" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb46-350"><a href="#cb46-350" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-351"><a href="#cb46-351" aria-hidden="true" tabindex="-1"></a><span class="fu">## K-fold Cross-Validation (KCV)</span></span>
+<span id="cb46-352"><a href="#cb46-352" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-353"><a href="#cb46-353" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-354"><a href="#cb46-354" aria-hidden="true" tabindex="-1"></a>KCV is a type of cross-validation that overcomes the LOOCV's drawback of being computationally too intensive when the dataset is large. KCV first splits the entire dataset intro $K$ folds (K groups) randomly. It then leaves out a chunk of observations that belongs to a fold (group), trains the model using the rest of the observations in the other folds, evaluate the trained model using the left-out group. It repeats this process for all the groups and average the MSEs obtained for each group.</span>
+<span id="cb46-355"><a href="#cb46-355" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-356"><a href="#cb46-356" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-357"><a href="#cb46-357" aria-hidden="true" tabindex="-1"></a>Let's demonstrate this process using R.</span>
+<span id="cb46-358"><a href="#cb46-358" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-361"><a href="#cb46-361" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-362"><a href="#cb46-362" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">89534</span>)</span>
+<span id="cb46-363"><a href="#cb46-363" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">gen_data</span>(<span class="at">x =</span> <span class="fu">runif</span>(<span class="dv">500</span>) <span class="sc">*</span> <span class="dv">5</span>)</span>
+<span id="cb46-364"><a href="#cb46-364" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-365"><a href="#cb46-365" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-366"><a href="#cb46-366" aria-hidden="true" tabindex="-1"></a>You can use <span class="in">`rsample::vfold_cv()`</span> to split the data into groups. </span>
+<span id="cb46-367"><a href="#cb46-367" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-370"><a href="#cb46-370" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-371"><a href="#cb46-371" aria-hidden="true" tabindex="-1"></a><span class="co">#=== split into 5 groups ===#</span></span>
+<span id="cb46-372"><a href="#cb46-372" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb46-373"><a href="#cb46-373" aria-hidden="true" tabindex="-1"></a>data_folds <span class="ot">&lt;-</span> rsample<span class="sc">::</span><span class="fu">vfold_cv</span>(data, <span class="at">v =</span> <span class="dv">5</span>)</span>
+<span id="cb46-374"><a href="#cb46-374" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb46-375"><a href="#cb46-375" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-376"><a href="#cb46-376" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-377"><a href="#cb46-377" aria-hidden="true" tabindex="-1"></a>As you can see, <span class="in">`rsample::vfold_cv()`</span> creates $v$ ($=5$ here) splits. And each split has both train and test datasets. <span class="in">`&lt;split [400/100]&gt;`</span> means that $400$ and $100$ observations for the train and test datasets, respectively. Note that, the $100$ observations in the first split (called <span class="in">`Fold 1`</span>) are in the train datasets of the rest of the splits (<span class="in">`Fold 2`</span> through <span class="in">`Fold 5`</span>).</span>
+<span id="cb46-378"><a href="#cb46-378" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-379"><a href="#cb46-379" aria-hidden="true" tabindex="-1"></a>You can extract the train and test datasets like below using the <span class="in">`training()`</span> and <span class="in">`testing()`</span> functions.</span>
+<span id="cb46-380"><a href="#cb46-380" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-383"><a href="#cb46-383" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-384"><a href="#cb46-384" aria-hidden="true" tabindex="-1"></a>train_data <span class="ot">&lt;-</span> data_folds[<span class="dv">1</span>, ]<span class="sc">$</span>splits[[<span class="dv">1</span>]] <span class="sc">%&gt;%</span> <span class="fu">training</span>()</span>
+<span id="cb46-385"><a href="#cb46-385" aria-hidden="true" tabindex="-1"></a>test_data <span class="ot">&lt;-</span> data_folds[<span class="dv">1</span>, ]<span class="sc">$</span>splits[[<span class="dv">1</span>]] <span class="sc">%&gt;%</span> <span class="fu">testing</span>()</span>
+<span id="cb46-386"><a href="#cb46-386" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-387"><a href="#cb46-387" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-388"><a href="#cb46-388" aria-hidden="true" tabindex="-1"></a>Now, let's get MSE for the first fold.</span>
+<span id="cb46-389"><a href="#cb46-389" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-392"><a href="#cb46-392" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-393"><a href="#cb46-393" aria-hidden="true" tabindex="-1"></a><span class="co">#=== train the model ===#</span></span>
+<span id="cb46-394"><a href="#cb46-394" aria-hidden="true" tabindex="-1"></a>fitted_model <span class="ot">&lt;-</span> <span class="fu">gam</span>(y <span class="sc">~</span> <span class="fu">s</span>(x, <span class="at">k =</span> <span class="dv">30</span>), <span class="at">sp =</span> <span class="dv">0</span>, <span class="at">data =</span> train_data)</span>
+<span id="cb46-395"><a href="#cb46-395" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-396"><a href="#cb46-396" aria-hidden="true" tabindex="-1"></a><span class="co">#=== predict y for the test data ===#</span></span>
+<span id="cb46-397"><a href="#cb46-397" aria-hidden="true" tabindex="-1"></a>y_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(fitted_model, test_data)</span>
+<span id="cb46-398"><a href="#cb46-398" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-399"><a href="#cb46-399" aria-hidden="true" tabindex="-1"></a><span class="co">#=== calculate MSE for the fold ===#</span></span>
+<span id="cb46-400"><a href="#cb46-400" aria-hidden="true" tabindex="-1"></a>(test_data[, y] <span class="sc">-</span> y_hat)<span class="sc">^</span><span class="dv">2</span> <span class="sc">%&gt;%</span> <span class="fu">mean</span>()</span>
+<span id="cb46-401"><a href="#cb46-401" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-402"><a href="#cb46-402" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-403"><a href="#cb46-403" aria-hidden="true" tabindex="-1"></a>Now that we know how to get MSE for a single fold, let's loop over folds and get MSE for each of the folds. We first create a function that gets us MSE for a single fold.</span>
+<span id="cb46-404"><a href="#cb46-404" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-407"><a href="#cb46-407" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-408"><a href="#cb46-408" aria-hidden="true" tabindex="-1"></a>get_mse_by_fold <span class="ot">&lt;-</span> <span class="cf">function</span>(data, fold, model)</span>
+<span id="cb46-409"><a href="#cb46-409" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb46-410"><a href="#cb46-410" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-411"><a href="#cb46-411" aria-hidden="true" tabindex="-1"></a>  test_data <span class="ot">&lt;-</span> data_folds[fold, ]<span class="sc">$</span>splits[[<span class="dv">1</span>]] <span class="sc">%&gt;%</span> <span class="fu">testing</span>()</span>
+<span id="cb46-412"><a href="#cb46-412" aria-hidden="true" tabindex="-1"></a>  train_data <span class="ot">&lt;-</span> data_folds[fold, ]<span class="sc">$</span>splits[[<span class="dv">1</span>]] <span class="sc">%&gt;%</span> <span class="fu">training</span>()</span>
+<span id="cb46-413"><a href="#cb46-413" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-414"><a href="#cb46-414" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== train the model ===#</span></span>
+<span id="cb46-415"><a href="#cb46-415" aria-hidden="true" tabindex="-1"></a>  fitted_model <span class="ot">&lt;-</span> <span class="fu">model</span>(train_data)</span>
+<span id="cb46-416"><a href="#cb46-416" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-417"><a href="#cb46-417" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== predict y for the test data ===#</span></span>
+<span id="cb46-418"><a href="#cb46-418" aria-hidden="true" tabindex="-1"></a>  y_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(fitted_model, test_data)</span>
+<span id="cb46-419"><a href="#cb46-419" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-420"><a href="#cb46-420" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== calculate MSE for the fold ===#</span></span>
+<span id="cb46-421"><a href="#cb46-421" aria-hidden="true" tabindex="-1"></a>  mse <span class="ot">&lt;-</span> (test_data[, y] <span class="sc">-</span> y_hat)<span class="sc">^</span><span class="dv">2</span> <span class="sc">%&gt;%</span> <span class="fu">mean</span>() </span>
+<span id="cb46-422"><a href="#cb46-422" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-423"><a href="#cb46-423" aria-hidden="true" tabindex="-1"></a>  return_data <span class="ot">&lt;-</span> </span>
+<span id="cb46-424"><a href="#cb46-424" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.table</span>(</span>
+<span id="cb46-425"><a href="#cb46-425" aria-hidden="true" tabindex="-1"></a>      <span class="at">k =</span> fold, </span>
+<span id="cb46-426"><a href="#cb46-426" aria-hidden="true" tabindex="-1"></a>      <span class="at">mse =</span> mse</span>
+<span id="cb46-427"><a href="#cb46-427" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb46-428"><a href="#cb46-428" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-429"><a href="#cb46-429" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(return_data)</span>
+<span id="cb46-430"><a href="#cb46-430" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb46-431"><a href="#cb46-431" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-432"><a href="#cb46-432" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-433"><a href="#cb46-433" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-434"><a href="#cb46-434" aria-hidden="true" tabindex="-1"></a>This will get you MSE for the third fold.</span>
+<span id="cb46-435"><a href="#cb46-435" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-438"><a href="#cb46-438" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-439"><a href="#cb46-439" aria-hidden="true" tabindex="-1"></a><span class="fu">get_mse_by_fold</span>(data, <span class="dv">3</span>, gam_k_10)</span>
+<span id="cb46-440"><a href="#cb46-440" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-441"><a href="#cb46-441" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-442"><a href="#cb46-442" aria-hidden="true" tabindex="-1"></a>Now, let's loop over the row number of <span class="in">`data_folds`</span> (loop over <span class="in">`splits`</span>).</span>
+<span id="cb46-443"><a href="#cb46-443" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-446"><a href="#cb46-446" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-447"><a href="#cb46-447" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb46-448"><a href="#cb46-448" aria-hidden="true" tabindex="-1"></a>mse_all <span class="ot">&lt;-</span></span>
+<span id="cb46-449"><a href="#cb46-449" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb46-450"><a href="#cb46-450" aria-hidden="true" tabindex="-1"></a>    <span class="fu">seq_len</span>(<span class="fu">nrow</span>(data_folds)),</span>
+<span id="cb46-451"><a href="#cb46-451" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) <span class="fu">get_mse_by_fold</span>(data, x, gam_k_10)</span>
+<span id="cb46-452"><a href="#cb46-452" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb46-453"><a href="#cb46-453" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbindlist</span>()</span>
+<span id="cb46-454"><a href="#cb46-454" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb46-455"><a href="#cb46-455" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-456"><a href="#cb46-456" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-457"><a href="#cb46-457" aria-hidden="true" tabindex="-1"></a>By averaging MSE values, we get</span>
+<span id="cb46-458"><a href="#cb46-458" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-461"><a href="#cb46-461" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-462"><a href="#cb46-462" aria-hidden="true" tabindex="-1"></a>mse_all[, <span class="fu">mean</span>(mse)]</span>
+<span id="cb46-463"><a href="#cb46-463" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-464"><a href="#cb46-464" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-465"><a href="#cb46-465" aria-hidden="true" tabindex="-1"></a><span class="fu">### Selecting the best GAM specification: Illustration</span></span>
+<span id="cb46-466"><a href="#cb46-466" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-467"><a href="#cb46-467" aria-hidden="true" tabindex="-1"></a>Just like we found the best gam specification (choice of penalization parameter) using LOOCV, we do the same now using KCV.</span>
+<span id="cb46-468"><a href="#cb46-468" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-471"><a href="#cb46-471" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-472"><a href="#cb46-472" aria-hidden="true" tabindex="-1"></a>get_mse_by_sp_kcv <span class="ot">&lt;-</span> <span class="cf">function</span>(sp)</span>
+<span id="cb46-473"><a href="#cb46-473" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb46-474"><a href="#cb46-474" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-475"><a href="#cb46-475" aria-hidden="true" tabindex="-1"></a>  temp_gam <span class="ot">&lt;-</span> <span class="fu">specify_gam</span>(sp)</span>
+<span id="cb46-476"><a href="#cb46-476" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-477"><a href="#cb46-477" aria-hidden="true" tabindex="-1"></a>  mse_by_k <span class="ot">&lt;-</span></span>
+<span id="cb46-478"><a href="#cb46-478" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lapply</span>(</span>
+<span id="cb46-479"><a href="#cb46-479" aria-hidden="true" tabindex="-1"></a>      <span class="fu">seq_len</span>(<span class="fu">nrow</span>(data_folds)),</span>
+<span id="cb46-480"><a href="#cb46-480" aria-hidden="true" tabindex="-1"></a>      <span class="cf">function</span>(x) <span class="fu">get_mse_by_fold</span>(train_data, x, temp_gam)</span>
+<span id="cb46-481"><a href="#cb46-481" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
+<span id="cb46-482"><a href="#cb46-482" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rbindlist</span>()</span>
+<span id="cb46-483"><a href="#cb46-483" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-484"><a href="#cb46-484" aria-hidden="true" tabindex="-1"></a>  return_data <span class="ot">&lt;-</span></span>
+<span id="cb46-485"><a href="#cb46-485" aria-hidden="true" tabindex="-1"></a>    mse_by_k <span class="sc">%&gt;%</span> </span>
+<span id="cb46-486"><a href="#cb46-486" aria-hidden="true" tabindex="-1"></a>    .[, sp <span class="sc">:</span><span class="er">=</span> sp]</span>
+<span id="cb46-487"><a href="#cb46-487" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-488"><a href="#cb46-488" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(return_data[])</span>
+<span id="cb46-489"><a href="#cb46-489" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb46-490"><a href="#cb46-490" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-491"><a href="#cb46-491" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-492"><a href="#cb46-492" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-493"><a href="#cb46-493" aria-hidden="true" tabindex="-1"></a>For example, the following code gets you the MSE for all the folds for <span class="in">`sp`</span> $= 3$.</span>
+<span id="cb46-494"><a href="#cb46-494" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-497"><a href="#cb46-497" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-498"><a href="#cb46-498" aria-hidden="true" tabindex="-1"></a><span class="fu">get_mse_by_sp_kcv</span>(<span class="dv">3</span>)</span>
+<span id="cb46-499"><a href="#cb46-499" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-500"><a href="#cb46-500" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-501"><a href="#cb46-501" aria-hidden="true" tabindex="-1"></a>Now, let's loop over ten values of <span class="in">`sp`</span>: <span class="in">`r seq(0, 2, by = 0.2)`</span>.</span>
+<span id="cb46-502"><a href="#cb46-502" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-505"><a href="#cb46-505" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-506"><a href="#cb46-506" aria-hidden="true" tabindex="-1"></a><span class="co">#| cache: true</span></span>
+<span id="cb46-507"><a href="#cb46-507" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb46-508"><a href="#cb46-508" aria-hidden="true" tabindex="-1"></a>mse_results <span class="ot">&lt;-</span> </span>
+<span id="cb46-509"><a href="#cb46-509" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb46-510"><a href="#cb46-510" aria-hidden="true" tabindex="-1"></a>    <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">2</span>, <span class="at">by =</span> <span class="fl">0.2</span>),</span>
+<span id="cb46-511"><a href="#cb46-511" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) <span class="fu">get_mse_by_sp_kcv</span>(x)</span>
+<span id="cb46-512"><a href="#cb46-512" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb46-513"><a href="#cb46-513" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbindlist</span>()</span>
+<span id="cb46-514"><a href="#cb46-514" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb46-515"><a href="#cb46-515" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-516"><a href="#cb46-516" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-517"><a href="#cb46-517" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-518"><a href="#cb46-518" aria-hidden="true" tabindex="-1"></a>Let's now get the average MSE by sp:</span>
+<span id="cb46-519"><a href="#cb46-519" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-522"><a href="#cb46-522" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-523"><a href="#cb46-523" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb46-524"><a href="#cb46-524" aria-hidden="true" tabindex="-1"></a>mean_mse_data <span class="ot">&lt;-</span> mse_results[, .(<span class="at">mean_mse =</span> <span class="fu">mean</span>(mse)), <span class="at">by =</span> sp]</span>
+<span id="cb46-525"><a href="#cb46-525" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb46-526"><a href="#cb46-526" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-527"><a href="#cb46-527" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-530"><a href="#cb46-530" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-531"><a href="#cb46-531" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb46-532"><a href="#cb46-532" aria-hidden="true" tabindex="-1"></a>best_sp <span class="ot">&lt;-</span> mean_mse_data[mean_mse <span class="sc">==</span> <span class="fu">min</span>(mean_mse), ] <span class="sc">%&gt;%</span> .[, sp]</span>
+<span id="cb46-533"><a href="#cb46-533" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-534"><a href="#cb46-534" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-535"><a href="#cb46-535" aria-hidden="true" tabindex="-1"></a>So, according to the KCV, we should pick <span class="in">`sp`</span> $= <span class="in">`r best_sp`</span>$ as the penalty parameter. </span>
+<span id="cb46-536"><a href="#cb46-536" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-537"><a href="#cb46-537" aria-hidden="true" tabindex="-1"></a>By the way, here is what MSE values look like for each fold based on the value of <span class="in">`sp`</span> by fold.</span>
+<span id="cb46-538"><a href="#cb46-538" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-541"><a href="#cb46-541" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-542"><a href="#cb46-542" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb46-543"><a href="#cb46-543" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4</span></span>
+<span id="cb46-544"><a href="#cb46-544" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 6</span></span>
+<span id="cb46-545"><a href="#cb46-545" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-546"><a href="#cb46-546" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> mse_results) <span class="sc">+</span></span>
+<span id="cb46-547"><a href="#cb46-547" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> mse, <span class="at">x =</span> sp, <span class="at">color =</span> <span class="fu">factor</span>(k))) <span class="sc">+</span></span>
+<span id="cb46-548"><a href="#cb46-548" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_discrete</span>(<span class="at">name =</span> <span class="st">"Fold"</span>) <span class="sc">+</span></span>
+<span id="cb46-549"><a href="#cb46-549" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb46-550"><a href="#cb46-550" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-551"><a href="#cb46-551" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-552"><a href="#cb46-552" aria-hidden="true" tabindex="-1"></a>:::{.callout-note}</span>
+<span id="cb46-553"><a href="#cb46-553" aria-hidden="true" tabindex="-1"></a>Even though we compared different specification of the same approach (GAM), we can compare across different models as well. For example, you can find KCV for an RF model with a particular specifications of its hyper-parameters and compare the KCV with those of the GAM model specifications and see what comes at the top.  </span>
+<span id="cb46-554"><a href="#cb46-554" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb46-555"><a href="#cb46-555" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-556"><a href="#cb46-556" aria-hidden="true" tabindex="-1"></a><span class="fu">## Repeated K-fold Cross-Validation (RKCV)</span></span>
+<span id="cb46-557"><a href="#cb46-557" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-558"><a href="#cb46-558" aria-hidden="true" tabindex="-1"></a>As its name suggest, repeated KCV repeats the process of KCV multiple times. Each KCV iteration splits the original data into k-fold in a different way. A single KCV may not be reliable as the original data was split into such a way that favors one parameter set of or model class over the others. However, if we repeat KCV multiple times, then we can safe-guard against this randomness in a KCV procedure. Repeated KCV is preferred over a single KCV. </span>
+<span id="cb46-559"><a href="#cb46-559" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-560"><a href="#cb46-560" aria-hidden="true" tabindex="-1"></a>You can use <span class="in">`rsample::vfold_cv()`</span> to create repeated k-fold datasets by using the <span class="in">`repeats`</span> argument.</span>
+<span id="cb46-561"><a href="#cb46-561" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-564"><a href="#cb46-564" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-565"><a href="#cb46-565" aria-hidden="true" tabindex="-1"></a><span class="co">#=== split into 5 groups ===#</span></span>
+<span id="cb46-566"><a href="#cb46-566" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb46-567"><a href="#cb46-567" aria-hidden="true" tabindex="-1"></a>data_folds <span class="ot">&lt;-</span> rsample<span class="sc">::</span><span class="fu">vfold_cv</span>(data, <span class="at">v =</span> <span class="dv">5</span>, <span class="at">repeats =</span> <span class="dv">5</span>)</span>
+<span id="cb46-568"><a href="#cb46-568" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb46-569"><a href="#cb46-569" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-570"><a href="#cb46-570" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-571"><a href="#cb46-571" aria-hidden="true" tabindex="-1"></a>The output has 5 (number of folds) times 5 (number of repeats) splits. It also has an additional column that indicates which repeat each row is in (<span class="in">`id`</span>). You can apply <span class="in">`get_mse_by_fold()`</span> (this function is defined above and calculate MSE) to each row (split) one by one and calculate MSE just like we did above. </span>
+<span id="cb46-572"><a href="#cb46-572" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-575"><a href="#cb46-575" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-576"><a href="#cb46-576" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb46-577"><a href="#cb46-577" aria-hidden="true" tabindex="-1"></a>mean_mse <span class="ot">&lt;-</span></span>
+<span id="cb46-578"><a href="#cb46-578" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb46-579"><a href="#cb46-579" aria-hidden="true" tabindex="-1"></a>    <span class="fu">seq_len</span>(<span class="fu">nrow</span>(data_folds)),</span>
+<span id="cb46-580"><a href="#cb46-580" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) <span class="fu">get_mse_by_fold</span>(data, x, gam_k_10)</span>
+<span id="cb46-581"><a href="#cb46-581" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb46-582"><a href="#cb46-582" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbindlist</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb46-583"><a href="#cb46-583" aria-hidden="true" tabindex="-1"></a>  .[, <span class="fu">mean</span>(mse)]</span>
+<span id="cb46-584"><a href="#cb46-584" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb46-585"><a href="#cb46-585" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-586"><a href="#cb46-586" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-587"><a href="#cb46-587" aria-hidden="true" tabindex="-1"></a><span class="fu">## How are LOOCV, KCV and RKCV different?</span></span>
+<span id="cb46-588"><a href="#cb46-588" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-589"><a href="#cb46-589" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-590"><a href="#cb46-590" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-591"><a href="#cb46-591" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- ## Does KCV really work?</span></span>
+<span id="cb46-592"><a href="#cb46-592" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-593"><a href="#cb46-593" aria-hidden="true" tabindex="-1"></a><span class="co">LOOCV and KCV use the train data to estimate test MSE. But, does it really work? In other words, does it let us pick the parameter that minimizes the test MSE? We will run a simple MC simulations to test this. We continue to use the same data generating process and GAM models for this simulation as well. </span></span>
+<span id="cb46-594"><a href="#cb46-594" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-595"><a href="#cb46-595" aria-hidden="true" tabindex="-1"></a><span class="co">Now, since we know the data generating process, we can actually use the following metric instead of MSE.</span></span>
+<span id="cb46-596"><a href="#cb46-596" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-597"><a href="#cb46-597" aria-hidden="true" tabindex="-1"></a><span class="co">$$</span></span>
+<span id="cb46-598"><a href="#cb46-598" aria-hidden="true" tabindex="-1"></a><span class="co">\sum_{i=1}^N(\hat{f}(x_i) - E[y|x_i])^2</span></span>
+<span id="cb46-599"><a href="#cb46-599" aria-hidden="true" tabindex="-1"></a><span class="co">$$</span></span>
+<span id="cb46-600"><a href="#cb46-600" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-601"><a href="#cb46-601" aria-hidden="true" tabindex="-1"></a><span class="co">This measure removes the influence of the error term that appears in the test MSE. Your objective is to minimize this measure. Of course, you cannot do this in practice because you do not observe $E[y|x]$. Let's call this "pure" MSE.</span></span>
+<span id="cb46-602"><a href="#cb46-602" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-603"><a href="#cb46-603" aria-hidden="true" tabindex="-1"></a><span class="co">First, we define a function that gets you MSE from KCV and MSE using the test data as a function of `sp`.</span></span>
+<span id="cb46-604"><a href="#cb46-604" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-607"><a href="#cb46-607" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-608"><a href="#cb46-608" aria-hidden="true" tabindex="-1"></a><span class="co">get_mse_by_sp &lt;- function(sp)</span></span>
+<span id="cb46-609"><a href="#cb46-609" aria-hidden="true" tabindex="-1"></a><span class="co">{</span></span>
+<span id="cb46-610"><a href="#cb46-610" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-611"><a href="#cb46-611" aria-hidden="true" tabindex="-1"></a><span class="co">  #=== generate train data and test data ===#</span></span>
+<span id="cb46-612"><a href="#cb46-612" aria-hidden="true" tabindex="-1"></a><span class="co">  train_data &lt;- gen_data(x = runif(500) * 5)</span></span>
+<span id="cb46-613"><a href="#cb46-613" aria-hidden="true" tabindex="-1"></a><span class="co">  test_data &lt;- gen_data(x = runif(500) * 5)</span></span>
+<span id="cb46-614"><a href="#cb46-614" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-615"><a href="#cb46-615" aria-hidden="true" tabindex="-1"></a><span class="co">  #/*----------------------------------*/</span></span>
+<span id="cb46-616"><a href="#cb46-616" aria-hidden="true" tabindex="-1"></a><span class="co">  #' ## MSE from KCV </span></span>
+<span id="cb46-617"><a href="#cb46-617" aria-hidden="true" tabindex="-1"></a><span class="co">  #/*----------------------------------*/</span></span>
+<span id="cb46-618"><a href="#cb46-618" aria-hidden="true" tabindex="-1"></a><span class="co">  #=== split train_data into 5 groups ===#</span></span>
+<span id="cb46-619"><a href="#cb46-619" aria-hidden="true" tabindex="-1"></a><span class="co">  data_folds &lt;- rsample::vfold_cv(train_data, v = 5)</span></span>
+<span id="cb46-620"><a href="#cb46-620" aria-hidden="true" tabindex="-1"></a><span class="co">  </span></span>
+<span id="cb46-621"><a href="#cb46-621" aria-hidden="true" tabindex="-1"></a><span class="co">  #=== specify the model ===#</span></span>
+<span id="cb46-622"><a href="#cb46-622" aria-hidden="true" tabindex="-1"></a><span class="co">  temp_gam &lt;- specify_gam(sp)</span></span>
+<span id="cb46-623"><a href="#cb46-623" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-624"><a href="#cb46-624" aria-hidden="true" tabindex="-1"></a><span class="co">  #=== get MSE by fold ===#</span></span>
+<span id="cb46-625"><a href="#cb46-625" aria-hidden="true" tabindex="-1"></a><span class="co">  mse_by_k &lt;-</span></span>
+<span id="cb46-626"><a href="#cb46-626" aria-hidden="true" tabindex="-1"></a><span class="co">    lapply(</span></span>
+<span id="cb46-627"><a href="#cb46-627" aria-hidden="true" tabindex="-1"></a><span class="co">      seq_len(nrow(data_folds)),</span></span>
+<span id="cb46-628"><a href="#cb46-628" aria-hidden="true" tabindex="-1"></a><span class="co">      function(x) get_mse_by_fold(train_data, x, temp_gam)</span></span>
+<span id="cb46-629"><a href="#cb46-629" aria-hidden="true" tabindex="-1"></a><span class="co">    ) %&gt;% </span></span>
+<span id="cb46-630"><a href="#cb46-630" aria-hidden="true" tabindex="-1"></a><span class="co">    rbindlist()</span></span>
+<span id="cb46-631"><a href="#cb46-631" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-632"><a href="#cb46-632" aria-hidden="true" tabindex="-1"></a><span class="co">  #=== find the average MSE (over folds) ===#</span></span>
+<span id="cb46-633"><a href="#cb46-633" aria-hidden="true" tabindex="-1"></a><span class="co">  mse_kcv &lt;-</span></span>
+<span id="cb46-634"><a href="#cb46-634" aria-hidden="true" tabindex="-1"></a><span class="co">    mse_by_k %&gt;% </span></span>
+<span id="cb46-635"><a href="#cb46-635" aria-hidden="true" tabindex="-1"></a><span class="co">    .[, .(mse = mean(mse))] %&gt;% </span></span>
+<span id="cb46-636"><a href="#cb46-636" aria-hidden="true" tabindex="-1"></a><span class="co">    .[, sp := sp] %&gt;% </span></span>
+<span id="cb46-637"><a href="#cb46-637" aria-hidden="true" tabindex="-1"></a><span class="co">    .[, type := "KCV"]</span></span>
+<span id="cb46-638"><a href="#cb46-638" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-639"><a href="#cb46-639" aria-hidden="true" tabindex="-1"></a><span class="co">  #/*----------------------------------*/</span></span>
+<span id="cb46-640"><a href="#cb46-640" aria-hidden="true" tabindex="-1"></a><span class="co">  #' ## pure MSE from the test data  </span></span>
+<span id="cb46-641"><a href="#cb46-641" aria-hidden="true" tabindex="-1"></a><span class="co">  #/*----------------------------------*/</span></span>
+<span id="cb46-642"><a href="#cb46-642" aria-hidden="true" tabindex="-1"></a><span class="co">  #=== train using the entire train dataset ===#</span></span>
+<span id="cb46-643"><a href="#cb46-643" aria-hidden="true" tabindex="-1"></a><span class="co">  fitted &lt;- temp_gam(train_data)</span></span>
+<span id="cb46-644"><a href="#cb46-644" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-645"><a href="#cb46-645" aria-hidden="true" tabindex="-1"></a><span class="co">  #=== find the average MSE (over observations) ===#</span></span>
+<span id="cb46-646"><a href="#cb46-646" aria-hidden="true" tabindex="-1"></a><span class="co">  mse_test &lt;- </span></span>
+<span id="cb46-647"><a href="#cb46-647" aria-hidden="true" tabindex="-1"></a><span class="co">    test_data %&gt;% </span></span>
+<span id="cb46-648"><a href="#cb46-648" aria-hidden="true" tabindex="-1"></a><span class="co">    #=== predict y ===#</span></span>
+<span id="cb46-649"><a href="#cb46-649" aria-hidden="true" tabindex="-1"></a><span class="co">    .[, y_hat := predict(fitted, newdata = .)] %&gt;% </span></span>
+<span id="cb46-650"><a href="#cb46-650" aria-hidden="true" tabindex="-1"></a><span class="co">    .[, .(mse = mean((ey - y_hat)^2))] %&gt;% </span></span>
+<span id="cb46-651"><a href="#cb46-651" aria-hidden="true" tabindex="-1"></a><span class="co">    .[, sp := sp] %&gt;% </span></span>
+<span id="cb46-652"><a href="#cb46-652" aria-hidden="true" tabindex="-1"></a><span class="co">    .[, type := "Pure"]</span></span>
+<span id="cb46-653"><a href="#cb46-653" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-654"><a href="#cb46-654" aria-hidden="true" tabindex="-1"></a><span class="co">  #/*----------------------------------*/</span></span>
+<span id="cb46-655"><a href="#cb46-655" aria-hidden="true" tabindex="-1"></a><span class="co">  #' ## Combine and return</span></span>
+<span id="cb46-656"><a href="#cb46-656" aria-hidden="true" tabindex="-1"></a><span class="co">  #/*----------------------------------*/</span></span>
+<span id="cb46-657"><a href="#cb46-657" aria-hidden="true" tabindex="-1"></a><span class="co">  return_data &lt;- rbind(mse_kcv, mse_test)</span></span>
+<span id="cb46-658"><a href="#cb46-658" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-659"><a href="#cb46-659" aria-hidden="true" tabindex="-1"></a><span class="co">  return(return_data)</span></span>
+<span id="cb46-660"><a href="#cb46-660" aria-hidden="true" tabindex="-1"></a><span class="co">}</span></span>
+<span id="cb46-661"><a href="#cb46-661" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-662"><a href="#cb46-662" aria-hidden="true" tabindex="-1"></a><span class="co">```</span></span>
+<span id="cb46-663"><a href="#cb46-663" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-664"><a href="#cb46-664" aria-hidden="true" tabindex="-1"></a><span class="co">:::{.callout-warning}</span></span>
+<span id="cb46-665"><a href="#cb46-665" aria-hidden="true" tabindex="-1"></a><span class="co">Note that you do not have to use an independent test data to obtain pure MSE above even though the code does it so. You could just use the `train_data` in getting pure MSE and the results would be essentially the same.</span></span>
+<span id="cb46-666"><a href="#cb46-666" aria-hidden="true" tabindex="-1"></a><span class="co">:::</span></span>
+<span id="cb46-667"><a href="#cb46-667" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-668"><a href="#cb46-668" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-669"><a href="#cb46-669" aria-hidden="true" tabindex="-1"></a><span class="co">For example, this will give you MSE from KCV and MSE using the test data for `sp` $= 2$.</span></span>
+<span id="cb46-670"><a href="#cb46-670" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-673"><a href="#cb46-673" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-674"><a href="#cb46-674" aria-hidden="true" tabindex="-1"></a><span class="co">get_mse_by_sp(2)</span></span>
+<span id="cb46-675"><a href="#cb46-675" aria-hidden="true" tabindex="-1"></a><span class="co">```</span></span>
+<span id="cb46-676"><a href="#cb46-676" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-677"><a href="#cb46-677" aria-hidden="true" tabindex="-1"></a><span class="co">Now, we define a function that loops over all the `sp` values we test.</span></span>
+<span id="cb46-678"><a href="#cb46-678" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-681"><a href="#cb46-681" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-682"><a href="#cb46-682" aria-hidden="true" tabindex="-1"></a><span class="co">sp_seq &lt;- seq(0, 2, by = 0.2)</span></span>
+<span id="cb46-683"><a href="#cb46-683" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-684"><a href="#cb46-684" aria-hidden="true" tabindex="-1"></a><span class="co">get_mse &lt;- function(i)</span></span>
+<span id="cb46-685"><a href="#cb46-685" aria-hidden="true" tabindex="-1"></a><span class="co">{ </span></span>
+<span id="cb46-686"><a href="#cb46-686" aria-hidden="true" tabindex="-1"></a><span class="co">  print(i) # progress tracker</span></span>
+<span id="cb46-687"><a href="#cb46-687" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-688"><a href="#cb46-688" aria-hidden="true" tabindex="-1"></a><span class="co">  lapply(</span></span>
+<span id="cb46-689"><a href="#cb46-689" aria-hidden="true" tabindex="-1"></a><span class="co">    sp_seq,</span></span>
+<span id="cb46-690"><a href="#cb46-690" aria-hidden="true" tabindex="-1"></a><span class="co">    function(x) get_mse_by_sp(x)</span></span>
+<span id="cb46-691"><a href="#cb46-691" aria-hidden="true" tabindex="-1"></a><span class="co">  ) %&gt;% </span></span>
+<span id="cb46-692"><a href="#cb46-692" aria-hidden="true" tabindex="-1"></a><span class="co">  rbindlist()</span></span>
+<span id="cb46-693"><a href="#cb46-693" aria-hidden="true" tabindex="-1"></a><span class="co">}</span></span>
+<span id="cb46-694"><a href="#cb46-694" aria-hidden="true" tabindex="-1"></a><span class="co">```</span></span>
+<span id="cb46-695"><a href="#cb46-695" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-696"><a href="#cb46-696" aria-hidden="true" tabindex="-1"></a><span class="co">For example, the following gives you MSE values for all the `sp` values for a single iteration.</span></span>
+<span id="cb46-697"><a href="#cb46-697" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-700"><a href="#cb46-700" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-701"><a href="#cb46-701" aria-hidden="true" tabindex="-1"></a><span class="co">get_mse(1)</span></span>
+<span id="cb46-702"><a href="#cb46-702" aria-hidden="true" tabindex="-1"></a><span class="co">```</span></span>
+<span id="cb46-703"><a href="#cb46-703" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-704"><a href="#cb46-704" aria-hidden="true" tabindex="-1"></a><span class="co">Finally, we run `get_mse()` 500 times.</span></span>
+<span id="cb46-705"><a href="#cb46-705" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-708"><a href="#cb46-708" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-709"><a href="#cb46-709" aria-hidden="true" tabindex="-1"></a><span class="co">#| cache: true</span></span>
+<span id="cb46-710"><a href="#cb46-710" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-711"><a href="#cb46-711" aria-hidden="true" tabindex="-1"></a><span class="co">mse_results &lt;-</span></span>
+<span id="cb46-712"><a href="#cb46-712" aria-hidden="true" tabindex="-1"></a><span class="co">  mclapply(</span></span>
+<span id="cb46-713"><a href="#cb46-713" aria-hidden="true" tabindex="-1"></a><span class="co">    1:500,</span></span>
+<span id="cb46-714"><a href="#cb46-714" aria-hidden="true" tabindex="-1"></a><span class="co">    get_mse,</span></span>
+<span id="cb46-715"><a href="#cb46-715" aria-hidden="true" tabindex="-1"></a><span class="co">    mc.cores = 12</span></span>
+<span id="cb46-716"><a href="#cb46-716" aria-hidden="true" tabindex="-1"></a><span class="co">  ) %&gt;% </span></span>
+<span id="cb46-717"><a href="#cb46-717" aria-hidden="true" tabindex="-1"></a><span class="co">  rbindlist(idcol = "sim_id")</span></span>
+<span id="cb46-718"><a href="#cb46-718" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-719"><a href="#cb46-719" aria-hidden="true" tabindex="-1"></a><span class="co">#=== use this if you are a Windows user ===#</span></span>
+<span id="cb46-720"><a href="#cb46-720" aria-hidden="true" tabindex="-1"></a><span class="co"># mse_results &lt;-</span></span>
+<span id="cb46-721"><a href="#cb46-721" aria-hidden="true" tabindex="-1"></a><span class="co">#   lapply(</span></span>
+<span id="cb46-722"><a href="#cb46-722" aria-hidden="true" tabindex="-1"></a><span class="co">#     1:500,</span></span>
+<span id="cb46-723"><a href="#cb46-723" aria-hidden="true" tabindex="-1"></a><span class="co">#     get_mse</span></span>
+<span id="cb46-724"><a href="#cb46-724" aria-hidden="true" tabindex="-1"></a><span class="co">#   )</span></span>
+<span id="cb46-725"><a href="#cb46-725" aria-hidden="true" tabindex="-1"></a><span class="co">```</span></span>
+<span id="cb46-726"><a href="#cb46-726" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-727"><a href="#cb46-727" aria-hidden="true" tabindex="-1"></a><span class="co">For each simulation round, let's find the best `sp` using KCV and pure MSE.</span></span>
+<span id="cb46-728"><a href="#cb46-728" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-731"><a href="#cb46-731" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-732"><a href="#cb46-732" aria-hidden="true" tabindex="-1"></a><span class="co">(</span></span>
+<span id="cb46-733"><a href="#cb46-733" aria-hidden="true" tabindex="-1"></a><span class="co">which_sp_optimal &lt;-</span></span>
+<span id="cb46-734"><a href="#cb46-734" aria-hidden="true" tabindex="-1"></a><span class="co">  mse_results %&gt;% </span></span>
+<span id="cb46-735"><a href="#cb46-735" aria-hidden="true" tabindex="-1"></a><span class="co">  .[, .SD[which.min(mse), ], by = .(type, sim_id)] %&gt;% </span></span>
+<span id="cb46-736"><a href="#cb46-736" aria-hidden="true" tabindex="-1"></a><span class="co">  #=== drop mse ===#</span></span>
+<span id="cb46-737"><a href="#cb46-737" aria-hidden="true" tabindex="-1"></a><span class="co">  .[, mse := NULL] %&gt;% </span></span>
+<span id="cb46-738"><a href="#cb46-738" aria-hidden="true" tabindex="-1"></a><span class="co">  dcast(sim_id ~ type, value.var = "sp") %&gt;% </span></span>
+<span id="cb46-739"><a href="#cb46-739" aria-hidden="true" tabindex="-1"></a><span class="co">  .[, num_comb := .N, by = .(KCV, Pure)]</span></span>
+<span id="cb46-740"><a href="#cb46-740" aria-hidden="true" tabindex="-1"></a><span class="co">)</span></span>
+<span id="cb46-741"><a href="#cb46-741" aria-hidden="true" tabindex="-1"></a><span class="co">```</span></span>
+<span id="cb46-742"><a href="#cb46-742" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-743"><a href="#cb46-743" aria-hidden="true" tabindex="-1"></a><span class="co">For example, for the first simulation, `sp` that would have minimized pure MSE (least error relative to the true $E[y|x]$ across varying values of $x$) was `r which_sp_optimal[1, Pure]`. On the other hand, if you relied on KCV, you would have chosen `r which_sp_optimal[1, KCV]`. </span></span>
+<span id="cb46-744"><a href="#cb46-744" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-745"><a href="#cb46-745" aria-hidden="true" tabindex="-1"></a><span class="co">The following figure shows the relationship between KCV-based and pure MSE-based `sp` values.</span></span>
+<span id="cb46-746"><a href="#cb46-746" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-749"><a href="#cb46-749" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb46-750"><a href="#cb46-750" aria-hidden="true" tabindex="-1"></a><span class="co">#=== plot the frequency of sp chosen by KCV ===#</span></span>
+<span id="cb46-751"><a href="#cb46-751" aria-hidden="true" tabindex="-1"></a><span class="co">ggplot(data = which_sp_optimal) +</span></span>
+<span id="cb46-752"><a href="#cb46-752" aria-hidden="true" tabindex="-1"></a><span class="co">  geom_point(aes(y = Pure, x = KCV, size = num_comb)) +</span></span>
+<span id="cb46-753"><a href="#cb46-753" aria-hidden="true" tabindex="-1"></a><span class="co">  scale_y_continuous(breaks = sp_seq) +</span></span>
+<span id="cb46-754"><a href="#cb46-754" aria-hidden="true" tabindex="-1"></a><span class="co">  scale_x_continuous(breaks = sp_seq) </span></span>
+<span id="cb46-755"><a href="#cb46-755" aria-hidden="true" tabindex="-1"></a><span class="co">```</span></span>
+<span id="cb46-756"><a href="#cb46-756" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-757"><a href="#cb46-757" aria-hidden="true" tabindex="-1"></a><span class="co">As you can see KCV gives you `sp` that is close to the `sp` based on pure MSE in many cases. But, you can also see that KCV can suggest you a very different number as well. KCV is not perfect, which is kind of obvious.</span></span>
+<span id="cb46-758"><a href="#cb46-758" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-759"><a href="#cb46-759" aria-hidden="true" tabindex="-1"></a><span class="co"> --&gt;</span></span>
+<span id="cb46-760"><a href="#cb46-760" aria-hidden="true" tabindex="-1"></a><span class="fu">## References {.unnumbered}</span></span>
+<span id="cb46-761"><a href="#cb46-761" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-762"><a href="#cb46-762" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"refs"</span><span class="kw">&gt;&lt;/div&gt;</span></span>
+<span id="cb46-763"><a href="#cb46-763" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-764"><a href="#cb46-764" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-765"><a href="#cb46-765" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-766"><a href="#cb46-766" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-767"><a href="#cb46-767" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-768"><a href="#cb46-768" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-769"><a href="#cb46-769" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-770"><a href="#cb46-770" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-771"><a href="#cb46-771" aria-hidden="true" tabindex="-1"></a></span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
 </div> <!-- /content -->
 
 

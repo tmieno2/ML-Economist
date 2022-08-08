@@ -278,7 +278,7 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./P04-local-linear-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">LLF</span></a>
+  <a href="./P04-local-linear-forest.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Local Linear Forest</span></a>
   </div>
 </li>
     </ul>
@@ -304,7 +304,12 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./C02-r-learner.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">S-, X-, T-, and R-learner</span></a>
+  <a href="./C02-xstr-learner.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">S-, X-, T-, and R-learner</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./C03-cf-orf.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Forest-based CATE Estimators</span></a>
   </div>
 </li>
     </ul>
@@ -320,12 +325,12 @@ div.csl-indent {
     <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./E01-spatial-cv.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></a>
+  <a href="./E01-spatial-cv.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./E02-grf.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Generalized Random Forest</span></a>
+  <a href="./E02-grf.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Generalized Random Forest</span></a>
   </div>
 </li>
     </ul>
@@ -341,17 +346,17 @@ div.csl-indent {
     <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PROG-01-mlr3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Machine Learning with <code>mlr3</code> in R</span></a>
+  <a href="./PROG-01-mlr3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Machine Learning with <code>mlr3</code> in R</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PROG-02-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
+  <a href="./PROG-02-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PROG-03-model-selection-prediction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Model Selection (Prediction)</span></a>
+  <a href="./PROG-03-model-selection-prediction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Model Selection (Prediction)</span></a>
   </div>
 </li>
     </ul>
@@ -403,7 +408,7 @@ div.csl-indent {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Bootstrap</span></h1>
+<div class="quarto-title-block"><div><h1 class="title d-none d-lg-block"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Bootstrap</span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
 </div>
 
 
@@ -1074,10 +1079,10 @@ $`5`
 </div>
 </div>
 <p>Note the estimated CI is very much similar to that from a regular bootstrap obtained in <a href="#sec-boot-comp"><span>Section&nbsp;5.3</span></a>.</p>
-<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-tip callout callout-style-default no-icon callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
-<i class="callout-icon"></i>
+<i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-caption-container flex-fill">
 Tip
@@ -1100,6 +1105,8 @@ Kleiner, Ariel, Ameet Talwalkar, Purnamrita Sarkar, and Michael I. Jordan. 2014.
 </div>
 </div>
 
+
+<!-- -->
 
 </section>
 
@@ -1134,6 +1141,57 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
   function tippyHover(el, contentFn) {
     const config = {
       allowHTML: true,
@@ -1194,7 +1252,658 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Random Forest</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
-</nav>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb61" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Bootstrap</span></span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a><span class="fu">## What is it for?</span></span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a>Bootstrap can be used to quantify the uncertainty associated with an estimator. For example, you can use it to estimate the standard error (SE) of a coefficient of a linear model. Since there are closed-form solutions for that, bootstrap is not really bringing any benefits to this case. However, the power of bootstrap comes in handy when you do NOT have a closed form solution. We will first demonstrate how bootstrap works using a linear model, and then apply it to a case where no-closed form solution is available.</span>
+<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a><span class="fu">## How it works</span></span>
+<span id="cb61-8"><a href="#cb61-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-9"><a href="#cb61-9" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb61-10"><a href="#cb61-10" aria-hidden="true" tabindex="-1"></a>**Packages to load for replication**</span>
+<span id="cb61-11"><a href="#cb61-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-14"><a href="#cb61-14" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-15"><a href="#cb61-15" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb61-16"><a href="#cb61-16" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb61-17"><a href="#cb61-17" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb61-18"><a href="#cb61-18" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mgcv)</span>
+<span id="cb61-19"><a href="#cb61-19" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span>
+<span id="cb61-20"><a href="#cb61-20" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(parallel)</span>
+<span id="cb61-21"><a href="#cb61-21" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fixest)</span>
+<span id="cb61-22"><a href="#cb61-22" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb61-23"><a href="#cb61-23" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ranger)</span>
+<span id="cb61-24"><a href="#cb61-24" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-25"><a href="#cb61-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-28"><a href="#cb61-28" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-29"><a href="#cb61-29" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb61-30"><a href="#cb61-30" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb61-31"><a href="#cb61-31" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb61-32"><a href="#cb61-32" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mgcv)</span>
+<span id="cb61-33"><a href="#cb61-33" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span>
+<span id="cb61-34"><a href="#cb61-34" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(parallel)</span>
+<span id="cb61-35"><a href="#cb61-35" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fixest)</span>
+<span id="cb61-36"><a href="#cb61-36" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb61-37"><a href="#cb61-37" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ranger)</span>
+<span id="cb61-38"><a href="#cb61-38" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-39"><a href="#cb61-39" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb61-40"><a href="#cb61-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-41"><a href="#cb61-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-42"><a href="#cb61-42" aria-hidden="true" tabindex="-1"></a>Here are the general steps of a bootstrap:</span>
+<span id="cb61-43"><a href="#cb61-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-44"><a href="#cb61-44" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>Step 1: Sample the data with replacement (You can sample the same observations more than one times. You draw a ball and then you put it back in the box.)</span>
+<span id="cb61-45"><a href="#cb61-45" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>Step 2: Run a statistical analysis to estimate whatever quantity you are interested in estimating</span>
+<span id="cb61-46"><a href="#cb61-46" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>Repeat Steps 1 and 2 many times and store the estimates</span>
+<span id="cb61-47"><a href="#cb61-47" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>Derive uncertainty measures from the collection of estimates obtained above</span>
+<span id="cb61-48"><a href="#cb61-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-49"><a href="#cb61-49" aria-hidden="true" tabindex="-1"></a>Let's demonstrate this using a very simple linear regression example.</span>
+<span id="cb61-50"><a href="#cb61-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-51"><a href="#cb61-51" aria-hidden="true" tabindex="-1"></a>Here is the data generating process:</span>
+<span id="cb61-52"><a href="#cb61-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-55"><a href="#cb61-55" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-56"><a href="#cb61-56" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">89343</span>)</span>
+<span id="cb61-57"><a href="#cb61-57" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb61-58"><a href="#cb61-58" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb61-59"><a href="#cb61-59" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> x <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb61-60"><a href="#cb61-60" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-61"><a href="#cb61-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-62"><a href="#cb61-62" aria-hidden="true" tabindex="-1"></a>We would like to estimate the coefficient on $x$ by applying OLS to the following model:</span>
+<span id="cb61-63"><a href="#cb61-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-64"><a href="#cb61-64" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb61-65"><a href="#cb61-65" aria-hidden="true" tabindex="-1"></a>y = \alpha + \beta_x + \mu</span>
+<span id="cb61-66"><a href="#cb61-66" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb61-67"><a href="#cb61-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-68"><a href="#cb61-68" aria-hidden="true" tabindex="-1"></a>We know from the econometric theory class that the SE of $\hat{\beta}_{OLS}$ is $\frac{\sigma}{\sqrt{SST_x}}$, where $\sigma^2$ is the variance of the error term ($\mu$) and $SST_x = \sum_{i=1}^N (x_i - \bar{x})^2$ ($\bar{x}$ is the mean of $x$).  </span>
+<span id="cb61-69"><a href="#cb61-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-72"><a href="#cb61-72" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-73"><a href="#cb61-73" aria-hidden="true" tabindex="-1"></a>mean_x <span class="ot">&lt;-</span> <span class="fu">mean</span>(x)</span>
+<span id="cb61-74"><a href="#cb61-74" aria-hidden="true" tabindex="-1"></a>sst_x <span class="ot">&lt;-</span> ((x<span class="sc">-</span><span class="fu">mean</span>(x))<span class="sc">^</span><span class="dv">2</span>) <span class="sc">%&gt;%</span> <span class="fu">sum</span>()</span>
+<span id="cb61-75"><a href="#cb61-75" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb61-76"><a href="#cb61-76" aria-hidden="true" tabindex="-1"></a>se_bhat <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="dv">4</span> <span class="sc">/</span> sst_x)</span>
+<span id="cb61-77"><a href="#cb61-77" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb61-78"><a href="#cb61-78" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-79"><a href="#cb61-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-80"><a href="#cb61-80" aria-hidden="true" tabindex="-1"></a>So, we know that the true SE of $\hat{\beta}_{OLS}$ is <span class="in">`r se_bhat`</span>. There is not really any point in using bootstrap in this case, but this is a good example to see if bootstrap works or not.</span>
+<span id="cb61-81"><a href="#cb61-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-82"><a href="#cb61-82" aria-hidden="true" tabindex="-1"></a>Let's implement a single iteration of the entire bootstrap steps (Steps 1 and 2).</span>
+<span id="cb61-83"><a href="#cb61-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-86"><a href="#cb61-86" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-87"><a href="#cb61-87" aria-hidden="true" tabindex="-1"></a><span class="co">#=== set up a dataset ===#</span></span>
+<span id="cb61-88"><a href="#cb61-88" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span></span>
+<span id="cb61-89"><a href="#cb61-89" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>(</span>
+<span id="cb61-90"><a href="#cb61-90" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> y,</span>
+<span id="cb61-91"><a href="#cb61-91" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> x</span>
+<span id="cb61-92"><a href="#cb61-92" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb61-93"><a href="#cb61-93" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-94"><a href="#cb61-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-95"><a href="#cb61-95" aria-hidden="true" tabindex="-1"></a>Now, draw observations with replacement so the resulting dataset has the same number of observations as the original dataset.</span>
+<span id="cb61-96"><a href="#cb61-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-99"><a href="#cb61-99" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-100"><a href="#cb61-100" aria-hidden="true" tabindex="-1"></a>num_obs <span class="ot">&lt;-</span> <span class="fu">nrow</span>(data)</span>
+<span id="cb61-101"><a href="#cb61-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-102"><a href="#cb61-102" aria-hidden="true" tabindex="-1"></a><span class="co">#=== draw row numbers ===#</span></span>
+<span id="cb61-103"><a href="#cb61-103" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb61-104"><a href="#cb61-104" aria-hidden="true" tabindex="-1"></a>row_indices <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">seq_len</span>(num_obs), num_obs, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb61-105"><a href="#cb61-105" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb61-106"><a href="#cb61-106" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-107"><a href="#cb61-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-108"><a href="#cb61-108" aria-hidden="true" tabindex="-1"></a>Use the sampled indices to create a bootstrapped dataset:</span>
+<span id="cb61-109"><a href="#cb61-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-110"><a href="#cb61-110" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb61-111"><a href="#cb61-111" aria-hidden="true" tabindex="-1"></a>You could also use <span class="in">`bootstraps()`</span> from the <span class="in">`rsample`</span> package. </span>
+<span id="cb61-112"><a href="#cb61-112" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb61-113"><a href="#cb61-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-116"><a href="#cb61-116" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-117"><a href="#cb61-117" aria-hidden="true" tabindex="-1"></a>temp_data <span class="ot">&lt;-</span> data[row_indices, ]</span>
+<span id="cb61-118"><a href="#cb61-118" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-119"><a href="#cb61-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-120"><a href="#cb61-120" aria-hidden="true" tabindex="-1"></a>Now, apply OLS to get a coefficient estimate on $x$ using the bootstrapped dataset.</span>
+<span id="cb61-121"><a href="#cb61-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-124"><a href="#cb61-124" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-125"><a href="#cb61-125" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(y <span class="sc">~</span> x, <span class="at">data =</span> temp_data)<span class="sc">$</span>coefficient[<span class="st">"x"</span>]</span>
+<span id="cb61-126"><a href="#cb61-126" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-127"><a href="#cb61-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-128"><a href="#cb61-128" aria-hidden="true" tabindex="-1"></a>This is the end of Steps 1 and 2. Now, let's repeat this step 1000 times. First, we define a function that implements Steps 1 and 2.</span>
+<span id="cb61-129"><a href="#cb61-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-132"><a href="#cb61-132" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-133"><a href="#cb61-133" aria-hidden="true" tabindex="-1"></a>get_beta <span class="ot">&lt;-</span> <span class="cf">function</span>(i, data)</span>
+<span id="cb61-134"><a href="#cb61-134" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb61-135"><a href="#cb61-135" aria-hidden="true" tabindex="-1"></a>  num_obs <span class="ot">&lt;-</span> <span class="fu">nrow</span>(data)</span>
+<span id="cb61-136"><a href="#cb61-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-137"><a href="#cb61-137" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== sample row numbers ===#</span></span>
+<span id="cb61-138"><a href="#cb61-138" aria-hidden="true" tabindex="-1"></a>  row_indices <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">seq_len</span>(num_obs), num_obs, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb61-139"><a href="#cb61-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-140"><a href="#cb61-140" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== bootstrapped data ===#</span></span>
+<span id="cb61-141"><a href="#cb61-141" aria-hidden="true" tabindex="-1"></a>  temp_data <span class="ot">&lt;-</span> data[row_indices, ]</span>
+<span id="cb61-142"><a href="#cb61-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-143"><a href="#cb61-143" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== get coefficient ===#</span></span>
+<span id="cb61-144"><a href="#cb61-144" aria-hidden="true" tabindex="-1"></a>  beta_hat <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x, <span class="at">data =</span> temp_data)<span class="sc">$</span>coefficient[<span class="st">"x"</span>]</span>
+<span id="cb61-145"><a href="#cb61-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-146"><a href="#cb61-146" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(beta_hat)</span>
+<span id="cb61-147"><a href="#cb61-147" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb61-148"><a href="#cb61-148" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-149"><a href="#cb61-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-150"><a href="#cb61-150" aria-hidden="true" tabindex="-1"></a>Now repeat <span class="in">`get_beta()`</span> many times:</span>
+<span id="cb61-151"><a href="#cb61-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-154"><a href="#cb61-154" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-155"><a href="#cb61-155" aria-hidden="true" tabindex="-1"></a>beta_store <span class="ot">&lt;-</span></span>
+<span id="cb61-156"><a href="#cb61-156" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb61-157"><a href="#cb61-157" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>,</span>
+<span id="cb61-158"><a href="#cb61-158" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) <span class="fu">get_beta</span>(x, data)</span>
+<span id="cb61-159"><a href="#cb61-159" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb61-160"><a href="#cb61-160" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unlist</span>()</span>
+<span id="cb61-161"><a href="#cb61-161" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-162"><a href="#cb61-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-163"><a href="#cb61-163" aria-hidden="true" tabindex="-1"></a>Calculate standard deviation of $\hat{\beta}_{OLS}$,</span>
+<span id="cb61-164"><a href="#cb61-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-167"><a href="#cb61-167" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-168"><a href="#cb61-168" aria-hidden="true" tabindex="-1"></a><span class="fu">sd</span>(beta_store)</span>
+<span id="cb61-169"><a href="#cb61-169" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-170"><a href="#cb61-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-171"><a href="#cb61-171" aria-hidden="true" tabindex="-1"></a>Not, bad. What if we make the number of observations to 1000 instead of 100?</span>
+<span id="cb61-172"><a href="#cb61-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-175"><a href="#cb61-175" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-176"><a href="#cb61-176" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">67343</span>)</span>
+<span id="cb61-177"><a href="#cb61-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-178"><a href="#cb61-178" aria-hidden="true" tabindex="-1"></a><span class="co">#=== generate data ===#</span></span>
+<span id="cb61-179"><a href="#cb61-179" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb61-180"><a href="#cb61-180" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb61-181"><a href="#cb61-181" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> x <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb61-182"><a href="#cb61-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-183"><a href="#cb61-183" aria-hidden="true" tabindex="-1"></a><span class="co">#=== set up a dataset ===#</span></span>
+<span id="cb61-184"><a href="#cb61-184" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span></span>
+<span id="cb61-185"><a href="#cb61-185" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>(</span>
+<span id="cb61-186"><a href="#cb61-186" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> y,</span>
+<span id="cb61-187"><a href="#cb61-187" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> x</span>
+<span id="cb61-188"><a href="#cb61-188" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb61-189"><a href="#cb61-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-190"><a href="#cb61-190" aria-hidden="true" tabindex="-1"></a><span class="co">#=== true SE ===#</span></span>
+<span id="cb61-191"><a href="#cb61-191" aria-hidden="true" tabindex="-1"></a>mean_x <span class="ot">&lt;-</span> <span class="fu">mean</span>(x)</span>
+<span id="cb61-192"><a href="#cb61-192" aria-hidden="true" tabindex="-1"></a>sst_x <span class="ot">&lt;-</span> <span class="fu">sum</span>(((x<span class="sc">-</span><span class="fu">mean</span>(x))<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb61-193"><a href="#cb61-193" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb61-194"><a href="#cb61-194" aria-hidden="true" tabindex="-1"></a>se_bhat <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="dv">4</span> <span class="sc">/</span> sst_x)</span>
+<span id="cb61-195"><a href="#cb61-195" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb61-196"><a href="#cb61-196" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-197"><a href="#cb61-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-200"><a href="#cb61-200" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-201"><a href="#cb61-201" aria-hidden="true" tabindex="-1"></a><span class="co">#=== bootstrap-estimated SE ===#</span></span>
+<span id="cb61-202"><a href="#cb61-202" aria-hidden="true" tabindex="-1"></a>beta_store <span class="ot">&lt;-</span></span>
+<span id="cb61-203"><a href="#cb61-203" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb61-204"><a href="#cb61-204" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>,</span>
+<span id="cb61-205"><a href="#cb61-205" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) <span class="fu">get_beta</span>(x, data)</span>
+<span id="cb61-206"><a href="#cb61-206" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb61-207"><a href="#cb61-207" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unlist</span>()</span>
+<span id="cb61-208"><a href="#cb61-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-209"><a href="#cb61-209" aria-hidden="true" tabindex="-1"></a><span class="fu">sd</span>(beta_store)</span>
+<span id="cb61-210"><a href="#cb61-210" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-211"><a href="#cb61-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-212"><a href="#cb61-212" aria-hidden="true" tabindex="-1"></a>This is just a single simulation. So, we cannot say bootstrap works better when the number of sample size is larger only from these experiments. But, it is generally true that bootstrap indeed works better when the number of sample size is larger.</span>
+<span id="cb61-213"><a href="#cb61-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-214"><a href="#cb61-214" aria-hidden="true" tabindex="-1"></a><span class="fu">## A more complicated example {#sec-boot-comp}</span></span>
+<span id="cb61-215"><a href="#cb61-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-216"><a href="#cb61-216" aria-hidden="true" tabindex="-1"></a>Consider a simple production function (e.g., yield response functions for agronomists):</span>
+<span id="cb61-217"><a href="#cb61-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-218"><a href="#cb61-218" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb61-219"><a href="#cb61-219" aria-hidden="true" tabindex="-1"></a>y = \beta_1 x + \beta_2 x^2 + \mu</span>
+<span id="cb61-220"><a href="#cb61-220" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb61-221"><a href="#cb61-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-222"><a href="#cb61-222" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>$y$: output</span>
+<span id="cb61-223"><a href="#cb61-223" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>$x$: input</span>
+<span id="cb61-224"><a href="#cb61-224" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>$\mu$: error</span>
+<span id="cb61-225"><a href="#cb61-225" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-226"><a href="#cb61-226" aria-hidden="true" tabindex="-1"></a>The price of $y$ is 5 and the cost of $x$ is 2. Your objective is to identify the amount of input that maximizes profit. You do not know $\beta_1$ and $\beta_2$, and will be estimating them using the data you have collected. Letting $\hat{\beta_1}$ and $\hat{\beta_2}$ denote the estimates of $\beta_1$ and $\beta_2$, respectively, the mathematical expression of the optimization problem is:</span>
+<span id="cb61-227"><a href="#cb61-227" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-228"><a href="#cb61-228" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb61-229"><a href="#cb61-229" aria-hidden="true" tabindex="-1"></a>Max_x 5(\hat{\beta}_1 x + \hat{\beta}_2 x^2) - 2 x</span>
+<span id="cb61-230"><a href="#cb61-230" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb61-231"><a href="#cb61-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-232"><a href="#cb61-232" aria-hidden="true" tabindex="-1"></a>The F.O.C is</span>
+<span id="cb61-233"><a href="#cb61-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-234"><a href="#cb61-234" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb61-235"><a href="#cb61-235" aria-hidden="true" tabindex="-1"></a>5\hat{\beta}_1 + 10 \hat{\beta}_2 x - 2 = 0</span>
+<span id="cb61-236"><a href="#cb61-236" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb61-237"><a href="#cb61-237" aria-hidden="true" tabindex="-1"></a>So, the estimated profit-maximizing input level is $\hat{x}^* = \frac{2-5\hat{\beta}_1}{10\hat{\beta}_2}$. What we are interested in knowing is the SE of $x^*$. As you can see, it is a non-linear function of the coefficients, which makes it slightly harder than simply getting the SE of $\hat{\beta_1}$ or $\hat{\beta_2}$. However, bootstrap can easily get us an estimate of the SE of $\hat{x}^*$. The bootstrap process will be very much the same as the first bootstrap example except that we will estimate $x^*$ in each iteration instead of stopping at estimating just coefficients. Let's work on a single iteration first.</span>
+<span id="cb61-238"><a href="#cb61-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-239"><a href="#cb61-239" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb61-240"><a href="#cb61-240" aria-hidden="true" tabindex="-1"></a>Alternatively, you could use the delta method, which lets you find an estimate of the SE of a statistics that is a non-linear function of estimated coefficients.</span>
+<span id="cb61-241"><a href="#cb61-241" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb61-242"><a href="#cb61-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-243"><a href="#cb61-243" aria-hidden="true" tabindex="-1"></a>Here is the data generating process:</span>
+<span id="cb61-244"><a href="#cb61-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-247"><a href="#cb61-247" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-248"><a href="#cb61-248" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">894334</span>)</span>
+<span id="cb61-249"><a href="#cb61-249" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-250"><a href="#cb61-250" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span>  <span class="dv">1000</span></span>
+<span id="cb61-251"><a href="#cb61-251" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span>  <span class="fu">runif</span>(N) <span class="sc">*</span> <span class="dv">3</span></span>
+<span id="cb61-252"><a href="#cb61-252" aria-hidden="true" tabindex="-1"></a>ey <span class="ot">&lt;-</span> <span class="dv">6</span> <span class="sc">*</span> x <span class="sc">-</span> <span class="dv">2</span> <span class="sc">*</span> x<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb61-253"><a href="#cb61-253" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb61-254"><a href="#cb61-254" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> ey <span class="sc">+</span> mu</span>
+<span id="cb61-255"><a href="#cb61-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-256"><a href="#cb61-256" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> </span>
+<span id="cb61-257"><a href="#cb61-257" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>(</span>
+<span id="cb61-258"><a href="#cb61-258" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> x,</span>
+<span id="cb61-259"><a href="#cb61-259" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> y,</span>
+<span id="cb61-260"><a href="#cb61-260" aria-hidden="true" tabindex="-1"></a>    <span class="at">ey =</span> ey</span>
+<span id="cb61-261"><a href="#cb61-261" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb61-262"><a href="#cb61-262" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-263"><a href="#cb61-263" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-264"><a href="#cb61-264" aria-hidden="true" tabindex="-1"></a>Under the data generating process, here is what the production function looks like:</span>
+<span id="cb61-265"><a href="#cb61-265" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-268"><a href="#cb61-268" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-269"><a href="#cb61-269" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb61-270"><a href="#cb61-270" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 3</span></span>
+<span id="cb61-271"><a href="#cb61-271" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 5</span></span>
+<span id="cb61-272"><a href="#cb61-272" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-273"><a href="#cb61-273" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> data) <span class="sc">+</span></span>
+<span id="cb61-274"><a href="#cb61-274" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> ey, <span class="at">x =</span> x)) <span class="sc">+</span></span>
+<span id="cb61-275"><a href="#cb61-275" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb61-276"><a href="#cb61-276" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-277"><a href="#cb61-277" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-278"><a href="#cb61-278" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-281"><a href="#cb61-281" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-282"><a href="#cb61-282" aria-hidden="true" tabindex="-1"></a>num_obs <span class="ot">&lt;-</span> <span class="fu">nrow</span>(data)</span>
+<span id="cb61-283"><a href="#cb61-283" aria-hidden="true" tabindex="-1"></a>row_indices <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">seq_len</span>(num_obs), num_obs, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb61-284"><a href="#cb61-284" aria-hidden="true" tabindex="-1"></a>boot_data <span class="ot">&lt;-</span> data[row_indices, ]</span>
+<span id="cb61-285"><a href="#cb61-285" aria-hidden="true" tabindex="-1"></a>reg <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x <span class="sc">+</span> <span class="fu">I</span>(x<span class="sc">^</span><span class="dv">2</span>), <span class="at">data =</span> boot_data)</span>
+<span id="cb61-286"><a href="#cb61-286" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-287"><a href="#cb61-287" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-288"><a href="#cb61-288" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-289"><a href="#cb61-289" aria-hidden="true" tabindex="-1"></a>Now that we have estimated $\beta_1$ and $\beta_2$, we can easily estimate $x^*$ using its analytical formula.</span>
+<span id="cb61-290"><a href="#cb61-290" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-293"><a href="#cb61-293" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-294"><a href="#cb61-294" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb61-295"><a href="#cb61-295" aria-hidden="true" tabindex="-1"></a>x_star <span class="ot">&lt;-</span> (<span class="dv">2</span> <span class="sc">-</span> <span class="dv">5</span> <span class="sc">*</span> reg<span class="sc">$</span>coef[<span class="st">"x"</span>])<span class="sc">/</span> (<span class="dv">10</span> <span class="sc">*</span> reg<span class="sc">$</span>coef[<span class="st">"I(x^2)"</span>])</span>
+<span id="cb61-296"><a href="#cb61-296" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb61-297"><a href="#cb61-297" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-298"><a href="#cb61-298" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-299"><a href="#cb61-299" aria-hidden="true" tabindex="-1"></a>We can repeat this many times to get a collection of $x^*$ estimates and calculate the standard deviation.</span>
+<span id="cb61-300"><a href="#cb61-300" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-303"><a href="#cb61-303" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-304"><a href="#cb61-304" aria-hidden="true" tabindex="-1"></a>get_x_star <span class="ot">&lt;-</span> <span class="cf">function</span>(i)</span>
+<span id="cb61-305"><a href="#cb61-305" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb61-306"><a href="#cb61-306" aria-hidden="true" tabindex="-1"></a>  row_indices <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">seq_len</span>(num_obs), num_obs, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb61-307"><a href="#cb61-307" aria-hidden="true" tabindex="-1"></a>  boot_data <span class="ot">&lt;-</span> data[row_indices, ]</span>
+<span id="cb61-308"><a href="#cb61-308" aria-hidden="true" tabindex="-1"></a>  reg <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x <span class="sc">+</span> <span class="fu">I</span>(x<span class="sc">^</span><span class="dv">2</span>), <span class="at">data =</span> boot_data)</span>
+<span id="cb61-309"><a href="#cb61-309" aria-hidden="true" tabindex="-1"></a>  x_star <span class="ot">&lt;-</span> (<span class="dv">2</span> <span class="sc">-</span> <span class="dv">5</span> <span class="sc">*</span> reg<span class="sc">$</span>coef[<span class="st">"x"</span>])<span class="sc">/</span> (<span class="dv">10</span> <span class="sc">*</span> reg<span class="sc">$</span>coef[<span class="st">"I(x^2)"</span>])</span>
+<span id="cb61-310"><a href="#cb61-310" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb61-311"><a href="#cb61-311" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-312"><a href="#cb61-312" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-315"><a href="#cb61-315" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-316"><a href="#cb61-316" aria-hidden="true" tabindex="-1"></a>x_stars <span class="ot">&lt;-</span> </span>
+<span id="cb61-317"><a href="#cb61-317" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb61-318"><a href="#cb61-318" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>,</span>
+<span id="cb61-319"><a href="#cb61-319" aria-hidden="true" tabindex="-1"></a>    get_x_star</span>
+<span id="cb61-320"><a href="#cb61-320" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb61-321"><a href="#cb61-321" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unlist</span>()</span>
+<span id="cb61-322"><a href="#cb61-322" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-323"><a href="#cb61-323" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-324"><a href="#cb61-324" aria-hidden="true" tabindex="-1"></a>Here is the histogram:</span>
+<span id="cb61-325"><a href="#cb61-325" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-328"><a href="#cb61-328" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-329"><a href="#cb61-329" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb61-330"><a href="#cb61-330" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4</span></span>
+<span id="cb61-331"><a href="#cb61-331" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 6</span></span>
+<span id="cb61-332"><a href="#cb61-332" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-333"><a href="#cb61-333" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(x_stars, <span class="at">breaks =</span> <span class="dv">30</span>)</span>
+<span id="cb61-334"><a href="#cb61-334" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-335"><a href="#cb61-335" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-336"><a href="#cb61-336" aria-hidden="true" tabindex="-1"></a>So, it seems to follow a normal distribution. You can get standard deviation of <span class="in">`x_stars`</span> as an estimate of the SE of $\hat{x}^*$.</span>
+<span id="cb61-337"><a href="#cb61-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-340"><a href="#cb61-340" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-341"><a href="#cb61-341" aria-hidden="true" tabindex="-1"></a><span class="fu">sd</span>(x_stars)</span>
+<span id="cb61-342"><a href="#cb61-342" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-343"><a href="#cb61-343" aria-hidden="true" tabindex="-1"></a>You can get the 95% confidence interval (CI) like below:</span>
+<span id="cb61-344"><a href="#cb61-344" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-347"><a href="#cb61-347" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-348"><a href="#cb61-348" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(x_stars, <span class="at">prob =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span>
+<span id="cb61-349"><a href="#cb61-349" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-350"><a href="#cb61-350" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-351"><a href="#cb61-351" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-352"><a href="#cb61-352" aria-hidden="true" tabindex="-1"></a><span class="fu">## One more example with a non-parametric model</span></span>
+<span id="cb61-353"><a href="#cb61-353" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-354"><a href="#cb61-354" aria-hidden="true" tabindex="-1"></a>We now demonstrate how we can use bootstrap to get an estimate of the SE of $\hat{x}^*$ when we use random forest (RF) as our regression method instead of OLS. When RF is used, we do not have any coefficients like the OLS case above. Even then, bootstrap allows us to estimate the SE of $\hat{x}^*$.</span>
+<span id="cb61-355"><a href="#cb61-355" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-356"><a href="#cb61-356" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb61-357"><a href="#cb61-357" aria-hidden="true" tabindex="-1"></a>RF will be covered in @sec-rf. Please take a quick glance at what RF is to confirm this point. No deep understanding of RF is necessary to understand the significance of bootstrap in this example. Please also note that there is no benefit in using RF in this example because we have only one variable and semi-parametric approach like <span class="in">`gam()`</span> will certainly do better. RF is used here only because it does not give you coefficient estimates (there are no coefficients in the first place for RF) like linear models.</span>
+<span id="cb61-358"><a href="#cb61-358" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb61-359"><a href="#cb61-359" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-360"><a href="#cb61-360" aria-hidden="true" tabindex="-1"></a>The procedure is exactly the same except that we use RF to estimate the production function and also that we need to conduct numerical optimization as no analytical formula is available unlike the case above. </span>
+<span id="cb61-361"><a href="#cb61-361" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-362"><a href="#cb61-362" aria-hidden="true" tabindex="-1"></a>We first implement a single iteration. </span>
+<span id="cb61-363"><a href="#cb61-363" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-366"><a href="#cb61-366" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-367"><a href="#cb61-367" aria-hidden="true" tabindex="-1"></a><span class="co">#=== get bootstrapped data ===#</span></span>
+<span id="cb61-368"><a href="#cb61-368" aria-hidden="true" tabindex="-1"></a>row_indices <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">seq_len</span>(num_obs), num_obs, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb61-369"><a href="#cb61-369" aria-hidden="true" tabindex="-1"></a>boot_data <span class="ot">&lt;-</span> data[row_indices, ]</span>
+<span id="cb61-370"><a href="#cb61-370" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-371"><a href="#cb61-371" aria-hidden="true" tabindex="-1"></a><span class="co">#=== train RF ===#</span></span>
+<span id="cb61-372"><a href="#cb61-372" aria-hidden="true" tabindex="-1"></a>reg_rf <span class="ot">&lt;-</span> <span class="fu">ranger</span>(y <span class="sc">~</span> x, <span class="at">data =</span> boot_data)</span>
+<span id="cb61-373"><a href="#cb61-373" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-374"><a href="#cb61-374" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-375"><a href="#cb61-375" aria-hidden="true" tabindex="-1"></a>Once you train RF, we can predict yield at a range of values of $x$, calculate profit, and then pick the value of $x$ that maximizes the estimated profit. </span>
+<span id="cb61-376"><a href="#cb61-376" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-379"><a href="#cb61-379" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-380"><a href="#cb61-380" aria-hidden="true" tabindex="-1"></a><span class="co">#=== create series of x values at which yield will be predicted ===#</span></span>
+<span id="cb61-381"><a href="#cb61-381" aria-hidden="true" tabindex="-1"></a>eval_data <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">x =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">3</span>, <span class="at">length =</span> <span class="dv">1000</span>))</span>
+<span id="cb61-382"><a href="#cb61-382" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-383"><a href="#cb61-383" aria-hidden="true" tabindex="-1"></a><span class="co">#=== predict yield based on the trained RF ===#</span></span>
+<span id="cb61-384"><a href="#cb61-384" aria-hidden="true" tabindex="-1"></a>eval_data[, y_hat <span class="sc">:</span><span class="er">=</span> <span class="fu">predict</span>(reg_rf, eval_data)<span class="sc">$</span>predictions]</span>
+<span id="cb61-385"><a href="#cb61-385" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-386"><a href="#cb61-386" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-387"><a href="#cb61-387" aria-hidden="true" tabindex="-1"></a>Here is what the estimated production function looks like:</span>
+<span id="cb61-388"><a href="#cb61-388" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-391"><a href="#cb61-391" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-392"><a href="#cb61-392" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb61-393"><a href="#cb61-393" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4</span></span>
+<span id="cb61-394"><a href="#cb61-394" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 6</span></span>
+<span id="cb61-395"><a href="#cb61-395" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-396"><a href="#cb61-396" aria-hidden="true" tabindex="-1"></a><span class="co">#=== plot ===#</span></span>
+<span id="cb61-397"><a href="#cb61-397" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> eval_data) <span class="sc">+</span></span>
+<span id="cb61-398"><a href="#cb61-398" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> y_hat, <span class="at">x =</span> x)) <span class="sc">+</span></span>
+<span id="cb61-399"><a href="#cb61-399" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb61-400"><a href="#cb61-400" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-401"><a href="#cb61-401" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-402"><a href="#cb61-402" aria-hidden="true" tabindex="-1"></a>Well, it is very spiky (we need to tune hyper-parameters using KCV. But, more on this later. The quality of RF estimation has nothing to do with the goal of this section). </span>
+<span id="cb61-403"><a href="#cb61-403" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-404"><a href="#cb61-404" aria-hidden="true" tabindex="-1"></a>We can now predict profit at each value of $x$.</span>
+<span id="cb61-405"><a href="#cb61-405" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-408"><a href="#cb61-408" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-409"><a href="#cb61-409" aria-hidden="true" tabindex="-1"></a><span class="co">#=== calculate profit ===#</span></span>
+<span id="cb61-410"><a href="#cb61-410" aria-hidden="true" tabindex="-1"></a>eval_data[, profit_hat <span class="sc">:</span><span class="er">=</span> <span class="dv">5</span> <span class="sc">*</span> y_hat <span class="sc">-</span> <span class="dv">2</span> <span class="sc">*</span> x]</span>
+<span id="cb61-411"><a href="#cb61-411" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-412"><a href="#cb61-412" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(eval_data)</span>
+<span id="cb61-413"><a href="#cb61-413" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-414"><a href="#cb61-414" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-415"><a href="#cb61-415" aria-hidden="true" tabindex="-1"></a>The only thing left for us to do is find the $x$ value that maximizes profit. </span>
+<span id="cb61-416"><a href="#cb61-416" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-417"><a href="#cb61-417" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-420"><a href="#cb61-420" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-421"><a href="#cb61-421" aria-hidden="true" tabindex="-1"></a>eval_data[<span class="fu">which.max</span>(profit_hat), ]</span>
+<span id="cb61-422"><a href="#cb61-422" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-423"><a href="#cb61-423" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-424"><a href="#cb61-424" aria-hidden="true" tabindex="-1"></a>Okay, so <span class="in">`r eval_data[which.max(profit_hat), x]`</span> is the $\hat{x}^*$ from this iteration.</span>
+<span id="cb61-425"><a href="#cb61-425" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-426"><a href="#cb61-426" aria-hidden="true" tabindex="-1"></a>As you might have guessed already, we can just repeat this step to get an estimate of the SE of $\hat{x}^*_{RF}$.</span>
+<span id="cb61-427"><a href="#cb61-427" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-430"><a href="#cb61-430" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-431"><a href="#cb61-431" aria-hidden="true" tabindex="-1"></a>get_x_star_rf <span class="ot">&lt;-</span> <span class="cf">function</span>(i)</span>
+<span id="cb61-432"><a href="#cb61-432" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb61-433"><a href="#cb61-433" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(i) <span class="co"># progress tracker</span></span>
+<span id="cb61-434"><a href="#cb61-434" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb61-435"><a href="#cb61-435" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== get bootstrapped data ===#</span></span>
+<span id="cb61-436"><a href="#cb61-436" aria-hidden="true" tabindex="-1"></a>  row_indices <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">seq_len</span>(num_obs), num_obs, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb61-437"><a href="#cb61-437" aria-hidden="true" tabindex="-1"></a>  boot_data <span class="ot">&lt;-</span> data[row_indices, ]</span>
+<span id="cb61-438"><a href="#cb61-438" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-439"><a href="#cb61-439" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== train RF ===#</span></span>
+<span id="cb61-440"><a href="#cb61-440" aria-hidden="true" tabindex="-1"></a>  reg_rf <span class="ot">&lt;-</span> <span class="fu">ranger</span>(y <span class="sc">~</span> x, <span class="at">data =</span> boot_data)</span>
+<span id="cb61-441"><a href="#cb61-441" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-442"><a href="#cb61-442" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== create series of x values at which yield will be predicted ===#</span></span>
+<span id="cb61-443"><a href="#cb61-443" aria-hidden="true" tabindex="-1"></a>  eval_data <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">x =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">3</span>, <span class="at">length =</span> <span class="dv">1000</span>))</span>
+<span id="cb61-444"><a href="#cb61-444" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-445"><a href="#cb61-445" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== predict yield based on the trained RF ===#</span></span>
+<span id="cb61-446"><a href="#cb61-446" aria-hidden="true" tabindex="-1"></a>  eval_data[, y_hat <span class="sc">:</span><span class="er">=</span> <span class="fu">predict</span>(reg_rf, eval_data)<span class="sc">$</span>predictions]</span>
+<span id="cb61-447"><a href="#cb61-447" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb61-448"><a href="#cb61-448" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== calculate profit ===#</span></span>
+<span id="cb61-449"><a href="#cb61-449" aria-hidden="true" tabindex="-1"></a>  eval_data[, profit_hat <span class="sc">:</span><span class="er">=</span> <span class="dv">5</span> <span class="sc">*</span> y_hat <span class="sc">-</span> <span class="dv">2</span> <span class="sc">*</span> x]</span>
+<span id="cb61-450"><a href="#cb61-450" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb61-451"><a href="#cb61-451" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== find x_star_hat ===#</span></span>
+<span id="cb61-452"><a href="#cb61-452" aria-hidden="true" tabindex="-1"></a>  x_star_hat <span class="ot">&lt;-</span> eval_data[<span class="fu">which.max</span>(profit_hat), x]</span>
+<span id="cb61-453"><a href="#cb61-453" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb61-454"><a href="#cb61-454" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(x_star_hat)</span>
+<span id="cb61-455"><a href="#cb61-455" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb61-456"><a href="#cb61-456" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-457"><a href="#cb61-457" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-458"><a href="#cb61-458" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-459"><a href="#cb61-459" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-462"><a href="#cb61-462" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-463"><a href="#cb61-463" aria-hidden="true" tabindex="-1"></a><span class="co">#| cache: true</span></span>
+<span id="cb61-464"><a href="#cb61-464" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-465"><a href="#cb61-465" aria-hidden="true" tabindex="-1"></a>x_stars_rf <span class="ot">&lt;-</span> </span>
+<span id="cb61-466"><a href="#cb61-466" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mclapply</span>(</span>
+<span id="cb61-467"><a href="#cb61-467" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>,</span>
+<span id="cb61-468"><a href="#cb61-468" aria-hidden="true" tabindex="-1"></a>    get_x_star_rf,</span>
+<span id="cb61-469"><a href="#cb61-469" aria-hidden="true" tabindex="-1"></a>    <span class="at">mc.cores =</span> <span class="dv">12</span></span>
+<span id="cb61-470"><a href="#cb61-470" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb61-471"><a href="#cb61-471" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unlist</span>()</span>
+<span id="cb61-472"><a href="#cb61-472" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-473"><a href="#cb61-473" aria-hidden="true" tabindex="-1"></a><span class="co">#=== Windows user ===#</span></span>
+<span id="cb61-474"><a href="#cb61-474" aria-hidden="true" tabindex="-1"></a><span class="co"># library(future.apply)</span></span>
+<span id="cb61-475"><a href="#cb61-475" aria-hidden="true" tabindex="-1"></a><span class="co"># plan("multisession", workers = detectCores() - 2)</span></span>
+<span id="cb61-476"><a href="#cb61-476" aria-hidden="true" tabindex="-1"></a><span class="co"># x_stars_rf &lt;- </span></span>
+<span id="cb61-477"><a href="#cb61-477" aria-hidden="true" tabindex="-1"></a><span class="co">#   future_lapply(</span></span>
+<span id="cb61-478"><a href="#cb61-478" aria-hidden="true" tabindex="-1"></a><span class="co">#     1:1000,</span></span>
+<span id="cb61-479"><a href="#cb61-479" aria-hidden="true" tabindex="-1"></a><span class="co">#     get_x_star_rf</span></span>
+<span id="cb61-480"><a href="#cb61-480" aria-hidden="true" tabindex="-1"></a><span class="co">#   ) %&gt;%</span></span>
+<span id="cb61-481"><a href="#cb61-481" aria-hidden="true" tabindex="-1"></a><span class="co">#   unlist()</span></span>
+<span id="cb61-482"><a href="#cb61-482" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-483"><a href="#cb61-483" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-484"><a href="#cb61-484" aria-hidden="true" tabindex="-1"></a>Here are the estimate of the SE of $\hat{x}^*_{RF}$ and 95% CI.</span>
+<span id="cb61-485"><a href="#cb61-485" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-488"><a href="#cb61-488" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-489"><a href="#cb61-489" aria-hidden="true" tabindex="-1"></a><span class="fu">sd</span>(x_stars_rf)</span>
+<span id="cb61-490"><a href="#cb61-490" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(x_stars_rf, <span class="at">prob =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span>
+<span id="cb61-491"><a href="#cb61-491" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-492"><a href="#cb61-492" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-493"><a href="#cb61-493" aria-hidden="true" tabindex="-1"></a>As you can see, the estimation of $x^*$ is much more inaccurate than the previous OLS approach. This is likely due to the fact that we are not doing a good job of tuning the hyper-parameters of RF (but, again, more on this later).</span>
+<span id="cb61-494"><a href="#cb61-494" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-495"><a href="#cb61-495" aria-hidden="true" tabindex="-1"></a>This conclude the illustration of the power of using bootstrap to estimate the uncertainty of the statistics of interest ($x^*$ here) when the analytical formula of the statistics is non-linear or not even known. </span>
+<span id="cb61-496"><a href="#cb61-496" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-497"><a href="#cb61-497" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-498"><a href="#cb61-498" aria-hidden="true" tabindex="-1"></a><span class="fu">## Bag of Little Bootstraps</span></span>
+<span id="cb61-499"><a href="#cb61-499" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-500"><a href="#cb61-500" aria-hidden="true" tabindex="-1"></a>Bag of little bootstraps (BLB) is a variant of bootstrap that has similar desirable statistical properties as bootstrap, but is more (computer) memory friendly <span class="co">[</span><span class="ot">@kleiner_scalable_2014</span><span class="co">]</span>.</span>
+<span id="cb61-501"><a href="#cb61-501" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-502"><a href="#cb61-502" aria-hidden="true" tabindex="-1"></a>When the sample size is large (say 1GB) bootstrap is computationally costly both in terms of time and memory because the data of the same size is bootstrapped for many times (say, 1000 times). BLB overcomes this problem.</span>
+<span id="cb61-503"><a href="#cb61-503" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-504"><a href="#cb61-504" aria-hidden="true" tabindex="-1"></a>Suppose you are interested in $\eta$ (e.g., standard error, confidence interval) of the estimator $\hat{\theta}$. Further, let $N$ denoted the sample size of the training data.</span>
+<span id="cb61-505"><a href="#cb61-505" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-506"><a href="#cb61-506" aria-hidden="true" tabindex="-1"></a>BLB works as follows: </span>
+<span id="cb61-507"><a href="#cb61-507" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-508"><a href="#cb61-508" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Split the dataset into $S$ sets of subsamples of size $B$ so that $s \times B = N$ <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> without replacement<span class="kw">&lt;/span&gt;</span>.</span>
+<span id="cb61-509"><a href="#cb61-509" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>For each of the subsample, bootstrap $N$ (<span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:red"</span><span class="kw">&gt;</span> not $B$ <span class="kw">&lt;/span&gt;</span>) samples <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> with replacement <span class="kw">&lt;/span&gt;</span> $M$ times, and find $\eta$ (call it $\eta_s$) for each of the subsample sets.</span>
+<span id="cb61-510"><a href="#cb61-510" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Average $\hat{\eta}_s$ to get $\hat{eta}$.</span>
+<span id="cb61-511"><a href="#cb61-511" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-512"><a href="#cb61-512" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-513"><a href="#cb61-513" aria-hidden="true" tabindex="-1"></a><span class="fu">### Demonstrations </span></span>
+<span id="cb61-514"><a href="#cb61-514" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-515"><a href="#cb61-515" aria-hidden="true" tabindex="-1"></a>Let's go back to the example discussed in @sec-boot-comp, where the goal is to identify the confidence interval ($\eta$) of the economically optimal input rate ($\theta$).</span>
+<span id="cb61-516"><a href="#cb61-516" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-517"><a href="#cb61-517" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb61-518"><a href="#cb61-518" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-519"><a href="#cb61-519" aria-hidden="true" tabindex="-1"></a>**&lt;span style="color:blue"&gt; Step 1: &lt;/span&gt;**</span>
+<span id="cb61-520"><a href="#cb61-520" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-521"><a href="#cb61-521" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb61-522"><a href="#cb61-522" aria-hidden="true" tabindex="-1"></a>Step 1: Split the dataset into $S$ sets of subsamples of size $B$ so that $s \times B = N$ <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> without replacement<span class="kw">&lt;/span&gt;</span></span>
+<span id="cb61-523"><a href="#cb61-523" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb61-524"><a href="#cb61-524" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-525"><a href="#cb61-525" aria-hidden="true" tabindex="-1"></a>Here, we set $S$ at 5, so $B = <span class="in">`r nrow(data)/5`</span>$. </span>
+<span id="cb61-526"><a href="#cb61-526" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-529"><a href="#cb61-529" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-530"><a href="#cb61-530" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="fu">nrow</span>(data)</span>
+<span id="cb61-531"><a href="#cb61-531" aria-hidden="true" tabindex="-1"></a>S <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb61-532"><a href="#cb61-532" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-533"><a href="#cb61-533" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb61-534"><a href="#cb61-534" aria-hidden="true" tabindex="-1"></a>subsamples <span class="ot">&lt;-</span></span>
+<span id="cb61-535"><a href="#cb61-535" aria-hidden="true" tabindex="-1"></a>  data[<span class="fu">sample</span>(<span class="fu">seq_len</span>(N), N), ] <span class="sc">%&gt;%</span></span>
+<span id="cb61-536"><a href="#cb61-536" aria-hidden="true" tabindex="-1"></a>  .[, <span class="at">subgroup :=</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>S, <span class="at">each =</span> N<span class="sc">/</span>S)] <span class="sc">%&gt;%</span> </span>
+<span id="cb61-537"><a href="#cb61-537" aria-hidden="true" tabindex="-1"></a>  <span class="fu">split</span>(.<span class="sc">$</span>subgroup)</span>
+<span id="cb61-538"><a href="#cb61-538" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb61-539"><a href="#cb61-539" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-540"><a href="#cb61-540" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-541"><a href="#cb61-541" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb61-542"><a href="#cb61-542" aria-hidden="true" tabindex="-1"></a>You could alternatively do this:</span>
+<span id="cb61-543"><a href="#cb61-543" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-546"><a href="#cb61-546" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-547"><a href="#cb61-547" aria-hidden="true" tabindex="-1"></a>fold_data <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(data, <span class="at">v =</span> <span class="dv">5</span>)</span>
+<span id="cb61-548"><a href="#cb61-548" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-549"><a href="#cb61-549" aria-hidden="true" tabindex="-1"></a>subsamples <span class="ot">&lt;-</span></span>
+<span id="cb61-550"><a href="#cb61-550" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb61-551"><a href="#cb61-551" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,</span>
+<span id="cb61-552"><a href="#cb61-552" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) fold_data[x, ]<span class="sc">$</span>splits[[<span class="dv">1</span>]] <span class="sc">%&gt;%</span> <span class="fu">assessment</span>()</span>
+<span id="cb61-553"><a href="#cb61-553" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb61-554"><a href="#cb61-554" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-555"><a href="#cb61-555" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb61-556"><a href="#cb61-556" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-557"><a href="#cb61-557" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb61-558"><a href="#cb61-558" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-559"><a href="#cb61-559" aria-hidden="true" tabindex="-1"></a>**&lt;span style="color:blue"&gt; Steps 2: &lt;/span&gt;**</span>
+<span id="cb61-560"><a href="#cb61-560" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-561"><a href="#cb61-561" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb61-562"><a href="#cb61-562" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>Step 2: For each of the subsample, bootstrap $N$ (<span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:red"</span><span class="kw">&gt;</span> not $B$ <span class="kw">&lt;/span&gt;</span>) samples <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> with replacement <span class="kw">&lt;/span&gt;</span> $M$ times, and find $\eta$ (call it $\eta_s$) for each of the subsample sets.</span>
+<span id="cb61-563"><a href="#cb61-563" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb61-564"><a href="#cb61-564" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-565"><a href="#cb61-565" aria-hidden="true" tabindex="-1"></a>Instead of creating bootstrapped samples $M$ times, only one bootstrapped sample from the first subsample is created for now, and then the estimate of $x^*$ is obtained. </span>
+<span id="cb61-566"><a href="#cb61-566" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-569"><a href="#cb61-569" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-570"><a href="#cb61-570" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb61-571"><a href="#cb61-571" aria-hidden="true" tabindex="-1"></a>boot_data <span class="ot">&lt;-</span></span>
+<span id="cb61-572"><a href="#cb61-572" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sample</span>(</span>
+<span id="cb61-573"><a href="#cb61-573" aria-hidden="true" tabindex="-1"></a>    <span class="fu">seq_len</span>(<span class="fu">nrow</span>(subsamples[[<span class="dv">1</span>]])),</span>
+<span id="cb61-574"><a href="#cb61-574" aria-hidden="true" tabindex="-1"></a>    N,</span>
+<span id="cb61-575"><a href="#cb61-575" aria-hidden="true" tabindex="-1"></a>    <span class="at">replace =</span> <span class="cn">TRUE</span></span>
+<span id="cb61-576"><a href="#cb61-576" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb61-577"><a href="#cb61-577" aria-hidden="true" tabindex="-1"></a>  subsamples[[<span class="dv">1</span>]][., ]</span>
+<span id="cb61-578"><a href="#cb61-578" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb61-579"><a href="#cb61-579" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-580"><a href="#cb61-580" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-581"><a href="#cb61-581" aria-hidden="true" tabindex="-1"></a>We can now train a linear model using the bootstrapped data and calculate $\hat{x}^*$ based on it.</span>
+<span id="cb61-582"><a href="#cb61-582" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-585"><a href="#cb61-585" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-586"><a href="#cb61-586" aria-hidden="true" tabindex="-1"></a>reg <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x <span class="sc">+</span> <span class="fu">I</span>(x<span class="sc">^</span><span class="dv">2</span>), <span class="at">data =</span> boot_data)</span>
+<span id="cb61-587"><a href="#cb61-587" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-588"><a href="#cb61-588" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb61-589"><a href="#cb61-589" aria-hidden="true" tabindex="-1"></a>x_star <span class="ot">&lt;-</span> (<span class="dv">2</span> <span class="sc">-</span> <span class="dv">5</span> <span class="sc">*</span> reg<span class="sc">$</span>coef[<span class="st">"x"</span>])<span class="sc">/</span> (<span class="dv">10</span> <span class="sc">*</span> reg<span class="sc">$</span>coef[<span class="st">"I(x^2)"</span>])</span>
+<span id="cb61-590"><a href="#cb61-590" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb61-591"><a href="#cb61-591" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-592"><a href="#cb61-592" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-593"><a href="#cb61-593" aria-hidden="true" tabindex="-1"></a>We can loop this process over all the $100$ ($M = 100$) bootstrapped data from the fist subsample set. Before that, let's define a function that conducts a single implementation of bootstrapping and estimating $x^*$ from a single subsample set.</span>
+<span id="cb61-594"><a href="#cb61-594" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-595"><a href="#cb61-595" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-598"><a href="#cb61-598" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-599"><a href="#cb61-599" aria-hidden="true" tabindex="-1"></a>get_xstar_boot <span class="ot">&lt;-</span> <span class="cf">function</span>(subsample)</span>
+<span id="cb61-600"><a href="#cb61-600" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb61-601"><a href="#cb61-601" aria-hidden="true" tabindex="-1"></a>  boot_data <span class="ot">&lt;-</span></span>
+<span id="cb61-602"><a href="#cb61-602" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sample</span>(</span>
+<span id="cb61-603"><a href="#cb61-603" aria-hidden="true" tabindex="-1"></a>      <span class="fu">seq_len</span>(<span class="fu">nrow</span>(subsample)),</span>
+<span id="cb61-604"><a href="#cb61-604" aria-hidden="true" tabindex="-1"></a>      N,</span>
+<span id="cb61-605"><a href="#cb61-605" aria-hidden="true" tabindex="-1"></a>      <span class="at">replace =</span> <span class="cn">TRUE</span></span>
+<span id="cb61-606"><a href="#cb61-606" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
+<span id="cb61-607"><a href="#cb61-607" aria-hidden="true" tabindex="-1"></a>    subsample[., ]</span>
+<span id="cb61-608"><a href="#cb61-608" aria-hidden="true" tabindex="-1"></a>  reg <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x <span class="sc">+</span> <span class="fu">I</span>(x<span class="sc">^</span><span class="dv">2</span>), <span class="at">data =</span> boot_data)</span>
+<span id="cb61-609"><a href="#cb61-609" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-610"><a href="#cb61-610" aria-hidden="true" tabindex="-1"></a>  x_star <span class="ot">&lt;-</span> (<span class="dv">2</span> <span class="sc">-</span> <span class="dv">5</span> <span class="sc">*</span> reg<span class="sc">$</span>coef[<span class="st">"x"</span>])<span class="sc">/</span> (<span class="dv">10</span> <span class="sc">*</span> reg<span class="sc">$</span>coef[<span class="st">"I(x^2)"</span>])</span>
+<span id="cb61-611"><a href="#cb61-611" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-612"><a href="#cb61-612" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(x_star)</span>
+<span id="cb61-613"><a href="#cb61-613" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb61-614"><a href="#cb61-614" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-615"><a href="#cb61-615" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-616"><a href="#cb61-616" aria-hidden="true" tabindex="-1"></a>This is a single iteration.</span>
+<span id="cb61-617"><a href="#cb61-617" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-620"><a href="#cb61-620" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-621"><a href="#cb61-621" aria-hidden="true" tabindex="-1"></a><span class="fu">get_xstar_boot</span>(subsamples[[<span class="dv">1</span>]])</span>
+<span id="cb61-622"><a href="#cb61-622" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-623"><a href="#cb61-623" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-624"><a href="#cb61-624" aria-hidden="true" tabindex="-1"></a>Now, let's repeat this 100 ($M = 100$) times.</span>
+<span id="cb61-625"><a href="#cb61-625" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-628"><a href="#cb61-628" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-629"><a href="#cb61-629" aria-hidden="true" tabindex="-1"></a>M <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb61-630"><a href="#cb61-630" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-631"><a href="#cb61-631" aria-hidden="true" tabindex="-1"></a>xstar_hats <span class="ot">&lt;-</span></span>
+<span id="cb61-632"><a href="#cb61-632" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb61-633"><a href="#cb61-633" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span><span class="sc">:</span>M,</span>
+<span id="cb61-634"><a href="#cb61-634" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) <span class="fu">get_xstar_boot</span>(subsamples[[<span class="dv">1</span>]])</span>
+<span id="cb61-635"><a href="#cb61-635" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb61-636"><a href="#cb61-636" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unlist</span>()</span>
+<span id="cb61-637"><a href="#cb61-637" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-638"><a href="#cb61-638" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-639"><a href="#cb61-639" aria-hidden="true" tabindex="-1"></a>We can now get the 95% confidence interval of $\hat{x}^*$.</span>
+<span id="cb61-640"><a href="#cb61-640" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-643"><a href="#cb61-643" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-644"><a href="#cb61-644" aria-hidden="true" tabindex="-1"></a>cf_lower <span class="ot">&lt;-</span> <span class="fu">quantile</span>(xstar_hats, <span class="at">prob =</span> <span class="fl">0.025</span>) </span>
+<span id="cb61-645"><a href="#cb61-645" aria-hidden="true" tabindex="-1"></a>cf_upper <span class="ot">&lt;-</span> <span class="fu">quantile</span>(xstar_hats, <span class="at">prob =</span> <span class="fl">0.975</span>) </span>
+<span id="cb61-646"><a href="#cb61-646" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-647"><a href="#cb61-647" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-648"><a href="#cb61-648" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-649"><a href="#cb61-649" aria-hidden="true" tabindex="-1"></a>So, <span class="co">[</span><span class="ot">`r paste0(cf_lower, ",", cf_upper)`</span><span class="co">]</span> is the 95% confidence interval estimate from the first subsample set. We repeat this for the other subsample sets and average the 95% CI from them (<span class="in">`get_CI()`</span> defined on the side).</span>
+<span id="cb61-650"><a href="#cb61-650" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-651"><a href="#cb61-651" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb61-652"><a href="#cb61-652" aria-hidden="true" tabindex="-1"></a>This function find the 95% confidence interval ($\eta$) from a single subsample set.</span>
+<span id="cb61-653"><a href="#cb61-653" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-656"><a href="#cb61-656" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-657"><a href="#cb61-657" aria-hidden="true" tabindex="-1"></a>get_CI <span class="ot">&lt;-</span> <span class="cf">function</span>(subsample){</span>
+<span id="cb61-658"><a href="#cb61-658" aria-hidden="true" tabindex="-1"></a>  xstar_hats <span class="ot">&lt;-</span></span>
+<span id="cb61-659"><a href="#cb61-659" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lapply</span>(</span>
+<span id="cb61-660"><a href="#cb61-660" aria-hidden="true" tabindex="-1"></a>      <span class="dv">1</span><span class="sc">:</span>M,</span>
+<span id="cb61-661"><a href="#cb61-661" aria-hidden="true" tabindex="-1"></a>      <span class="cf">function</span>(x) <span class="fu">get_xstar_boot</span>(subsamples[[<span class="dv">1</span>]])</span>
+<span id="cb61-662"><a href="#cb61-662" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
+<span id="cb61-663"><a href="#cb61-663" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unlist</span>() </span>
+<span id="cb61-664"><a href="#cb61-664" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-665"><a href="#cb61-665" aria-hidden="true" tabindex="-1"></a>  cf_lower <span class="ot">&lt;-</span> <span class="fu">quantile</span>(xstar_hats, <span class="at">prob =</span> <span class="fl">0.025</span>) </span>
+<span id="cb61-666"><a href="#cb61-666" aria-hidden="true" tabindex="-1"></a>  cf_upper <span class="ot">&lt;-</span> <span class="fu">quantile</span>(xstar_hats, <span class="at">prob =</span> <span class="fl">0.975</span>) </span>
+<span id="cb61-667"><a href="#cb61-667" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-668"><a href="#cb61-668" aria-hidden="true" tabindex="-1"></a>  return_data <span class="ot">&lt;-</span></span>
+<span id="cb61-669"><a href="#cb61-669" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.table</span>(</span>
+<span id="cb61-670"><a href="#cb61-670" aria-hidden="true" tabindex="-1"></a>      <span class="at">cf_lower =</span> cf_lower,</span>
+<span id="cb61-671"><a href="#cb61-671" aria-hidden="true" tabindex="-1"></a>      <span class="at">cf_upper =</span> cf_upper</span>
+<span id="cb61-672"><a href="#cb61-672" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb61-673"><a href="#cb61-673" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-674"><a href="#cb61-674" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(return_data)</span>
+<span id="cb61-675"><a href="#cb61-675" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb61-676"><a href="#cb61-676" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-677"><a href="#cb61-677" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb61-678"><a href="#cb61-678" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-679"><a href="#cb61-679" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-682"><a href="#cb61-682" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-683"><a href="#cb61-683" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb61-684"><a href="#cb61-684" aria-hidden="true" tabindex="-1"></a>ci_data <span class="ot">&lt;-</span></span>
+<span id="cb61-685"><a href="#cb61-685" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb61-686"><a href="#cb61-686" aria-hidden="true" tabindex="-1"></a>    subsamples,</span>
+<span id="cb61-687"><a href="#cb61-687" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) <span class="fu">get_CI</span>(x)</span>
+<span id="cb61-688"><a href="#cb61-688" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb61-689"><a href="#cb61-689" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbindlist</span>()</span>
+<span id="cb61-690"><a href="#cb61-690" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb61-691"><a href="#cb61-691" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-692"><a href="#cb61-692" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-693"><a href="#cb61-693" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb61-694"><a href="#cb61-694" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-695"><a href="#cb61-695" aria-hidden="true" tabindex="-1"></a>**&lt;span style="color:blue"&gt; Steps 3: &lt;/span&gt;**</span>
+<span id="cb61-696"><a href="#cb61-696" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-697"><a href="#cb61-697" aria-hidden="true" tabindex="-1"></a>By averaging the lower and upper bounds, we get our estimate of the lower and upper bound of the 95% CI of $\hat{x}^*$.</span>
+<span id="cb61-698"><a href="#cb61-698" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-701"><a href="#cb61-701" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb61-702"><a href="#cb61-702" aria-hidden="true" tabindex="-1"></a>ci_data[, .(<span class="fu">mean</span>(cf_lower), <span class="fu">mean</span>(cf_upper))]</span>
+<span id="cb61-703"><a href="#cb61-703" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb61-704"><a href="#cb61-704" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-705"><a href="#cb61-705" aria-hidden="true" tabindex="-1"></a>Note the estimated CI is very much similar to that from a regular bootstrap obtained in @sec-boot-comp.</span>
+<span id="cb61-706"><a href="#cb61-706" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-707"><a href="#cb61-707" aria-hidden="true" tabindex="-1"></a>:::{.callout-tip}</span>
+<span id="cb61-708"><a href="#cb61-708" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-709"><a href="#cb61-709" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>Bag of little bootstraps (BLB) is a variant of bootstrap that has similar desirable statistical properties as bootstrap, but is more computation and memory friendly.</span>
+<span id="cb61-710"><a href="#cb61-710" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-711"><a href="#cb61-711" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- + For example, the `grf` package uses BLB to estimate the standard error of the treatment effect in Causal Forest estimation. --&gt;</span></span>
+<span id="cb61-712"><a href="#cb61-712" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-713"><a href="#cb61-713" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb61-714"><a href="#cb61-714" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-715"><a href="#cb61-715" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-716"><a href="#cb61-716" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-717"><a href="#cb61-717" aria-hidden="true" tabindex="-1"></a><span class="fu">## References {.unnumbered}</span></span>
+<span id="cb61-718"><a href="#cb61-718" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-719"><a href="#cb61-719" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"refs"</span><span class="kw">&gt;&lt;/div&gt;</span></span>
+<span id="cb61-720"><a href="#cb61-720" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-721"><a href="#cb61-721" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-722"><a href="#cb61-722" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-723"><a href="#cb61-723" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-724"><a href="#cb61-724" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-725"><a href="#cb61-725" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-726"><a href="#cb61-726" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-727"><a href="#cb61-727" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-728"><a href="#cb61-728" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-729"><a href="#cb61-729" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-730"><a href="#cb61-730" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-731"><a href="#cb61-731" aria-hidden="true" tabindex="-1"></a></span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
 </div> <!-- /content -->
 
 
