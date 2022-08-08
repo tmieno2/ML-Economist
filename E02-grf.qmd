@@ -228,7 +228,9 @@ The training step is done only once (trees are built only once). But, whenever y
 Orthogonal random forest (a forest-based heterogeneous treatment effect estimator like causal forest), on the other hand, build trees every time when predicting treatment effect $\theta(X)$ at particular values of $X$, which is why orthogonal random forest takes a very long time especially when there are many evaluation points. Orthogonal random forest is covered in @sec-cf-orf.
 :::
 
-## Random forest as a GRF
+## Examples of GRF 
+
+### Random forest as a GRF
 
 Here, we take a look at RF as a GRF as an illustration to understand the general GRF procedure better. When $\Psi_{\theta, \nu}(Y_i)$ is set to $Y_i - \theta$, then GRF is equivalent to the traditional RF. By plugging $Y_i - \theta$ into @eq-opt, the estimate of $E[Y|X=X_0]$, $\theta(X_0)$, is identified by solving 
 
@@ -247,9 +249,9 @@ $$
 
 , where $\eta_{i,t}(X_0)$ is 1 if observation $i$ which has feature values $X_i$ belongs to the same leaf as $X_0$. 
 
+---
 
-### Step 1: Grow trees
-
+<span style="color:blue"> Step 1: Grow trees</span>:
 
 Now, let's consider growing trees to find $\alpha_i(X_0)$ in @eq-rf. For a given sample and set of variables randomly selected, GRF starts with solving the unweighted version of @eq-rf. 
 
@@ -281,7 +283,8 @@ where $C_1$ and $C_2$ represent two child node candidates for a given split. Sin
 
 Once the best split is identified, each of the new child nodes is split following the exactly the same procedure. Splitting continues until one of the user-specified condition prevent a further splitting. Many trees from bootstrapped samples are created (just like the regular random forest) and they form a forest. This shows that the GRF with $\Psi_{\theta, \nu}(Y_i, X_i) = Y_i - \theta$ grows trees in the same manner as the traditional RF. RF in GRF is implemented by `regression_forest()`. But, note that running `ranger()` and `regression_forest()` will not result in the same forest because of the randomness involved in resampling and random selection of variables. Only their algorithms are equivalent
 
-### Step 2: predict 
+---
+<span style="color:blue"> Step 2: Predict</span>:
 
 To predict $E[Y|X=X_0]$, @eq-rf is solved
 
@@ -307,10 +310,7 @@ So, $\theta(X_0)$ from GRF is the average of tree-specific predictions for $X_0$
 
 So, it has been shown that GRF with $\Psi_{\theta, \nu}(Y_i)=Y_i - \theta$ grows trees in the same manner as the traditional RF and also that GRF predicts $E[Y|X=X_0]$ in the same manner as the traditional RF. So, RF is a special case of GRF, where $\Psi_{\theta, \nu}(Y_i)=Y_i - \theta$.
 
-## Causal forest as a GRF
-
-
-### Mechanics
+### Causal forest as a GRF
 
 Causal forest (with a single treatment variable) as an R-learner is a GRF with
 
@@ -504,8 +504,8 @@ $$
 
 $$
 \begin{aligned}
-\theta(X) & = 2 + 3 * x_1^2 - \sqrt{3 * x_2^3 + 1}\\
-g(X) & = 10 \cdot [log(x_2+1) + 2\cdot x_3*x_2]
+\theta(X) & = 2 + 3 \times x_1^2 - \sqrt{3 \times  x_2^3 + 1}\\
+g(X) & = 10 \cdot [log(x_2+1) + 2\cdot x_3\times x_2]
 \end{aligned}
 $$
 
@@ -595,7 +595,7 @@ Here is what the data looks like:
 head(data)
 ```
 
-### Building trees
+### Building trees #{#sec-build-trees}
 
 ---
 
@@ -913,19 +913,22 @@ So,
 
 $$
 \begin{aligned}
-\theta_P = \frac{\sum_{i=1}^n alpha_i(X_i, X_0)\tilde{Y}_i\cdot \tilde{T}_i}{\sum_{i=1}^n\alpha_i(X_i, X_0)\tilde{T}_i\cdot \tilde{T}_i}
+\theta_P = \frac{\sum_{i=1}^n \alpha_i(X_i, X_0)\tilde{Y}_i\cdot \tilde{T}_i}{\sum_{i=1}^n\alpha_i(X_i, X_0)\tilde{T}_i\cdot \tilde{T}_i}
 \end{aligned}
 $$
 
-Unlike the DML approaches we saw in @sec-het-dml that uses a linear model as the final model, CF does not assume any functional form for how $X$ affects $\theta$ as you can see from the above minimization problem. As mentioned earlier, CF is a special case of GRF (discussed in @sec-grf), so CF is also a local non-parametric regression (see @sec-local-reg for a brief discussion on local regression).
 
-We now illustrate how predictions are done once the trees have been built. Let's first build trees using `causal_forest()`. `min.node.size` is set deliberately high so we can work with very simple trees.
+---
+
+We now illustrate how predictions are done once trees have been built. Let's first build trees using `causal_forest()`. `min.node.size` is set deliberately high so we can work with very simple trees. 
 
 ::: {.column-margin}
 You do not need to know how `causal_forest()` works. You only need to know that `causal_forest()` build trees for CATE estimation.
 :::
 
 ```{r}
+set.seed(443784)
+
 cf_trained <-
   causal_forest(
     X = select(data, starts_with("x")),
@@ -935,16 +938,17 @@ cf_trained <-
   )
 ```
 
-After training a causal forest model, we have trees like the one shown in @fig-cf-tree, which shows the first of the $2000$ trees.
+After training a causal forest model, we have trees like the one shown in @fig-cf-tree, which is the first of the $2000$ trees.
 
 ```{r}
 #| fig-cap: Example trees built in causal forest estimation
 #| label: fig-cf-tree 
 #| echo: false 
+#| fig-height: 4
 get_tree(cf_trained, 1) %>% plot()
 ```
 
-You probably noticed that the total number of samples in the leaves is only $250$ instead of $1000$, which is the total number of observations in `data`. When causal forest was trained on this dataset, only half of the entire sample are randomly selected for building each tree (due to the default setting of `sample.fraction = 0.5`). The halved sample is further split into two groups, each containing $250$ observations (due to the default setting of `honesty = TRUE` and `honest.fraction = 0.5`). Let's call them $J_1$ and $J_2$. Then, $J_1$ is used to train a tree to find the splitting rules (e.g., $x1 \leq 1.74$ for the first tree). Once the splitting rules are determined (tree building process is complete), then $J_1$ is "vacated" (or thrown out) from the tree. Then, $J_2$ "repopulate" the tree nodes. That is, the statistics presented in the terminal nodes (`avg_Y` and `avg_W`) are based on the samples in $J_2$, not $J_1$.
+You probably noticed that the total number of samples in the leaves is only $250$ instead of $1000$, which is the total number of observations in `data`. When causal forest was trained on this dataset, only half of the entire sample are randomly selected for building each tree (due to the default setting of `sample.fraction = 0.5`). The halved sample is further split into two groups, each containing $250$ observations (due to the default setting of `honesty = TRUE` and `honest.fraction = 0.5`). Let's call them $J_1$ and $J_2$. Then, $J_1$ is used to train a tree to find the splitting rules (e.g., $x_1 \leq 1.44$ for the first tree). See @sec-build-trees for how only a subset of the drawn samples was used to determine the splitting rules. Once the splitting rules are determined (tree building process is complete), then $J_1$ is "vacated" (or thrown out) from the tree. This will become clearer when we talk about finding individual weights.
 
 Let's take a look at a tree to see what happened. We can use `get_tree()` to access individual trees from `cf_trained`. 
 
@@ -961,7 +965,7 @@ head(a_tree$drawn_samples)
 length(a_tree$drawn_samples)
 ```
 
-As you can see, there are 500 samples. The rest of the observations were not used for this tree. Accessing `nodes` attribute will give you the splitting rules for the tree built and which samples are in what node.
+As you can see, there are 500 samples (due to `sample.fraction = 0.5`). The rest of the observations were not used for this tree at all. Accessing `nodes` attribute will give you the splitting rules for the tree built and which samples are in what node.
 
 ```{r}
 (
@@ -969,14 +973,14 @@ nodes <- a_tree$nodes
 )
 ```
 
-`nodes` is a list of three elements (one root node and two terminal nodes). The `samples` attribute gives you row indices of the samples that belong to the terminal node. 
+`nodes` is a list of three elements (one root node and two terminal nodes here). The `samples` attribute gives you row indices of the samples that belong to the terminal node. 
 
 ```{r}
 nodes[[2]]$samples
 nodes[[3]]$samples
 ```
 
-These are from $J_2$. That is, they were not used in finding the splitting rule of $x1 \leq 1.74$. They were populating the terminal nodes by simply following the splitting rule. The difference in `a_tree$drawn_samples` and the combination of `nodes[[2]]$samples` and `nodes[[3]]$samples` is $J_1$.
+It is important to keep in mind that these observations with these row indices belong to $J_2$. These observations were <span style="color:red">NOT</span> used in determining the splitting rule of $x_1 \leq 1.44$. They were populating the terminal nodes by simply following the splitting rule, which is determined using the data in $J_1$ following the process described in @sec-build-trees. The difference in `a_tree$drawn_samples` and the combination of `nodes[[2]]$samples` and `nodes[[3]]$samples` is $J_1$.
 
 ```{r}
 J2_rows <- c(nodes[[2]]$samples, nodes[[3]]$samples)
@@ -987,32 +991,35 @@ J1_rows <- J1_J2_rows[J1_J2_rows %in% J2_rows]
 )
 ```
 
-As you can see, there are 250 samples in $J_1$.
+As you can see, there are 250 samples in $J_1$ as well.
 
-Suppose you are interested in predicting $\hat{\theta}$ at $X_0 = \{x_1 = 0.5, x_2 = 1.5\}$. For a given tree, we give 1 to the observations that belong to the same leaf as $X_0$. For example, for the first tree, $X_0$ belongs to the right leaf because $x1 = 0.5 > -0.09$ for $X_0$. 
+---
+
+Suppose you are interested in predicting $\hat{\theta}$ at $X_0 = \{x_1 = 2, x_2,\dots, x_{10} = 1\}$. For a given tree, we give 1 to the observations in <span style="color:red">$J_1$</span> that belong to the same leaf as $X_0$. For example, for the first tree, $X_0$ belongs to the right leaf because $x1 = 2 > 1.44$ for $X_0$. We can tell which node $X_0$ belongs to by supplying $X_0$ to `get_leaf_node()`.
 
 ```{r}
-X_0 <- data.table(x1 = 0.5, x2 = 1.5)
+X_0 <- matrix(c(2, rep(1, 9)), nrow = 1)
+
 (
 which_tree_is_X0_in <- get_leaf_node(a_tree, X_0)
 )
 ```
 
-So, we give $1/N_t(X_0)$ to all those in the right leaf (the third node in `nodes`) and 0 to those in the left leaf, where $N_t(X_0)$ is the number of observations that belong to the same leaf as $X_0$.
+So, we give $1/N_t(X_0)$ to all those in the right leaf (the third node in `nodes`) and 0 to those in the left leaf, where $N_t(X_0)$ is the number of observations that belong to the same leaf as $X_0$. All the other observations are assigned 0. 
 
 ```{r}
 #=== which row numbers in the same leaf as X_0? ===#
 rows_1 <- nodes[[which_tree_is_X0_in]]$samples
 
 #=== define eta for tree 1  ===#
-data[, eta_t1 := 0] # first set eta to 0 for all
-data[rows_1, eta_t1 := 1 / length(rows_1)] # replace eta with 1 if in the right node
+data[, eta_t1 := 0] # first set eta to 0 for all the observations
+data[rows_1, eta_t1 := 1 / length(rows_1)] # replace eta with 1/N_t(X_0) if in the right node
 
 #=== see the data ===#
 data
 ```
 
-We repeat this for all the trees and use @eq-weight-cf to calculate the weights for the individual observations. The following function gets $eta_{i,t}(X_i, X_0)$ for a given tree for all the observations.
+We repeat this for all the trees and use @eq-weight-cf to calculate the weights for the individual observations. The following function gets $\eta_{i,t}(X_i, X_0)$ for a given tree for all the observations.
 
 ```{r}
 
@@ -1046,7 +1053,7 @@ eta_all <-
 )
 ```
 
-Calculate the mean of $\eta_{i,t}$ by `row_id` (observation).
+Calculate the mean of $\eta_{i,t}$ by `row_id` (observation) to calculate $\alpha(X_i, X_0)$.
 
 ```{r}
 (
@@ -1072,17 +1079,21 @@ Then, we can use @eq-theta-solution to calculate $\hat{\theta}(X_0)$.
 (
 theta_X0 <- sum(data_with_wights[, weight * (T-cf_trained$W.hat) * (y-cf_trained$Y.hat)]) / sum(data_with_wights[, weight * (T-cf_trained$W.hat)^2])
 )
-
 ```
 
-:::{.callout-note}
-You should not use the codes above to get the individual weights stored in `weights`. You can just use `get_forest_weights()` like below:
+Note that $Y.hat$ and $W.hat$ attributes of `cf_trained` are the estimates of $E[Y|X]$ and $E[T|X]$, respectively. By subtracting them from $Y$ and $T$, $\tilde{Y}$ and $\tilde{T}$ are calculated in the above code.
+
+To get the weights, we could have just used `get_forest_weights()` like below:
 
 ```{r}
-#| eval: false
-get_forest_weights(cf_trained, X_0)
+weights <- get_forest_weights(cf_trained, X_0)
 ```
-:::
+
+Let's compare the weights and see if we did it right.
+
+```{r}
+mean(as.matrix(weights) - data_with_wights$weight)
+```
 
 
 ## References {.unnumbered}

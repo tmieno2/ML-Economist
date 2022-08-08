@@ -397,7 +397,7 @@ div.csl-indent {
   <li><a href="#modeling-framework" id="toc-modeling-framework" class="nav-link" data-scroll-target="#modeling-framework"> <span class="header-section-number">12.2</span> Modeling Framework</a></li>
   <li><a href="#s--t--and-x-learner" id="toc-s--t--and-x-learner" class="nav-link" data-scroll-target="#s--t--and-x-learner"> <span class="header-section-number">12.3</span> S-, T-, and X-Learner</a>
   <ul class="collapse">
-  <li><a href="#s-leaner" id="toc-s-leaner" class="nav-link" data-scroll-target="#s-leaner"> <span class="header-section-number">12.3.1</span> S-leaner</a></li>
+  <li><a href="#s-learner" id="toc-s-learner" class="nav-link" data-scroll-target="#s-learner"> <span class="header-section-number">12.3.1</span> S-learner</a></li>
   <li><a href="#t-learner" id="toc-t-learner" class="nav-link" data-scroll-target="#t-learner"> <span class="header-section-number">12.3.2</span> T-learner</a></li>
   <li><a href="#x-learner" id="toc-x-learner" class="nav-link" data-scroll-target="#x-learner"> <span class="header-section-number">12.3.3</span> X-learner</a></li>
   </ul></li>
@@ -424,7 +424,7 @@ div.csl-indent {
 
 </header>
 
-<p>In this section, we look at the S-, X-, T-, and R-learner, which are method that estimate heterogeneous treatment effects when the treatment is binary. While X-leaner and T-learner cannot be extended to continuous treatment cases, S-learner and R-learner can be. Mathematical notations used in this chapter closely follow those of <span class="citation" data-cites="kunzel_metalearners_2019">(<a href="#ref-kunzel_metalearners_2019" role="doc-biblioref">Künzel et al. 2019</a>)</span> and <span class="citation" data-cites="nie_quasi-oracle_2021">(<a href="#ref-nie_quasi-oracle_2021" role="doc-biblioref">Nie and Wager 2021</a>)</span>.</p>
+<p>In this section, we look at the S-, X-, T-, and R-learner, which are method that estimate heterogeneous treatment effects when the treatment is binary. While X-learner and T-learner cannot be extended to continuous treatment cases, S-learner and R-learner can be. Mathematical notations used in this chapter closely follow those of <span class="citation" data-cites="kunzel_metalearners_2019">(<a href="#ref-kunzel_metalearners_2019" role="doc-biblioref">Künzel et al. 2019</a>)</span> and <span class="citation" data-cites="nie_quasi-oracle_2021">(<a href="#ref-nie_quasi-oracle_2021" role="doc-biblioref">Nie and Wager 2021</a>)</span>.</p>
 <div class="callout-important callout callout-style-default no-icon callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -503,14 +503,14 @@ T_i &amp; = f(X_i, W_i) + \eta_i
 </section>
 <section id="s--t--and-x-learner" class="level2 page-columns page-full" data-number="12.3">
 <h2 data-number="12.3" class="anchored" data-anchor-id="s--t--and-x-learner"><span class="header-section-number">12.3</span> S-, T-, and X-Learner</h2>
-<section id="s-leaner" class="level3" data-number="12.3.1">
-<h3 data-number="12.3.1" class="anchored" data-anchor-id="s-leaner"><span class="header-section-number">12.3.1</span> S-leaner</h3>
-<p>S-leaner estimates CATE by taking the following steps:</p>
+<section id="s-learner" class="level3" data-number="12.3.1">
+<h3 data-number="12.3.1" class="anchored" data-anchor-id="s-learner"><span class="header-section-number">12.3.1</span> S-learner</h3>
+<p>S-learner estimates CATE by taking the following steps:</p>
 <ol type="1">
 <li>Regress <span class="math inline">\(Y\)</span> on <span class="math inline">\(W\)</span> and <span class="math inline">\(X\)</span> to estimate <span class="math inline">\(E[Y|W,X]\)</span> using any appropriate ML regression methods and call it <span class="math inline">\(\hat{\mu}(W,X)\)</span>.</li>
 <li>Estimate <span class="math inline">\(\hat{\theta}(X)\)</span> as <span class="math inline">\(\hat{\mu}(W=1,X)-\hat{\mu}(W=0,X)\)</span></li>
 </ol>
-<p>In this approach, no special treatment is given to <span class="math inline">\(W\)</span>. It is just a covariate along with others (<span class="math inline">\(X\)</span>). This approach is named S-leaner by <span class="citation" data-cites="kunzel_metalearners_2019">Künzel et al. (<a href="#ref-kunzel_metalearners_2019" role="doc-biblioref">2019</a>)</span> because it involves estimating a <span style="color:red">s</span>ingle response function.</p>
+<p>In this approach, no special treatment is given to <span class="math inline">\(W\)</span>. It is just a covariate along with others (<span class="math inline">\(X\)</span>). This approach is named S-learner by <span class="citation" data-cites="kunzel_metalearners_2019">Künzel et al. (<a href="#ref-kunzel_metalearners_2019" role="doc-biblioref">2019</a>)</span> because it involves estimating a <span style="color:red">s</span>ingle response function.</p>
 </section>
 <section id="t-learner" class="level3" data-number="12.3.2">
 <h3 data-number="12.3.2" class="anchored" data-anchor-id="t-learner"><span class="header-section-number">12.3.2</span> T-learner</h3>
@@ -519,7 +519,7 @@ T_i &amp; = f(X_i, W_i) + \eta_i
 <li>Regress <span class="math inline">\(Y\)</span> on <span class="math inline">\(W\)</span> and <span class="math inline">\(X\)</span> using the control observations to estimate <span class="math inline">\(\mu_0(X)\)</span> using any appropriate ML regression methods.</li>
 <li>Estimate <span class="math inline">\(\hat{\theta}(X)\)</span> as <span class="math inline">\(\hat{\mu}_1(X)-\hat{\mu}(X)\)</span></li>
 </ol>
-<p>This approach is named T-leaner by <span class="citation" data-cites="kunzel_metalearners_2019">Künzel et al. (<a href="#ref-kunzel_metalearners_2019" role="doc-biblioref">2019</a>)</span> because it involves estimating <span style="color:red">t</span>wo functions.</p>
+<p>This approach is named T-learner by <span class="citation" data-cites="kunzel_metalearners_2019">Künzel et al. (<a href="#ref-kunzel_metalearners_2019" role="doc-biblioref">2019</a>)</span> because it involves estimating <span style="color:red">t</span>wo functions.</p>
 </section>
 <section id="x-learner" class="level3 page-columns page-full" data-number="12.3.3">
 <h3 data-number="12.3.3" class="anchored" data-anchor-id="x-learner"><span class="header-section-number">12.3.3</span> X-learner</h3>
@@ -612,7 +612,7 @@ y = \tau W + |x| + v
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  .[, mu_0_hat <span class="sc">:</span><span class="er">=</span> <span class="fu">predict</span>(mu_0_trained, <span class="at">newdata =</span> x_seq)] <span class="sc">%&gt;%</span></span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  .[, tau_hat_T <span class="sc">:</span><span class="er">=</span> mu_1_hat <span class="sc">-</span> mu_0_hat]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>As you can see, T-leaner is heavily biased. This is because of the unreliable estimation of <span class="math inline">\(\mu_1(X)\)</span> due to lack of observations in the treated group.</p>
+<p>As you can see, T-learner is heavily biased. This is because of the unreliable estimation of <span class="math inline">\(\mu_1(X)\)</span> due to lack of observations in the treated group.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> tau_hat_data) <span class="sc">+</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> tau_hat_T, <span class="at">x =</span> x))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1074,7 +1074,7 @@ X_train, X_test, y_train, y_test, d_train, d_test= train_test_split(r.X, r.y, r.
 :::
 
 
-Here, to train a linear DML model, we use the Python `econml` package, which offers one of the most comprehensive sets of off-the-shelf R-leaner (DML) methods [@econml]. We can use the `DML` class to implement linear DML.
+Here, to train a linear DML model, we use the Python `econml` package, which offers one of the most comprehensive sets of off-the-shelf R-learner (DML) methods [@econml]. We can use the `DML` class to implement linear DML.
 
 
 ::: {.cell}
@@ -1399,7 +1399,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
 <div class="sourceCode" id="cb16" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># S-, X-, T-, and R-learner {#sec-het-dml}</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>In this section, we look at the S-, X-, T-, and R-learner, which are method that estimate heterogeneous treatment effects when the treatment is binary. While X-leaner and T-learner cannot be extended to continuous treatment cases, S-learner and R-learner can be. Mathematical notations used in this chapter closely follow those of <span class="co">[</span><span class="ot">@kunzel_metalearners_2019</span><span class="co">]</span> and <span class="co">[</span><span class="ot">@nie_quasi-oracle_2021</span><span class="co">]</span>.</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>In this section, we look at the S-, X-, T-, and R-learner, which are method that estimate heterogeneous treatment effects when the treatment is binary. While X-learner and T-learner cannot be extended to continuous treatment cases, S-learner and R-learner can be. Mathematical notations used in this chapter closely follow those of <span class="co">[</span><span class="ot">@kunzel_metalearners_2019</span><span class="co">]</span> and <span class="co">[</span><span class="ot">@nie_quasi-oracle_2021</span><span class="co">]</span>.</span>
 <span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>:::{.callout-important}</span>
@@ -1477,14 +1477,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb16-78"><a href="#cb16-78" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-79"><a href="#cb16-79" aria-hidden="true" tabindex="-1"></a><span class="fu">## S-, T-, and X-Learner</span></span>
 <span id="cb16-80"><a href="#cb16-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-81"><a href="#cb16-81" aria-hidden="true" tabindex="-1"></a><span class="fu">### S-leaner</span></span>
+<span id="cb16-81"><a href="#cb16-81" aria-hidden="true" tabindex="-1"></a><span class="fu">### S-learner</span></span>
 <span id="cb16-82"><a href="#cb16-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-83"><a href="#cb16-83" aria-hidden="true" tabindex="-1"></a>S-leaner estimates CATE by taking the following steps:</span>
+<span id="cb16-83"><a href="#cb16-83" aria-hidden="true" tabindex="-1"></a>S-learner estimates CATE by taking the following steps:</span>
 <span id="cb16-84"><a href="#cb16-84" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-85"><a href="#cb16-85" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Regress $Y$ on $W$ and $X$ to estimate $E<span class="co">[</span><span class="ot">Y|W,X</span><span class="co">]</span>$ using any appropriate ML regression methods and call it $\hat{\mu}(W,X)$.</span>
 <span id="cb16-86"><a href="#cb16-86" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Estimate $\hat{\theta}(X)$ as $\hat{\mu}(W=1,X)-\hat{\mu}(W=0,X)$</span>
 <span id="cb16-87"><a href="#cb16-87" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-88"><a href="#cb16-88" aria-hidden="true" tabindex="-1"></a>In this approach, no special treatment is given to $W$. It is just a covariate along with others ($X$). This approach is named S-leaner by @kunzel_metalearners_2019 because it involves estimating a <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">'color:red'</span><span class="kw">&gt;</span>s<span class="kw">&lt;/span&gt;</span>ingle response function.</span>
+<span id="cb16-88"><a href="#cb16-88" aria-hidden="true" tabindex="-1"></a>In this approach, no special treatment is given to $W$. It is just a covariate along with others ($X$). This approach is named S-learner by @kunzel_metalearners_2019 because it involves estimating a <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">'color:red'</span><span class="kw">&gt;</span>s<span class="kw">&lt;/span&gt;</span>ingle response function.</span>
 <span id="cb16-89"><a href="#cb16-89" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-90"><a href="#cb16-90" aria-hidden="true" tabindex="-1"></a><span class="fu">### T-learner</span></span>
 <span id="cb16-91"><a href="#cb16-91" aria-hidden="true" tabindex="-1"></a></span>
@@ -1492,7 +1492,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb16-93"><a href="#cb16-93" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Regress $Y$ on $W$ and $X$ using the control  observations to estimate $\mu_0(X)$ using any appropriate ML regression methods.</span>
 <span id="cb16-94"><a href="#cb16-94" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Estimate $\hat{\theta}(X)$ as $\hat{\mu}_1(X)-\hat{\mu}(X)$</span>
 <span id="cb16-95"><a href="#cb16-95" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-96"><a href="#cb16-96" aria-hidden="true" tabindex="-1"></a>This approach is named T-leaner by @kunzel_metalearners_2019 because it involves estimating <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">'color:red'</span><span class="kw">&gt;</span>t<span class="kw">&lt;/span&gt;</span>wo functions.</span>
+<span id="cb16-96"><a href="#cb16-96" aria-hidden="true" tabindex="-1"></a>This approach is named T-learner by @kunzel_metalearners_2019 because it involves estimating <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">'color:red'</span><span class="kw">&gt;</span>t<span class="kw">&lt;/span&gt;</span>wo functions.</span>
 <span id="cb16-97"><a href="#cb16-97" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-98"><a href="#cb16-98" aria-hidden="true" tabindex="-1"></a><span class="fu">### X-learner</span></span>
 <span id="cb16-99"><a href="#cb16-99" aria-hidden="true" tabindex="-1"></a></span>
@@ -1603,7 +1603,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb16-216"><a href="#cb16-216" aria-hidden="true" tabindex="-1"></a>  .[, tau_hat_T <span class="sc">:</span><span class="er">=</span> mu_1_hat <span class="sc">-</span> mu_0_hat]</span>
 <span id="cb16-217"><a href="#cb16-217" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb16-218"><a href="#cb16-218" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-219"><a href="#cb16-219" aria-hidden="true" tabindex="-1"></a>As you can see, T-leaner is heavily biased. This is because of the unreliable estimation of $\mu_1(X)$ due to lack of observations in the treated group.</span>
+<span id="cb16-219"><a href="#cb16-219" aria-hidden="true" tabindex="-1"></a>As you can see, T-learner is heavily biased. This is because of the unreliable estimation of $\mu_1(X)$ due to lack of observations in the treated group.</span>
 <span id="cb16-220"><a href="#cb16-220" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-223"><a href="#cb16-223" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb16-224"><a href="#cb16-224" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> tau_hat_data) <span class="sc">+</span></span>
@@ -2060,7 +2060,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb16-705"><a href="#cb16-705" aria-hidden="true" tabindex="-1"></a><span class="co">X_train, X_test, y_train, y_test, d_train, d_test= train_test_split(r.X, r.y, r.d,  test_size = 0.5, random_state = 8923)</span></span>
 <span id="cb16-706"><a href="#cb16-706" aria-hidden="true" tabindex="-1"></a><span class="co">```</span></span>
 <span id="cb16-707"><a href="#cb16-707" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-708"><a href="#cb16-708" aria-hidden="true" tabindex="-1"></a><span class="co">Here, to train a linear DML model, we use the Python `econml` package, which offers one of the most comprehensive sets of off-the-shelf R-leaner (DML) methods [@econml]. We can use the `DML` class to implement linear DML.</span></span>
+<span id="cb16-708"><a href="#cb16-708" aria-hidden="true" tabindex="-1"></a><span class="co">Here, to train a linear DML model, we use the Python `econml` package, which offers one of the most comprehensive sets of off-the-shelf R-learner (DML) methods [@econml]. We can use the `DML` class to implement linear DML.</span></span>
 <span id="cb16-709"><a href="#cb16-709" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-712"><a href="#cb16-712" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
 <span id="cb16-713"><a href="#cb16-713" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
