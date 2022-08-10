@@ -542,7 +542,7 @@ Predicting <span class="math inline">\(y\)</span> at <span class="math inline">\
 </div>
 </div>
 <p>Step 1 is done only once. Every time you make a prediction at a different value of <span class="math inline">\(X\)</span>, you go over steps 2 and 3.</p>
-<p>GRF follows exactly the same steps except that it <span style="color:red">adjusts the way trees are grown </span>in step 1 and <span style="color:red">adjusts the local minimization problem</span> solved at step 3 (they are actually interrelated) depending on what you would like to estimate.</p>
+<p>GRF follows exactly the same steps except that it <span style="color:red">adjusts the way trees are grown </span>in step 1 and <span style="color:red">adjusts the way the local minimization problem</span> is solved at step 3 (they are actually interrelated) depending on what you would like to estimate.</p>
 <p>Here, we follow the notations used in <span class="citation" data-cites="athey2019generalized">Athey, Tibshirani, and Wager (<a href="#ref-athey2019generalized" role="doc-biblioref">2019</a>)</span> as much as possible. Here are the list of notations:</p>
 <ul>
 <li><span class="math inline">\(O_i\)</span>: data for observation <span class="math inline">\(i\)</span></li>
@@ -810,8 +810,8 @@ GRF: conceptual steps
 </details>
 <div id="fig-honest" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<div id="htmlwidget-107c056d6b4b1dcc2ea5" style="width:100%;height:325px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-107c056d6b4b1dcc2ea5">{"x":{"diagram":"\ndigraph {\n  graph [ranksep = 0.2, fontsize = 4]\n  node [shape = box]\n    SS [label = \"Subsamples for splitting\"]\n    SP [label = \"Subsamples for predicting\"]\n    BD [label = \"Bootstrapped Data\"]\n    TT [label = \"Trained tree\"]\n    PV [label = \"Predicted value\"]\n  edge [minlen = 2]\n    BD->SP\n    BD->SS\n    SS->TT\n    SP->PV\n    TT->SP [label=\"apply the splitting rules\"]\n  { rank = same; SS; SP}\n  { rank = same; TT}\n  { rank = same; PV}\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-dafbdea814a824cb36be" style="width:100%;height:325px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-dafbdea814a824cb36be">{"x":{"diagram":"\ndigraph {\n  graph [ranksep = 0.2, fontsize = 4]\n  node [shape = box]\n    SS [label = \"Subsamples for splitting\"]\n    SP [label = \"Subsamples for predicting\"]\n    BD [label = \"Bootstrapped Data\"]\n    TT [label = \"Trained tree\"]\n    PV [label = \"Predicted value\"]\n  edge [minlen = 2]\n    BD->SP\n    BD->SS\n    SS->TT\n    SP->PV\n    TT->SP [label=\"apply the splitting rules\"]\n  { rank = same; SS; SP}\n  { rank = same; TT}\n  { rank = same; PV}\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 <p></p><figcaption aria-hidden="true" class="figure-caption">Figure 15.1: Illustration of an honest tree</figcaption><p></p>
 </figure>
 </div>
@@ -1479,8 +1479,8 @@ g(X) &amp; = 10 \cdot [log(x_2+1) + 2\cdot x_3\times x_2]
 <div class="cell">
 <div id="fig-cf-tree" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<div id="htmlwidget-29df2510c1999dc3e3da" style="width:100%;height:371px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-29df2510c1999dc3e3da">{"x":{"diagram":"digraph nodes { \n node [shape=box] ;\n0 [label=\" x1 <= 1.44 \"] ;\n0 -> 1 [labeldistance=2.5, labelangle=45, headlabel=\"True\", arrowhead=normal];\n0 -> 2 [labeldistance=2.5, labelangle=-45, headlabel=\"False\", arrowhead=normal];\n1  [shape=box,style=filled,color=\".7 .3 1.0\" , label=\"size =  121 \n avg_Y = 38.6\navg_W = 0.55 \"];\n2  [shape=box,style=filled,color=\".7 .3 1.0\" , label=\"size =  129 \n avg_Y = 42.1\navg_W = 0.5 \"];\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-d4413593c73b990fa903" style="width:100%;height:371px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-d4413593c73b990fa903">{"x":{"diagram":"digraph nodes { \n node [shape=box] ;\n0 [label=\" x1 <= 1.44 \"] ;\n0 -> 1 [labeldistance=2.5, labelangle=45, headlabel=\"True\", arrowhead=normal];\n0 -> 2 [labeldistance=2.5, labelangle=-45, headlabel=\"False\", arrowhead=normal];\n1  [shape=box,style=filled,color=\".7 .3 1.0\" , label=\"size =  121 \n avg_Y = 38.6\navg_W = 0.55 \"];\n2  [shape=box,style=filled,color=\".7 .3 1.0\" , label=\"size =  129 \n avg_Y = 42.1\navg_W = 0.5 \"];\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 <p></p><figcaption aria-hidden="true" class="figure-caption">Figure 15.3: Example trees built in causal forest estimation</figcaption><p></p>
 </figure>
 </div>
@@ -2046,7 +2046,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb80-110"><a href="#cb80-110" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb80-111"><a href="#cb80-111" aria-hidden="true" tabindex="-1"></a>Step 1 is done only once. Every time you make a prediction at a different value of $X$, you go over steps 2 and 3. </span>
 <span id="cb80-112"><a href="#cb80-112" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb80-113"><a href="#cb80-113" aria-hidden="true" tabindex="-1"></a>GRF follows exactly the same steps except that it <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:red"</span><span class="kw">&gt;</span>adjusts the way trees are grown <span class="kw">&lt;/span&gt;</span>in step 1 and <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:red"</span><span class="kw">&gt;</span>adjusts the local minimization problem<span class="kw">&lt;/span&gt;</span> solved at step 3 (they are actually interrelated) depending on what you would like to estimate.</span>
+<span id="cb80-113"><a href="#cb80-113" aria-hidden="true" tabindex="-1"></a>GRF follows exactly the same steps except that it <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:red"</span><span class="kw">&gt;</span>adjusts the way trees are grown <span class="kw">&lt;/span&gt;</span>in step 1 and <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:red"</span><span class="kw">&gt;</span>adjusts the way the local minimization problem<span class="kw">&lt;/span&gt;</span> is solved at step 3 (they are actually interrelated) depending on what you would like to estimate.</span>
 <span id="cb80-114"><a href="#cb80-114" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb80-115"><a href="#cb80-115" aria-hidden="true" tabindex="-1"></a>Here, we follow the notations used in @athey2019generalized as much as possible. Here are the list of notations:</span>
 <span id="cb80-116"><a href="#cb80-116" aria-hidden="true" tabindex="-1"></a></span>

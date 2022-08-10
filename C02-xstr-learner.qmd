@@ -12,8 +12,8 @@ In this section, we look at the S-, X-, T-, and R-learner, which are method that
 
 ## Key points
 
-+ R-learner is the same as DML approaches by @Chernozhukov2018 except that CATE is estiamted at the second instead of ATE.
-+ In most practical cases, R-learner performs better than S-, X-, and T-learners. 
++ R-learner is the same as DML approaches by @Chernozhukov2018 except that it estimates CATE eat the second stag instead of ATE.
++ In many practical cases, R-learner performs better than S-, X-, and T-learners. 
 + S- and T-learners are especially undesirable due to its tendency to underestimate CATE
 
 :::
@@ -129,7 +129,7 @@ Any value of $g(X)$ is acceptable. One option of $g(X)$ may be the estimated pro
 
 ## T-learner v.s. X-learner
 
-Here, an advantage of X-learner over T-learner is demonstrated (This example also serves as an illustration of how these learners are implemented). Specifically, X-learner can be particularly useful when the control-treatment assignments in the sample are unbalanced. For example, it is often the case that there are plenty of observations in the control group, while there are not many treated observations. For the purpose of illustration, consider a rather extreme case where there are only 10 observations in the treated group, while there are 300 observations in the control group. We use the following toy data generating process:
+Here, an advantage of X-learner over T-learner is demonstrated. This example also serves as an illustration of how these learners are implemented. Specifically, X-learner can be advantageous when the control-treatment assignments in the sample are unbalanced. For example, it is often the case that there are plenty of observations in the control group, while there are not many treated observations. For the purpose of illustration, consider a rather extreme case where there are only 10 observations in the treated group, while there are 300 observations in the control group. We use the following toy data generating process:
 
 ::: {.column-margin}
 **Packages to load for replication**
@@ -142,6 +142,8 @@ library(tidyverse)
 library(ranger)
 library(rlearner)
 library(mgcv)
+library(rsample)
+library(xgboost)
 ```
 
 ```{r}
@@ -151,6 +153,8 @@ library(tidyverse)
 library(ranger)
 library(rlearner)
 library(mgcv)
+library(rsample)
+library(xgboost)
 ```
 :::
 
@@ -181,7 +185,8 @@ data <-
 
 ```{r}
 ggplot(data = data) +
-  geom_point(aes(y = y, x = x, color = type))
+  geom_point(aes(y = y, x = x, color = type)) +
+  theme_bw()
 ```
 
 Let's first estimate $\mu_1(X)$ and $\mu_0(X)$ (Step 1). Since we have only $`r N_trt`$ observations in the treated group, we will use a linear regression to avoid over-fitting (following the example in @kunzel_metalearners_2019).
@@ -207,8 +212,11 @@ tau_hat_data <-
 As you can see, T-learner is heavily biased. This is because of the unreliable estimation of $\mu_1(X)$ due to lack of observations in the treated group.
 
 ```{r}
+#| code-fold: true
+
 ggplot(data = tau_hat_data) +
-  geom_line(aes(y = tau_hat_T, x = x))
+  geom_line(aes(y = tau_hat_T, x = x)) +
+  theme_bw()
 ```
 
 Now, let's move on to X-learner. We impute individual treatment effects (Step 2).
@@ -249,10 +257,13 @@ tau_hat_data[, tau_hat_0 := predict(tau_0_trained, newdata = tau_hat_data)]
 ```
 
 ```{r}
+#| code-fold: true
+
 ggplot(data = tau_hat_data) +
   geom_line(aes(y = tau_hat_1, x = x, color = "Treated")) +
   geom_line(aes(y = tau_hat_0, x = x, color = "Control")) +
-  scale_color_manual(values = c("Treated" = "blue", "Control" = "red"))
+  scale_color_manual(values = c("Treated" = "blue", "Control" = "red")) +
+  theme_bw()
 ```
 
 Let's use propensity score as $g(X)$ in Step 4.
@@ -284,9 +295,11 @@ This number is basically $`r N_trt`/320$. So, in this example, we could have jus
 tau_hat_data[, tau_hat_X := g_x * tau_hat_0 + (1-g_x) * tau_hat_1]
 ```
 
-As you can see, X-learner outperforms T-learner in this particualr instance at least in terms of point estimates of $\tau(X)$. 
+As you can see, X-learner outperforms T-learner in this particular instance at least in terms of point estimates of $\tau(X)$. 
 
 ```{r}
+#| code-fold: true
+
 ggplot(data = tau_hat_data) +
   geom_line(aes(y = tau_hat_T, x = x, color = "T-learner")) +
   geom_line(aes(y = tau_hat_X, x = x, color = "X-learner")) +
@@ -303,49 +316,6 @@ ggplot(data = tau_hat_data) +
   theme_bw() +
   theme(legend.position = "bottom")
 ```
-
-<!-- Let $e(X)$ denote the propensity score $pr(W=1|X) = E[W|X]$.　
-
-Under the unconfoundedness assumption,
-
-$E[\varepsilon(W_i)|X_i, W_i] = 0$, where $\varepsilon_i(w) = Y_i(w) - {\mu_0(X_i)} + w\tau(X_i)$ 
-
-+ $Y_i(0) = {\mu_0(X_i)} + 0\cdot \tau(X_i) = \mu_0(X_i) + \varepsilon_i$
-+ $Y_i(1) = {\mu_0(X_i)} + 1\cdot \tau(X_i) = \mu_0(X_i) + \tau(X_i)  + \varepsilon_i$
-
-Conditional mean outcome (averaged across both treated and untreated) denoted by $m(x)$ is
-
-$$
-\begin{align}
-m(x) = E[Y|X=x] = \mu_0(x) + e(x)\cdot \tau(x)
-\end{align}
-$$
-
-Note that that observed outcome can be written as follows:
-
-$$
-\begin{align}
-Y_i =  \mu_0(X_i) + W_i \tau(X_i)  + \varepsilon_i 
-\end{align}
-$$
-
-Subtracting $m(X_i)$ from both sides,
-
-$Y_i - m(X_i) = [W_i - e(X_i)]\cdot \tau(X_i) + \varepsilon_i$
-
-This is termed **Robinson transformation**, which is originally proposed by @robinson1998.
-
-According to Robins (2004), 
-
-$\tau(X_i) = argmin_{\tau}\large\{\normalsize E\large(\normalsize[\{Y_i-m(X_i)\}-{W_i - e(X_i)}\tau]^2\large)\large\}$
-
-So, if we were to know $m(X_i)$ and $e(X_i)$ for some reason, we can estimate $\tau(X_i)$ by solving the following sample analog of the loss minimization problem:
-
-$\tilde{\tau}(X_i)= argmin_{\tau}\large\{\normalsize \frac{1}{n}\sum_{i=1}^{n}\normalsize[\{Y_i-m(X_i)\}-\{W_i - e(X_i)\}\tau]^2+\Lambda_n(\tau)\large\}$
-
-where $\Lambda_n(\tau)$ is interpreted as a regularizer on the complexity of the $\tau$ function.
-
-Of course the problem is that we do not know $m(X_i)$ and $e^*(X_i)$, so the above solution is not feasible.
 
 ## R-learner {#sec-r-learner}
 
@@ -367,8 +337,8 @@ Let, $l(X,W)$ denote $E[Y|X, W]$. Taking the difference of @eq-model-framework a
 
 $$
 \begin{aligned}
-Y_i - l(X_i,Y_i) & = \theta(X_i)\cdot T_i + g(X_i,W_i) + \varepsilon_i - [\theta(X_i)\cdot f(X_i,W_i) + g(X_i,W_i)] \\
-\Rightarrow Y_i - l(X_i,Y_i) & = \theta(X_i)\cdot (T_i -f(X_i,W_i)) + \varepsilon_i \\
+Y_i - l(X_i,W_i) & = \theta(X_i)\cdot T_i + g(X_i,W_i) + \varepsilon_i - [\theta(X_i)\cdot f(X_i,W_i) + g(X_i,W_i)] \\
+\Rightarrow Y_i - l(X_i,W_i) & = \theta(X_i)\cdot (T_i -f(X_i,W_i)) + \varepsilon_i \\
 \end{aligned}
 $$
 
@@ -380,20 +350,21 @@ So, the problem of identifying $\theta(X)$ reduces to estimating the following m
 
 $$
 \begin{aligned}
-Y_i - l(X_i,Y_i) & = \theta(X_i)\cdot (T_i -f(X_i,W_i)) + \varepsilon_i
+Y_i - l(X_i,W_i) & = \theta(X_i)\cdot (T_i -f(X_i,W_i)) + \varepsilon_i
 \end{aligned}
 $$
 
-Since $E[(T_i -f(X_i,W_i))\cdot\varepsilon_i|X] = E[\eta_i\cdot\varepsilon_i|X] = 0$ by assumption, we can regress $\tilde{Y}_i$ on $X_i$ and $\tilde{T}_i$ to estimate $\theta(X)$. Specifically, we can minimize the following objective function:
+Since $E[(T_i -f(X_i,W_i))\cdot\varepsilon_i|X] = E[\eta_i\cdot\varepsilon_i|X] = 0$ by assumption, we can regress $Y_i - l(X_i,W_i)$ on $X_i$ and $T_i -f(X_i,W_i)$ to estimate $\theta(X)$. Specifically, we can minimize the following objective function:
+
 $$
 \begin{aligned}
-Min_{\theta(X)}\sum_{i=1}^N \large(\normalsize[Y_i - l(X_i,Y_i)] - [\theta(X_i)\cdot (T_i -f(X_i,W_i))]\large)^2 
+Min_{\theta(X)}\sum_{i=1}^N \large(\normalsize[Y_i - l(X_i,W_i)] - [\theta(X_i)\cdot (T_i -f(X_i,W_i))]\large)^2 
 \end{aligned}
 $$ {#eq-est-equation}
 
 ### Estimation steps {#sec-est-steps}
 
-In practice, we of course do not observe $l(X,W)$ $( \equiv E[Y|X, W])$ and $f(X,W)$ $(\equiv E[T|X, W])$. So, we first need to estimate them using the data at hand to construct $\hat{\tilde{Y}}$ and $\hat{\tilde{T}}$. You can use any suitable statistical methods to estimate $E[Y|X, W]$ and $f(X,W)$. Some machine learning methods allow you to estimate them without assuming any functional form or structural assumptions. If you believe they are linear functions of $X$ and $W$, you could alternatively use lasso or other linear models. @nie_quasi-oracle_2021 proposes that the estimation of $l(X,W)$ and $f(X,W)$ is done by cross-fitting (see @sec-cf) to avoid over-fitting bias. Let $I_{-i}$ denote all the observations that belong to the folds that $i$ does <span style="color:blue"> not </span> belong to. Further, let $\hat{f}(X_i, W_i)^{I_{-i}}$ and $\hat{g}(X_i, W_i)^{I_{-i}}$ denote $f(X_i, W_i)$ and $g(X_i, W_i)$ estimated using $I_{-i}$. 
+In practice, we of course do not observe $l(X,W)$ and $f(X,W)$. So, we first need to estimate them using the data at hand and then subtract them from $Y_i$ and $T_i$, respectively. You can use any suitable statistical methods to estimate $l(X, W)$ and $f(X,W)$. Some machine learning methods allow you to estimate them without assuming any functional form or structural assumptions. If you believe they are linear functions of $X$ and $W$, you could alternatively use lasso or other linear models. @nie_quasi-oracle_2021 proposes that the estimation of $l(X,W)$ and $f(X,W)$ is done by cross-fitting (see @sec-cf) to avoid over-fitting bias. Let $I_{-i}$ denote all the observations that belong to the folds that $i$ does <span style="color:blue"> not </span> belong to. Further, let $\hat{l}(X_i, W_i)^{I_{-i}}$ and $\hat{f}(X_i, W_i)^{I_{-i}}$ denote $l(X_i, W_i)$ and $f(X_i, W_i)$ estimated using $I_{-i}$. 
 
 ::: {.column-margin}
 Just like the DML approach discussed in @sec-dml, both $Y$ and $T$ are orthogonalized.
@@ -403,25 +374,241 @@ Then the quality of fit (explaining the heterogeneity in the impact of treatment
 
 $$
 \begin{aligned}
-\sum_{i=1}^N [Y_i - \hat{f}(X_i,W_i)^{I_{-i}} - \theta(X)\cdot (T_i - \hat{g}(X_i,W_i)^{I_{-i}})]^2
+\sum_{i=1}^N [Y_i - \hat{l}(X_i,W_i)^{I_{-i}} - \theta(X)\cdot (T_i - \hat{f}(X_i,W_i)^{I_{-i}})]^2
 \end{aligned}
 $$
 
-This is called <span style="color:blue"> R-score</span>, and it can be used for causal model selection, which is covered later. 
+This is called <span style="color:blue"> R-score</span>, and it can be used for causal model selection, which will be covered later. 
 
-The final stage of the R-learner is to estimate $\theta(X)$ by minimizing the R-score plus the regularization term (if desirable).
+Let $\tilde{Y}_i$ and $\tilde{T}_i$ denote $Y_i - \hat{l}(X_i,W_i)^{I_{-i}}$ and $T_i - \hat{f}(X_i,W_i)^{I_{-i}}$, respectively. The final stage of the R-learner is to estimate $\theta(X)$ by minimizing the R-score plus the regularization term (if desirable).
 
 $$
 \begin{aligned}
-\hat{\theta}(X) = argmin_{\theta(X)}\;\;\sum_{i=1}^N [Y_i - \hat{f}(X_i,W_i)^{I_{-i}} - \theta(X)\cdot (T_i - \hat{g}(X_i,W_i)^{I_{-i}})]^2 + \Lambda(\theta(X))
+\hat{\theta}(X) = argmin_{\theta(X)}\;\;\sum_{i=1}^N [\tilde{Y}_i - \theta(X)\cdot\tilde{T}_i]^2 + \Lambda(\theta(X))
 \end{aligned}
-$$
+$$ {#eq-r-min}
 
 where $\Lambda(\theta(X))$ is the penalty on the complexity of $\theta(X)$. For example, if you choose to use lasso, then $\Lambda(\theta(X))$ is the L1 norm. You have lots of freedom as to what model you use in the final stage. The `econml` package offers several off-the-shelf choices of R-learner (DML) approaches that differ in the model used at the final stage, including causal forest, lasso, etc.
 
 ### R-learner by hand
 
-This section goes through the estimation steps provided above to further the understanding of how R-learner works.
+This section goes through the estimation steps provided above to further the understanding of how R-learner works using a synthetic dataset that follows the DGP below.
+
+$$
+\begin{aligned}
+Y_i & = (x_{i,1} + x_{i,2}^2)\cdot T_i + \sqrt{x_{i,3}} + \mu_i \\
+T_i|X_i & = Bernouli((1+x_{i,1})/2) \\
+\mu_i|X_i & = N(0,1)
+\end{aligned}
+$$
+
+Let's generate a dataset according to the DGP.
+
+```{r}
+set.seed(58734)
+
+N <- 1000
+
+(
+data <-
+  data.table(
+    x1 = runif(N),
+    x2 = runif(N),
+    x3 = runif(N),
+    mu = rnorm(N)
+  ) %>% 
+  .[, T := runif(N) < ((0.5+x1)/2)] %>% 
+  .[, Y := (x1 + x2^2) * T + sqrt(x3) + mu] %>% 
+  .[, id := 1:.N]
+) 
+```
+
+---
+
+We first cross-fit $E[Y|X]$ and $E[T|X]$ using random forest for both cases. We will use repeated (3 times) 5-fold cross-fitting. Resampling the data,
+
+```{r}
+(
+data_folds <- rsample::vfold_cv(data, v = 5, repeats = 3)
+)
+```
+
+The following function takes a row number (`n`) and cross-fits $E[Y|X]$ and $E[T|X]$ for the training and test data split stored in the `n`th row of `data_folds`.
+
+```{r}
+cross_fit <- function(n, data_folds) 
+{
+  training_data <- analysis(data_folds[n, ]$splits[[1]])
+  eval_data <- assessment(data_folds[n, ]$splits[[1]])
+
+  #--------------------------
+  # E[Y|X]
+  #--------------------------
+  #=== train ===#
+  rf_trained_y <-
+    ranger(
+      Y ~ x1 + x2 + x3,
+      data = training_data
+    )
+
+  #=== fit ===#
+  eval_data[, y_hat := predict(rf_trained_y, data = eval_data)$predictions]
+
+  #--------------------------
+  # E[T|X]
+  #--------------------------
+  rf_trained_t <-
+    ranger(
+      T ~ x1 + x2 + x3,
+      data = training_data,
+      probability = TRUE
+    )
+
+  eval_data[, t_hat := predict(rf_trained_t, data = eval_data)$predictions[, 2]]
+
+  return(eval_data[, .(id, y_hat, t_hat)])
+}
+```
+
+Here is what the output of the function for the first split looks like.
+
+```{r}
+cross_fit(1, data_folds)
+```
+
+Repeating this for all the splits,
+
+```{r}
+(
+cross_fitted_data_rp <-
+  lapply(
+    seq_len(nrow(data_folds)),
+    function(x) cross_fit(x, data_folds)
+  ) %>% 
+  rbindlist()
+)
+```
+
+We finally take the mean of the cross-fits by `id` as each `id` has tree estimates. 
+
+```{r}
+(
+cross_fitted_data <- 
+  cross_fitted_data_rp[, .(
+    t_hat = mean(t_hat),
+    y_hat = mean(y_hat)
+  ), by = id]
+)
+```
+
+We then merge the data to the original data, and define $\tilde{Y}$ and $\tilde{T}$.
+
+```{r}
+(
+data_2nd <- 
+  cross_fitted_data[data, on = "id"] %>% 
+  .[, `:=`(
+    y_tilde = Y - y_hat,
+    t_tilde = T - t_hat
+  )] %>% 
+  .[, .(y_tilde, t_tilde, x1, x2, x3)]
+)
+```
+
+---
+
+The first order condition of @eq-r-min without $\Lambda(\theta(X))$ is
+
+$$
+\begin{aligned}
+\sum_{i=1}^N (\tilde{Y}_i - \theta(X)\cdot\tilde{T}_i)\cdot \tilde{T}_i = 0
+\end{aligned}
+$$
+
+This can be rewritten as 
+
+$$
+\begin{aligned}
+\sum_{i=1}^N \tilde{T}_i^2(\frac{\tilde{Y}_i}{\tilde{T}_i} - \theta(X)) = 0
+\end{aligned}
+$$
+
+So, this problem can be considered the problem of estimating $\theta(X)$ when the dependent variable is $\frac{\tilde{Y}_i}{\tilde{T}_i}$ with individual weights of $\tilde{T}_i^2$.
+
+```{r}
+data_2nd[, `:=`(
+  weight = t_tilde^2,
+  y_to_t = y_tilde / t_tilde
+)]
+```
+
+We use `xgboost()` for a non-parametric estimation of $\theta(X)$.
+
+```{r}
+#| include: false
+
+#=== set up the data with weights ===#
+data_2nd_xgb <- 
+  xgb.DMatrix(
+    data = data_2nd[, .(x1, x2, x3)] %>% as.matrix(),
+    label = data_2nd[, y_to_t],
+    weight = data_2nd[, weight]
+  )
+
+#=== train ===#
+xgb_trained_2nd <-
+  xgboost(
+    data = data_2nd_xgb,
+    nrounds = 200,
+    objective = "reg:squarederror"
+  )
+```
+
+```{r}
+#| eval: false
+
+#=== set up the data with weights ===#
+data_2nd_xgb <- 
+  xgb.DMatrix(
+    data = data_2nd[, .(x1, x2, x3)] %>% as.matrix(),
+    label = data_2nd[, y_to_t],
+    weight = data_2nd[, weight]
+  )
+
+#=== train ===#
+xgb_trained_2nd <-
+  xgboost(
+    data = data_2nd_xgb,
+    nrounds = 200,
+    objective = "reg:squarederror"
+  )
+```
+
+You can now predict $\theta(X)$ at particular values of $X$. Let's estimate $\theta(X)$ at $X_0 = \{x_1 = 0.5, x_2 = 0.5, x_3 = 0.5\}$.
+
+```{r}
+eval_data <- 
+  data.table(x1 = 0.5, x2 = 0.5, x3 = 0.5) %>% 
+  as.matrix() %>% 
+  xgb.DMatrix(data = .)
+
+(
+theta_hat <- predict(xgb_trained_2nd, eval_data)
+)
+```
+
+You could alternatively estimate $\theta(X)$ parametrically using OLS. Suppose we somehow know that $\theta(X)$ takes the following form $\beta_1 x_1 + \beta_2 x_2^2 + \beta_3 x_3$. Then, the second stage estimation would be regressing $\tilde{Y}$ on $x_1\times T$, $x_2^2\times T$, and $x_2\times T$.
+
+```{r}
+#=== train ===#
+ols_2nd_stage <- lm(y_tilde ~ I(x1*t_tilde) + I(x2^2*t_tilde) + I(x3*t_tilde), data = data_2nd)
+
+#=== summary ===#
+summary(ols_2nd_stage)
+```
+
+The results look pretty good mostly because we are cheating and using the correct functional form. Of course, in practice, you would not know the correct functional form of $\theta(X)$. Finally, note that you should not use the codes here since they are just for demonstration to enhance our understanding of how R-learner works. 
+
 
 ## Comparing the learners
 

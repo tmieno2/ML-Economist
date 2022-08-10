@@ -539,7 +539,7 @@ LLF
 <p>Let’s look at the first modification. In RF, when deciding how to split a node (parent node), we choose a split that solves the following problem:</p>
 <p><span class="math display">\[
 \begin{aligned}
-\sum_{i\in C_1}(Y_i - \bar{Y_1}) + \sum_{i\in C_2}(Y_i - \bar{Y_2})
+\frac{1}{N_1}\sum_{i\in C_1}(Y_i - \bar{Y_1}) + \frac{1}{N_2}\sum_{i\in C_2}(Y_i - \bar{Y_2})
 \end{aligned}
 \]</span></p>
 <p>where <span class="math inline">\(C_1\)</span> and <span class="math inline">\(C_2\)</span> are child nodes, and <span class="math inline">\(\bar{Y_1}\)</span> and <span class="math inline">\(\bar{Y_2}\)</span> are the mean value of the outcome for <span class="math inline">\(C_1\)</span> and <span class="math inline">\(C_2\)</span>, respectively. Instead, LLF by <span class="citation" data-cites="friedberg2020local">Friedberg et al. (<a href="#ref-friedberg2020local" role="doc-biblioref">2020</a>)</span> first regresses <span class="math inline">\(Y\)</span> on <span class="math inline">\(X\)</span> using ridge regression using the observations in the parent node, finds the residuals, and then uses the residuals in place of <span class="math inline">\(Y\)</span> itself.</p>
@@ -618,12 +618,12 @@ y_i = log(1+exp(6x)) + \varepsilon
 <div class="cell" data-tab-cap="Four methods of prediction">
 <div class="cell-output-display">
 
-<div id="wxbbrwjbkq" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="emecueidos" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#wxbbrwjbkq .gt_table {
+#emecueidos .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -648,7 +648,7 @@ y_i = log(1+exp(6x)) + \varepsilon
   border-left-color: #D3D3D3;
 }
 
-#wxbbrwjbkq .gt_heading {
+#emecueidos .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -660,7 +660,7 @@ y_i = log(1+exp(6x)) + \varepsilon
   border-right-color: #D3D3D3;
 }
 
-#wxbbrwjbkq .gt_title {
+#emecueidos .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -672,7 +672,7 @@ y_i = log(1+exp(6x)) + \varepsilon
   border-bottom-width: 0;
 }
 
-#wxbbrwjbkq .gt_subtitle {
+#emecueidos .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -684,13 +684,13 @@ y_i = log(1+exp(6x)) + \varepsilon
   border-top-width: 0;
 }
 
-#wxbbrwjbkq .gt_bottom_border {
+#emecueidos .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#wxbbrwjbkq .gt_col_headings {
+#emecueidos .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -705,7 +705,7 @@ y_i = log(1+exp(6x)) + \varepsilon
   border-right-color: #D3D3D3;
 }
 
-#wxbbrwjbkq .gt_col_heading {
+#emecueidos .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -725,7 +725,7 @@ y_i = log(1+exp(6x)) + \varepsilon
   overflow-x: hidden;
 }
 
-#wxbbrwjbkq .gt_column_spanner_outer {
+#emecueidos .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -737,15 +737,15 @@ y_i = log(1+exp(6x)) + \varepsilon
   padding-right: 4px;
 }
 
-#wxbbrwjbkq .gt_column_spanner_outer:first-child {
+#emecueidos .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#wxbbrwjbkq .gt_column_spanner_outer:last-child {
+#emecueidos .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#wxbbrwjbkq .gt_column_spanner {
+#emecueidos .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -757,7 +757,7 @@ y_i = log(1+exp(6x)) + \varepsilon
   width: 100%;
 }
 
-#wxbbrwjbkq .gt_group_heading {
+#emecueidos .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -782,7 +782,7 @@ y_i = log(1+exp(6x)) + \varepsilon
   vertical-align: middle;
 }
 
-#wxbbrwjbkq .gt_empty_group_heading {
+#emecueidos .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -797,15 +797,15 @@ y_i = log(1+exp(6x)) + \varepsilon
   vertical-align: middle;
 }
 
-#wxbbrwjbkq .gt_from_md > :first-child {
+#emecueidos .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#wxbbrwjbkq .gt_from_md > :last-child {
+#emecueidos .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#wxbbrwjbkq .gt_row {
+#emecueidos .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -824,7 +824,7 @@ y_i = log(1+exp(6x)) + \varepsilon
   overflow-x: hidden;
 }
 
-#wxbbrwjbkq .gt_stub {
+#emecueidos .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -837,7 +837,7 @@ y_i = log(1+exp(6x)) + \varepsilon
   padding-right: 5px;
 }
 
-#wxbbrwjbkq .gt_stub_row_group {
+#emecueidos .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -851,11 +851,11 @@ y_i = log(1+exp(6x)) + \varepsilon
   vertical-align: top;
 }
 
-#wxbbrwjbkq .gt_row_group_first td {
+#emecueidos .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#wxbbrwjbkq .gt_summary_row {
+#emecueidos .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -865,16 +865,16 @@ y_i = log(1+exp(6x)) + \varepsilon
   padding-right: 5px;
 }
 
-#wxbbrwjbkq .gt_first_summary_row {
+#emecueidos .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#wxbbrwjbkq .gt_first_summary_row.thick {
+#emecueidos .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#wxbbrwjbkq .gt_last_summary_row {
+#emecueidos .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -884,7 +884,7 @@ y_i = log(1+exp(6x)) + \varepsilon
   border-bottom-color: #D3D3D3;
 }
 
-#wxbbrwjbkq .gt_grand_summary_row {
+#emecueidos .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -894,7 +894,7 @@ y_i = log(1+exp(6x)) + \varepsilon
   padding-right: 5px;
 }
 
-#wxbbrwjbkq .gt_first_grand_summary_row {
+#emecueidos .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -904,11 +904,11 @@ y_i = log(1+exp(6x)) + \varepsilon
   border-top-color: #D3D3D3;
 }
 
-#wxbbrwjbkq .gt_striped {
+#emecueidos .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#wxbbrwjbkq .gt_table_body {
+#emecueidos .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -917,7 +917,7 @@ y_i = log(1+exp(6x)) + \varepsilon
   border-bottom-color: #D3D3D3;
 }
 
-#wxbbrwjbkq .gt_footnotes {
+#emecueidos .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -931,7 +931,7 @@ y_i = log(1+exp(6x)) + \varepsilon
   border-right-color: #D3D3D3;
 }
 
-#wxbbrwjbkq .gt_footnote {
+#emecueidos .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -940,7 +940,7 @@ y_i = log(1+exp(6x)) + \varepsilon
   padding-right: 5px;
 }
 
-#wxbbrwjbkq .gt_sourcenotes {
+#emecueidos .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -954,7 +954,7 @@ y_i = log(1+exp(6x)) + \varepsilon
   border-right-color: #D3D3D3;
 }
 
-#wxbbrwjbkq .gt_sourcenote {
+#emecueidos .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -962,36 +962,36 @@ y_i = log(1+exp(6x)) + \varepsilon
   padding-right: 5px;
 }
 
-#wxbbrwjbkq .gt_left {
+#emecueidos .gt_left {
   text-align: left;
 }
 
-#wxbbrwjbkq .gt_center {
+#emecueidos .gt_center {
   text-align: center;
 }
 
-#wxbbrwjbkq .gt_right {
+#emecueidos .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#wxbbrwjbkq .gt_font_normal {
+#emecueidos .gt_font_normal {
   font-weight: normal;
 }
 
-#wxbbrwjbkq .gt_font_bold {
+#emecueidos .gt_font_bold {
   font-weight: bold;
 }
 
-#wxbbrwjbkq .gt_font_italic {
+#emecueidos .gt_font_italic {
   font-style: italic;
 }
 
-#wxbbrwjbkq .gt_super {
+#emecueidos .gt_super {
   font-size: 65%;
 }
 
-#wxbbrwjbkq .gt_two_val_uncert {
+#emecueidos .gt_two_val_uncert {
   display: inline-block;
   line-height: 1em;
   text-align: right;
@@ -1000,31 +1000,31 @@ y_i = log(1+exp(6x)) + \varepsilon
   margin-left: 0.1em;
 }
 
-#wxbbrwjbkq .gt_footnote_marks {
+#emecueidos .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#wxbbrwjbkq .gt_asterisk {
+#emecueidos .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#wxbbrwjbkq .gt_slash_mark {
+#emecueidos .gt_slash_mark {
   font-size: 0.7em;
   line-height: 0.7em;
   vertical-align: 0.15em;
 }
 
-#wxbbrwjbkq .gt_fraction_numerator {
+#emecueidos .gt_fraction_numerator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: 0.45em;
 }
 
-#wxbbrwjbkq .gt_fraction_denominator {
+#emecueidos .gt_fraction_denominator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: -0.05em;
@@ -2170,7 +2170,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb9-121"><a href="#cb9-121" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-122"><a href="#cb9-122" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb9-123"><a href="#cb9-123" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
-<span id="cb9-124"><a href="#cb9-124" aria-hidden="true" tabindex="-1"></a>\sum_{i\in C_1}(Y_i - \bar{Y_1}) + \sum_{i\in C_2}(Y_i - \bar{Y_2})</span>
+<span id="cb9-124"><a href="#cb9-124" aria-hidden="true" tabindex="-1"></a>\frac{1}{N_1}\sum_{i\in C_1}(Y_i - \bar{Y_1}) + \frac{1}{N_2}\sum_{i\in C_2}(Y_i - \bar{Y_2})</span>
 <span id="cb9-125"><a href="#cb9-125" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
 <span id="cb9-126"><a href="#cb9-126" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb9-127"><a href="#cb9-127" aria-hidden="true" tabindex="-1"></a></span>
