@@ -422,6 +422,15 @@ $$ {#eq-r-min}
 
 where $\Lambda(\theta(X))$ is the penalty on the complexity of $\theta(X)$. For example, if you choose to use lasso, then $\Lambda(\theta(X))$ is the L1 norm. You have lots of freedom as to what model you use in the final stage. The `econml` package offers several off-the-shelf choices of R-learner (DML) approaches that differ in the model used at the final stage, including causal forest, lasso, etc.
 
+:::{.callout-tip}
+
+## Summary of differences among the learners
+
++ R-learner is the only learner that takes into account how the treatment status is determined
++ S- and R-learner can be be readily applicable to continuous treatment cases, while T- and X-learner cannot. 
+
+:::
+
 ### R-learner by hand
 
 This section goes through R codes to implement the estimation steps provided above to further our understanding of how R-learner works using the same synthetic dataset as the one used in @sec-stx.
@@ -611,6 +620,10 @@ summary(ols_2nd_stage)
 ```
 
 The results look pretty good mostly because we are cheating and using the correct functional form. Of course, in practice, you would not know the correct functional form of $\theta(X)$. Finally, note that you should not use the codes here since they are just for demonstration to enhance our understanding of how R-learner works.
+
+
+
+
 
 ## Comparing the learners
 
