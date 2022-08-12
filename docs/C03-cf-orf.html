@@ -348,7 +348,7 @@ div.csl-indent {
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
-        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">Programming Guide: R</a>
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">Programming: R</a>
       <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
@@ -356,7 +356,7 @@ div.csl-indent {
     <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PROG-R-01-mlr3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Machine Learning with <code>mlr3</code> in R</span></a>
+  <a href="./PROG-R-01-mlr3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Machine Learning with <code>mlr3</code></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -374,7 +374,7 @@ div.csl-indent {
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
-        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">Programming Guide: Python</a>
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">Programming: Python</a>
       <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
@@ -382,12 +382,12 @@ div.csl-indent {
     <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PROG-P-01-scikitlearn.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Prediction using <code>scikitlearn</code></span></a>
+  <a href="./PROG-P-01-scikitlearn.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Prediction</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PROG-P-02-CATE-econml.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">CATE estimation using <code>econml</code></span></a>
+  <a href="./PROG-P-02-CATE-econml.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Treatment Effect Estimation</span></a>
   </div>
 </li>
     </ul>
@@ -721,12 +721,12 @@ Warning
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>cf_trained<span class="sc">$</span>predictions <span class="sc">%&gt;%</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>          [,1]
-[1,]  316.6634
-[2,]  492.2540
-[3,] -157.8060
-[4,] 1136.7378
-[5,]  716.1304
-[6,]  877.7787</code></pre>
+[1,]  449.5073
+[2,]  337.7088
+[3,] -484.2860
+[4,] 1326.4434
+[5,]  604.1448
+[6,] 1086.4492</code></pre>
 </div>
 </div>
 </section>
@@ -737,23 +737,23 @@ Warning
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">split_frequencies</span>(cf_trained)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     [,1] [,2] [,3] [,4] [,5] [,6]
-[1,]  245 1498  114   27   28   83
-[2,] 1365 1065  707   44  164  266
-[3,] 1932  533 1057   28  206  232
-[4,] 1372  335  791    3  143   68</code></pre>
+[1,]  258 1464  119   31   38   85
+[2,] 1362 1125  665   39  151  266
+[3,] 1984  491 1056   35  219  200
+[4,] 1437  321  786    8  118   71</code></pre>
 </div>
 </div>
-<p>In this table, rows represent the depth of the nodes and columns represent covariates. For example, the second variable (<code>educ</code>) was used to do the first split 1498 times and split a node at the second depth 1065 times. A variable with higher numbers of splits at earlier stages is more influential in driving treatment effect heterogeneity. <code>variable_importance()</code> returns a measure of how important each variable is in explaining treatment effect heterogeneity based on the split information.</p>
+<p>In this table, rows represent the depth of the nodes and columns represent covariates. For example, the second variable (<code>educ</code>) was used to do the first split 1464 times and split a node at the second depth 1125 times. A variable with higher numbers of splits at earlier stages is more influential in driving treatment effect heterogeneity. <code>variable_importance()</code> returns a measure of how important each variable is in explaining treatment effect heterogeneity based on the split information.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">variable_importance</span>(cf_trained)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>           [,1]
-[1,] 0.21266820
-[2,] 0.59509275
-[3,] 0.10801345
-[4,] 0.01224305
-[5,] 0.02418095
-[6,] 0.04780161</code></pre>
+[1,] 0.21900771
+[2,] 0.58498841
+[3,] 0.10753872
+[4,] 0.01362695
+[5,] 0.02690857
+[6,] 0.04792965</code></pre>
 </div>
 </div>
 <p>So, according to this measure, the second variable (<code>educ</code>) is the most important variable. While variable of importance measure is informative, it does not tell us <span style="color:blue">how </span> the variables are affecting treatment effects. For that, we need to look at <span class="math inline">\(\theta(X)\)</span> at different values of <span class="math inline">\(X\)</span>.</p>
@@ -778,7 +778,7 @@ Warning
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  predictions variance.estimates
-1   -7040.873            4792107</code></pre>
+1   -7351.959            2521470</code></pre>
 </div>
 </div>
 <p>Unlike linear-in-parameter model, there are no coefficients that can immediately tell us how influential each of <span class="math inline">\(X\)</span> is in driving the treatment effect heterogeneity. One way to see the impact of a variable is to change its value while the value of the rest of <span class="math inline">\(X\)</span> is fixed. For example, for the given observed value of <span class="math inline">\(X\)</span> except <code>educ</code>, you can vary the value of <code>educ</code> to see how <code>educ</code> affects the treatment effect. We can do this for all the observations and then can get a good picture of how the treatment effect varies across individuals at different values of <code>educ</code>.</p>
@@ -828,17 +828,17 @@ Warning
 <span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        theta_hat       se
-    1:   220.4796 1568.088
-    2:   235.6435 1550.610
-    3:   220.7185 1522.046
-    4:   313.3677 1527.547
-    5:   275.2052 1517.909
+    1:   196.6412 1643.043
+    2:   192.1963 1643.774
+    3:   227.6136 1663.190
+    4:   316.3815 1659.691
+    5:   255.4224 1631.758
    ---                    
-80246: -5685.0408 1860.144
-80247: -5659.7619 1821.400
-80248: -5644.2274 1762.378
-80249: -5639.2466 1784.229
-80250: -5639.2466 1784.229</code></pre>
+80246: -5501.8036 2370.190
+80247: -5469.5475 2383.729
+80248: -5466.8952 2413.930
+80249: -5429.8050 2404.134
+80250: -5429.8050 2404.134</code></pre>
 </div>
 </div>
 <p><a href="#fig-ind-3">Figure&nbsp;<span>13.1</span></a> shows the impact of <code>age</code> on treatment effect for the first three individuals of <code>data_trt</code>. For example, if an individual that has the identical values for <span class="math inline">\(X\)</span> except <code>age</code> and also this person is 40 years old, then the treatment effect of the training program would be about $1,000. Standard errors are fairly large and treatment effects are not statistically significantly different from 0 at any value of <code>age</code> for all three individuals. The impact of <code>age</code> seems to be very similar for all the individuals. However, you can see shifts in <span class="math inline">\(\hat{\theta}\)</span> among them. Those shifts are due to the differences in other covariates.</p>
