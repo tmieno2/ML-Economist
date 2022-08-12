@@ -66,18 +66,25 @@ quarto::quarto_render(here::here("LectureNotes/scikitlearn.qmd"))
 quarto::quarto_render(here::here("LectureNotes/linear-nonparametric-efficiency.qmd"))
 
 #/*=================================================*/
-#' # Programming
+#' # Programming: R
 #/*=================================================*/
 #=== mlr3 ===#
-quarto::quarto_render(here::here("LectureNotes/PROG-01-mlr3.qmd"))
+quarto::quarto_render(here::here("LectureNotes/PROG-R-01-mlr3.qmd"))
 
 #=== reticulate ===#
-quarto::quarto_render(here::here("LectureNotes/PROG-02-reticulate.qmd"))
+quarto::quarto_render(here::here("LectureNotes/PROG-R-02-reticulate.qmd"))
 
 #=== model selection ===#
-quarto::quarto_render(here::here("LectureNotes/PROG-03-model-selection-prediction.qmd"))
+quarto::quarto_render(here::here("LectureNotes/PROG-R-03-model-selection-prediction.qmd"))
 
+#/*=================================================*/
+#' # Programming: Python
+#/*=================================================*/
+#=== scikitlearn ===#
+quarto::quarto_render(here::here("LectureNotes/PROG-P-01-scikitlearn"))
 
+#=== CATE-econml ===#
+quarto::quarto_render(here::here("LectureNotes/PROG-P-02-CATE-econml.qmd"))
 
 #/*=================================================*/
 #' # Extensions

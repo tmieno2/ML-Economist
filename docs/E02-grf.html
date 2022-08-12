@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Introduction to Machine Learning for Economists (Under Construction) - 15&nbsp; Generalized Random Forest</title>
+<title>Introduction to Machine Learning for Economists (Under Construction) - 17&nbsp; Generalized Random Forest</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -107,7 +107,7 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./PROG-00-programming.html" rel="next">
+<link href="./PROG-R-01-mlr3.html" rel="next">
 <link href="./E01-spatial-cv.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -163,7 +163,7 @@ div.csl-indent {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Generalized Random Forest</span></h1>
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Generalized Random Forest</span></h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -316,6 +316,16 @@ div.csl-indent {
   <a href="./C03-cf-orf.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Forest-based CATE Estimators</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./C04-cf-extension.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Extensions of Causal Forest</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./C05-causal-model-selection.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Causal Model Selection</span></a>
+  </div>
+</li>
     </ul>
   </li>
         <li class="px-0"><hr class="sidebar-divider hi "></li>
@@ -329,12 +339,12 @@ div.csl-indent {
     <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./E01-spatial-cv.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></a>
+  <a href="./E01-spatial-cv.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./E02-grf.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Generalized Random Forest</span></a>
+  <a href="./E02-grf.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Generalized Random Forest</span></a>
   </div>
 </li>
     </ul>
@@ -342,7 +352,7 @@ div.csl-indent {
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
-        <a href="./PROG-00-programming.html" class="sidebar-item-text sidebar-link">Programming Guide</a>
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">Programming Guide: R</a>
       <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
@@ -350,17 +360,17 @@ div.csl-indent {
     <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PROG-01-mlr3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Machine Learning with <code>mlr3</code> in R</span></a>
+  <a href="./PROG-R-01-mlr3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Machine Learning with <code>mlr3</code> in R</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PROG-02-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
+  <a href="./PROG-R-02-reticulate.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Running Python from R</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PROG-03-model-selection-prediction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Model Selection (Prediction)</span></a>
+  <a href="./PROG-R-03-model-selection-prediction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Model Selection (Prediction)</span></a>
   </div>
 </li>
     </ul>
@@ -368,12 +378,32 @@ div.csl-indent {
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
-        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">Appendices</a>
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">Programming Guide: Python</a>
       <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
     </div>
     <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PROG-P-01-scikitlearn.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Prediction using <code>scikitlearn</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PROG-P-02-CATE-econml.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">CATE estimation using <code>econml</code></span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">Appendices</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./A01-mc-simulation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Monte Carlo (MC) Simulation</span></a>
@@ -395,19 +425,19 @@ div.csl-indent {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#random-forest-as-a-local-constant-regression" id="toc-random-forest-as-a-local-constant-regression" class="nav-link active" data-scroll-target="#random-forest-as-a-local-constant-regression"> <span class="header-section-number">15.1</span> Random forest as a local constant regression</a></li>
-  <li><a href="#grf" id="toc-grf" class="nav-link" data-scroll-target="#grf"> <span class="header-section-number">15.2</span> GRF</a></li>
-  <li><a href="#examples-of-grf" id="toc-examples-of-grf" class="nav-link" data-scroll-target="#examples-of-grf"> <span class="header-section-number">15.3</span> Examples of GRF</a>
+  <li><a href="#random-forest-as-a-local-constant-regression" id="toc-random-forest-as-a-local-constant-regression" class="nav-link active" data-scroll-target="#random-forest-as-a-local-constant-regression"> <span class="header-section-number">17.1</span> Random forest as a local constant regression</a></li>
+  <li><a href="#grf" id="toc-grf" class="nav-link" data-scroll-target="#grf"> <span class="header-section-number">17.2</span> GRF</a></li>
+  <li><a href="#examples-of-grf" id="toc-examples-of-grf" class="nav-link" data-scroll-target="#examples-of-grf"> <span class="header-section-number">17.3</span> Examples of GRF</a>
   <ul class="collapse">
-  <li><a href="#random-forest-as-a-grf" id="toc-random-forest-as-a-grf" class="nav-link" data-scroll-target="#random-forest-as-a-grf"> <span class="header-section-number">15.3.1</span> Random forest as a GRF</a></li>
-  <li><a href="#causal-forest-as-a-grf" id="toc-causal-forest-as-a-grf" class="nav-link" data-scroll-target="#causal-forest-as-a-grf"> <span class="header-section-number">15.3.2</span> Causal forest as a GRF</a></li>
+  <li><a href="#random-forest-as-a-grf" id="toc-random-forest-as-a-grf" class="nav-link" data-scroll-target="#random-forest-as-a-grf"> <span class="header-section-number">17.3.1</span> Random forest as a GRF</a></li>
+  <li><a href="#causal-forest-as-a-grf" id="toc-causal-forest-as-a-grf" class="nav-link" data-scroll-target="#causal-forest-as-a-grf"> <span class="header-section-number">17.3.2</span> Causal forest as a GRF</a></li>
   </ul></li>
-  <li><a href="#sec-grf-honest" id="toc-sec-grf-honest" class="nav-link" data-scroll-target="#sec-grf-honest"> <span class="header-section-number">15.4</span> Honesty</a></li>
-  <li><a href="#understanding-grf-better-by-example" id="toc-understanding-grf-better-by-example" class="nav-link" data-scroll-target="#understanding-grf-better-by-example"> <span class="header-section-number">15.5</span> Understanding GRF better by example</a>
+  <li><a href="#sec-grf-honest" id="toc-sec-grf-honest" class="nav-link" data-scroll-target="#sec-grf-honest"> <span class="header-section-number">17.4</span> Honesty</a></li>
+  <li><a href="#understanding-grf-better-by-example-sec-understand-grf-example" id="toc-understanding-grf-better-by-example-sec-understand-grf-example" class="nav-link" data-scroll-target="#understanding-grf-better-by-example-sec-understand-grf-example"> <span class="header-section-number">17.5</span> Understanding GRF better by example (#sec-understand-grf-example)</a>
   <ul class="collapse">
-  <li><a href="#orthogonalization-of-y-and-t" id="toc-orthogonalization-of-y-and-t" class="nav-link" data-scroll-target="#orthogonalization-of-y-and-t"> <span class="header-section-number">15.5.1</span> Orthogonalization of <span class="math inline">\(Y\)</span> and <span class="math inline">\(T\)</span></a></li>
-  <li><a href="#sec-build-trees" id="toc-sec-build-trees" class="nav-link" data-scroll-target="#sec-build-trees"> <span class="header-section-number">15.5.2</span> Building trees</a></li>
-  <li><a href="#prediction" id="toc-prediction" class="nav-link" data-scroll-target="#prediction"> <span class="header-section-number">15.5.3</span> Prediction</a></li>
+  <li><a href="#orthogonalization-of-y-and-t" id="toc-orthogonalization-of-y-and-t" class="nav-link" data-scroll-target="#orthogonalization-of-y-and-t"> <span class="header-section-number">17.5.1</span> Orthogonalization of <span class="math inline">\(Y\)</span> and <span class="math inline">\(T\)</span></a></li>
+  <li><a href="#sec-build-trees" id="toc-sec-build-trees" class="nav-link" data-scroll-target="#sec-build-trees"> <span class="header-section-number">17.5.2</span> Building trees</a></li>
+  <li><a href="#prediction" id="toc-prediction" class="nav-link" data-scroll-target="#prediction"> <span class="header-section-number">17.5.3</span> Prediction</a></li>
   </ul></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
@@ -418,7 +448,7 @@ div.csl-indent {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title"><span id="sec-grf" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Generalized Random Forest</span></span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+<div class="quarto-title-block"><div><h1 class="title"><span id="sec-grf" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Generalized Random Forest</span></span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
 </div>
 
 
@@ -484,8 +514,8 @@ Packages to load for replication
 </div>
 </div>
 </div>
-<section id="random-forest-as-a-local-constant-regression" class="level2" data-number="15.1">
-<h2 data-number="15.1" class="anchored" data-anchor-id="random-forest-as-a-local-constant-regression"><span class="header-section-number">15.1</span> Random forest as a local constant regression</h2>
+<section id="random-forest-as-a-local-constant-regression" class="level2" data-number="17.1">
+<h2 data-number="17.1" class="anchored" data-anchor-id="random-forest-as-a-local-constant-regression"><span class="header-section-number">17.1</span> Random forest as a local constant regression</h2>
 <p>Suppose you are interested in estimating <span class="math inline">\(E[y|X]\)</span> using a dataset and you have trained a random forest model with <span class="math inline">\(T\)</span> tress. Now, let <span class="math inline">\(\eta_{i,t}(X)\)</span> takes <span class="math inline">\(1\)</span> if observation <span class="math inline">\(i\)</span> belongs to the same leaf as <span class="math inline">\(X\)</span> in tree <span class="math inline">\(t\)</span>, where <span class="math inline">\(X\)</span> is a vector of covariates (<span class="math inline">\(K\)</span> variables). Then, the RF’s predicted value of <span class="math inline">\(y\)</span> conditional on a particular value of <span class="math inline">\(X\)</span> (say, <span class="math inline">\(X_0\)</span>) can be written as follows:</p>
 <p><span class="math display">\[
 \begin{aligned}
@@ -510,17 +540,17 @@ Packages to load for replication
 \begin{aligned}
 Min_{\theta} \sum_{i=1}^N \alpha(X_i,X_0)\cdot[y_i -\theta]^2
 \end{aligned}
-\tag{15.1}\]</span></span></p>
+\tag{17.1}\]</span></span></p>
 <p>In this formulation of the problem, <span class="math inline">\(\alpha(X_i,X_0)\)</span> can be considered the weight given to observation <span class="math inline">\(i\)</span>.</p>
 <p>By definition,</p>
 <ul>
 <li><span class="math inline">\(0 \leq \alpha(X_i,X_0) \leq 1\)</span></li>
 <li><span class="math inline">\(\sum_{i=1}^N \alpha(X_i,X_0) = 1\)</span></li>
 </ul>
-<p>You may notice that <a href="#eq-ll-constant">Equation&nbsp;<span>15.1</span></a> is actually a special case of <span style="color:blue">local constant regression</span> where the individual weights are <span class="math inline">\(\alpha(X_i, X_0)\)</span>. Roughly speaking, <span class="math inline">\(\alpha(X_i, X_0)\)</span> measures how often observation <span class="math inline">\(i\)</span> share the same leaves as the evaluation point (<span class="math inline">\(X_0\)</span>) across <span class="math inline">\(T\)</span> trees. So, it measures how similar <span class="math inline">\(X_i\)</span> is to <span class="math inline">\(X_0\)</span> in the RF way, but not based on euclidean distance (which is subject to curse of dimensionality). So, RF is actually a local constant regression with a special way of distributing weights to the individual observations.</p>
+<p>You may notice that <a href="#eq-ll-constant">Equation&nbsp;<span>17.1</span></a> is actually a special case of <span style="color:blue">local constant regression</span> where the individual weights are <span class="math inline">\(\alpha(X_i, X_0)\)</span>. Roughly speaking, <span class="math inline">\(\alpha(X_i, X_0)\)</span> measures how often observation <span class="math inline">\(i\)</span> share the same leaves as the evaluation point (<span class="math inline">\(X_0\)</span>) across <span class="math inline">\(T\)</span> trees. So, it measures how similar <span class="math inline">\(X_i\)</span> is to <span class="math inline">\(X_0\)</span> in the RF way, but not based on euclidean distance (which is subject to curse of dimensionality). So, RF is actually a local constant regression with a special way of distributing weights to the individual observations.</p>
 </section>
-<section id="grf" class="level2 page-columns page-full" data-number="15.2">
-<h2 data-number="15.2" class="anchored" data-anchor-id="grf"><span class="header-section-number">15.2</span> GRF</h2>
+<section id="grf" class="level2 page-columns page-full" data-number="17.2">
+<h2 data-number="17.2" class="anchored" data-anchor-id="grf"><span class="header-section-number">17.2</span> GRF</h2>
 <p>Interpretation of RF as a local regression led <span class="citation" data-cites="athey2019generalized">Athey, Tibshirani, and Wager (<a href="#ref-athey2019generalized" role="doc-biblioref">2019</a>)</span> to conceive GRF, under which various statistics (e.g., conditional average treatment effect, conditional quantile) can be estimated under the unified framework.</p>
 <p>You can consider prediction of <span class="math inline">\(y\)</span> at <span class="math inline">\(X = X_0\)</span> using RF as a three-step process.</p>
 <div class="callout-note callout callout-style-default no-icon callout-captioned">
@@ -537,7 +567,7 @@ Predicting <span class="math inline">\(y\)</span> at <span class="math inline">\
 <li>Grow trees (find splitting rules for each tree)</li>
 <li>For <span class="math inline">\(X = X_0\)</span>, find the weights for individual observations based on the trees grown<br>
 </li>
-<li>Solve <a href="#eq-ll-constant">Equation&nbsp;<span>15.1</span></a> based on the weights</li>
+<li>Solve <a href="#eq-ll-constant">Equation&nbsp;<span>17.1</span></a> based on the weights</li>
 </ol>
 </div>
 </div>
@@ -556,7 +586,7 @@ Predicting <span class="math inline">\(y\)</span> at <span class="math inline">\
 \begin{aligned}
 \sum_{i=1}^n \alpha_i(x)\Psi_{\theta, \nu}(O_i) = 0
 \end{aligned}
-\tag{15.2}\]</span></span></p>
+\tag{17.2}\]</span></span></p>
 <p>As we saw earlier, GRF is RF when <span class="math inline">\(\Psi_{\theta, \nu}(O_i) = Y_i-\theta\)</span>. There is no nuisance statistics, <span class="math inline">\(\nu(x)\)</span>, in the RF case. By changing how the score function (<span class="math inline">\(\Psi_{\theta, \nu}(O_i)\)</span>) is defined, you can estimate <span style="color:blue"> a wide range of statistics using different approaches </span>under the <span style="color:blue"> same</span> estimation framework (this is why it is called <span style="color:red">generalized </span>random forest). Here are some of the statistics and estimation approaches that are under the GRF framework.</p>
 <ul>
 <li>Conditional expectation (<span class="math inline">\(E[Y|X]\)</span>)
@@ -596,7 +626,7 @@ Score function examples
 <div class="no-row-height column-margin column-container"><div class="">
 <p><span class="math inline">\(I\{\}\)</span> is an indicator function that takes 1 if the condition inside the curly brackets and 0 otherwise.</p>
 </div></div><hr>
-<p>So far, we have only talked about score functions so far, but not the weights. Do all the approaches listed above use the weights derived from the trees grown by the traditional RF in solving <a href="#eq-opt">Equation&nbsp;<span>15.2</span></a>? You could (you are free to use any weights), but that would not be wise. As mentioned earlier, GRF adjusts the way trees are grown (thus weights) as well according to the score function so that weights are optimized for your objective. This makes sense. Right <span style="color:blue"> neighbors </span>should be different based on what you are interesting in estimating.</p>
+<p>So far, we have only talked about score functions so far, but not the weights. Do all the approaches listed above use the weights derived from the trees grown by the traditional RF in solving <a href="#eq-opt">Equation&nbsp;<span>17.2</span></a>? You could (you are free to use any weights), but that would not be wise. As mentioned earlier, GRF adjusts the way trees are grown (thus weights) as well according to the score function so that weights are optimized for your objective. This makes sense. Right <span style="color:blue"> neighbors </span>should be different based on what you are interesting in estimating.</p>
 <p>Specifically, GRF uses the random forest <span style="color:blue">algorithm</span> to grow trees based on <span style="color:blue"> pseudo outcome (<span class="math inline">\(\rho_i\)</span>) </span> derived from the score function that is specific to the type of regression you are running, but not on <span class="math inline">\(Y\)</span>. Basically, you are using exactly the same algorithm as the traditional RF we saw in <a href="P01-random-forest.html#sec-rf"><span>Section&nbsp;6.2</span></a> except that <span class="math inline">\(Y\)</span> is swapped with the pseudo outcome.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
@@ -631,7 +661,7 @@ Example pseudo outcomes
 \]</span></p>
 </div>
 </div>
-<p>Note that <span class="math inline">\(\hat{\theta}_P\)</span> in the pseudo outcomes presented above is the solution to <a href="#eq-opt">Equation&nbsp;<span>15.2</span></a> with their respective score functions using the data in the parent node. For example, <span class="math inline">\(\hat{\theta}_P = \bar{Y}_p\)</span> for RF, which is the average value of <span class="math inline">\(Y\)</span> in the parent node. In quantile forest, <span class="math inline">\(\hat{\theta}_P\)</span> is the <span class="math inline">\(q\)</span>th quantile of the parent node if you are estimating the <span class="math inline">\(q\)</span>the conditional quantile.</p>
+<p>Note that <span class="math inline">\(\hat{\theta}_P\)</span> in the pseudo outcomes presented above is the solution to <a href="#eq-opt">Equation&nbsp;<span>17.2</span></a> with their respective score functions using the data in the parent node. For example, <span class="math inline">\(\hat{\theta}_P = \bar{Y}_p\)</span> for RF, which is the average value of <span class="math inline">\(Y\)</span> in the parent node. In quantile forest, <span class="math inline">\(\hat{\theta}_P\)</span> is the <span class="math inline">\(q\)</span>th quantile of the parent node if you are estimating the <span class="math inline">\(q\)</span>the conditional quantile.</p>
 <hr>
 <p>Finally, here are the conceptual steps of GRF:</p>
 <div class="callout-note callout callout-style-default no-icon callout-captioned">
@@ -660,7 +690,7 @@ GRF: conceptual steps
 \alpha(X_i, X_0) = \frac{1}{T}\sum_{t=1}^T\frac{\eta_{i,t}(X_0)}{\sum_{i=1}^N\eta_{i,t}(X_0)}
 \end{aligned}
 \]</span> , which measures how often observation <span class="math inline">\(i\)</span> belongs to the same node as the evaluation point <span class="math inline">\(X_0\)</span>.</p></li>
-<li><p>Solve <a href="#eq-opt">Equation&nbsp;<span>15.2</span></a> with the weights obtained above and the score function specified earlier</p></li>
+<li><p>Solve <a href="#eq-opt">Equation&nbsp;<span>17.2</span></a> with the weights obtained above and the score function specified earlier</p></li>
 </ol></li>
 </ul>
 </div>
@@ -670,16 +700,16 @@ GRF: conceptual steps
 <div class="no-row-height column-margin column-container"><div class="">
 <p>Orthogonal random forest (a forest-based heterogeneous treatment effect estimator like causal forest), on the other hand, build trees every time when predicting treatment effect <span class="math inline">\(\theta(X)\)</span> at particular values of <span class="math inline">\(X\)</span>, which is why orthogonal random forest takes a very long time especially when there are many evaluation points. Orthogonal random forest is covered in <a href="C03-cf-orf.html"><span>Chapter&nbsp;13</span></a>.</p>
 </div></div></section>
-<section id="examples-of-grf" class="level2" data-number="15.3">
-<h2 data-number="15.3" class="anchored" data-anchor-id="examples-of-grf"><span class="header-section-number">15.3</span> Examples of GRF</h2>
-<section id="random-forest-as-a-grf" class="level3" data-number="15.3.1">
-<h3 data-number="15.3.1" class="anchored" data-anchor-id="random-forest-as-a-grf"><span class="header-section-number">15.3.1</span> Random forest as a GRF</h3>
-<p>Here, we take a look at RF as a GRF as an illustration to understand the general GRF procedure better. When <span class="math inline">\(\Psi_{\theta, \nu}(Y_i)\)</span> is set to <span class="math inline">\(Y_i - \theta\)</span>, then GRF is equivalent to the traditional RF. By plugging <span class="math inline">\(Y_i - \theta\)</span> into <a href="#eq-opt">Equation&nbsp;<span>15.2</span></a>, the estimate of <span class="math inline">\(E[Y|X=X_0]\)</span>, <span class="math inline">\(\theta(X_0)\)</span>, is identified by solving</p>
+<section id="examples-of-grf" class="level2" data-number="17.3">
+<h2 data-number="17.3" class="anchored" data-anchor-id="examples-of-grf"><span class="header-section-number">17.3</span> Examples of GRF</h2>
+<section id="random-forest-as-a-grf" class="level3" data-number="17.3.1">
+<h3 data-number="17.3.1" class="anchored" data-anchor-id="random-forest-as-a-grf"><span class="header-section-number">17.3.1</span> Random forest as a GRF</h3>
+<p>Here, we take a look at RF as a GRF as an illustration to understand the general GRF procedure better. When <span class="math inline">\(\Psi_{\theta, \nu}(Y_i)\)</span> is set to <span class="math inline">\(Y_i - \theta\)</span>, then GRF is equivalent to the traditional RF. By plugging <span class="math inline">\(Y_i - \theta\)</span> into <a href="#eq-opt">Equation&nbsp;<span>17.2</span></a>, the estimate of <span class="math inline">\(E[Y|X=X_0]\)</span>, <span class="math inline">\(\theta(X_0)\)</span>, is identified by solving</p>
 <p><span id="eq-rf"><span class="math display">\[
 \begin{aligned}
 \sum_{i=1}^n \alpha_i(X_0)(Y_i - \theta) = 0
 \end{aligned}
-\tag{15.3}\]</span></span></p>
+\tag{17.3}\]</span></span></p>
 <p>The weights <span class="math inline">\(\alpha_i(X_i, X_0)\)</span> are defined as follows:</p>
 <p><span class="math display">\[
 \begin{aligned}
@@ -689,12 +719,12 @@ GRF: conceptual steps
 <p>, where <span class="math inline">\(\eta_{i,t}(X_0)\)</span> is 1 if observation <span class="math inline">\(i\)</span> which has feature values <span class="math inline">\(X_i\)</span> belongs to the same leaf as <span class="math inline">\(X_0\)</span>.</p>
 <hr>
 <p><span style="color:blue"> Step 1: Grow trees</span>:</p>
-<p>Now, let’s consider growing trees to find <span class="math inline">\(\alpha_i(X_0)\)</span> in <a href="#eq-rf">Equation&nbsp;<span>15.3</span></a>. For a given sample and set of variables randomly selected, GRF starts with solving the unweighted version of <a href="#eq-rf">Equation&nbsp;<span>15.3</span></a>.</p>
+<p>Now, let’s consider growing trees to find <span class="math inline">\(\alpha_i(X_0)\)</span> in <a href="#eq-rf">Equation&nbsp;<span>17.3</span></a>. For a given sample and set of variables randomly selected, GRF starts with solving the unweighted version of <a href="#eq-rf">Equation&nbsp;<span>17.3</span></a>.</p>
 <p><span id="eq-rf-initial"><span class="math display">\[
 \begin{aligned}
 \sum_{i=1}^n Y_i - \theta = 0
 \end{aligned}
-\tag{15.4}\]</span></span></p>
+\tag{17.4}\]</span></span></p>
 <p>The solution to this problem is simply the mean of <span class="math inline">\(Y\)</span>, which will be denoted as <span class="math inline">\(\bar{Y}_P\)</span>, where <span class="math inline">\(P\)</span> represents the parent node. Here, the parent node include all the data points as this is the first split.</p>
 <p>Then the pseudo outcome (<span class="math inline">\(\rho_i\)</span>) that is used in splitting is</p>
 <p><span class="math display">\[
@@ -707,12 +737,12 @@ GRF: conceptual steps
 \begin{aligned}
 \tilde{\Delta}(C_1, C_2) = \frac{(\sum_{i \in C_1} \rho_i)^2}{N_{C_1}} + \frac{(\sum_{i \in C_2} \rho_i)^2}{N_{C_2}}
 \end{aligned}
-\tag{15.5}\]</span></span></p>
-<p>where <span class="math inline">\(C_1\)</span> and <span class="math inline">\(C_2\)</span> represent two child node candidates for a given split. Since <span class="math inline">\(\bar{Y}_P\)</span> is just a constant, it is equivalent to splitting on <span class="math inline">\(Y_i\)</span>. So, this is exactly the same as how the traditional RF builds trees (see <a href="P01-random-forest.html#sec-split-sim"><span>Section&nbsp;6.1.2</span></a> for the rationale behind maximizing the criteria presented in <a href="#eq-criteria">Equation&nbsp;<span>15.5</span></a>).</p>
+\tag{17.5}\]</span></span></p>
+<p>where <span class="math inline">\(C_1\)</span> and <span class="math inline">\(C_2\)</span> represent two child node candidates for a given split. Since <span class="math inline">\(\bar{Y}_P\)</span> is just a constant, it is equivalent to splitting on <span class="math inline">\(Y_i\)</span>. So, this is exactly the same as how the traditional RF builds trees (see <a href="P01-random-forest.html#sec-split-sim"><span>Section&nbsp;6.1.2</span></a> for the rationale behind maximizing the criteria presented in <a href="#eq-criteria">Equation&nbsp;<span>17.5</span></a>).</p>
 <p>Once the best split is identified, each of the new child nodes is split following the exactly the same procedure. Splitting continues until one of the user-specified condition prevent a further splitting. Many trees from bootstrapped samples are created (just like the regular random forest) and they form a forest. This shows that the GRF with <span class="math inline">\(\Psi_{\theta, \nu}(Y_i, X_i) = Y_i - \theta\)</span> grows trees in the same manner as the traditional RF. RF in GRF is implemented by <code>regression_forest()</code>. But, note that running <code>ranger()</code> and <code>regression_forest()</code> will not result in the same forest because of the randomness involved in resampling and random selection of variables. Only their algorithms are equivalent</p>
 <hr>
 <p><span style="color:blue"> Step 2: Predict</span>:</p>
-<p>To predict <span class="math inline">\(E[Y|X=X_0]\)</span>, <a href="#eq-rf">Equation&nbsp;<span>15.3</span></a> is solved</p>
+<p>To predict <span class="math inline">\(E[Y|X=X_0]\)</span>, <a href="#eq-rf">Equation&nbsp;<span>17.3</span></a> is solved</p>
 <p><span class="math display">\[
 \begin{aligned}
 \sum_{i=1}^N \alpha_i(X_i, X_0)(Y_i-\theta) = 0
@@ -731,8 +761,8 @@ GRF: conceptual steps
 <p>So, <span class="math inline">\(\theta(X_0)\)</span> from GRF is the average of tree-specific predictions for <span class="math inline">\(X_0\)</span>, which is exactly how RF predicts <span class="math inline">\(E[Y|X=X_0]\)</span> as well.</p>
 <p>So, it has been shown that GRF with <span class="math inline">\(\Psi_{\theta, \nu}(Y_i)=Y_i - \theta\)</span> grows trees in the same manner as the traditional RF and also that GRF predicts <span class="math inline">\(E[Y|X=X_0]\)</span> in the same manner as the traditional RF. So, RF is a special case of GRF, where <span class="math inline">\(\Psi_{\theta, \nu}(Y_i)=Y_i - \theta\)</span>.</p>
 </section>
-<section id="causal-forest-as-a-grf" class="level3" data-number="15.3.2">
-<h3 data-number="15.3.2" class="anchored" data-anchor-id="causal-forest-as-a-grf"><span class="header-section-number">15.3.2</span> Causal forest as a GRF</h3>
+<section id="causal-forest-as-a-grf" class="level3" data-number="17.3.2">
+<h3 data-number="17.3.2" class="anchored" data-anchor-id="causal-forest-as-a-grf"><span class="header-section-number">17.3.2</span> Causal forest as a GRF</h3>
 <p>Causal forest (with a single treatment variable) as an R-learner is a GRF with</p>
 <p><span class="math display">\[
 \begin{aligned}
@@ -744,14 +774,14 @@ GRF: conceptual steps
 \begin{aligned}
 \Psi_{\theta} = (\tilde{Y}_i- \theta\tilde{T}_i)\tilde{T}_i
 \end{aligned}
-\tag{15.6}\]</span></span></p>
+\tag{17.6}\]</span></span></p>
 <p>So, the conditional treatment effect at <span class="math inline">\(X=X_0\)</span>, <span class="math inline">\(\theta(X_0)\)</span>, is estimated by solving the following problem:</p>
 <p><span id="eq-cf-solve"><span class="math display">\[
 \begin{aligned}
 \hat{\theta}(X_0) = \sum_{i=1}^N \alpha_i(x)(\tilde{Y_i} - \theta\cdot \tilde{T_i})\tilde{T_i} = 0
 \end{aligned}
-\tag{15.7}\]</span></span></p>
-<p>where <span class="math inline">\(\alpha_i(x)\)</span> is the weight obtained from the trees built using random forest on the pseudo outcomes that are derived from the score function (<a href="#eq-cf-score">Equation&nbsp;<span>15.6</span></a>).</p>
+\tag{17.7}\]</span></span></p>
+<p>where <span class="math inline">\(\alpha_i(x)\)</span> is the weight obtained from the trees built using random forest on the pseudo outcomes that are derived from the score function (<a href="#eq-cf-score">Equation&nbsp;<span>17.6</span></a>).</p>
 <p>For a given parent node <span class="math inline">\(p\)</span>, the pseudo outcomes are defined as</p>
 <p><span class="math display">\[
 \begin{aligned}
@@ -764,13 +794,13 @@ GRF: conceptual steps
 \sum_{i=1}^N \tilde{T_i}(\tilde{Y_i}-\theta \tilde{T_i}) = 0
 \end{aligned}
 \]</span></p>
-<p>, which is the unweighted version of <a href="#eq-cf-solve">Equation&nbsp;<span>15.7</span></a>.</p>
+<p>, which is the unweighted version of <a href="#eq-cf-solve">Equation&nbsp;<span>17.7</span></a>.</p>
 <p>The standard CART splitting algorithm is applied on the pseudo outcomes to build trees.</p>
 </section>
 </section>
-<section id="sec-grf-honest" class="level2 page-columns page-full" data-number="15.4">
-<h2 data-number="15.4" class="anchored" data-anchor-id="sec-grf-honest"><span class="header-section-number">15.4</span> Honesty</h2>
-<p>GRF applies <span style="color:blue"> honesty </span>when it trains forests. Specifically, when building a tree, the bootstrapped sample is first split into two groups: subsamples for <span style="color:blue"> splitting</span> and <span style="color:blue">prediction</span>. Then, the a tree is trained on the subsample for splitting and then generate the splitting rules. However, when predicting (say <span class="math inline">\(E[Y|X]\)</span> at <span class="math inline">\(X=x\)</span>), the value of <span class="math inline">\(Y\)</span> from the subsamples for splitting are not used. Rather, only the splitting rules are taken from the trained tree and then they are applied to the subsamples for prediction (<a href="#fig-honest">Figure&nbsp;<span>15.1</span></a> illustrates this process).</p>
+<section id="sec-grf-honest" class="level2 page-columns page-full" data-number="17.4">
+<h2 data-number="17.4" class="anchored" data-anchor-id="sec-grf-honest"><span class="header-section-number">17.4</span> Honesty</h2>
+<p>GRF applies <span style="color:blue"> honesty </span>when it trains forests. Specifically, when building a tree, the bootstrapped sample is first split into two groups: subsamples for <span style="color:blue"> splitting</span> and <span style="color:blue">prediction</span>. Then, the a tree is trained on the subsample for splitting and then generate the splitting rules. However, when predicting (say <span class="math inline">\(E[Y|X]\)</span> at <span class="math inline">\(X=x\)</span>), the value of <span class="math inline">\(Y\)</span> from the subsamples for splitting are not used. Rather, only the splitting rules are taken from the trained tree and then they are applied to the subsamples for prediction (<a href="#fig-honest">Figure&nbsp;<span>17.1</span></a> illustrates this process).</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p><strong>Packages to load for replication</strong></p>
@@ -810,9 +840,9 @@ GRF: conceptual steps
 </details>
 <div id="fig-honest" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<div id="htmlwidget-dafbdea814a824cb36be" style="width:100%;height:325px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-dafbdea814a824cb36be">{"x":{"diagram":"\ndigraph {\n  graph [ranksep = 0.2, fontsize = 4]\n  node [shape = box]\n    SS [label = \"Subsamples for splitting\"]\n    SP [label = \"Subsamples for predicting\"]\n    BD [label = \"Bootstrapped Data\"]\n    TT [label = \"Trained tree\"]\n    PV [label = \"Predicted value\"]\n  edge [minlen = 2]\n    BD->SP\n    BD->SS\n    SS->TT\n    SP->PV\n    TT->SP [label=\"apply the splitting rules\"]\n  { rank = same; SS; SP}\n  { rank = same; TT}\n  { rank = same; PV}\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 15.1: Illustration of an honest tree</figcaption><p></p>
+<div id="htmlwidget-27461db31607a9f4906d" style="width:100%;height:325px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-27461db31607a9f4906d">{"x":{"diagram":"\ndigraph {\n  graph [ranksep = 0.2, fontsize = 4]\n  node [shape = box]\n    SS [label = \"Subsamples for splitting\"]\n    SP [label = \"Subsamples for predicting\"]\n    BD [label = \"Bootstrapped Data\"]\n    TT [label = \"Trained tree\"]\n    PV [label = \"Predicted value\"]\n  edge [minlen = 2]\n    BD->SP\n    BD->SS\n    SS->TT\n    SP->PV\n    TT->SP [label=\"apply the splitting rules\"]\n  { rank = same; SS; SP}\n  { rank = same; TT}\n  { rank = same; PV}\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 17.1: Illustration of an honest tree</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -854,12 +884,12 @@ GRF: conceptual steps
 <div id="fig-tree-sub" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="E02-grf_files/figure-html/fig-tree-sub-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 15.2: A simple regression tree using the subsamples for splitting</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 17.2: A simple regression tree using the subsamples for splitting</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-<p>So the splitting rule is <code>hits &lt; 356</code> as shown in <a href="#fig-tree-sub">Figure&nbsp;<span>15.2</span></a>. At the terminal nodes, you see the prediction of <code>lsalary</code>: <span class="math inline">\(12.47\)</span> for the left and <span class="math inline">\(14.23\)</span> for the right. These predictions are NOT honest. They are obtained from the observed values of <code>lsalary</code> within the node using the splitting data (the data the tree is trained for). Instead of using these prediction values, an honest prediction applied the splitting rules (<code>hits &lt; 356</code>) to the data reserved for prediction.</p>
+<p>So the splitting rule is <code>hits &lt; 356</code> as shown in <a href="#fig-tree-sub">Figure&nbsp;<span>17.2</span></a>. At the terminal nodes, you see the prediction of <code>lsalary</code>: <span class="math inline">\(12.47\)</span> for the left and <span class="math inline">\(14.23\)</span> for the right. These predictions are NOT honest. They are obtained from the observed values of <code>lsalary</code> within the node using the splitting data (the data the tree is trained for). Instead of using these prediction values, an honest prediction applied the splitting rules (<code>hits &lt; 356</code>) to the data reserved for prediction.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>honest_pred <span class="ot">&lt;-</span> eval_data[, <span class="fu">mean</span>(lsalary), <span class="at">by =</span> hits <span class="sc">&lt;</span> <span class="dv">356</span>]</span>
@@ -871,10 +901,10 @@ GRF: conceptual steps
 </div>
 </div>
 <p>So, instead of <span class="math inline">\(12.47\)</span> and <span class="math inline">\(14.23\)</span>, the predicted values from the honest tree are <span class="math inline">\(12.49\)</span> and <span class="math inline">\(14.19\)</span> for the left and right nodes, respectively. Trees are built in this manner many times to form a forest.</p>
-<p>More generally, in GRF, honesty is applied by using the evaluation data to solve <a href="#eq-opt">Equation&nbsp;<span>15.2</span></a> based on the weight <span class="math inline">\(\alpha_i(x)\)</span> derived from the trained forest using the splitting data. Honesty is required for the GRF estimator to be consistent and asymptotically normal <span class="citation" data-cites="athey2019generalized">(<a href="#ref-athey2019generalized" role="doc-biblioref">Athey, Tibshirani, and Wager 2019</a>)</span>. However, the application of honesty can do more damage than help when the sample size is small.</p>
+<p>More generally, in GRF, honesty is applied by using the evaluation data to solve <a href="#eq-opt">Equation&nbsp;<span>17.2</span></a> based on the weight <span class="math inline">\(\alpha_i(x)\)</span> derived from the trained forest using the splitting data. Honesty is required for the GRF estimator to be consistent and asymptotically normal <span class="citation" data-cites="athey2019generalized">(<a href="#ref-athey2019generalized" role="doc-biblioref">Athey, Tibshirani, and Wager 2019</a>)</span>. However, the application of honesty can do more damage than help when the sample size is small.</p>
 </section>
-<section id="understanding-grf-better-by-example" class="level2 page-columns page-full" data-number="15.5">
-<h2 data-number="15.5" class="anchored" data-anchor-id="understanding-grf-better-by-example"><span class="header-section-number">15.5</span> Understanding GRF better by example</h2>
+<section id="understanding-grf-better-by-example-sec-understand-grf-example" class="level2 page-columns page-full" data-number="17.5">
+<h2 data-number="17.5" class="anchored" data-anchor-id="understanding-grf-better-by-example-sec-understand-grf-example"><span class="header-section-number">17.5</span> Understanding GRF better by example (#sec-understand-grf-example)</h2>
 <p>This section goes through CF model training and CATE prediction step by step with codes to enhance our understanding of how GRF works. In the process, we also learn the role of many of the hyper-parameters. They include those that are common across all the GRF methods and those that are specific to CF.</p>
 <p>While the process explained here is for CF, the vast majority of the process is exactly the same for other models under GRF. Here are some differences:</p>
 <ul>
@@ -962,8 +992,8 @@ g(X) &amp; = 10 \cdot [log(x_2+1) + 2\cdot x_3\times x_2]
 1000: 0.23674030 0.25005706 0.05512990 0.24352242 0.7227397</code></pre>
 </div>
 </div>
-<section id="orthogonalization-of-y-and-t" class="level3" data-number="15.5.1">
-<h3 data-number="15.5.1" class="anchored" data-anchor-id="orthogonalization-of-y-and-t"><span class="header-section-number">15.5.1</span> Orthogonalization of <span class="math inline">\(Y\)</span> and <span class="math inline">\(T\)</span></h3>
+<section id="orthogonalization-of-y-and-t" class="level3" data-number="17.5.1">
+<h3 data-number="17.5.1" class="anchored" data-anchor-id="orthogonalization-of-y-and-t"><span class="header-section-number">17.5.1</span> Orthogonalization of <span class="math inline">\(Y\)</span> and <span class="math inline">\(T\)</span></h3>
 <p>Causal forest (and instrumental forest) first orthogonalizes <span class="math inline">\(Y\)</span> and <span class="math inline">\(T\)</span>. This is not the case for the other GRF methods. By default, <code>causal_forest()</code> uses random forest to estimate <span class="math inline">\(E[Y|X]\)</span> and <span class="math inline">\(E[T|X]\)</span>, and then use out-of-bag predictions. Since the treatment assignment is randomized, we could use <span class="math inline">\(0.5\)</span> for as the estimate for <span class="math inline">\(E[T|X]\)</span> for all the observations. But, we will estimate both in this example.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#--------------------------</span></span>
@@ -1017,8 +1047,8 @@ g(X) &amp; = 10 \cdot [log(x_2+1) + 2\cdot x_3\times x_2]
 </div>
 </div>
 </section>
-<section id="sec-build-trees" class="level3" data-number="15.5.2">
-<h3 data-number="15.5.2" class="anchored" data-anchor-id="sec-build-trees"><span class="header-section-number">15.5.2</span> Building trees</h3>
+<section id="sec-build-trees" class="level3" data-number="17.5.2">
+<h3 data-number="17.5.2" class="anchored" data-anchor-id="sec-build-trees"><span class="header-section-number">17.5.2</span> Building trees</h3>
 <hr>
 <p><span style="color:blue"> Preparing Data</span>:</p>
 <p>When building a tree, GRF use sampling without replacement instead of sampling with replacement as a default for RF implemented by <code>ranger()</code>. <code>sample.fraction</code> parameter determines the fraction of the entire sample drawn for each tree. Let’s use the default value, which is <span class="math inline">\(0.5\)</span>.</p>
@@ -1140,12 +1170,12 @@ g(X) &amp; = 10 \cdot [log(x_2+1) + 2\cdot x_3\times x_2]
 <hr>
 <p><span style="color:blue"> Determining splitting rules</span>:</p>
 <p>Now let’s find the splitting rules using <code>data_J1</code> (Remember, <code>data_J2</code> is not used).</p>
-<p>We are at the root node to which all the observations belong. Let’s first calculate the pseudo outcome. Finding pseudo outcomes starts from solving the unweighted version of <a href="#eq-opt">Equation&nbsp;<span>15.2</span></a> using the samples in the parent node (root node here) in general. For CF, it is</p>
+<p>We are at the root node to which all the observations belong. Let’s first calculate the pseudo outcome. Finding pseudo outcomes starts from solving the unweighted version of <a href="#eq-opt">Equation&nbsp;<span>17.2</span></a> using the samples in the parent node (root node here) in general. For CF, it is</p>
 <p><span id="eq-theta-p"><span class="math display">\[
 \begin{aligned}
 \sum_{i=1}^n (\tilde{Y}_i - \theta\tilde{T}_i)\cdot \tilde{T}_i = 0
 \end{aligned}
-\tag{15.8}\]</span></span></p>
+\tag{17.8}\]</span></span></p>
 <p>because the score function for CF is <span class="math inline">\((\tilde{Y}_i - \theta\tilde{T}_i)\cdot \tilde{T}_i\)</span>. So,</p>
 <p><span class="math display">\[
 \begin{aligned}
@@ -1391,7 +1421,7 @@ g(X) &amp; = 10 \cdot [log(x_2+1) + 2\cdot x_3\times x_2]
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>depth_2_node_1 <span class="ot">&lt;-</span> data_J1[x1 <span class="sc">&lt;</span> best_split[, thr], ]</span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>depth_2_node_2 <span class="ot">&lt;-</span> data_J1[x1 <span class="sc">&gt;=</span> best_split[, thr], ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Let’s consider splitting the second node, <code>depth_2_node_1</code>. We basically follow exactly the same process the we just did. First, find <span class="math inline">\(\hat{\theta}_P\)</span> for this (parent) node using <a href="#eq-theta-p">Equation&nbsp;<span>15.8</span></a> and define the pseudo outcomes.</p>
+<p>Let’s consider splitting the second node, <code>depth_2_node_1</code>. We basically follow exactly the same process the we just did. First, find <span class="math inline">\(\hat{\theta}_P\)</span> for this (parent) node using <a href="#eq-theta-p">Equation&nbsp;<span>17.8</span></a> and define the pseudo outcomes.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>theta_p <span class="ot">&lt;-</span> depth_2_node_1[, <span class="fu">sum</span>(y_tilde <span class="sc">*</span> t_tilde)<span class="sc">/</span><span class="fu">sum</span>(t_tilde <span class="sc">*</span> t_tilde)]</span>
@@ -1420,7 +1450,7 @@ g(X) &amp; = 10 \cdot [log(x_2+1) + 2\cdot x_3\times x_2]
 </div>
 <p>We keep splitting nodes until no splits is possible any more based on the value of <code>min.node.size</code>, <code>alpha</code>, and <code>imbalance.penalty</code>.</p>
 <hr>
-<p>To see the role of <code>honesty.prune.leaves</code>, let’s suppose we stopped splitting after the first split based on <code>x</code> with threshold of 1.9309. So, we just two terminal nodes. As stated in <a href="#sec-grf-honest"><span>Section&nbsp;15.4</span></a>, when we do prediction, <code>data_J1</code> (which is used for determining the splitting rule) is not used. Rather, <code>data_J2</code> (the data that was set aside) is used. When <code>honesty.prune.leaves = TRUE</code> (default), the tree is pruned so that no leaves are empty. Yes, we made sure that we have certain number of observations in each node with <code>min.node.size</code>, however, that is only for <code>data_J1</code>, not <code>data_J2</code>.</p>
+<p>To see the role of <code>honesty.prune.leaves</code>, let’s suppose we stopped splitting after the first split based on <code>x</code> with threshold of 1.9309. So, we just two terminal nodes. As stated in <a href="#sec-grf-honest"><span>Section&nbsp;17.4</span></a>, when we do prediction, <code>data_J1</code> (which is used for determining the splitting rule) is not used. Rather, <code>data_J2</code> (the data that was set aside) is used. When <code>honesty.prune.leaves = TRUE</code> (default), the tree is pruned so that no leaves are empty. Yes, we made sure that we have certain number of observations in each node with <code>min.node.size</code>, however, that is only for <code>data_J1</code>, not <code>data_J2</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>data_J2[, .N, by <span class="ot">=</span> x1 <span class="sc">&lt;</span> best_split[, thr]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1432,8 +1462,8 @@ g(X) &amp; = 10 \cdot [log(x_2+1) + 2\cdot x_3\times x_2]
 <p>Okay, so, each child has at least one observation. So, we are not going to prune the tree. If either of the child nodes was empty, then we would have removed the leaves and had the root node as the tree.</p>
 <p>As you can see, while <code>data_J1</code> plays a central role in the tree building process, the other half, <code>data_J2</code>, plays a very small role. However, <code>data_J2</code> plays the central role in prediction, which will be seen in the next section.</p>
 </section>
-<section id="prediction" class="level3 page-columns page-full" data-number="15.5.3">
-<h3 data-number="15.5.3" class="anchored" data-anchor-id="prediction"><span class="header-section-number">15.5.3</span> Prediction</h3>
+<section id="prediction" class="level3 page-columns page-full" data-number="17.5.3">
+<h3 data-number="17.5.3" class="anchored" data-anchor-id="prediction"><span class="header-section-number">17.5.3</span> Prediction</h3>
 <p>Suppose you have built <span class="math inline">\(T\)</span> trees already. In general for GRF, statistics of interest, <span class="math inline">\(\theta(X)\)</span>, at <span class="math inline">\(X = X_0\)</span> is found by solving the following equation:</p>
 <p><span class="math display">\[
 \begin{aligned}
@@ -1445,7 +1475,7 @@ g(X) &amp; = 10 \cdot [log(x_2+1) + 2\cdot x_3\times x_2]
 \begin{aligned}
 \alpha_i(X_i, X_0) = \frac{1}{T}\sum_{t=1}^T\frac{\eta_{i,t}(X_i, X_0)}{\sum_{i=1}^N\eta_{i,t}(X_i, X_0)}
 \end{aligned}
-\tag{15.9}\]</span></span></p>
+\tag{17.9}\]</span></span></p>
 <p>So, the weight given to observation <span class="math inline">\(i\)</span> is higher if observation <span class="math inline">\(i\)</span> belongs to the same leaf as the evaluation point <span class="math inline">\(X_0\)</span> in more trees.</p>
 <p>For CF, since the score function is defined as <span class="math inline">\(\psi_{\theta,\nu}(O_i) = \tilde{Y}_i - \theta\tilde{T}_i)\cdot \tilde{T}_i\)</span>, the equation can be written as</p>
 <p><span class="math display">\[
@@ -1475,17 +1505,17 @@ g(X) &amp; = 10 \cdot [log(x_2+1) + 2\cdot x_3\times x_2]
 <span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">min.node.size =</span> <span class="dv">50</span></span>
 <span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>After training a causal forest model, we have trees like the one shown in <a href="#fig-cf-tree">Figure&nbsp;<span>15.3</span></a>, which is the first of the <span class="math inline">\(2000\)</span> trees.</p>
+<p>After training a causal forest model, we have trees like the one shown in <a href="#fig-cf-tree">Figure&nbsp;<span>17.3</span></a>, which is the first of the <span class="math inline">\(2000\)</span> trees.</p>
 <div class="cell">
 <div id="fig-cf-tree" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<div id="htmlwidget-d4413593c73b990fa903" style="width:100%;height:371px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-d4413593c73b990fa903">{"x":{"diagram":"digraph nodes { \n node [shape=box] ;\n0 [label=\" x1 <= 1.44 \"] ;\n0 -> 1 [labeldistance=2.5, labelangle=45, headlabel=\"True\", arrowhead=normal];\n0 -> 2 [labeldistance=2.5, labelangle=-45, headlabel=\"False\", arrowhead=normal];\n1  [shape=box,style=filled,color=\".7 .3 1.0\" , label=\"size =  121 \n avg_Y = 38.6\navg_W = 0.55 \"];\n2  [shape=box,style=filled,color=\".7 .3 1.0\" , label=\"size =  129 \n avg_Y = 42.1\navg_W = 0.5 \"];\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 15.3: Example trees built in causal forest estimation</figcaption><p></p>
+<div id="htmlwidget-47c53ae507b61f418c5a" style="width:100%;height:371px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-47c53ae507b61f418c5a">{"x":{"diagram":"digraph nodes { \n node [shape=box] ;\n0 [label=\" x1 <= 1.44 \"] ;\n0 -> 1 [labeldistance=2.5, labelangle=45, headlabel=\"True\", arrowhead=normal];\n0 -> 2 [labeldistance=2.5, labelangle=-45, headlabel=\"False\", arrowhead=normal];\n1  [shape=box,style=filled,color=\".7 .3 1.0\" , label=\"size =  121 \n avg_Y = 38.6\navg_W = 0.55 \"];\n2  [shape=box,style=filled,color=\".7 .3 1.0\" , label=\"size =  129 \n avg_Y = 42.1\navg_W = 0.5 \"];\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 17.3: Example trees built in causal forest estimation</figcaption><p></p>
 </figure>
 </div>
 </div>
-<p>You probably noticed that the total number of samples in the leaves is only <span class="math inline">\(250\)</span> instead of <span class="math inline">\(1000\)</span>, which is the total number of observations in <code>data</code>. When causal forest was trained on this dataset, only half of the entire sample are randomly selected for building each tree (due to the default setting of <code>sample.fraction = 0.5</code>). The halved sample is further split into two groups, each containing <span class="math inline">\(250\)</span> observations (due to the default setting of <code>honesty = TRUE</code> and <code>honest.fraction = 0.5</code>). Let’s call them <span class="math inline">\(J_1\)</span> and <span class="math inline">\(J_2\)</span>. Then, <span class="math inline">\(J_1\)</span> is used to train a tree to find the splitting rules (e.g., <span class="math inline">\(x_1 \leq 1.44\)</span> for the first tree). See <a href="#sec-build-trees"><span>Section&nbsp;15.5.2</span></a> for how only a subset of the drawn samples was used to determine the splitting rules. Once the splitting rules are determined (tree building process is complete), then <span class="math inline">\(J_1\)</span> is “vacated” (or thrown out) from the tree. This will become clearer when we talk about finding individual weights.</p>
+<p>You probably noticed that the total number of samples in the leaves is only <span class="math inline">\(250\)</span> instead of <span class="math inline">\(1000\)</span>, which is the total number of observations in <code>data</code>. When causal forest was trained on this dataset, only half of the entire sample are randomly selected for building each tree (due to the default setting of <code>sample.fraction = 0.5</code>). The halved sample is further split into two groups, each containing <span class="math inline">\(250\)</span> observations (due to the default setting of <code>honesty = TRUE</code> and <code>honest.fraction = 0.5</code>). Let’s call them <span class="math inline">\(J_1\)</span> and <span class="math inline">\(J_2\)</span>. Then, <span class="math inline">\(J_1\)</span> is used to train a tree to find the splitting rules (e.g., <span class="math inline">\(x_1 \leq 1.44\)</span> for the first tree). See <a href="#sec-build-trees"><span>Section&nbsp;17.5.2</span></a> for how only a subset of the drawn samples was used to determine the splitting rules. Once the splitting rules are determined (tree building process is complete), then <span class="math inline">\(J_1\)</span> is “vacated” (or thrown out) from the tree. This will become clearer when we talk about finding individual weights.</p>
 <p>Let’s take a look at a tree to see what happened. We can use <code>get_tree()</code> to access individual trees from <code>cf_trained</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== get the first tree ===#</span></span>
@@ -1589,7 +1619,7 @@ avg_Y avg_W
 [127] 770 757 976</code></pre>
 </div>
 </div>
-<p>It is important to keep in mind that these observations with these row indices belong to <span class="math inline">\(J_2\)</span>. These observations were <span style="color:red">NOT</span> used in determining the splitting rule of <span class="math inline">\(x_1 \leq 1.44\)</span>. They were populating the terminal nodes by simply following the splitting rule, which is determined using the data in <span class="math inline">\(J_1\)</span> following the process described in <a href="#sec-build-trees"><span>Section&nbsp;15.5.2</span></a>. The difference in <code>a_tree$drawn_samples</code> and the combination of <code>nodes[[2]]$samples</code> and <code>nodes[[3]]$samples</code> is <span class="math inline">\(J_1\)</span>.</p>
+<p>It is important to keep in mind that these observations with these row indices belong to <span class="math inline">\(J_2\)</span>. These observations were <span style="color:red">NOT</span> used in determining the splitting rule of <span class="math inline">\(x_1 \leq 1.44\)</span>. They were populating the terminal nodes by simply following the splitting rule, which is determined using the data in <span class="math inline">\(J_1\)</span> following the process described in <a href="#sec-build-trees"><span>Section&nbsp;17.5.2</span></a>. The difference in <code>a_tree$drawn_samples</code> and the combination of <code>nodes[[2]]$samples</code> and <code>nodes[[3]]$samples</code> is <span class="math inline">\(J_1\)</span>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>J2_rows <span class="ot">&lt;-</span> <span class="fu">c</span>(nodes[[<span class="dv">2</span>]]<span class="sc">$</span>samples, nodes[[<span class="dv">3</span>]]<span class="sc">$</span>samples)</span>
 <span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>J1_J2_rows <span class="ot">&lt;-</span> a_tree<span class="sc">$</span>drawn_samples</span>
@@ -1677,7 +1707,7 @@ avg_Y avg_W
 1000: -0.3917276 0.000000000</code></pre>
 </div>
 </div>
-<p>We repeat this for all the trees and use <a href="#eq-weight-cf">Equation&nbsp;<span>15.9</span></a> to calculate the weights for the individual observations. The following function gets <span class="math inline">\(\eta_{i,t}(X_i, X_0)\)</span> for a given tree for all the observations.</p>
+<p>We repeat this for all the trees and use <a href="#eq-weight-cf">Equation&nbsp;<span>17.9</span></a> to calculate the weights for the individual observations. The following function gets <span class="math inline">\(\eta_{i,t}(X_i, X_0)\)</span> for a given tree for all the observations.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>get_eta <span class="ot">&lt;-</span> <span class="cf">function</span>(t, X_0) {</span>
 <span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -1929,12 +1959,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="./E01-spatial-cv.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Spatial Cross-validation</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./PROG-00-programming.html" class="pagination-link">
-        <span class="nav-page-text">Programming Guide</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./PROG-R-01-mlr3.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Machine Learning with <code>mlr3</code> in R</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
@@ -2419,7 +2449,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb80-499"><a href="#cb80-499" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb80-500"><a href="#cb80-500" aria-hidden="true" tabindex="-1"></a>More generally, in GRF, honesty is applied by using the evaluation data to solve @eq-opt based on the weight $\alpha_i(x)$ derived from the trained forest using the splitting data. Honesty is required for the GRF estimator to be consistent and asymptotically normal <span class="co">[</span><span class="ot">@athey2019generalized</span><span class="co">]</span>. However, the application of honesty can do more damage than help when the sample size is small.</span>
 <span id="cb80-501"><a href="#cb80-501" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb80-502"><a href="#cb80-502" aria-hidden="true" tabindex="-1"></a><span class="fu">## Understanding GRF better by example</span></span>
+<span id="cb80-502"><a href="#cb80-502" aria-hidden="true" tabindex="-1"></a><span class="fu">## Understanding GRF better by example (#sec-understand-grf-example)</span></span>
 <span id="cb80-503"><a href="#cb80-503" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb80-504"><a href="#cb80-504" aria-hidden="true" tabindex="-1"></a>This section goes through CF model training and CATE prediction step by step with codes to enhance our understanding of how GRF works. In the process, we also learn the role of many of the hyper-parameters. They include those that are common across all the GRF methods and those that are specific to CF. </span>
 <span id="cb80-505"><a href="#cb80-505" aria-hidden="true" tabindex="-1"></a></span>

@@ -1,21 +1,54 @@
 # S-, X-, T-, and R-learner {#sec-het-dml}
 
-In this section, we look at the S-, X-, T-, and R-learner, which are method that estimate heterogeneous treatment effects when the treatment is binary. While X-learner and T-learner cannot be extended to continuous treatment cases, S-learner and R-learner can be. Mathematical notations used in this chapter closely follow those of [@kunzel_metalearners_2019] and [@nie_quasi-oracle_2021].
+In this section, we look at the S-, X-, T-, and R-learner, which are method that estimate heterogeneous treatment effects when the treatment is binary. While X-learner and T-learner cannot be extended to continuous treatment cases, S-learner and R-learner can be. 
 
 
 :::{.callout-important}
 
 ## What you will learn
++ How S-, X-, T-, and R-learner work
++ Performance of the learners under several data generating processes (DGP)
++ Causal model selection using R-score
+
 :::
 
 :::{.callout-tip}
 
 ## Key points
 
-+ R-learner is the same as DML approaches by @Chernozhukov2018 except that it estimates CATE eat the second stag instead of ATE.
-+ In many practical cases, R-learner performs better than S-, X-, and T-learners. 
-+ S- and T-learners are especially undesirable due to its tendency to underestimate CATE
++ R-learner is the same as DML approaches by @Chernozhukov2018 except that it estimates CATE eat the second stage instead of ATE.
++ R-learner seems to perform better than S-, X-, and T-learners in many practical cases 
 
+:::
+
+:::{.callout-note}
+
+## Packages to load for replication
+
+```{r}
+#| include: false
+
+library(data.table)
+library(tidyverse)
+library(ranger)
+library(rlearner)
+library(mgcv)
+library(rsample)
+library(xgboost)
+library(rlearner)
+```
+
+```{r}
+#| eval: false
+library(data.table)
+library(tidyverse)
+library(ranger)
+library(rlearner)
+library(mgcv)
+library(rsample)
+library(xgboost)
+library(rlearner)
+```
 :::
 
 ## Motivation
@@ -50,50 +83,159 @@ The model of interest in general form is as follows:
 
 $$
 \begin{aligned}
-Y_i & = \theta(X_i)\cdot T_i + g(X_i, W_i) + \varepsilon_i \\
-T_i & = f(X_i, W_i) + \eta_i 
+Y_i & = \theta(X_i)\cdot T_i + g(X_i) + \varepsilon_i \\
+T_i & = f(X_i) + \eta_i 
 \end{aligned}
 $$ {#eq-model-framework}
 
 + $Y$: dependent variable
 + $T$: treatment variable
-+ $X$: collection of variables that affect Y indirectly through the treatment ($\theta(X)\cdot T$) and directly ($g(X, W)$) independent of the treatment
-+ $W$: collection of variables that affect directly ($g(X, W)$) independent of the treatment, but not through the treatment
++ $X$: features
 
 Here are the assumptions:
 
-+ $E[\varepsilon|X, W] = 0$
-+ $E[\eta|X, W] = 0$
-+ $E[\eta\cdot\varepsilon|X, W] = 0$
++ $E[\varepsilon|T, X] = 0$
++ $E[\eta|X] = 0$
++ $E[\eta\cdot\varepsilon|T, X] = 0$
 
 For the notational convenicence, let $\mu_1(X)$ and $\mu_0(X)$ denote the expected value of the potential conditional outcomes:
 
 $$
 \begin{align}
-\mu_1(X) & = E[Y|W=1, X] = g(X, W)\\ 
-\mu_0(X) & = E[Y|W=0, X] =  \theta(X) + g(X, W)
+\mu_1(X) & = E[Y|T=1, X] = \theta(X) + g(X)\\ 
+\mu_0(X) & = E[Y|T=0, X] = g(X)
 \end{align}
 $$
 
 
-## S-, T-, and X-Learner
+## S-, T-, and X-Learner {#sec-stx}
+
+In this section, S-, T-, and X-Learner are introduced, accompanied by a simple R code demonstrations. For demonstrations, a synthetic dataset that follows the DGP below is used.
+
+:::{.callout-note}
+
+## DGP 1
+
+$$
+\begin{aligned}
+Y_i & = (x_{i,1} + x_{i,2}^2)\cdot T_i + \sqrt{x_{i,3}} + \mu_i \\
+T_i|X_i & = Bernouli((1+x_{i,1})/2) \\
+\mu_i|X_i & = N(0,1)
+\end{aligned}
+$$
+:::
+
+
+Here is the dataset according to the DGP.
+
+```{r}
+set.seed(58734)
+
+N <- 1000
+
+(
+data <-
+  data.table(
+    x1 = runif(N),
+    x2 = runif(N),
+    x3 = runif(N),
+    mu = rnorm(N)
+  ) %>% 
+  .[, T := runif(N) < ((0.5+x1)/2)] %>% 
+  .[, Y := (x1 + x2^2) * T + sqrt(x3) + mu] %>% 
+  .[, id := 1:.N]
+) 
+```
 
 ### S-learner
 
 S-learner estimates CATE by taking the following steps:
 
-1. Regress $Y$ on $W$ and $X$ to estimate $E[Y|W,X]$ using any appropriate ML regression methods and call it $\hat{\mu}(W,X)$.
-2. Estimate $\hat{\theta}(X)$ as $\hat{\mu}(W=1,X)-\hat{\mu}(W=0,X)$
+1. Regress $Y$ on $T$ and $X$ to estimate $E[Y|T, X]$ using any appropriate ML regression methods and call it $\hat{\mu}(T,X)$.
+2. Estimate $\hat{\theta}(X)$ as $\hat{\mu}(T=1,X)-\hat{\mu}(T=0,X)$
 
-In this approach, no special treatment is given to $W$. It is just a covariate along with others ($X$). This approach is named S-learner by @kunzel_metalearners_2019 because it involves estimating a <span style='color:red'>s</span>ingle response function.
+In this approach, no special treatment is given to $T$. It is just a covariate along with others ($X$). This approach is named S-learner by @kunzel_metalearners_2019 because it involves estimating a <span style='color:red'>s</span>ingle response function.
+
+Here is a quick demonstration of how S-learner works (no cross-validation conducted in estimating $E[Y|T, X]$ in this example). 
+
+```{r}
+#--------------------------
+# step 1
+#--------------------------
+# RF used here, but any appropriate method is acceptable
+rf_trained <-
+  ranger(
+    Y ~ T + x1 + x2 + x3,
+    data = data
+  )
+
+#--------------------------
+# step 2
+#--------------------------
+# Estimate treatment effect at X_0 = {x1 = 0.5, x2 = 0.5, x3 = 0.5}
+
+#=== data for treated (1) and control (0) ===#
+eval_data_1 <- data.table(T = TRUE, x1 = 0.5, x2 = 0.5, x3 = 0.5)
+eval_data_0 <- data.table(T = FALSE, x1 = 0.5, x2 = 0.5, x3 = 0.5)
+
+#=== predicted value of Y conditional on Y and X ===#
+mu_hat_1 <- predict(rf_trained, data = eval_data_1)$predictions
+mu_hat_0 <- predict(rf_trained, data = eval_data_0)$predictions
+
+#=== theta_hat(X) ===#
+(
+theta_hat <- mu_hat_1 - mu_hat_0
+)
+```
 
 ### T-learner
 
-1. Regress $Y$ on $W$ and $X$ using the treated observations to estimate $\mu_1(X)$ using any appropriate ML regression methods.
-2. Regress $Y$ on $W$ and $X$ using the control  observations to estimate $\mu_0(X)$ using any appropriate ML regression methods.
+1. Regress $Y$ on $X$ using the treated observations to estimate $\mu_1(X)$ using any appropriate ML regression methods.
+2. Regress $Y$ on $X$ using the control observations to estimate $\mu_0(X)$ using any appropriate ML regression methods.
 3. Estimate $\hat{\theta}(X)$ as $\hat{\mu}_1(X)-\hat{\mu}(X)$
 
 This approach is named T-learner by @kunzel_metalearners_2019 because it involves estimating <span style='color:red'>t</span>wo functions.
+
+Here is a quick demonstration of how T-learner works (no cross-validation conducted in estimating $E[Y|T=1, X]$ and $E[Y|T=0, X]$ in this example). 
+
+```{r}
+#--------------------------
+# step 1
+#--------------------------
+# RF used here, but any appropriate method is acceptable
+rf_trained_1 <-
+  ranger(
+    Y ~ x1 + x2 + x3,
+    data = data[T == TRUE, ]
+  )
+
+#--------------------------
+# step 2
+#--------------------------
+# RF used here, but any appropriate method is acceptable
+rf_trained_0 <-
+  ranger(
+    Y ~ x1 + x2 + x3,
+    data = data[T == FALSE, ]
+  )
+
+#--------------------------
+# step 3
+#--------------------------
+# Estimate treatment effect at X_0 = {x1 = 0.5, x2 = 0.5, x3 = 0.5}
+
+#=== data for treated (1) and control (0) ===#
+eval_data <- data.table(x1 = 0.5, x2 = 0.5, x3 = 0.5)
+
+#=== predicted value of Y conditional on Y and X ===#
+mu_hat_1 <- predict(rf_trained_1, data = eval_data)$predictions
+mu_hat_0 <- predict(rf_trained_0, data = eval_data)$predictions
+
+#=== theta_hat(X) ===#
+(
+theta_hat <- mu_hat_1 - mu_hat_0
+)
+```
 
 ### X-learner
 
@@ -121,201 +263,92 @@ This is similar to cross-fitting we saw in @sec-dml, where the folds are the tre
 
 $$
 \begin{align}
-\hat{\theta}(X) = g(X)\cdot\hat{\theta}_0(X) + [1-g(X)]\cdot\hat{\theta}_1(X)
+\hat{\theta}(X) = h(X)\cdot\hat{\theta}_0(X) + [1-h(X)]\cdot\hat{\theta}_1(X)
 \end{align}
 $$ {#eq-final-X}
 
-Any value of $g(X)$ is acceptable. One option of $g(X)$ may be the estimated propensity score $E[W|X]$.
+Any value of $h(X)$ is acceptable. One option of $h(X)$ may be the estimated propensity score $E[W|X]$.
 
-## T-learner v.s. X-learner
-
-Here, an advantage of X-learner over T-learner is demonstrated. This example also serves as an illustration of how these learners are implemented. Specifically, X-learner can be advantageous when the control-treatment assignments in the sample are unbalanced. For example, it is often the case that there are plenty of observations in the control group, while there are not many treated observations. For the purpose of illustration, consider a rather extreme case where there are only 10 observations in the treated group, while there are 300 observations in the control group. We use the following toy data generating process:
-
-::: {.column-margin}
-**Packages to load for replication**
-
-```{r}
-#| include: false
-
-library(data.table)
-library(tidyverse)
-library(ranger)
-library(rlearner)
-library(mgcv)
-library(rsample)
-library(xgboost)
-```
-
-```{r}
-#| eval: false
-library(data.table)
-library(tidyverse)
-library(ranger)
-library(rlearner)
-library(mgcv)
-library(rsample)
-library(xgboost)
-```
-:::
-
-$$
-\begin{align}
-y = \tau W + |x| + v
-\end{align}
-$$ 
-
-where $\tau = 1$. So, the treatment effect is not heterogeneous. For the purpose of illustrating the advantage of X-learner over T-learner, it is convenient if the underlying model is simpler.
-
-```{r}
-set.seed(4345)
-
-N_trt <- 20
-N_ctrl <- 300
-N <- N_trt + N_ctrl
-
-data <- 
-  data.table(
-    W = c(rep(1,N_trt), rep(0, N_ctrl)),
-    type = c(rep("Treated", N_trt), rep("Control", N_ctrl)),
-    x = 2 * runif(N)-1,
-    v = rnorm(N) / 2
-  ) %>% 
-  .[, y := W + abs(x) + v]
-```
-
-```{r}
-ggplot(data = data) +
-  geom_point(aes(y = y, x = x, color = type)) +
-  theme_bw()
-```
-
-Let's first estimate $\mu_1(X)$ and $\mu_0(X)$ (Step 1). Since we have only $`r N_trt`$ observations in the treated group, we will use a linear regression to avoid over-fitting (following the example in @kunzel_metalearners_2019).
-
-```{r}
-mu_1_trained <- lm(y ~ x, data = data[type == "Treated", ])
-
-mu_0_trained <- gam(y ~ s(x, k = 4), data = data[type == "Control", ])
-```
-
-Now that  $\mu_1(X)$ and $\mu_0(X)$ are estimated, we can estimate $\hat{\theta}(X)$ by T-learner.
-
-```{r}
-x_seq <- data.table(x = seq(-1, 1, length = 100))
-#=== T-learner ===#
-tau_hat_data <- 
-  x_seq %>%
-  .[, mu_1_hat := predict(mu_1_trained, newdata = x_seq)] %>%
-  .[, mu_0_hat := predict(mu_0_trained, newdata = x_seq)] %>%
-  .[, tau_hat_T := mu_1_hat - mu_0_hat]
-```
-
-As you can see, T-learner is heavily biased. This is because of the unreliable estimation of $\mu_1(X)$ due to lack of observations in the treated group.
-
-```{r}
-#| code-fold: true
-
-ggplot(data = tau_hat_data) +
-  geom_line(aes(y = tau_hat_T, x = x)) +
-  theme_bw()
-```
-
-Now, let's move on to X-learner. We impute individual treatment effects (Step 2).
-
-```{r}
-#=== mu (treated) ===#
-mu_hat_1 <- predict(mu_0_trained, newdata = data[type == "Treated", ])
-
-#=== mu (control) ===#
-mu_hat_0 <- predict(mu_1_trained, newdata = data[type == "Control", ])
-
-#=== assign the values ===#
-data[type == "Treated", mu_hat := mu_hat_1]
-data[type == "Control", mu_hat := mu_hat_0]
-
-#=== find individual TE ===#
-data[, D := ifelse(type == "Treated", y - mu_hat, mu_hat - y)]
-```
-
-We can now regress $D$ on $X$ (Step 3),
+Here is a quick demonstration of how X-learner works (no cross-validation conducted in estimating $E[Y|T=1, X]$ and $E[Y|T=0, X]$ in this example). 
 
 ```{r}
 #--------------------------
-# tau (treated)
+# Step 1
 #--------------------------
-tau_1_trained <- lm(D ~ x, data = data[type == "Treated", ])
+# RF used here, but any appropriate method is acceptable
+treated_data <- data[T == TRUE, ]
 
-#=== estimate tau_1 ===#
-tau_hat_data[, tau_hat_1 := predict(tau_1_trained, newdata = tau_hat_data)]
-
-#--------------------------
-# tau (control)
-#--------------------------
-tau_0_trained <- gam(D ~ s(x, k = 4), data = data[type == "Control", ])
-
-#=== estimate tau_1 ===#
-tau_hat_data[, tau_hat_0 := predict(tau_0_trained, newdata = tau_hat_data)]
-```
-
-```{r}
-#| code-fold: true
-
-ggplot(data = tau_hat_data) +
-  geom_line(aes(y = tau_hat_1, x = x, color = "Treated")) +
-  geom_line(aes(y = tau_hat_0, x = x, color = "Control")) +
-  scale_color_manual(values = c("Treated" = "blue", "Control" = "red")) +
-  theme_bw()
-```
-
-Let's use propensity score as $g(X)$ in Step 4.
-
-```{r}
-w_gam_trained <- 
-  gam(
-    W ~ s(x, k = 4), 
-    data = data, 
-    family = binomial(link = "probit")
+rf_trained_1 <-
+  ranger(
+    Y ~ x1 + x2 + x3,
+    data = treated_data
   )
+
+# RF used here, but any appropriate method is acceptable
+control_data <- data[T == FALSE, ]
+
+rf_trained_0 <-
+  ranger(
+    Y ~ x1 + x2 + x3,
+    data = control_data
+  )
+
+#--------------------------
+# step 2 (imputed individual treatment effect)
+#--------------------------
+#=== treated samples ===#
+treated_data[, mu_hat_0 := predict(rf_trained_0, data = treated_data)$predictions]
+treated_data[, D_tilde_1 := Y - mu_hat_0]
+
+#=== control samples ===#
+control_data[, mu_hat_1 := predict(rf_trained_1, data = control_data)$predictions]
+control_data[, D_tilde_0 := mu_hat_1 - Y]
+
+#--------------------------
+# step 3 (regress D on X)
+#--------------------------
+#=== treated ===#
+rf_trained_D1 <-
+  ranger(
+    D_tilde_1 ~ x1 + x2 + x3,
+    data = treated_data
+  )
+
+#=== control ===#
+rf_trained_D0 <-
+  ranger(
+    D_tilde_0 ~ x1 + x2 + x3,
+    data = control_data
+  )
+
+#--------------------------
+# step 4
+#--------------------------
+# Estimate treatment effect at X_0 = {x1 = 0.5, x2 = 0.5, x3 = 0.5}
+eval_data <- data.table(x1 = 0.5, x2 = 0.5, x3 = 0.5)
+
+#=== predicted value of Y conditional on Y and X ===#
+theta_hat_1 <- predict(rf_trained_D1, data = eval_data)$predictions
+theta_hat_0 <- predict(rf_trained_D0, data = eval_data)$predictions
+
+#=== regress T on X ===#
+rf_trained_T <-
+  ranger(
+    T ~ x1 + x2 + x3,
+    data = data,
+    probability = TRUE
+  )
+
+#=== propensity score estimate ===#
+p_score <- predict(rf_trained_T, data = eval_data)$predictions[, 2]
+
+#=== weighted average of theta_hat_1 and theta_hat_0 with propensity score ===#
+(
+theta_hat <- p_score * theta_hat_0 + (1-p_score) * theta_hat_1
+)
 ```
 
-Let's predict $E[W|X]$ at each value of $X$ at which we are estiamting $\tau$. 
 
-```{r}
-tau_hat_data[, g_x := predict(w_gam_trained, newdata = tau_hat_data, type = "response")]
-```
-
-As you can see below, the mean value of $g(x)$ is small because the treatment probability is very low (it is only $`r N_trt`$ out of $`r N`$).
-
-```{r}
-mean(tau_hat_data[, g_x])
-```
-
-This number is basically $`r N_trt`/320$. So, in this example, we could have just used the proportion of the treated observations. Notice that $g(X)$ is multiplied to $\hat{\theta}_0(X)$ in @eq-final-X. So, we are giving a lower weight to $\hat{\theta}_0(X)$. This is because $\hat{\theta}_0(X)$ is less reliable because $\hat{\mu}_1(X)$ is less reliable due to the lack of samples in the treated group. 
-
-```{r}
-tau_hat_data[, tau_hat_X := g_x * tau_hat_0 + (1-g_x) * tau_hat_1]
-```
-
-As you can see, X-learner outperforms T-learner in this particular instance at least in terms of point estimates of $\tau(X)$. 
-
-```{r}
-#| code-fold: true
-
-ggplot(data = tau_hat_data) +
-  geom_line(aes(y = tau_hat_T, x = x, color = "T-learner")) +
-  geom_line(aes(y = tau_hat_X, x = x, color = "X-learner")) +
-  geom_hline(yintercept = 1, aes(color = "True Treatment Effect")) +
-  scale_color_manual(
-    values = c(
-        "T-learner" = "red", 
-        "X-learner" = "blue", 
-        "True Treatment Effect" = "black"
-      ),
-    name = ""
-    ) +
-  ylab("Treatment Effect") +
-  theme_bw() +
-  theme(legend.position = "bottom")
-```
 
 ## R-learner {#sec-r-learner}
 
@@ -325,20 +358,20 @@ Under the assumptions,
 
 $$
 \begin{aligned}
-E[Y|X, W] = \theta(X)\cdot f(X,W) + g(X,W)
+E[Y|X] = \theta(X)\cdot f(X) + g(X)
 \end{aligned}
 $$ {#eq-yxw}
 
 :::{.column-margin}
-$f(X,W) = E[T|X,W]$ 
+$f(X) = E[T|X]$ 
 :::
 
-Let, $l(X,W)$ denote $E[Y|X, W]$. Taking the difference of @eq-model-framework and @eq-yxw on both sides,
+Let, $l(X)$ denote $E[Y|X]$. Taking the difference of @eq-model-framework and @eq-yxw on both sides,
 
 $$
 \begin{aligned}
-Y_i - l(X_i,W_i) & = \theta(X_i)\cdot T_i + g(X_i,W_i) + \varepsilon_i - [\theta(X_i)\cdot f(X_i,W_i) + g(X_i,W_i)] \\
-\Rightarrow Y_i - l(X_i,W_i) & = \theta(X_i)\cdot (T_i -f(X_i,W_i)) + \varepsilon_i \\
+Y_i \textcolor{red}{-l(X_i)} & = \theta(X_i)\cdot T_i + g(X_i) + \varepsilon_i \textcolor{red}{-[\theta(X_i)\cdot f(X_i) + g(X_i)]} \\
+\Rightarrow Y_i - l(X_i) & = \theta(X_i)\cdot (T_i -f(X_i)) + \varepsilon_i \\
 \end{aligned}
 $$
 
@@ -350,21 +383,21 @@ So, the problem of identifying $\theta(X)$ reduces to estimating the following m
 
 $$
 \begin{aligned}
-Y_i - l(X_i,W_i) & = \theta(X_i)\cdot (T_i -f(X_i,W_i)) + \varepsilon_i
+Y_i - l(X_i) & = \theta(X_i)\cdot (T_i -f(X_i)) + \varepsilon_i
 \end{aligned}
 $$
 
-Since $E[(T_i -f(X_i,W_i))\cdot\varepsilon_i|X] = E[\eta_i\cdot\varepsilon_i|X] = 0$ by assumption, we can regress $Y_i - l(X_i,W_i)$ on $X_i$ and $T_i -f(X_i,W_i)$ to estimate $\theta(X)$. Specifically, we can minimize the following objective function:
+Since $E[(T_i -f(X_i))\cdot\varepsilon_i|X] = E[\eta_i\cdot\varepsilon_i|X] = 0$ by assumption, we can regress $Y_i - l(X_i)$ on $X_i$ and $T_i -f(X_i)$ to estimate $\theta(X)$. Specifically, we can minimize the following objective function:
 
 $$
 \begin{aligned}
-Min_{\theta(X)}\sum_{i=1}^N \large(\normalsize[Y_i - l(X_i,W_i)] - [\theta(X_i)\cdot (T_i -f(X_i,W_i))]\large)^2 
+Min_{\theta(X)}\sum_{i=1}^N \large(\normalsize[Y_i - l(X_i)] - [\theta(X_i)\cdot (T_i -f(X_i))]\large)^2 
 \end{aligned}
 $$ {#eq-est-equation}
 
 ### Estimation steps {#sec-est-steps}
 
-In practice, we of course do not observe $l(X,W)$ and $f(X,W)$. So, we first need to estimate them using the data at hand and then subtract them from $Y_i$ and $T_i$, respectively. You can use any suitable statistical methods to estimate $l(X, W)$ and $f(X,W)$. Some machine learning methods allow you to estimate them without assuming any functional form or structural assumptions. If you believe they are linear functions of $X$ and $W$, you could alternatively use lasso or other linear models. @nie_quasi-oracle_2021 proposes that the estimation of $l(X,W)$ and $f(X,W)$ is done by cross-fitting (see @sec-cf) to avoid over-fitting bias. Let $I_{-i}$ denote all the observations that belong to the folds that $i$ does <span style="color:blue"> not </span> belong to. Further, let $\hat{l}(X_i, W_i)^{I_{-i}}$ and $\hat{f}(X_i, W_i)^{I_{-i}}$ denote $l(X_i, W_i)$ and $f(X_i, W_i)$ estimated using $I_{-i}$. 
+In practice, we of course do not observe $l(X)$ and $f(X)$. So, we first need to estimate them using the data at hand and then subtract them from $Y_i$ and $T_i$, respectively. You can use any suitable statistical methods to estimate $l(X)$ and $f(X)$. Some machine learning methods allow you to estimate them without assuming any functional form or structural assumptions. If you believe they are linear (in parameter) functions of $X$, you could alternatively use lasso or other linear models. @nie_quasi-oracle_2021 proposes that the estimation of $l(X)$ and $f(X)$ is done by cross-fitting (see @sec-cf) to avoid over-fitting bias. Let $I_{-i}$ denote all the observations that belong to the folds that $i$ does <span style="color:blue"> not </span> belong to. Further, let $\hat{l}(X_i)^{I_{-i}}$ and $\hat{f}(X_i)^{I_{-i}}$ denote $l(X_i)$ and $f(X_i)$ estimated using $I_{-i}$. 
 
 ::: {.column-margin}
 Just like the DML approach discussed in @sec-dml, both $Y$ and $T$ are orthogonalized.
@@ -374,13 +407,13 @@ Then the quality of fit (explaining the heterogeneity in the impact of treatment
 
 $$
 \begin{aligned}
-\sum_{i=1}^N [Y_i - \hat{l}(X_i,W_i)^{I_{-i}} - \theta(X)\cdot (T_i - \hat{f}(X_i,W_i)^{I_{-i}})]^2
+\sum_{i=1}^N [Y_i - \hat{l}(X_i)^{I_{-i}} - \theta(X)\cdot (T_i - \hat{f}(X_i)^{I_{-i}})]^2
 \end{aligned}
 $$
 
 This is called <span style="color:blue"> R-score</span>, and it can be used for causal model selection, which will be covered later. 
 
-Let $\tilde{Y}_i$ and $\tilde{T}_i$ denote $Y_i - \hat{l}(X_i,W_i)^{I_{-i}}$ and $T_i - \hat{f}(X_i,W_i)^{I_{-i}}$, respectively. The final stage of the R-learner is to estimate $\theta(X)$ by minimizing the R-score plus the regularization term (if desirable).
+Let $\tilde{Y}_i$ and $\tilde{T}_i$ denote $Y_i - \hat{l}(X_i)^{I_{-i}}$ and $T_i - \hat{f}(X_i)^{I_{-i}}$, respectively. The final stage of the R-learner is to estimate $\theta(X)$ by minimizing the R-score plus the regularization term (if desirable).
 
 $$
 \begin{aligned}
@@ -392,36 +425,7 @@ where $\Lambda(\theta(X))$ is the penalty on the complexity of $\theta(X)$. For 
 
 ### R-learner by hand
 
-This section goes through the estimation steps provided above to further the understanding of how R-learner works using a synthetic dataset that follows the DGP below.
-
-$$
-\begin{aligned}
-Y_i & = (x_{i,1} + x_{i,2}^2)\cdot T_i + \sqrt{x_{i,3}} + \mu_i \\
-T_i|X_i & = Bernouli((1+x_{i,1})/2) \\
-\mu_i|X_i & = N(0,1)
-\end{aligned}
-$$
-
-Let's generate a dataset according to the DGP.
-
-```{r}
-set.seed(58734)
-
-N <- 1000
-
-(
-data <-
-  data.table(
-    x1 = runif(N),
-    x2 = runif(N),
-    x3 = runif(N),
-    mu = rnorm(N)
-  ) %>% 
-  .[, T := runif(N) < ((0.5+x1)/2)] %>% 
-  .[, Y := (x1 + x2^2) * T + sqrt(x3) + mu] %>% 
-  .[, id := 1:.N]
-) 
-```
+This section goes through R codes to implement the estimation steps provided above to further our understanding of how R-learner works using the same synthetic dataset as the one used in @sec-stx.
 
 ---
 
@@ -433,7 +437,7 @@ data_folds <- rsample::vfold_cv(data, v = 5, repeats = 3)
 )
 ```
 
-The following function takes a row number (`n`) and cross-fits $E[Y|X]$ and $E[T|X]$ for the training and test data split stored in the `n`th row of `data_folds`.
+The following function takes a row number (`n`) and cross-fits $E[Y|X]$ and $E[T|X]$ using the training and test data stored in the `n`th row of `data_folds`.
 
 ```{r}
 cross_fit <- function(n, data_folds) 
@@ -542,7 +546,7 @@ data_2nd[, `:=`(
 )]
 ```
 
-We use `xgboost()` for a non-parametric estimation of $\theta(X)$.
+Let's use `xgboost()` for a non-parametric estimation of $\theta(X)$.
 
 ```{r}
 #| include: false
@@ -607,39 +611,57 @@ ols_2nd_stage <- lm(y_tilde ~ I(x1*t_tilde) + I(x2^2*t_tilde) + I(x3*t_tilde), d
 summary(ols_2nd_stage)
 ```
 
-The results look pretty good mostly because we are cheating and using the correct functional form. Of course, in practice, you would not know the correct functional form of $\theta(X)$. Finally, note that you should not use the codes here since they are just for demonstration to enhance our understanding of how R-learner works. 
-
+The results look pretty good mostly because we are cheating and using the correct functional form. Of course, in practice, you would not know the correct functional form of $\theta(X)$. Finally, note that you should not use the codes here since they are just for demonstration to enhance our understanding of how R-learner works.
 
 ## Comparing the learners
 
+In this section, we compare the performance of the learners under two DGPs, which fall under the following general model:
+
 $$
 \begin{aligned}
-Y_i =\theta(X_i)\cdot T + \alpha g(X_i) + \mu_i
+Y_i & =\theta(X_i)\cdot T + \alpha\cdot g(X_i) + \mu_i \\
+T_i & = Bernouli(f(X_i))
 \end{aligned}
 $$
 
-+ $X_i = \{X_{i,1}, X_{i,2}, X_{i,3}, X_{i,4}, X_{i,5}\}$
-+ $T_i|X_i \sim Bernouli(f(X_i))$
-+ $\mu_i|X_i \sim N(0,1)$
+where $\alpha$ is a constant that changes the share of the nuisance function $g(X)$ in $Y$'s variation (larger $\alpha$ in magnitude, larger share of $g(X)$).
+
+:::{.callout-important}
+
+## Caveats
+
+We cannot draw any generalizable conclusions about the performance of the learners because we only consider a specific case of the learners where the extreme gradient boost is used for all the estimation tasks and also because we consider only several DGPs. 
+:::
+
+Performance comparisons under more DGPs can be found in @nie_quasi-oracle_2021. MC simulations here focus more on the role of the magnitude of the nuisance part in $Y$, which @nie_quasi-oracle_2021 does not look at.
+
+---
+
+We first work on the following DGP (named DGP A).
 
 :::{.callout-note}
 
-## Case A
+## DGP A
 
 $$
 \begin{aligned}
 g(X_i) & = sin(\pi X_{i,1}X_{i,2}) + 2(X_{i,3}-0.5)^2 + X_{i,4} + 0.5 X_{i,5}\\
-e(X_i) & = max(0.1, min(sin(\pi X_{i,1}X_{i,2}), 0.9)) \\
+f(X_i) & = max(0.1, min(sin(\pi X_{i,1}X_{i,2}), 0.9)) \\
 \theta(X_i) & = (X_{i,1}, X_{i,2}) / 2 \\
 X_i & \sim Uni(0,1)^5
 \end{aligned}
 $$
 
 :::
-  
+
+::: {.column-margin}
+DGP A with $\alpha =1$ is almost the same as Set-up A of @nie_quasi-oracle_2021 except that they use $Y_i =\theta(X_i)\cdot (T-0.5) + \alpha\cdot g(X_i) + \mu_i$, so that $-0.5*\theta(X)$ is actually a part of the nuisance for $Y$. 
+:::
+
+The following code generate data according to DGP A. 
+
 ```{r}
-#| code-fold: true 
-gen_data_A <- function(N){
+gen_data_A <- function(N, alpha){
   data <-
     data.table(
       x1 = runif(N),
@@ -650,78 +672,244 @@ gen_data_A <- function(N){
       u = rnorm(N)
     ) %>% 
     .[, `:=`(
-      g_x = sin(pi * x1*x2) + 2*(x3-0.5)^2 + x4 + 0.5*x5,
-      e_x = pmax(0.1, pmin(sin(pi * x1*x2), 0.9)),
+      g_x = alpha * (sin(pi * x1*x2) + 2*(x3-0.5)^2 + x4 + 0.5*x5),
+      f_x = pmax(0.1, pmin(sin(pi * x1*x2), 0.9)),
       theta_x = (x1+x2)/2
     )] %>% 
-    .[, t := as.numeric(runif(N) < e_x)] %>% 
-    .[, y := theta_x * t + g_x + u]
+    .[, t := as.numeric(runif(N) < f_x)] %>% 
+    .[, y := theta_x * t + g_x + u] %>% 
+    .[, id := 1:.N]
 
   return(data)
 }
 
 ```
 
+We use the `rlearner` package [@Xinkun-rlearner-package] to implement S-, T-, X-, and R-learner. In particular, we will use the `*boost()` functions (e.g., `rboost()` for R-learner), which use `xgboost()` for all the estimation tasks. Parameter tuning is done internally (see [here](https://github.com/xnie/rlearner/blob/6806396960e672214e2ef36e16c76bbb58ef9114/R/cvboost.R#L70-L78) for the hyper parameter search space). S-learner implemented by `sboost()` is different from the S-learner described above in that it include the interactions of the treatment variable and feature variables: that is, it regresses $Y$ on $T$, $X$, and $T*X$. 
+
+<!-- So, we call the implementation of S-learner by `sboost()` "S-learner with interactions." We also implement an S-learner where $Y$ is regressed on only $T$ and $X$, which is called "S-learner without interactions." -->
+
+The following code implements S-, T-, X-, and R-learner for a single iteration and calculate MSE of estimating $\theta(X)$ on the test data. 
+
+::: {.column-margin}
+The `rlearner` package also offers `*lasso()` and `*kern()` series. The package is not designed to be flexible as there are fixed combinations of learners and you cannot specify estimation methods yourself.
+:::
+
+
+```{r}
+N <- 1000
+
+get_mse <- function(i, gen_data, alpha) {
+
+  print(i)
+
+  #--------------------------
+  # Prepare data
+  #--------------------------
+  train_data <- gen_data_A(N, alpha)
+  test_data <- gen_data_A(N, alpha)
+  test_X <- test_data[, .(x1, x2, x3, x4, x5)] %>% as.matrix()
+
+  # cor(train_data[, .(theta_x, g_x)])
+
+  #--------------------------
+  # Train and predict 
+  #--------------------------
+  learner_ls <- list(rboost, sboost, xboost, tboost)
+
+  results <-
+    lapply(
+      learner_ls,
+      function(learner) {
+        trained_learner <-
+          learner(
+            train_data[, .(x1, x2, x3, x4, x5)] %>% as.matrix(), 
+            train_data$t, 
+            train_data$y
+          )
+
+        theta_data <-
+          data.table(
+            theta_true = test_data$theta_x,
+            theta_hat = predict(trained_learner, test_X)
+          )
+        
+        return(theta_data)
+      }
+    ) %>% 
+    rbindlist(idcol = "learner") %>% 
+    .[, learner := fcase(
+      learner == 1, "R",
+      learner == 2, "S",
+      learner == 3, "X",
+      learner == 4, "T"
+    )]
+
+  return(results)
+}
+```
+
+Repeating experiments 100 times for $\alpha = 1$,
+
 ```{r}
 #| eval: false
-#| echo: false
-
-library(rlearner)
-data <- gen_data_A(N)
-
-#--------------------------
-# R-learner
-#--------------------------
-rboost_fit <- 
-  rboost(
-    data[, .(x1, x2, x3, x4, x5)] %>% as.matrix(), 
-    data$t, 
-    data$y
-  )
-
-rboost_est <- predict(rboost_fit, data$x)
-
-#--------------------------
-# S-learner
-#--------------------------
-sboost_fit <- 
-  sboost(
-    data[, .(x1, x2, x3, x4, x5)] %>% as.matrix(), 
-    data$t, 
-    data$y
-  )
-
-sboost_est <- predict(rboost_fit, data$x)
-
-#--------------------------
-# T-learner
-#--------------------------
-tboost_fit <- 
-  tboost(
-    data[, .(x1, x2, x3, x4, x5)] %>% as.matrix(), 
-    data$t, 
-    data$y
-  )
-
-tboost_est <- predict(rboost_fit, data$x)
-
-#--------------------------
-# X-learner
-#--------------------------
-xboost_fit <- 
-  xboost(
-    data[, .(x1, x2, x3, x4, x5)] %>% as.matrix(), 
-    data$t, 
-    data$y
-  )
-
-xboost_est <- predict(rboost_fit, data$x)
+alpha <- 1
+mc_results_1 <-
+  lapply(
+    seq_len(100),
+    function(i) get_mse(i, gen_data_A, alpha)
+  ) %>% 
+  rbindlist(idcol = "sim")
 
 ```
 
+```{r}
+#| eval: false
+#| echo: false 
+mc_results_1 <-
+  mclapply(
+    seq_len(100),
+    function(i) get_mse(i, gen_data_A, alpha),
+    mc.cores = 12
+  ) %>% 
+  rbindlist(idcol = "sim")
+
+saveRDS(mc_results_1, here::here("LectureNotes/Data/mc_xstr_results_alpha_1.rds"))
+```
+
+```{r}
+#| echo: false 
+mc_results_1 <- readRDS("Data/mc_xstr_results_alpha_1.rds")
+# mc_results_1 <- readRDS(here::here("LectureNotes/Data/mc_xstr_results_alpha_1.rds"))
+```
+
+@fig-log-mse-dgp-A-1 shows the histogram of MSE by learner. 
+
+```{r}
+#| code-fold: true
+#| fig-cap: Density of Log MSE of estimating CATE by method
+#| label: fig-log-mse-dgp-A-1
+
+mse_data_1 <-
+  mc_results_1 %>% 
+  .[, .(mse = mean((theta_true - theta_hat)^2)), by = .(learner, sim)] %>%
+  .[, type := "alpha = 1"] %>% 
+  .[, learner := factor(learner, levels = c("S", "T", "X", "R"))]
+
+ggplot(data = mse_data_1) + 
+  geom_histogram(aes(x = mse)) +
+  facet_grid(learner ~ .) +
+  theme_bw()
+```
+
+As you can see, R-learner performs the best, followed closely by X-learner, then by S-learner, and T-learner. 
+
+Now, we change the value of $\alpha$ to 10 from 1 to make the nuisance part have a much larger share in $Y$'s variation.
+
+```{r}
+#| eval: false
+alpha <- 10
+mc_results <-
+  lapply(
+    seq_len(100),
+    function(i) get_mse(i, gen_data_A, alpha)
+  ) %>% 
+  rbindlist(idcol = "sim")
+
+```
+
+```{r}
+#| eval: false
+#| echo: false 
+
+alpha <- 10
+mc_results_10 <-
+  mclapply(
+    seq_len(100),
+    function(i) get_mse(i, gen_data_A, alpha),
+    mc.cores = 12
+  ) %>% 
+  rbindlist(idcol = "sim")
+
+saveRDS(mc_results_10, here::here("LectureNotes/Data/mc_xstr_results_alpha_10.rds"))
+
+```
+
+```{r read-mc-10-DGP-A}
+#| echo: false 
+mc_results_10 <- readRDS("Data/mc_xstr_results_alpha_10.rds")
+# mc_results_10 <- readRDS(here::here("LectureNotes/Data/mc_xstr_results_alpha_10.rds"))
+```
+
+@fig-log-mse-dgp-A-1-10 shows the histogram of MSE by learner for $\alpha=1$ and $\alpha=10$. All the methods are negatively affected by the increase in the influence of the nuisance function, $g(X)$. However, some learners are affected more than others. R-learner is. much less affected by the change than the other methods, and R-learner is clearly the best performing learner at $\alpha = 10$. All the other learners performed considerably poorer compared to the case with $\alpha =1$. This shows that R-learner shines particularly when the treatment effect is only the small portion of the total variation in $Y$. This is a very important property because it is often the case for many scientific fields. For example, consider estimating the impact of a vocational training program on income. Such a program is unlikely to drastically change participants income level. Other factors that have nothing to do with the program (nuisance part) are likely to have much bigger role in determining income.
+
+```{r}
+#| code-fold: true
+#| fig-cap: Density of Log MSE of estimating CATE by method
+#| label: fig-log-mse-dgp-A-1-10
+mse_data_10 <-
+  mc_results_10 %>% 
+  .[, .(mse = mean((theta_true - theta_hat)^2)), by = .(learner, sim)] %>%
+  .[, type := "alpha = 10"]
+
+mse_data_all <- 
+  rbind(mse_data_1, mse_data_10) %>% 
+  .[, learner := factor(learner, levels = c("S", "T", "X", "R"))]
+
+ggplot(data = mse_data_all) + 
+  geom_histogram(
+    aes(x = mse, fill = type), 
+    position = "identity", 
+    alpha = 0.5,
+    bins = 75
+  ) +
+  facet_grid(learner ~ .) +
+  scale_fill_discrete(name = "") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+@fig-s-iter plots the true (y-axis) and estimated (x-axis) treatment effect by learner for a single iteration at $\alpha = 10$, which gives us insights into the decomposition of MSE (variance and bias). 
+
+
+```{r}
+#| code-fold: true
+#| fig-cap: True v.s. estimated treatment effects by learner for a single iteration ($\alpha$ = 10)
+#| label: fig-s-iter
+
+ggplot(data = mc_results_10[sim == 1, ]) + 
+  geom_point(aes(y = theta_true, x = theta_hat)) +
+  geom_abline(slope = 1, color = "red") +
+  facet_grid(learner ~ .) +
+  theme_bw() +
+  xlab("Estimated Treatment Effect") +
+  ylab("True Treatment Effect")
+```
+
+According to the figure, all of them seem to suffer from positive bias. Here is the average of the true treatment effects less the estimated treatment effects by learner. So, indeed, they all suffer from bias. T-learner suffers from the most severe bias, and R-learner suffers from the smallest bias.
+
+```{r}
+mc_results_10[, .(bias = mean(theta_true - theta_hat)), by = learner]
+```
+
+T-learner has the highest variance of treatment effect estimates, followed by S-learner, X-learner, and then R-learner. Here is the average (over iterations) standard deviation of treatment effect estimates by learner.
+
+```{r}
+mc_results_10[, .(sd = sd(theta_true - theta_hat)), by = .(learner, sim)] %>% 
+  .[, .(sd = mean(sd)), by = learner]
+```
+
+The problem with high variance in CATE estimation is that, the effect of treatment "looks" much more heterogeneous than it truly is. This leads to over-estimation of the benefit of targeted treatment (e.g., policy, medical treatment) assignment. 
+
+
+
+---
+
+Let's look at another DGP.
+
 :::{.callout-note}
 
-## Case B (randomized trial)
+## DGP B (randomized trial)
 
 $$
 \begin{aligned}
@@ -733,10 +921,12 @@ X_i & \sim N(0,I_5)
 $$
 
 :::
+
+Here is the code to generate data according to DGP B.
  
 ```{r}
 #| code-fold: true 
-gen_data_B <- function(N){
+gen_data_B <- function(N, alpha){
   data <-
     data.table(
       x1 = rnorm(N),
@@ -747,17 +937,125 @@ gen_data_B <- function(N){
       u = rnorm(N)
     ) %>% 
     .[, `:=`(
-      g_x = pmax(x1 + x2, x3) + pmax(x4 + x5, 0),
+      g_x = alpha * (pmax(x1 + x2, x3) + pmax(x4 + x5, 0)),
       e_x = 1/2,
       theta_x = x1+log(1 + exp(x2))
     )] %>% 
-    .[, t := (runif(N) < e_x)] %>% 
+    .[, t := as.numeric(runif(N) < e_x)] %>% 
     .[, y := theta_x * t + g_x + u]
 
   return(data)
 }
 ```
 
+```{r}
+#| eval: false
+#| echo: false 
+library(future.apply)
+plan("multicore", workers = detectCores() - 4)
+
+mc_results_1 <-
+  future_lapply(
+    seq_len(100),
+    function(i) get_mse(i, gen_data_B, alpha = 1)
+  ) %>% 
+  rbindlist(idcol = "sim")
+
+saveRDS(
+  mc_results_1, 
+  here::here("LectureNotes/Data/mc_xstr_results_DGP_B_alpha_1.rds")
+)
+
+mc_results_10 <-
+  future_lapply(
+    seq_len(100),
+    function(i) get_mse(i, gen_data_B, alpha = 10)
+  ) %>% 
+  rbindlist(idcol = "sim")
+
+saveRDS(
+  mc_results_10, 
+  here::here("LectureNotes/Data/mc_xstr_results_DGP_B_alpha_10.rds")
+)
+
+```
+
+```{r}
+#| echo: false 
+# mc_results_1 <- readRDS(here::here("LectureNotes/Data/mc_xstr_results_DGP_B_alpha_1.rds"))
+# mc_results_10 <- readRDS(here::here("LectureNotes/Data/mc_xstr_results_DGP_B_alpha_10.rds"))
+
+mc_results_1 <- readRDS("Data/mc_xstr_results_DGP_B_alpha_1.rds")
+mc_results_10 <- readRDS("Data/mc_xstr_results_DGP_B_alpha_10.rds")
+```
+
+Here is the code to run MC simulations for $\alpha = 1$ and $\alpha = 10$.
+
+```{r}
+#| eval: false
+
+mc_results_1 <-
+  future_lapply(
+    seq_len(100),
+    function(i) get_mse(i, gen_data_B, alpha = 1)
+  ) %>% 
+  rbindlist(idcol = "sim")
+
+mc_results_10 <-
+  future_lapply(
+    seq_len(100),
+    function(i) get_mse(i, gen_data_B, alpha = 10)
+  ) %>% 
+  rbindlist(idcol = "sim")
+
+mse_data_1 <-
+  mc_results_1 %>% 
+  .[, .(mse = mean((theta_true - theta_hat)^2)), by = .(learner, sim)] %>%
+  .[, type := "alpha = 1"]
+
+mse_data_10 <-
+  mc_results_10 %>% 
+  .[, .(mse = mean((theta_true - theta_hat)^2)), by = .(learner, sim)] %>%
+  .[, type := "alpha = 10"]
+
+mse_data_all <- rbind(mse_data_1, mse_data_10) 
+```
+
+@fig-log-mse-dgp-B-1-10 presents the results. Compared to DGP A, S- and T-learner performs much better at $\alpha = 1$ almost matching that of X- and R-learner. However, once the role of nuisance function is greater at $\alpha = 10$, then the performance of S-, T-, and X-learner deteriorate substantially (especially T-learner). 
+
+```{r}
+#| code-fold: true
+#| fig-cap: Density of Log MSE of estimating CATE by method
+#| label: fig-log-mse-dgp-B-1-10
+
+ggplot(data = mse_data_all) + 
+  geom_histogram(
+    aes(x = mse, fill = type), 
+    position = "identity", 
+    alpha = 0.5,
+    bins = 75
+  ) +
+  facet_grid(learner ~ .) +
+  scale_fill_discrete(name = "") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+@fig-s-iter-B presents the scatter plot of the true and estimated treatment effects by learner for a single iteration. None of them seem to be biased, but there is a clear difference in variance of CATE estimates. 
+
+```{r}
+#| code-fold: true
+#| fig-cap: True v.s. estimated treatment effects by learner for a single iteration ($\alpha$ = 10)
+#| label: fig-s-iter-B
+
+ggplot(data = mc_results_10[sim == 1, ]) + 
+  geom_point(aes(y = theta_true, x = theta_hat)) +
+  geom_abline(slope = 1, color = "red") +
+  facet_grid(learner ~ .) +
+  theme_bw() +
+  xlab("Estimated Treatment Effect") +
+  ylab("True Treatment Effect")
+```
 
 ## X-, S-, T-, R-learner in Python
 
@@ -950,6 +1248,378 @@ There are many more variations in DML than the one presented here. For those who
 :::
 
 
+## T-learner v.s. X-learner (Optional, and not that important)
 
+Here, an advantage of X-learner over T-learner is demonstrated. This example also serves as an illustration of how these learners are implemented. Specifically, X-learner can be advantageous when the control-treatment assignments in the sample are unbalanced. For example, it is often the case that there are plenty of observations in the control group, while there are not many treated observations. For the purpose of illustration, consider a rather extreme case where there are only 10 observations in the treated group, while there are 300 observations in the control group. We use the following toy data generating process:
 
+$$
+\begin{align}
+y = \tau W + |x| + v
+\end{align}
+$$ 
 
+where $\tau = 1$. So, the treatment effect is not heterogeneous. For the purpose of illustrating the advantage of X-learner over T-learner, it is convenient if the underlying model is simpler.
+
+```{r}
+set.seed(4345)
+
+N_trt <- 20
+N_ctrl <- 300
+N <- N_trt + N_ctrl
+
+data <- 
+  data.table(
+    W = c(rep(1,N_trt), rep(0, N_ctrl)),
+    type = c(rep("Treated", N_trt), rep("Control", N_ctrl)),
+    x = 2 * runif(N)-1,
+    v = rnorm(N) / 2
+  ) %>% 
+  .[, y := W + abs(x) + v]
+```
+
+```{r}
+ggplot(data = data) +
+  geom_point(aes(y = y, x = x, color = type)) +
+  theme_bw()
+```
+
+Let's first estimate $\mu_1(X)$ and $\mu_0(X)$ (Step 1). Since we have only $`r N_trt`$ observations in the treated group, we will use a linear regression to avoid over-fitting (following the example in @kunzel_metalearners_2019).
+
+```{r}
+mu_1_trained <- lm(y ~ x, data = data[type == "Treated", ])
+
+mu_0_trained <- gam(y ~ s(x, k = 4), data = data[type == "Control", ])
+```
+
+Now that  $\mu_1(X)$ and $\mu_0(X)$ are estimated, we can estimate $\hat{\theta}(X)$ by T-learner.
+
+```{r}
+x_seq <- data.table(x = seq(-1, 1, length = 100))
+#=== T-learner ===#
+tau_hat_data <- 
+  x_seq %>%
+  .[, mu_1_hat := predict(mu_1_trained, newdata = x_seq)] %>%
+  .[, mu_0_hat := predict(mu_0_trained, newdata = x_seq)] %>%
+  .[, tau_hat_T := mu_1_hat - mu_0_hat]
+```
+
+As you can see, T-learner is heavily biased. This is because of the unreliable estimation of $\mu_1(X)$ due to lack of observations in the treated group.
+
+```{r}
+#| code-fold: true
+
+ggplot(data = tau_hat_data) +
+  geom_line(aes(y = tau_hat_T, x = x)) +
+  theme_bw()
+```
+
+Now, let's move on to X-learner. We impute individual treatment effects (Step 2).
+
+```{r}
+#=== mu (treated) ===#
+mu_hat_1 <- predict(mu_0_trained, newdata = data[type == "Treated", ])
+
+#=== mu (control) ===#
+mu_hat_0 <- predict(mu_1_trained, newdata = data[type == "Control", ])
+
+#=== assign the values ===#
+data[type == "Treated", mu_hat := mu_hat_1]
+data[type == "Control", mu_hat := mu_hat_0]
+
+#=== find individual TE ===#
+data[, D := ifelse(type == "Treated", y - mu_hat, mu_hat - y)]
+```
+
+We can now regress $D$ on $X$ (Step 3),
+
+```{r}
+#--------------------------
+# tau (treated)
+#--------------------------
+tau_1_trained <- lm(D ~ x, data = data[type == "Treated", ])
+
+#=== estimate tau_1 ===#
+tau_hat_data[, tau_hat_1 := predict(tau_1_trained, newdata = tau_hat_data)]
+
+#--------------------------
+# tau (control)
+#--------------------------
+tau_0_trained <- gam(D ~ s(x, k = 4), data = data[type == "Control", ])
+
+#=== estimate tau_1 ===#
+tau_hat_data[, tau_hat_0 := predict(tau_0_trained, newdata = tau_hat_data)]
+```
+
+```{r}
+#| code-fold: true
+
+ggplot(data = tau_hat_data) +
+  geom_line(aes(y = tau_hat_1, x = x, color = "Treated")) +
+  geom_line(aes(y = tau_hat_0, x = x, color = "Control")) +
+  scale_color_manual(values = c("Treated" = "blue", "Control" = "red")) +
+  theme_bw()
+```
+
+Let's use propensity score as $g(X)$ in Step 4.
+
+```{r}
+w_gam_trained <- 
+  gam(
+    W ~ s(x, k = 4), 
+    data = data, 
+    family = binomial(link = "probit")
+  )
+```
+
+Let's predict $E[W|X]$ at each value of $X$ at which we are estiamting $\tau$. 
+
+```{r}
+tau_hat_data[, g_x := predict(w_gam_trained, newdata = tau_hat_data, type = "response")]
+```
+
+As you can see below, the mean value of $g(x)$ is small because the treatment probability is very low (it is only $`r N_trt`$ out of $`r N`$).
+
+```{r}
+mean(tau_hat_data[, g_x])
+```
+
+This number is basically $`r N_trt`/320$. So, in this example, we could have just used the proportion of the treated observations. Notice that $g(X)$ is multiplied to $\hat{\theta}_0(X)$ in @eq-final-X. So, we are giving a lower weight to $\hat{\theta}_0(X)$. This is because $\hat{\theta}_0(X)$ is less reliable because $\hat{\mu}_1(X)$ is less reliable due to the lack of samples in the treated group. 
+
+```{r}
+tau_hat_data[, tau_hat_X := g_x * tau_hat_0 + (1-g_x) * tau_hat_1]
+```
+
+As you can see, X-learner outperforms T-learner in this particular instance at least in terms of point estimates of $\tau(X)$. 
+
+```{r}
+#| code-fold: true
+
+ggplot(data = tau_hat_data) +
+  geom_line(aes(y = tau_hat_T, x = x, color = "T-learner")) +
+  geom_line(aes(y = tau_hat_X, x = x, color = "X-learner")) +
+  geom_hline(yintercept = 1, aes(color = "True Treatment Effect")) +
+  scale_color_manual(
+    values = c(
+        "T-learner" = "red", 
+        "X-learner" = "blue", 
+        "True Treatment Effect" = "black"
+      ),
+    name = ""
+    ) +
+  ylab("Treatment Effect") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+```{r}
+#| echo: false 
+#| eval: false
+s_learner_rf <- function(train_data, test_data, Kx)
+{
+
+  features <- c("t", paste0("x", seq_len(Kx)))
+
+  rf_trained <-
+    regression_forest(
+      X = train_data[, ..features], 
+      Y = train_data$y,
+      tune.parameters = "all",
+      tune.num.trees = 500
+    )
+
+  test_X <- test_data[, ..features]
+
+  test_data_0 <- copy(test_X) %>% .[, t := 0]
+  y_hat_0 <- predict(rf_trained, newdata = test_data_0)$predictions
+  
+  test_data_1 <- copy(test_X) %>% .[, t := 1]
+  y_hat_1 <- predict(rf_trained, newdata = test_data_1)$predictions
+
+  theta_hat <- y_hat_1 - y_hat_0
+
+  return_data <-
+    data.table(
+      theta_true = test_data$theta_x,
+      theta_hat = theta_hat,
+      type = "S-learner"
+    )
+}
+
+tx_learner_rf <- function(train_data, test_data, Kx)
+{
+
+  features <- c(paste0("x", seq_len(Kx)))
+
+  train_data_1 <- train_data[t == 1, ]
+  train_data_0 <- train_data[t == 0, ]
+
+  rf_trained_1 <-
+    regression_forest(
+      X = train_data_1[, ..features], 
+      Y = train_data_1$y,
+      tune.parameters = "all",
+      tune.num.trees = 500
+    )
+
+  rf_trained_0 <-
+    regression_forest(
+      X = train_data_0[, ..features], 
+      Y = train_data_0$y,
+      tune.parameters = "all",
+      tune.num.trees = 500
+    )
+
+  test_X <- test_data[, ..features]
+  train_X <- train_data[, ..features]
+
+  #--------------------------
+  # T-learner
+  #--------------------------
+  y_hat_0 <- predict(rf_trained_0, newdata = test_X)$predictions
+  y_hat_1 <- predict(rf_trained_1, newdata = test_X)$predictions
+
+  theta_hat <- y_hat_1 - y_hat_0
+
+  return_data_T <-
+    data.table(
+      theta_true = test_data$theta_x,
+      theta_hat = theta_hat,
+      type = "T-learner"
+    )
+
+  #--------------------------
+  # X-learner
+  #--------------------------
+  mu_0_hat <- predict(rf_trained_0, newdata = train_data_1[, ..features])$predictions
+  train_data_1[, D := y - mu_0_hat]
+
+  mu_1_hat <- predict(rf_trained_1, newdata = train_data_0[, ..features])$predictions
+  train_data_0[, D := mu_1_hat - y]
+
+  rf_trained_D1 <-
+    regression_forest(
+      X = train_data_1[, ..features], 
+      Y = train_data_1$D,
+      tune.parameters = "all",
+      tune.num.trees = 500
+    )
+
+  rf_trained_D0 <-
+    regression_forest(
+      X = train_data_0[, ..features], 
+      Y = train_data_0$D,
+      tune.parameters = "all",
+      tune.num.trees = 500
+    )
+
+  rf_trained_T <-
+    probability_forest(
+      X = train_data[, ..features], 
+      Y = factor(train_data$t)
+    )
+
+  test_data[, pscore := predict(rf_trained_T, test_X)$predictions[, 2]]
+  test_data[, theta_1 := predict(rf_trained_D1, test_X)$predictions]
+  test_data[, theta_0 := predict(rf_trained_D0, test_X)$predictions]
+  test_data[, theta_hat := pscore * theta_0 + (1 - pscore) * theta_1]
+  
+  return_data_X <-
+    test_data[, .(theta_x, theta_hat)] %>% 
+    setnames("theta_x", "theta_true") %>% 
+    .[, type := "X-learner"]
+
+  #--------------------------
+  # combine and return
+  #--------------------------
+  return_data <- rbind(return_data_T, return_data_X)
+
+  (return_data)
+}
+
+cross_fit <- function(n, data_folds, features) 
+{
+  training_data <- analysis(data_folds[n, ]$splits[[1]])
+  eval_data <- assessment(data_folds[n, ]$splits[[1]])
+
+  #--------------------------
+  # E[Y|X]
+  #--------------------------
+  #=== train ===#
+  rf_trained_y <-
+    regression_forest(
+      X = training_data[, ..features], 
+      Y = training_data$y,
+      tune.parameters = "all",
+      tune.num.trees = 500
+    )
+
+  #=== fit ===#
+  y_hat_vec <- predict(rf_trained_y, eval_data[, ..features])$predictions
+  eval_data[, y_hat := y_hat_vec]
+
+  #--------------------------
+  # E[T|X]
+  #--------------------------
+  rf_trained_T <-
+    probability_forest(
+      X = training_data[, ..features], 
+      Y = factor(training_data$t)
+    )
+
+  t_hat_vec <- predict(rf_trained_T, eval_data[, ..features])$predictions[, 2]
+  eval_data[, t_hat := t_hat_vec]
+
+  return(eval_data[, .(id, y_hat, t_hat)])
+}
+
+r_learner_rf <- function(train_data, test_data, Kx){
+
+  features <- c(paste0("x", seq_len(Kx)))
+
+  data_folds <- rsample::vfold_cv(train_data, v = 6)
+
+  cross_fitted_data <-
+    lapply(
+      seq_len(nrow(data_folds)),
+      function(x) cross_fit(x, data_folds, features)
+    ) %>% 
+    rbindlist()
+
+  data_2nd <- 
+    cross_fitted_data[train_data, on = "id"] %>% 
+    .[, `:=`(
+      y_tilde = y - y_hat,
+      t_tilde = t - t_hat
+    )] %>% 
+    .[,`:=`(
+      weight = t_tilde^2,
+      y_to_t = y_tilde/t_tilde
+    )]
+
+  rf_trained <-
+    regression_forest(
+      X = data_2nd[, ..features], 
+      Y = data_2nd$y_to_t,
+      sample.weights = data_2nd$weight,
+      tune.parameters = "all",
+      tune.num.trees = 500
+    )
+
+  theta_hat <- predict(rf_trained, test_data[, ..features])$predictions
+
+  return_data <-
+    data.table(
+      theta_true = test_data$theta_x,
+      theta_hat = theta_hat,
+      type = "R-learner"
+    )
+
+  ggplot(data = return_data) + 
+    geom_point(aes(y = theta_true, x = theta_hat)) +
+    geom_abline(slope = 1) +
+    theme_bw() +
+    coord_equal()
+
+}
+
+```

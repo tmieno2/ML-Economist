@@ -96,6 +96,8 @@ data <-
   #=== g(X) ===#
   .[, g_x := x1^2 + log(x2 + 1) + 2 * x1 * x2] %>% 
   .[, y := theta_x * T + 2 * g_x + mu]
+
+# data[, .(theta_x, g_x)] %>% cor
 ```
 
 We implement S-learner and then causal forest.
@@ -219,6 +221,34 @@ te_data <-
   .[, T := TRUE] %>% 
   .[, y_hat_T1 := predict(rf_trained, data = .)$predictions] %>% 
   .[, theta_hat_s := y_hat_T1 - y_hat_T0]
+
+# rf_trained <-
+#     regression_forest(
+#       X = data[, .(T, x1, x2, x3)] %>% as.matrix(), 
+#       Y = data$y,
+#       tune.parameters = "all",
+#       tune.num.trees = 500
+#     )
+
+# te_data_s_wo <-
+#   copy(data) %>% 
+#   .[, T := FALSE] %>% 
+#   .[, y_hat_T0 := 
+#     predict(
+#       rf_trained, 
+#       newdata = .[, .(T, x1, x2, x3)] %>% as.matrix()
+#     )$predictions
+#   ] %>% 
+#   .[, T := TRUE] %>% 
+#   .[, y_hat_T1 := 
+#     predict(
+#       rf_trained, 
+#       newdata = .[, .(T, x1, x2, x3)] %>% as.matrix()
+#     )$predictions
+#   ] %>% 
+#   .[, theta_hat := y_hat_T1 - y_hat_T0] %>% 
+#   .[, learner := "S without interactions"] %>% 
+#   .[, .(learner, theta_x, theta_hat)] 
 
 #--------------------------
 # Causal forest

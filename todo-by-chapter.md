@@ -11,7 +11,8 @@
 # S-, X-, T-, and R-learner
 
 + [ ] performance comparison
-+ [ ] extensions to other GRF
 + [ ] implementation
++ [ ] r-learner by the package versus mine
++ [ ] cross-validation on r score
 
 
