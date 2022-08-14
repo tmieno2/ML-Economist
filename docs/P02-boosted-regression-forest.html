@@ -286,7 +286,7 @@ div.csl-indent {
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
-        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">C0P-causal-ml.qmd</a>
+        <a href="./C0P-causal-ml.html" class="sidebar-item-text sidebar-link">Causal Machine Learning (CML) Methods</a>
       <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
@@ -641,21 +641,21 @@ r_{i,b} = - \huge[\normalsize\frac{\partial L(y_i, f(x_i))}{\partial f(x_i)}\hug
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== see the MSE history ===#  </span></span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>gbm_fit<span class="sc">$</span>cv.error</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  [1] 1.2243528 1.1139719 1.0215202 0.9436246 0.8766572 0.8152658 0.7698759
-  [8] 0.7262623 0.6883937 0.6511721 0.6206925 0.5905561 0.5717081 0.5486969
- [15] 0.5329732 0.5181517 0.5057841 0.4871951 0.4804361 0.4682136 0.4554821
- [22] 0.4511540 0.4428885 0.4384436 0.4342596 0.4284958 0.4241013 0.4210649
- [29] 0.4168547 0.4133858 0.4106722 0.4087804 0.4074383 0.4036589 0.4027479
- [36] 0.4021035 0.4006859 0.3984964 0.3975167 0.3960598 0.3947615 0.3903773
- [43] 0.3894816 0.3876658 0.3861466 0.3846947 0.3831926 0.3813931 0.3810900
- [50] 0.3803180 0.3803114 0.3802443 0.3794819 0.3774949 0.3765138 0.3759664
- [57] 0.3772763 0.3766223 0.3779372 0.3774579 0.3761195 0.3763337 0.3744067
- [64] 0.3731305 0.3722248 0.3709644 0.3705061 0.3698544 0.3693110 0.3690058
- [71] 0.3696459 0.3690743 0.3703043 0.3692208 0.3691192 0.3692644 0.3693905
- [78] 0.3690833 0.3694410 0.3700307 0.3698180 0.3692292 0.3699958 0.3695956
- [85] 0.3692612 0.3697432 0.3688485 0.3692301 0.3686638 0.3683745 0.3683762
- [92] 0.3695444 0.3680860 0.3688281 0.3687956 0.3683033 0.3678365 0.3677957
- [99] 0.3668735 0.3670792</code></pre>
+<pre><code>  [1] 1.2285796 1.1125561 1.0191597 0.9383200 0.8652567 0.8136732 0.7576471
+  [8] 0.7147653 0.6728921 0.6352157 0.6095461 0.5856565 0.5626036 0.5392536
+ [15] 0.5215760 0.5043320 0.4901321 0.4806673 0.4674322 0.4597835 0.4522347
+ [22] 0.4439477 0.4377644 0.4324082 0.4261571 0.4211649 0.4173610 0.4153811
+ [29] 0.4112750 0.4084422 0.4042721 0.4034606 0.4019726 0.4008568 0.3973477
+ [36] 0.3943165 0.3933683 0.3917870 0.3909999 0.3889776 0.3884085 0.3858667
+ [43] 0.3863438 0.3855596 0.3866365 0.3850342 0.3839026 0.3823734 0.3820045
+ [50] 0.3812049 0.3805322 0.3804863 0.3788436 0.3782997 0.3769817 0.3761173
+ [57] 0.3750236 0.3765292 0.3760077 0.3749127 0.3755930 0.3742097 0.3737364
+ [64] 0.3733439 0.3739248 0.3743015 0.3743856 0.3742146 0.3752066 0.3762913
+ [71] 0.3756397 0.3764429 0.3753977 0.3762627 0.3762859 0.3753430 0.3765432
+ [78] 0.3764516 0.3757341 0.3769591 0.3773427 0.3765796 0.3759005 0.3748652
+ [85] 0.3747874 0.3747790 0.3747359 0.3747992 0.3743946 0.3739225 0.3735179
+ [92] 0.3733348 0.3740851 0.3752844 0.3763127 0.3743662 0.3736518 0.3728481
+ [99] 0.3741273 0.3754989</code></pre>
 </div>
 </div>
 <p>You can visualize the CV results using <code>gbm.perf()</code>.</p>
@@ -665,7 +665,7 @@ r_{i,b} = - \huge[\normalsize\frac{\partial L(y_i, f(x_i))}{\partial f(x_i)}\hug
 <p><img src="P02-boosted-regression-forest_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 99</code></pre>
+<pre><code>[1] 98</code></pre>
 </div>
 </div>
 <p>Note that it will tell you what the optimal number of trees is <span style="color:blue"> given </span> the values of the other hyper-parameters (here default values). If you want to tune other parameters as well, you need to program it yourself.</p>

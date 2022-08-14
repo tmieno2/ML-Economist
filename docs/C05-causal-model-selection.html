@@ -286,7 +286,7 @@ div.csl-indent {
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
-        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">C0P-causal-ml.qmd</a>
+        <a href="./C0P-causal-ml.html" class="sidebar-item-text sidebar-link">Causal Machine Learning (CML) Methods</a>
       <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
@@ -427,6 +427,7 @@ div.csl-indent {
    
   <ul>
   <li><a href="#hyper-parameter-tuning" id="toc-hyper-parameter-tuning" class="nav-link active" data-scroll-target="#hyper-parameter-tuning"> <span class="header-section-number">15.1</span> Hyper-parameter tuning</a></li>
+  <li><a href="#selecting-from-multiple-classes-of-models" id="toc-selecting-from-multiple-classes-of-models" class="nav-link" data-scroll-target="#selecting-from-multiple-classes-of-models"> <span class="header-section-number">15.2</span> Selecting from multiple classes of models</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/C05-causal-model-selection.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
@@ -483,7 +484,8 @@ Packages to load for replication
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(xgboost)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rlearner)</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rsample)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(grf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(grf)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmnet)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </div>
@@ -505,7 +507,7 @@ CV R-score v.s. non-CV R-score
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>It is important to use cross-validated R-score for causal model selection. Just like a regular predction task, the more over-fit the trained model is, the lower the R-score. Though nobody would do this, you could train a deep deep regression tree to perfectly fit the data, which would have R-score of zero.</p>
+<p>It is important to use cross-validated R-score for causal model selection especially when evaluating R-learners because they are trained to minimize the score. Just like regular prediction tasks, the more over-fit the trained model is, the lower the R-score. Though nobody would do this, you could train a deep deep regression tree to perfectly fit the data, which would have R-score of zero.</p>
 </div>
 </div>
 <div class="callout-important callout callout-style-default no-icon callout-captioned">
@@ -559,7 +561,7 @@ T_i &amp; = Bernouli(f(X_i))
 \begin{aligned}
 g(X_i) &amp; = sin(\pi X_{i,1}X_{i,2}) + 2(X_{i,3}-0.5)^2 + X_{i,4} + 0.5 X_{i,5}\\
 f(X_i) &amp; = max(0.1, min(sin(\pi X_{i,1}X_{i,2}), 0.9)) \\
-\theta(X_i) &amp; = (X_{i,1}, X_{i,2}) / 2 \\
+\theta(X_i) &amp; = (X_{i,1} + X_{i,2}) / 2 \\
 X_i &amp; \sim Uni(0,1)^5
 \end{aligned}
 \]</span></p>
@@ -582,45 +584,46 @@ X_i &amp; \sim Uni(0,1)^5
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">theta_x =</span> (x1<span class="sc">+</span>x2)<span class="sc">/</span><span class="dv">2</span></span>
 <span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    )] <span class="sc">%&gt;%</span> </span>
 <span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    .[, t <span class="sc">:</span><span class="er">=</span> <span class="fu">as.numeric</span>(<span class="fu">runif</span>(N) <span class="sc">&lt;</span> f_x)] <span class="sc">%&gt;%</span> </span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    .[, y <span class="sc">:</span><span class="er">=</span> theta_x <span class="sc">*</span> t <span class="sc">+</span> g_x <span class="sc">+</span> u] <span class="sc">%&gt;%</span> </span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    .[, id <span class="sc">:</span><span class="er">=</span> <span class="dv">1</span><span class="sc">:</span>.N]</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(data[])</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    .[, y_det <span class="sc">:</span><span class="er">=</span> theta_x <span class="sc">*</span> t <span class="sc">+</span> g_x] <span class="sc">%&gt;%</span> </span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    .[, y <span class="sc">:</span><span class="er">=</span> y_det <span class="sc">+</span> u] <span class="sc">%&gt;%</span> </span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    .[, id <span class="sc">:</span><span class="er">=</span> <span class="dv">1</span><span class="sc">:</span>.N]</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(data[])</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Let’s create a dataset according to the DGP (unfold the Code chunk above to see how <code>gen_data_A()</code> is defined).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">3902</span>)</span>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">78243</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>(</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">gen_data_A</span>(<span class="at">N =</span> <span class="dv">1000</span>, <span class="at">alpha =</span> <span class="dv">1</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">gen_data_A</span>(<span class="at">N =</span> <span class="dv">3000</span>, <span class="at">alpha =</span> <span class="dv">1</span>)</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>               x1         x2         x3        x4        x5           u
-   1: 0.007513039 0.70799070 0.63935035 0.1332254 0.5910971 -0.78964930
-   2: 0.914242202 0.18149616 0.26433458 0.3302693 0.1974051 -0.31930859
-   3: 0.126794281 0.07963803 0.53891011 0.4997507 0.0680080 -0.22386070
-   4: 0.760699596 0.35780360 0.09167342 0.5050781 0.7901413  1.42637504
-   5: 0.545880598 0.51506424 0.14318159 0.8863618 0.6702848 -0.35562144
-  ---                                                                  
- 996: 0.910995619 0.45019032 0.80306382 0.4950378 0.5662001  0.31233178
- 997: 0.248269612 0.11148860 0.69949689 0.9632919 0.8567960  0.15626977
- 998: 0.377520569 0.52232016 0.50791328 0.8914437 0.8009911  0.02817832
- 999: 0.993733563 0.56335044 0.54713554 0.9220233 0.7457467 -0.42881039
-1000: 0.956471322 0.73323965 0.81974550 0.3102260 0.4409497  0.17587225
-            g_x       f_x   theta_x t          y   id
-   1: 0.4843208 0.1000000 0.3577519 0 -0.3053285    1
-   2: 1.0380466 0.4979984 0.5478692 1  1.2666072    2
-   3: 0.5685001 0.1000000 0.1032162 0  0.3446394    3
-   4: 1.9882347 0.7546247 0.5592516 1  3.9738613    4
-   5: 2.2489812 0.7728382 0.5304724 1  2.4238321    5
-  ---                                                
- 996: 1.9222333 0.9000000 0.6805930 1  2.9151580  996
- 997: 1.5581352 0.1000000 0.1798791 0  1.7144050  997
- 998: 1.8726763 0.5806119 0.4499204 0  1.9008547  998
- 999: 2.2817331 0.9000000 0.7785420 1  2.6314647  999
-1000: 1.5417428 0.8065676 0.8448555 1  2.5624705 1000</code></pre>
+<pre><code>              x1        x2        x3          x4        x5           u
+   1: 0.05588738 0.5024586 0.3188849 0.141067147 0.5890057  0.35256999
+   2: 0.58004369 0.1415465 0.8959332 0.659352141 0.1904962  1.43250418
+   3: 0.41380275 0.1742095 0.6409846 0.006009018 0.1884889 -0.29099820
+   4: 0.45570715 0.4409627 0.8932784 0.734628277 0.6819363 -0.97072123
+   5: 0.06816778 0.6043697 0.3343660 0.272298360 0.4449831 -1.11073251
+  ---                                                                 
+2996: 0.36169880 0.6029558 0.6076527 0.597417750 0.1641424 -0.15304283
+2997: 0.44764874 0.5301874 0.5056252 0.410082290 0.4279445 -0.01657616
+2998: 0.85780794 0.1803200 0.1772361 0.390234048 0.3423721 -0.11284575
+2999: 0.33223800 0.6996797 0.9862959 0.034219362 0.9366175 -0.27970867
+3000: 0.22820071 0.0450673 0.2772332 0.188920311 0.7176262 -0.76964159
+            g_x       f_x   theta_x t     y_det           y   id
+   1: 0.5892803 0.1000000 0.2791730 0 0.5892803  0.94185028    1
+   2: 1.3232106 0.2550841 0.3607951 1 1.6840057  3.11650986    2
+   3: 0.3645481 0.2245413 0.2940061 0 0.3645481  0.07354994    3
+   4: 1.9751290 0.5901968 0.4483349 1 2.4234640  1.45274272    4
+   5: 0.6787271 0.1290680 0.3362688 0 0.6787271 -0.43200537    5
+  ---                                                           
+2996: 1.3354524 0.6327852 0.4823273 0 1.3354524  1.18240955 2996
+2997: 1.3025441 0.6784263 0.4889181 1 1.7914622  1.77488607 2997
+2998: 1.2368142 0.4670410 0.5190640 0 1.2368142  1.12396848 2998
+2999: 1.6425852 0.6670896 0.5159589 0 1.6425852  1.36287652 2999
+3000: 0.6792872 0.1000000 0.1366340 0 0.6792872 -0.09035435 3000</code></pre>
 </div>
 </div>
 <hr>
@@ -633,7 +636,7 @@ X_i &amp; \sim Uni(0,1)^5
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>rf_trained_y <span class="ot">&lt;-</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">regression_forest</span>(</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">X =</span> data[, .(x1, x2, x3, x4, x5)],</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Y =</span> data[, y],</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Y =</span> data[, y]</span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#=== out-of-bag prediction of Y ===#</span></span>
@@ -642,13 +645,16 @@ X_i &amp; \sim Uni(0,1)^5
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#=== calculate y_hat ===#</span></span>
 <span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>data[, y_tilde <span class="sc">:</span><span class="er">=</span> y <span class="sc">-</span> y_hat]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<div class="cell">
+
+</div>
 <blockquote class="blockquote">
 <p>Estimate <span class="math inline">\(E[T|X]\)</span> and calcualte <span class="math inline">\(\tilde{T}\)</span></p>
 </blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>rf_trained_t <span class="ot">&lt;-</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">probability_forest</span>(</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">X =</span> data[, .(x1, x2, x3, x4, x5)],</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">X =</span> data[, .(x1, x2, x2, x3, x4, x5)],</span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Y =</span> data[, <span class="fu">factor</span>(t)],</span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
@@ -657,6 +663,9 @@ X_i &amp; \sim Uni(0,1)^5
 <span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">#=== calculate t_hat ===#</span></span>
 <span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>data[, t_tilde <span class="sc">:</span><span class="er">=</span> t <span class="sc">-</span> t_hat]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+
 </div>
 <hr>
 <p><span style="color:blue"> Steps 2 and 3</span>:</p>
@@ -695,23 +704,23 @@ X_i &amp; \sim Uni(0,1)^5
 <div class="cell-output cell-output-stdout">
 <pre><code>#  5-fold cross-validation repeated 3 times 
 # A tibble: 15 × 3
-   splits            id      id2  
-   &lt;list&gt;            &lt;chr&gt;   &lt;chr&gt;
- 1 &lt;split [800/200]&gt; Repeat1 Fold1
- 2 &lt;split [800/200]&gt; Repeat1 Fold2
- 3 &lt;split [800/200]&gt; Repeat1 Fold3
- 4 &lt;split [800/200]&gt; Repeat1 Fold4
- 5 &lt;split [800/200]&gt; Repeat1 Fold5
- 6 &lt;split [800/200]&gt; Repeat2 Fold1
- 7 &lt;split [800/200]&gt; Repeat2 Fold2
- 8 &lt;split [800/200]&gt; Repeat2 Fold3
- 9 &lt;split [800/200]&gt; Repeat2 Fold4
-10 &lt;split [800/200]&gt; Repeat2 Fold5
-11 &lt;split [800/200]&gt; Repeat3 Fold1
-12 &lt;split [800/200]&gt; Repeat3 Fold2
-13 &lt;split [800/200]&gt; Repeat3 Fold3
-14 &lt;split [800/200]&gt; Repeat3 Fold4
-15 &lt;split [800/200]&gt; Repeat3 Fold5</code></pre>
+   splits             id      id2  
+   &lt;list&gt;             &lt;chr&gt;   &lt;chr&gt;
+ 1 &lt;split [2400/600]&gt; Repeat1 Fold1
+ 2 &lt;split [2400/600]&gt; Repeat1 Fold2
+ 3 &lt;split [2400/600]&gt; Repeat1 Fold3
+ 4 &lt;split [2400/600]&gt; Repeat1 Fold4
+ 5 &lt;split [2400/600]&gt; Repeat1 Fold5
+ 6 &lt;split [2400/600]&gt; Repeat2 Fold1
+ 7 &lt;split [2400/600]&gt; Repeat2 Fold2
+ 8 &lt;split [2400/600]&gt; Repeat2 Fold3
+ 9 &lt;split [2400/600]&gt; Repeat2 Fold4
+10 &lt;split [2400/600]&gt; Repeat2 Fold5
+11 &lt;split [2400/600]&gt; Repeat3 Fold1
+12 &lt;split [2400/600]&gt; Repeat3 Fold2
+13 &lt;split [2400/600]&gt; Repeat3 Fold3
+14 &lt;split [2400/600]&gt; Repeat3 Fold4
+15 &lt;split [2400/600]&gt; Repeat3 Fold5</code></pre>
 </div>
 </div>
 <p>The following function find R-score for a given fold and parameter set.</p>
@@ -763,25 +772,25 @@ X_i &amp; \sim Uni(0,1)^5
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_cv_rscore</span>(par_data[<span class="dv">1</span>, ])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      rscore fold mtry min.node.size sample.fraction
- 1: 195.6899    1    2             5             0.4
- 2: 211.1769    2    2             5             0.4
- 3: 218.0200    3    2             5             0.4
- 4: 258.9719    4    2             5             0.4
- 5: 256.5118    5    2             5             0.4
- 6: 219.3813    6    2             5             0.4
- 7: 229.2452    7    2             5             0.4
- 8: 229.2011    8    2             5             0.4
- 9: 217.9173    9    2             5             0.4
-10: 245.1381   10    2             5             0.4
-11: 235.8671   11    2             5             0.4
-12: 200.9591   12    2             5             0.4
-13: 243.4862   13    2             5             0.4
-14: 209.3847   14    2             5             0.4
-15: 253.9315   15    2             5             0.4</code></pre>
+ 1: 609.5867    1    2             5             0.4
+ 2: 625.8628    2    2             5             0.4
+ 3: 642.8026    3    2             5             0.4
+ 4: 592.2378    4    2             5             0.4
+ 5: 623.8983    5    2             5             0.4
+ 6: 658.4454    6    2             5             0.4
+ 7: 629.8173    7    2             5             0.4
+ 8: 603.9405    8    2             5             0.4
+ 9: 595.9709    9    2             5             0.4
+10: 606.0262   10    2             5             0.4
+11: 609.2626   11    2             5             0.4
+12: 637.8631   12    2             5             0.4
+13: 651.3631   13    2             5             0.4
+14: 582.6500   14    2             5             0.4
+15: 619.5787   15    2             5             0.4</code></pre>
 </div>
 </div>
 <p>Repeat this for all the rows of <code>par_data</code>,</p>
-<div class="cell" data-hash="C05-causal-model-selection_cache/html/unnamed-chunk-12_f0fbd4bc516ffbc72c92b95a5f85054f">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>cv_rscore <span class="ot">&lt;-</span></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
@@ -792,17 +801,17 @@ X_i &amp; \sim Uni(0,1)^5
 <span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       rscore fold mtry min.node.size sample.fraction
-  1: 196.3257    1    2             5             0.4
-  2: 211.1439    2    2             5             0.4
-  3: 218.3977    3    2             5             0.4
-  4: 259.2447    4    2             5             0.4
-  5: 256.8682    5    2             5             0.4
+  1: 609.3074    1    2             5             0.4
+  2: 625.9558    2    2             5             0.4
+  3: 642.9224    3    2             5             0.4
+  4: 591.9167    4    2             5             0.4
+  5: 623.8610    5    2             5             0.4
  ---                                                 
-176: 237.8386   11    5            20             0.5
-177: 200.5663   12    5            20             0.5
-178: 243.1586   13    5            20             0.5
-179: 209.3158   14    5            20             0.5
-180: 254.8623   15    5            20             0.5</code></pre>
+176: 609.3327   11    5            20             0.5
+177: 637.5821   12    5            20             0.5
+178: 652.7371   13    5            20             0.5
+179: 582.7777   14    5            20             0.5
+180: 620.8192   15    5            20             0.5</code></pre>
 </div>
 </div>
 <p>Taking the mean of R-score by parameter set,</p>
@@ -812,18 +821,18 @@ X_i &amp; \sim Uni(0,1)^5
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    mtry min.node.size sample.fraction   rscore
- 1:    2             5             0.4 228.4249
- 2:    5             5             0.4 228.3445
- 3:    2            10             0.4 228.5959
- 4:    5            10             0.4 228.4976
- 5:    2            20             0.4 229.2948
- 6:    5            20             0.4 229.2633
- 7:    2             5             0.5 228.2546
- 8:    5             5             0.5 228.3821
- 9:    2            10             0.5 228.5128
-10:    5            10             0.5 228.4779
-11:    2            20             0.5 229.0020
-12:    5            20             0.5 228.9412</code></pre>
+ 1:    2             5             0.4 619.2907
+ 2:    5             5             0.4 619.2949
+ 3:    2            10             0.4 619.4912
+ 4:    5            10             0.4 619.5872
+ 5:    2            20             0.4 619.8484
+ 6:    5            20             0.4 619.9799
+ 7:    2             5             0.5 619.3572
+ 8:    5             5             0.5 619.5302
+ 9:    2            10             0.5 619.4132
+10:    5            10             0.5 619.5597
+11:    2            20             0.5 619.7925
+12:    5            20             0.5 619.9107</code></pre>
 </div>
 </div>
 <hr>
@@ -831,11 +840,11 @@ X_i &amp; \sim Uni(0,1)^5
 <p>And, the best parameter set is</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>(</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>best_par <span class="ot">&lt;-</span> rscore[<span class="fu">which.min</span>(rscore), ]</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>best_par_cf <span class="ot">&lt;-</span> rscore[<span class="fu">which.min</span>(rscore), ]</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   mtry min.node.size sample.fraction   rscore
-1:    2             5             0.5 228.2546</code></pre>
+1:    2             5             0.4 619.2907</code></pre>
 </div>
 </div>
 <p>We now train a CF on the entire dataset.</p>
@@ -847,9 +856,9 @@ X_i &amp; \sim Uni(0,1)^5
 <span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">W =</span> data[, t],</span>
 <span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">Y.hat =</span> data[, y_hat],</span>
 <span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">W.hat =</span> data[, t_hat],</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">mtry =</span> best_par[, mtry],</span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">min.node.size =</span> best_par[, min.node.size],</span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">sample.fraction =</span> best_par[, sample.fraction]</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">mtry =</span> best_par_cf[, mtry],</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">min.node.size =</span> best_par_cf[, min.node.size],</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">sample.fraction =</span> best_par_cf[, sample.fraction]</span>
 <span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We now use this trained model to predict <span class="math inline">\(\theta(X)\)</span>.</p>
@@ -864,6 +873,202 @@ Tip
 </div>
 <div class="callout-body-container callout-body">
 <p>Note that <code>causal_forest()</code> lets you tune hyper-parameters using out-of-bag R-score internally, so you do not need to follow the process here in practice. See <a href="C03-cf-orf.html#sec-cf-tuning"><span>Section&nbsp;13.2.4</span></a> for how to specify tuning options for <code>causal_forest()</code>.</p>
+</div>
+</div>
+<p>Though, not necessary, we can find an <span class="math inline">\(R^2\)</span>-like score by contrasting the R-score of the trained model against the R-score based on a constant (non-heterogeneous) treatment effect estimate. Constant treatment effect can be obtained by solving the following equation with respect to <span class="math inline">\(\theta\)</span>.</p>
+<p><span class="math display">\[
+\begin{aligned}
+\sum_{i=1}^N \tilde{Y}_i - \theta\cdot \tilde{T}_i = 0
+\end{aligned}
+\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>theta_c <span class="ot">&lt;-</span> data[, <span class="fu">sum</span>(y_tilde)<span class="sc">/</span><span class="fu">sum</span>(t_tilde)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>R-score associated with <code>theta_c</code> is</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>rscore_base <span class="ot">&lt;-</span> data[, <span class="fu">sum</span>((y_tilde <span class="sc">-</span> theta_c <span class="sc">*</span> t_tilde)<span class="sc">^</span><span class="dv">2</span>)]</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3764.594</code></pre>
+</div>
+</div>
+<p>R-score for the trained CF model is</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>rscore_cf <span class="ot">&lt;-</span> data[, <span class="fu">sum</span>((y_tilde <span class="sc">-</span> cf_trained<span class="sc">$</span>predictions <span class="sc">*</span> t_tilde)<span class="sc">^</span><span class="dv">2</span>)]</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3095.919</code></pre>
+</div>
+</div>
+<p>The score of how well a CATE model performs in capturing the heterogeneity of treatment effect can be calculated as</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">-</span> rscore_cf<span class="sc">/</span>rscore_base</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.1776221</code></pre>
+</div>
+</div>
+<p>As you will see in <a href="PROG-P-03-model-selection.html#sec-python-causal-model-selection"><span>Section&nbsp;23.2</span></a>, this is the score <code>econml.score.RScorer</code> returns when evaluating CATE models.</p>
+<p>By the way, <a href="#fig-qua-cf">Figure&nbsp;<span>15.1</span></a> shows the quality of CATE estimates by the trained CF model.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> data[, theta_x], <span class="at">x =</span> cf_trained<span class="sc">$</span>predictions), <span class="at">size =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"True Treatmente Effect"</span>) <span class="sc">+</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Estimated Treatmente Effect"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-qua-cf" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="C05-causal-model-selection_files/figure-html/fig-qua-cf-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 15.1: Quality of CATE estimates by CF</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="selecting-from-multiple-classes-of-models" class="level2" data-number="15.2">
+<h2 data-number="15.2" class="anchored" data-anchor-id="selecting-from-multiple-classes-of-models"><span class="header-section-number">15.2</span> Selecting from multiple classes of models</h2>
+<p>If you are comparing models when they are all under the R-learner class, selecting a model is rather straight forward. You can simply repeat the hyper-parameter tuning procedures presented above for each model, find the best model (hyper-parameter values) for each class, and then find the best model among all the best (within each class) models.</p>
+<p>Let’s say you are also considering an R-learner in addition to CF presented above, where <span class="math inline">\(\theta(X)\)</span> is assumed to be a linear-in-parameter model of <span class="math inline">\(X\)</span>.</p>
+<p><span class="math display">\[
+\begin{aligned}
+\theta(X) = \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + \beta_4 x_4 + \beta_5 x_5
+\end{aligned}
+\]</span></p>
+<p>You are considering using LASSO for the second stage estimation. So, you are minimizing the following objective function.</p>
+<p><span class="math display">\[
+\begin{aligned}
+Min_{\beta_1,\dots, \beta_5}\sum_{i=1}^N [\tilde{Y}_i - (\beta_1 x_{i,1} + \beta_2 x_{i,2} + \beta_3 x_{i,3} + \beta_4 x_{i,4} + \beta_5 x_{i,5})\cdot \tilde{T}_i]^2 + \lambda |\beta|
+\end{aligned}
+\]</span></p>
+<p>where <span class="math inline">\(\lambda\)</span> is the penalization parameter and <span class="math inline">\(|\beta|\)</span> is the L1 norm.</p>
+<p>Here is the list of <span class="math inline">\(\lambda\)</span> values at which we evaluate LASSO as the second stage model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>lambda_ls <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.001</span>, <span class="fl">0.01</span>, <span class="fl">0.02</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We now conduct cross-validation to find the R-score for each value of <code>lambda_ls</code>. It is important to use the same <span class="math inline">\(\tilde{Y}\)</span> and <span class="math inline">\(\tilde{T}\)</span> data as the one used for CF. For that, we can simply use <code>data_folds</code>.</p>
+<p>The following function trains a LASSO for a given value of <span class="math inline">\(\lambda\)</span> and return cross-validated R-score.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>get_cv_rscore_np_lasso <span class="ot">&lt;-</span> <span class="cf">function</span>(n, lambda) {</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  training_data <span class="ot">&lt;-</span> <span class="fu">analysis</span>(data_folds[n, ]<span class="sc">$</span>splits[[<span class="dv">1</span>]])</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  eval_data <span class="ot">&lt;-</span> <span class="fu">assessment</span>(data_folds[n, ]<span class="sc">$</span>splits[[<span class="dv">1</span>]])</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  eval_data_mat <span class="ot">&lt;-</span> </span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>    eval_data[, .(x1, x2, x3, x4, x5)] <span class="sc">%&gt;%</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.matrix</span>()</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== train a CF model on training data ===#</span></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>  lasso_trained <span class="ot">&lt;-</span></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">glmnet</span>(</span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> training_data[, .(x1 <span class="sc">*</span> t_tilde, x2 <span class="sc">*</span> t_tilde, x3 <span class="sc">*</span> t_tilde, x4 <span class="sc">*</span> t_tilde, x5<span class="sc">*</span> t_tilde)],</span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> training_data[, y_tilde],</span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">lambda =</span> lambda</span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== predict theta(X) ===#</span></span>
+<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># note, you need to predict on X, not X *\ tilde{T} as you are interested in theta(X), not </span></span>
+<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># theta(X) * \tilde{T}</span></span>
+<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a>  theta_hat <span class="ot">&lt;-</span> </span>
+<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">predict</span>(</span>
+<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a>      lasso_trained, </span>
+<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a>      <span class="at">newx =</span> eval_data_mat</span>
+<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-27"><a href="#cb31-27" aria-hidden="true" tabindex="-1"></a>  rscore <span class="ot">&lt;-</span> eval_data[, <span class="fu">sum</span>((y_tilde <span class="sc">-</span> theta_hat <span class="sc">*</span> t_tilde)<span class="sc">^</span><span class="dv">2</span>)]</span>
+<span id="cb31-28"><a href="#cb31-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-29"><a href="#cb31-29" aria-hidden="true" tabindex="-1"></a>  return_data <span class="ot">&lt;-</span></span>
+<span id="cb31-30"><a href="#cb31-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.table</span>(</span>
+<span id="cb31-31"><a href="#cb31-31" aria-hidden="true" tabindex="-1"></a>      <span class="at">rscore =</span> rscore,</span>
+<span id="cb31-32"><a href="#cb31-32" aria-hidden="true" tabindex="-1"></a>      <span class="at">fold =</span> n,</span>
+<span id="cb31-33"><a href="#cb31-33" aria-hidden="true" tabindex="-1"></a>      <span class="at">lambda =</span> lambda</span>
+<span id="cb31-34"><a href="#cb31-34" aria-hidden="true" tabindex="-1"></a>    ) </span>
+<span id="cb31-35"><a href="#cb31-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-36"><a href="#cb31-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(return_data)</span>
+<span id="cb31-37"><a href="#cb31-37" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The following function calculates R-score for all the folds for a given value of <span class="math inline">\(\lambda\)</span>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>get_cv_rscore_lasso <span class="ot">&lt;-</span> <span class="cf">function</span>(lambda) {</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">seq_len</span>(<span class="fu">nrow</span>(data_folds)),</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(n) <span class="fu">get_cv_rscore_np_lasso</span>(n, lambda)</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbindlist</span>()</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>For example, for the first value of <span class="math inline">\(\lambda\)</span> in <code>lambda_ls</code>,</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_cv_rscore_lasso</span>(lambda_ls[<span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      rscore fold lambda
+ 1: 604.9262    1  0.001
+ 2: 629.5414    2  0.001
+ 3: 641.6540    3  0.001
+ 4: 593.4603    4  0.001
+ 5: 623.4632    5  0.001
+ 6: 656.1911    6  0.001
+ 7: 630.6406    7  0.001
+ 8: 604.0292    8  0.001
+ 9: 592.2011    9  0.001
+10: 608.1991   10  0.001
+11: 610.2925   11  0.001
+12: 635.8894   12  0.001
+13: 647.7679   13  0.001
+14: 581.4791   14  0.001
+15: 621.1256   15  0.001</code></pre>
+</div>
+</div>
+<p>Repeat this for all the rows of <code>par_data</code>, find the mean R-score by <span class="math inline">\(\lambda\)</span>, and find the best <span class="math inline">\(\lambda\)</span> value.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>cv_rscore_lasso <span class="ot">&lt;-</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    lambda_ls,</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) <span class="fu">get_cv_rscore_lasso</span>(x)</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbindlist</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>  .[, .(<span class="at">rscore =</span> <span class="fu">mean</span>(rscore)), <span class="at">by =</span> lambda] <span class="sc">%&gt;%</span> </span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>  .[<span class="fu">which.min</span>(rscore), ]</span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   lambda   rscore
+1:   0.01 618.3748</code></pre>
+</div>
+</div>
+<p>Remember the R-score associated with the best hyper-parameter values for CF is</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>best_par_cf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   mtry min.node.size sample.fraction   rscore
+1:    2             5             0.4 619.2907</code></pre>
+</div>
+</div>
+<p>So, in this case, we should go for LASSO with <span class="math inline">\(\lambda = 0.01\)</span>.</p>
+<p>Let’s train LASSO with <span class="math inline">\(\lambda = 0.01\)</span> using the whole dataset.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>lasso_trained <span class="ot">&lt;-</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glmnet</span>(</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> data[, .(x1 <span class="sc">*</span> t_tilde, x2 <span class="sc">*</span> t_tilde, x3 <span class="sc">*</span> t_tilde, x4 <span class="sc">*</span> t_tilde, x5<span class="sc">*</span> t_tilde)],</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> data[, y_tilde],</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">lambda =</span> cv_rscore_lasso[, lambda]</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(lasso_trained)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>6 x 1 sparse Matrix of class "dgCMatrix"
+                       s0
+(Intercept) -0.0008596708
+V1           0.3834599495
+V2           0.5372735528
+V3           .           
+V4           0.1326269912
+V5           .           </code></pre>
 </div>
 </div>
 </section>
@@ -1023,323 +1228,523 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb22" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Causal Model Selection</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>:::{.callout-important}</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="fu">## What you will learn</span></span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>How to tune hyper-parameters of a CATE model </span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>How to select a CATE model </span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>:::{.callout-note}</span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="fu">## Packages to load for replication</span></span>
-<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
-<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
-<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rsample)</span>
-<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(xgboost)</span>
-<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rlearner)</span>
-<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rsample)</span>
-<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(grf)</span>
-<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
-<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rsample)</span>
-<span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(xgboost)</span>
-<span id="cb22-37"><a href="#cb22-37" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rlearner)</span>
-<span id="cb22-38"><a href="#cb22-38" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rsample)</span>
-<span id="cb22-39"><a href="#cb22-39" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(grf)</span>
-<span id="cb22-40"><a href="#cb22-40" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-41"><a href="#cb22-41" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb22-42"><a href="#cb22-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-43"><a href="#cb22-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-44"><a href="#cb22-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-45"><a href="#cb22-45" aria-hidden="true" tabindex="-1"></a>Model selection can be done via cross-validated MSE as the criteria when your goal is prediction. However, when your interest is in finding the best causal ML model, MSE is clearly not an appropriate measure. Instead, R-score can be used. Let $\tilde{Y}_i$ and $\tilde{T}_i$ denote $Y_i - \hat{f}(X_i)$ and $T_i - \hat{g}(X_i)$, respectively, where $\hat{f}(X_i)$ and $\hat{f}(X_i)$ are the predicted values (preferably based on cross-fitting or out-of-bad predictions if forest-based estimation is used) of $Y_i$ and $T_i$ based on any appropriate machine learning methods in the first stage of DML. Further, let $\hat{\theta}(X)$ denote CATE estimates by a CATE estimator (e.g., causal forest, X-learner)</span>
-<span id="cb22-46"><a href="#cb22-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-47"><a href="#cb22-47" aria-hidden="true" tabindex="-1"></a>R-score is written as follows:</span>
-<span id="cb22-48"><a href="#cb22-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-49"><a href="#cb22-49" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb22-50"><a href="#cb22-50" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
-<span id="cb22-51"><a href="#cb22-51" aria-hidden="true" tabindex="-1"></a>\sum_{i=1}^N <span class="co">[</span><span class="ot">\tilde{Y}_i - \hat{\theta}(X)\cdot \tilde{T}_i</span><span class="co">]</span>^2</span>
-<span id="cb22-52"><a href="#cb22-52" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
-<span id="cb22-53"><a href="#cb22-53" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb22-54"><a href="#cb22-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-55"><a href="#cb22-55" aria-hidden="true" tabindex="-1"></a>So, this is just the objective function of the second stage estimation of R-learner (DML) without the regularlization term with CATE estimates plugged in. @nie_quasi-oracle_2021 suggested using cross-validated R-score to select the model for CATE estimation. </span>
-<span id="cb22-56"><a href="#cb22-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-57"><a href="#cb22-57" aria-hidden="true" tabindex="-1"></a>:::{.callout-important}</span>
-<span id="cb22-58"><a href="#cb22-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-59"><a href="#cb22-59" aria-hidden="true" tabindex="-1"></a><span class="fu">## CV R-score v.s. non-CV R-score</span></span>
-<span id="cb22-60"><a href="#cb22-60" aria-hidden="true" tabindex="-1"></a>It is important to use cross-validated R-score for causal model selection. Just like a regular predction task, the more over-fit the trained model is, the lower the R-score. Though nobody would do this, you could train a deep deep regression tree to perfectly fit the data, which would have R-score of zero.</span>
-<span id="cb22-61"><a href="#cb22-61" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb22-62"><a href="#cb22-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-63"><a href="#cb22-63" aria-hidden="true" tabindex="-1"></a>:::{.callout-important}</span>
-<span id="cb22-64"><a href="#cb22-64" aria-hidden="true" tabindex="-1"></a>Causal model selection on R-score is conditional on the choice of modeling decisions made at the first stage of DML. That is, R-score measures how well the final stage estimation performed <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> given the first stage estimation<span class="kw">&lt;/span&gt;</span> (or the same $\tilde{Y}$ and $\tilde{T}$ data). When comparing R-score from different models, all of them should use the same $\tilde{Y}$ and $\tilde{T}$ data.</span>
-<span id="cb22-65"><a href="#cb22-65" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb22-66"><a href="#cb22-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-67"><a href="#cb22-67" aria-hidden="true" tabindex="-1"></a>Depending on whether you are selecting a model within the same model class (hyper-parameter tuning) or selecting a model among different classes of models (hyper-parameter tuning and model selection), procedures you follow are different.</span>
-<span id="cb22-68"><a href="#cb22-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-69"><a href="#cb22-69" aria-hidden="true" tabindex="-1"></a><span class="fu">## Hyper-parameter tuning </span></span>
-<span id="cb22-70"><a href="#cb22-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-71"><a href="#cb22-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-72"><a href="#cb22-72" aria-hidden="true" tabindex="-1"></a>:::{.callout-note}</span>
-<span id="cb22-73"><a href="#cb22-73" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-74"><a href="#cb22-74" aria-hidden="true" tabindex="-1"></a><span class="fu">## Causal model selection steps</span></span>
-<span id="cb22-75"><a href="#cb22-75" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-76"><a href="#cb22-76" aria-hidden="true" tabindex="-1"></a>For a given class of R-learner model you have chosen to use,</span>
-<span id="cb22-77"><a href="#cb22-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-78"><a href="#cb22-78" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Implement first stage estimations with cross-validation and calculate $\tilde{Y}_i$ and $\tilde{X}_i$.</span>
-<span id="cb22-79"><a href="#cb22-79" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Create a list of models with different hyper-parameter values under the same model class </span>
-<span id="cb22-80"><a href="#cb22-80" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>For each of the models, find cross-validated R-score</span>
-<span id="cb22-81"><a href="#cb22-81" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Select the model with the lowest R-score</span>
-<span id="cb22-82"><a href="#cb22-82" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Train the model on the whole data with the hyper-parameter value set chosen above </span>
-<span id="cb22-83"><a href="#cb22-83" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-84"><a href="#cb22-84" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb22-85"><a href="#cb22-85" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-86"><a href="#cb22-86" aria-hidden="true" tabindex="-1"></a>Let's go thorough these processes using a simple example. We use the following DGP:</span>
-<span id="cb22-87"><a href="#cb22-87" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-88"><a href="#cb22-88" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
-<span id="cb22-89"><a href="#cb22-89" aria-hidden="true" tabindex="-1"></a>This is the same DGP as DGP A in @sec-comp-learners.</span>
-<span id="cb22-90"><a href="#cb22-90" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb22-91"><a href="#cb22-91" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-92"><a href="#cb22-92" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb22-93"><a href="#cb22-93" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
-<span id="cb22-94"><a href="#cb22-94" aria-hidden="true" tabindex="-1"></a>Y_i &amp; =\theta(X_i)\cdot T + \alpha\cdot g(X_i) + \mu_i <span class="sc">\\</span></span>
-<span id="cb22-95"><a href="#cb22-95" aria-hidden="true" tabindex="-1"></a>T_i &amp; = Bernouli(f(X_i))</span>
-<span id="cb22-96"><a href="#cb22-96" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
-<span id="cb22-97"><a href="#cb22-97" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb22-98"><a href="#cb22-98" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-99"><a href="#cb22-99" aria-hidden="true" tabindex="-1"></a>, where</span>
-<span id="cb22-100"><a href="#cb22-100" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb22-101"><a href="#cb22-101" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
-<span id="cb22-102"><a href="#cb22-102" aria-hidden="true" tabindex="-1"></a>g(X_i) &amp; = sin(\pi X_{i,1}X_{i,2}) + 2(X_{i,3}-0.5)^2 + X_{i,4} + 0.5 X_{i,5}<span class="sc">\\</span></span>
-<span id="cb22-103"><a href="#cb22-103" aria-hidden="true" tabindex="-1"></a>f(X_i) &amp; = max(0.1, min(sin(\pi X_{i,1}X_{i,2}), 0.9)) <span class="sc">\\</span></span>
-<span id="cb22-104"><a href="#cb22-104" aria-hidden="true" tabindex="-1"></a>\theta(X_i) &amp; = (X_{i,1}, X_{i,2}) / 2 <span class="sc">\\</span></span>
-<span id="cb22-105"><a href="#cb22-105" aria-hidden="true" tabindex="-1"></a>X_i &amp; \sim Uni(0,1)^5</span>
-<span id="cb22-106"><a href="#cb22-106" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
-<span id="cb22-107"><a href="#cb22-107" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb22-108"><a href="#cb22-108" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-111"><a href="#cb22-111" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-112"><a href="#cb22-112" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
-<span id="cb22-113"><a href="#cb22-113" aria-hidden="true" tabindex="-1"></a>gen_data_A <span class="ot">&lt;-</span> <span class="cf">function</span>(N, alpha){</span>
-<span id="cb22-114"><a href="#cb22-114" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span></span>
-<span id="cb22-115"><a href="#cb22-115" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.table</span>(</span>
-<span id="cb22-116"><a href="#cb22-116" aria-hidden="true" tabindex="-1"></a>      <span class="at">x1 =</span> <span class="fu">runif</span>(N),</span>
-<span id="cb22-117"><a href="#cb22-117" aria-hidden="true" tabindex="-1"></a>      <span class="at">x2 =</span> <span class="fu">runif</span>(N),</span>
-<span id="cb22-118"><a href="#cb22-118" aria-hidden="true" tabindex="-1"></a>      <span class="at">x3 =</span> <span class="fu">runif</span>(N),</span>
-<span id="cb22-119"><a href="#cb22-119" aria-hidden="true" tabindex="-1"></a>      <span class="at">x4 =</span> <span class="fu">runif</span>(N),</span>
-<span id="cb22-120"><a href="#cb22-120" aria-hidden="true" tabindex="-1"></a>      <span class="at">x5 =</span> <span class="fu">runif</span>(N),</span>
-<span id="cb22-121"><a href="#cb22-121" aria-hidden="true" tabindex="-1"></a>      <span class="at">u =</span> <span class="fu">rnorm</span>(N)</span>
-<span id="cb22-122"><a href="#cb22-122" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
-<span id="cb22-123"><a href="#cb22-123" aria-hidden="true" tabindex="-1"></a>    .[, <span class="st">`</span><span class="at">:=</span><span class="st">`</span>(</span>
-<span id="cb22-124"><a href="#cb22-124" aria-hidden="true" tabindex="-1"></a>      <span class="at">g_x =</span> alpha <span class="sc">*</span> (<span class="fu">sin</span>(pi <span class="sc">*</span> x1<span class="sc">*</span>x2) <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>(x3<span class="fl">-0.5</span>)<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> x4 <span class="sc">+</span> <span class="fl">0.5</span><span class="sc">*</span>x5),</span>
-<span id="cb22-125"><a href="#cb22-125" aria-hidden="true" tabindex="-1"></a>      <span class="at">f_x =</span> <span class="fu">pmax</span>(<span class="fl">0.1</span>, <span class="fu">pmin</span>(<span class="fu">sin</span>(pi <span class="sc">*</span> x1<span class="sc">*</span>x2), <span class="fl">0.9</span>)),</span>
-<span id="cb22-126"><a href="#cb22-126" aria-hidden="true" tabindex="-1"></a>      <span class="at">theta_x =</span> (x1<span class="sc">+</span>x2)<span class="sc">/</span><span class="dv">2</span></span>
-<span id="cb22-127"><a href="#cb22-127" aria-hidden="true" tabindex="-1"></a>    )] <span class="sc">%&gt;%</span> </span>
-<span id="cb22-128"><a href="#cb22-128" aria-hidden="true" tabindex="-1"></a>    .[, t <span class="sc">:</span><span class="er">=</span> <span class="fu">as.numeric</span>(<span class="fu">runif</span>(N) <span class="sc">&lt;</span> f_x)] <span class="sc">%&gt;%</span> </span>
-<span id="cb22-129"><a href="#cb22-129" aria-hidden="true" tabindex="-1"></a>    .[, y <span class="sc">:</span><span class="er">=</span> theta_x <span class="sc">*</span> t <span class="sc">+</span> g_x <span class="sc">+</span> u] <span class="sc">%&gt;%</span> </span>
-<span id="cb22-130"><a href="#cb22-130" aria-hidden="true" tabindex="-1"></a>    .[, id <span class="sc">:</span><span class="er">=</span> <span class="dv">1</span><span class="sc">:</span>.N]</span>
-<span id="cb22-131"><a href="#cb22-131" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-132"><a href="#cb22-132" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(data[])</span>
-<span id="cb22-133"><a href="#cb22-133" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb22-134"><a href="#cb22-134" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-135"><a href="#cb22-135" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-136"><a href="#cb22-136" aria-hidden="true" tabindex="-1"></a>Let's create a dataset according to the DGP (unfold the Code chunk above to see how <span class="in">`gen_data_A()`</span> is defined).</span>
-<span id="cb22-137"><a href="#cb22-137" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-140"><a href="#cb22-140" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-141"><a href="#cb22-141" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">3902</span>)</span>
-<span id="cb22-142"><a href="#cb22-142" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-143"><a href="#cb22-143" aria-hidden="true" tabindex="-1"></a>(</span>
-<span id="cb22-144"><a href="#cb22-144" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">gen_data_A</span>(<span class="at">N =</span> <span class="dv">1000</span>, <span class="at">alpha =</span> <span class="dv">1</span>)</span>
-<span id="cb22-145"><a href="#cb22-145" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-146"><a href="#cb22-146" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-147"><a href="#cb22-147" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-148"><a href="#cb22-148" aria-hidden="true" tabindex="-1"></a>---</span>
-<span id="cb22-149"><a href="#cb22-149" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-150"><a href="#cb22-150" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> Step 1 <span class="kw">&lt;/span&gt;</span>:</span>
-<span id="cb22-151"><a href="#cb22-151" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-152"><a href="#cb22-152" aria-hidden="true" tabindex="-1"></a>We use random forest implemented by <span class="in">`regression_forest()`</span> and  <span class="in">`probability_forest()`</span> by the <span class="in">`grf`</span> package to estimate $E<span class="co">[</span><span class="ot">Y|X</span><span class="co">]</span>$ and $E<span class="co">[</span><span class="ot">T|X</span><span class="co">]</span>$, respectively. For the sake of space and simplicity, we will not conduct cross-validation to tune hyper-parameters for these models in this example (hyper-parameter tuning via cross-validation of the first-stage estimation is covered in @sec-model-selection).</span>
-<span id="cb22-153"><a href="#cb22-153" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-154"><a href="#cb22-154" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; Estimate $E</span><span class="co">[</span><span class="ot">Y|X</span><span class="co">]</span><span class="at">$ and calculate $\tilde{Y}$</span></span>
-<span id="cb22-155"><a href="#cb22-155" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-158"><a href="#cb22-158" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-159"><a href="#cb22-159" aria-hidden="true" tabindex="-1"></a>rf_trained_y <span class="ot">&lt;-</span></span>
-<span id="cb22-160"><a href="#cb22-160" aria-hidden="true" tabindex="-1"></a>  <span class="fu">regression_forest</span>(</span>
-<span id="cb22-161"><a href="#cb22-161" aria-hidden="true" tabindex="-1"></a>    <span class="at">X =</span> data[, .(x1, x2, x3, x4, x5)],</span>
-<span id="cb22-162"><a href="#cb22-162" aria-hidden="true" tabindex="-1"></a>    <span class="at">Y =</span> data[, y],</span>
-<span id="cb22-163"><a href="#cb22-163" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb22-164"><a href="#cb22-164" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-165"><a href="#cb22-165" aria-hidden="true" tabindex="-1"></a><span class="co">#=== out-of-bag prediction of Y ===#</span></span>
-<span id="cb22-166"><a href="#cb22-166" aria-hidden="true" tabindex="-1"></a>data[, y_hat <span class="sc">:</span><span class="er">=</span> rf_trained_y<span class="sc">$</span>predictions]</span>
-<span id="cb22-167"><a href="#cb22-167" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-168"><a href="#cb22-168" aria-hidden="true" tabindex="-1"></a><span class="co">#=== calculate y_hat ===#</span></span>
-<span id="cb22-169"><a href="#cb22-169" aria-hidden="true" tabindex="-1"></a>data[, y_tilde <span class="sc">:</span><span class="er">=</span> y <span class="sc">-</span> y_hat]</span>
-<span id="cb22-170"><a href="#cb22-170" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-171"><a href="#cb22-171" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-172"><a href="#cb22-172" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; Estimate $E</span><span class="co">[</span><span class="ot">T|X</span><span class="co">]</span><span class="at">$ and calcualte $\tilde{T}$</span></span>
-<span id="cb22-173"><a href="#cb22-173" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-176"><a href="#cb22-176" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-177"><a href="#cb22-177" aria-hidden="true" tabindex="-1"></a>rf_trained_t <span class="ot">&lt;-</span></span>
-<span id="cb22-178"><a href="#cb22-178" aria-hidden="true" tabindex="-1"></a>  <span class="fu">probability_forest</span>(</span>
-<span id="cb22-179"><a href="#cb22-179" aria-hidden="true" tabindex="-1"></a>    <span class="at">X =</span> data[, .(x1, x2, x3, x4, x5)],</span>
-<span id="cb22-180"><a href="#cb22-180" aria-hidden="true" tabindex="-1"></a>    <span class="at">Y =</span> data[, <span class="fu">factor</span>(t)],</span>
-<span id="cb22-181"><a href="#cb22-181" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb22-182"><a href="#cb22-182" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-183"><a href="#cb22-183" aria-hidden="true" tabindex="-1"></a><span class="co">#=== out-of-bag prediction of T ===#</span></span>
-<span id="cb22-184"><a href="#cb22-184" aria-hidden="true" tabindex="-1"></a>data[, t_hat <span class="sc">:</span><span class="er">=</span> rf_trained_t<span class="sc">$</span>predictions[, <span class="dv">2</span>]]</span>
-<span id="cb22-185"><a href="#cb22-185" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-186"><a href="#cb22-186" aria-hidden="true" tabindex="-1"></a><span class="co">#=== calculate t_hat ===#</span></span>
-<span id="cb22-187"><a href="#cb22-187" aria-hidden="true" tabindex="-1"></a>data[, t_tilde <span class="sc">:</span><span class="er">=</span> t <span class="sc">-</span> t_hat]</span>
-<span id="cb22-188"><a href="#cb22-188" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-189"><a href="#cb22-189" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-190"><a href="#cb22-190" aria-hidden="true" tabindex="-1"></a>---</span>
-<span id="cb22-191"><a href="#cb22-191" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-192"><a href="#cb22-192" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> Steps 2 and 3<span class="kw">&lt;/span&gt;</span>:</span>
-<span id="cb22-193"><a href="#cb22-193" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-194"><a href="#cb22-194" aria-hidden="true" tabindex="-1"></a>Suppose we have determined that we use causal forest for the second stage CATE estimation. Here is the list of hyper-parameter value sets we will examine in this example.</span>
-<span id="cb22-195"><a href="#cb22-195" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-198"><a href="#cb22-198" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-199"><a href="#cb22-199" aria-hidden="true" tabindex="-1"></a>(</span>
-<span id="cb22-200"><a href="#cb22-200" aria-hidden="true" tabindex="-1"></a>par_data <span class="ot">&lt;-</span></span>
-<span id="cb22-201"><a href="#cb22-201" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expand.grid</span>(</span>
-<span id="cb22-202"><a href="#cb22-202" aria-hidden="true" tabindex="-1"></a>    <span class="at">mtry =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">5</span>),</span>
-<span id="cb22-203"><a href="#cb22-203" aria-hidden="true" tabindex="-1"></a>    <span class="at">min.node.size =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">20</span>),</span>
-<span id="cb22-204"><a href="#cb22-204" aria-hidden="true" tabindex="-1"></a>    <span class="at">sample.fraction =</span> <span class="fu">c</span>(<span class="fl">0.4</span>, <span class="fl">0.5</span>)</span>
-<span id="cb22-205"><a href="#cb22-205" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb22-206"><a href="#cb22-206" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>()</span>
-<span id="cb22-207"><a href="#cb22-207" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-208"><a href="#cb22-208" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-209"><a href="#cb22-209" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-210"><a href="#cb22-210" aria-hidden="true" tabindex="-1"></a>For each of the parameter sets, we will find a cross-validated R-score. We use 5-fold cross validation repeated 3 times.</span>
-<span id="cb22-211"><a href="#cb22-211" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-214"><a href="#cb22-214" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-215"><a href="#cb22-215" aria-hidden="true" tabindex="-1"></a>(</span>
-<span id="cb22-216"><a href="#cb22-216" aria-hidden="true" tabindex="-1"></a>data_folds <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(data, <span class="at">v =</span> <span class="dv">5</span>, <span class="at">repeats =</span> <span class="dv">3</span>) </span>
-<span id="cb22-217"><a href="#cb22-217" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-218"><a href="#cb22-218" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-219"><a href="#cb22-219" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-220"><a href="#cb22-220" aria-hidden="true" tabindex="-1"></a>The following function find R-score for a given fold and parameter set.</span>
-<span id="cb22-221"><a href="#cb22-221" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-224"><a href="#cb22-224" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-225"><a href="#cb22-225" aria-hidden="true" tabindex="-1"></a>get_cv_rscore_np <span class="ot">&lt;-</span> <span class="cf">function</span>(n, parameters) {</span>
-<span id="cb22-226"><a href="#cb22-226" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-227"><a href="#cb22-227" aria-hidden="true" tabindex="-1"></a>  training_data <span class="ot">&lt;-</span> <span class="fu">analysis</span>(data_folds[n, ]<span class="sc">$</span>splits[[<span class="dv">1</span>]])</span>
-<span id="cb22-228"><a href="#cb22-228" aria-hidden="true" tabindex="-1"></a>  eval_data <span class="ot">&lt;-</span> <span class="fu">assessment</span>(data_folds[n, ]<span class="sc">$</span>splits[[<span class="dv">1</span>]])</span>
-<span id="cb22-229"><a href="#cb22-229" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-230"><a href="#cb22-230" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== train a CF model on training data ===#</span></span>
-<span id="cb22-231"><a href="#cb22-231" aria-hidden="true" tabindex="-1"></a>  cf_trained <span class="ot">&lt;-</span></span>
-<span id="cb22-232"><a href="#cb22-232" aria-hidden="true" tabindex="-1"></a>    <span class="fu">causal_forest</span>(</span>
-<span id="cb22-233"><a href="#cb22-233" aria-hidden="true" tabindex="-1"></a>      <span class="at">X =</span> training_data[, .(x1, x2, x3, x4, x5)],</span>
-<span id="cb22-234"><a href="#cb22-234" aria-hidden="true" tabindex="-1"></a>      <span class="at">Y =</span> training_data[, y],</span>
-<span id="cb22-235"><a href="#cb22-235" aria-hidden="true" tabindex="-1"></a>      <span class="at">W =</span> training_data[, t],</span>
-<span id="cb22-236"><a href="#cb22-236" aria-hidden="true" tabindex="-1"></a>      <span class="at">Y.hat =</span> training_data[, y_hat],</span>
-<span id="cb22-237"><a href="#cb22-237" aria-hidden="true" tabindex="-1"></a>      <span class="at">W.hat =</span> training_data[, t_hat],</span>
-<span id="cb22-238"><a href="#cb22-238" aria-hidden="true" tabindex="-1"></a>      <span class="at">mtry =</span> parameters[, mtry],</span>
-<span id="cb22-239"><a href="#cb22-239" aria-hidden="true" tabindex="-1"></a>      <span class="at">min.node.size =</span> parameters[, min.node.size],</span>
-<span id="cb22-240"><a href="#cb22-240" aria-hidden="true" tabindex="-1"></a>      <span class="at">sample.fraction =</span> parameters[, sample.fraction]</span>
-<span id="cb22-241"><a href="#cb22-241" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb22-242"><a href="#cb22-242" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-243"><a href="#cb22-243" aria-hidden="true" tabindex="-1"></a>  theta_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(cf_trained, eval_data[, .(x1, x2, x3, x4, x5)])</span>
-<span id="cb22-244"><a href="#cb22-244" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-245"><a href="#cb22-245" aria-hidden="true" tabindex="-1"></a>  rscore <span class="ot">&lt;-</span> eval_data[, <span class="fu">sum</span>((y_tilde <span class="sc">-</span> theta_hat <span class="sc">*</span> t_tilde)<span class="sc">^</span><span class="dv">2</span>)]</span>
-<span id="cb22-246"><a href="#cb22-246" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-247"><a href="#cb22-247" aria-hidden="true" tabindex="-1"></a>  return_data <span class="ot">&lt;-</span></span>
-<span id="cb22-248"><a href="#cb22-248" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.table</span>(</span>
-<span id="cb22-249"><a href="#cb22-249" aria-hidden="true" tabindex="-1"></a>      <span class="at">rscore =</span> rscore,</span>
-<span id="cb22-250"><a href="#cb22-250" aria-hidden="true" tabindex="-1"></a>      <span class="at">fold =</span> n</span>
-<span id="cb22-251"><a href="#cb22-251" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
-<span id="cb22-252"><a href="#cb22-252" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cbind</span>(., parameters)</span>
-<span id="cb22-253"><a href="#cb22-253" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-254"><a href="#cb22-254" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(return_data)</span>
-<span id="cb22-255"><a href="#cb22-255" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb22-256"><a href="#cb22-256" aria-hidden="true" tabindex="-1"></a><span class="in">```</span> </span>
-<span id="cb22-257"><a href="#cb22-257" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-258"><a href="#cb22-258" aria-hidden="true" tabindex="-1"></a>The following function calculates R-score for all the folds for a given parameter set.</span>
-<span id="cb22-259"><a href="#cb22-259" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-262"><a href="#cb22-262" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-263"><a href="#cb22-263" aria-hidden="true" tabindex="-1"></a>get_cv_rscore <span class="ot">&lt;-</span> <span class="cf">function</span>(parameters) {</span>
-<span id="cb22-264"><a href="#cb22-264" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
-<span id="cb22-265"><a href="#cb22-265" aria-hidden="true" tabindex="-1"></a>    <span class="fu">seq_len</span>(<span class="fu">nrow</span>(data_folds)),</span>
-<span id="cb22-266"><a href="#cb22-266" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(n) <span class="fu">get_cv_rscore_np</span>(n, parameters)</span>
-<span id="cb22-267"><a href="#cb22-267" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb22-268"><a href="#cb22-268" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbindlist</span>()</span>
-<span id="cb22-269"><a href="#cb22-269" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb22-270"><a href="#cb22-270" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-271"><a href="#cb22-271" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-272"><a href="#cb22-272" aria-hidden="true" tabindex="-1"></a>For example, for the parameter set at the first row of <span class="in">`par_data`</span>,</span>
-<span id="cb22-273"><a href="#cb22-273" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-276"><a href="#cb22-276" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-277"><a href="#cb22-277" aria-hidden="true" tabindex="-1"></a><span class="fu">get_cv_rscore</span>(par_data[<span class="dv">1</span>, ])</span>
-<span id="cb22-278"><a href="#cb22-278" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-279"><a href="#cb22-279" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-280"><a href="#cb22-280" aria-hidden="true" tabindex="-1"></a>Repeat this for all the rows of <span class="in">`par_data`</span>,</span>
-<span id="cb22-281"><a href="#cb22-281" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-284"><a href="#cb22-284" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-285"><a href="#cb22-285" aria-hidden="true" tabindex="-1"></a><span class="co">#| cache: true</span></span>
-<span id="cb22-286"><a href="#cb22-286" aria-hidden="true" tabindex="-1"></a>(</span>
-<span id="cb22-287"><a href="#cb22-287" aria-hidden="true" tabindex="-1"></a>cv_rscore <span class="ot">&lt;-</span></span>
-<span id="cb22-288"><a href="#cb22-288" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
-<span id="cb22-289"><a href="#cb22-289" aria-hidden="true" tabindex="-1"></a>    <span class="fu">seq_len</span>(<span class="fu">nrow</span>(par_data)),</span>
-<span id="cb22-290"><a href="#cb22-290" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) <span class="fu">get_cv_rscore</span>(par_data[x, ])</span>
-<span id="cb22-291"><a href="#cb22-291" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb22-292"><a href="#cb22-292" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbindlist</span>()</span>
-<span id="cb22-293"><a href="#cb22-293" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-294"><a href="#cb22-294" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-295"><a href="#cb22-295" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-296"><a href="#cb22-296" aria-hidden="true" tabindex="-1"></a>Taking the mean of R-score by parameter set,</span>
-<span id="cb22-297"><a href="#cb22-297" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-300"><a href="#cb22-300" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-301"><a href="#cb22-301" aria-hidden="true" tabindex="-1"></a>(</span>
-<span id="cb22-302"><a href="#cb22-302" aria-hidden="true" tabindex="-1"></a>rscore <span class="ot">&lt;-</span> cv_rscore[, .(<span class="at">rscore =</span> <span class="fu">mean</span>(rscore)), <span class="at">by =</span> .(mtry, min.node.size, sample.fraction)]</span>
-<span id="cb22-303"><a href="#cb22-303" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-304"><a href="#cb22-304" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-305"><a href="#cb22-305" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-306"><a href="#cb22-306" aria-hidden="true" tabindex="-1"></a>---</span>
-<span id="cb22-307"><a href="#cb22-307" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-308"><a href="#cb22-308" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> Steps 4 and 5 <span class="kw">&lt;/span&gt;</span>:</span>
-<span id="cb22-309"><a href="#cb22-309" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-310"><a href="#cb22-310" aria-hidden="true" tabindex="-1"></a>And, the best parameter set is</span>
-<span id="cb22-311"><a href="#cb22-311" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-314"><a href="#cb22-314" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-315"><a href="#cb22-315" aria-hidden="true" tabindex="-1"></a>(</span>
-<span id="cb22-316"><a href="#cb22-316" aria-hidden="true" tabindex="-1"></a>best_par <span class="ot">&lt;-</span> rscore[<span class="fu">which.min</span>(rscore), ]</span>
-<span id="cb22-317"><a href="#cb22-317" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-318"><a href="#cb22-318" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-319"><a href="#cb22-319" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-320"><a href="#cb22-320" aria-hidden="true" tabindex="-1"></a>We now train a CF on the entire dataset. </span>
-<span id="cb22-321"><a href="#cb22-321" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-324"><a href="#cb22-324" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-325"><a href="#cb22-325" aria-hidden="true" tabindex="-1"></a>cf_trained <span class="ot">&lt;-</span></span>
-<span id="cb22-326"><a href="#cb22-326" aria-hidden="true" tabindex="-1"></a>  <span class="fu">causal_forest</span>(</span>
-<span id="cb22-327"><a href="#cb22-327" aria-hidden="true" tabindex="-1"></a>    <span class="at">X =</span> data[, .(x1, x2, x3, x4, x5)],</span>
-<span id="cb22-328"><a href="#cb22-328" aria-hidden="true" tabindex="-1"></a>    <span class="at">Y =</span> data[, y],</span>
-<span id="cb22-329"><a href="#cb22-329" aria-hidden="true" tabindex="-1"></a>    <span class="at">W =</span> data[, t],</span>
-<span id="cb22-330"><a href="#cb22-330" aria-hidden="true" tabindex="-1"></a>    <span class="at">Y.hat =</span> data[, y_hat],</span>
-<span id="cb22-331"><a href="#cb22-331" aria-hidden="true" tabindex="-1"></a>    <span class="at">W.hat =</span> data[, t_hat],</span>
-<span id="cb22-332"><a href="#cb22-332" aria-hidden="true" tabindex="-1"></a>    <span class="at">mtry =</span> best_par[, mtry],</span>
-<span id="cb22-333"><a href="#cb22-333" aria-hidden="true" tabindex="-1"></a>    <span class="at">min.node.size =</span> best_par[, min.node.size],</span>
-<span id="cb22-334"><a href="#cb22-334" aria-hidden="true" tabindex="-1"></a>    <span class="at">sample.fraction =</span> best_par[, sample.fraction]</span>
-<span id="cb22-335"><a href="#cb22-335" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb22-336"><a href="#cb22-336" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-337"><a href="#cb22-337" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-338"><a href="#cb22-338" aria-hidden="true" tabindex="-1"></a>We now use this trained model to predict $\theta(X)$.</span>
-<span id="cb22-339"><a href="#cb22-339" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-340"><a href="#cb22-340" aria-hidden="true" tabindex="-1"></a>:::{.callout-tip}</span>
-<span id="cb22-341"><a href="#cb22-341" aria-hidden="true" tabindex="-1"></a>Note that <span class="in">`causal_forest()`</span> lets you tune hyper-parameters using out-of-bag R-score internally, so you do not need to follow the process here in practice. See @sec-cf-tuning for how to specify tuning options for <span class="in">`causal_forest()`</span>.</span>
-<span id="cb22-342"><a href="#cb22-342" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb22-343"><a href="#cb22-343" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-344"><a href="#cb22-344" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-345"><a href="#cb22-345" aria-hidden="true" tabindex="-1"></a><span class="fu">## References {.unnumbered}</span></span>
-<span id="cb22-346"><a href="#cb22-346" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-347"><a href="#cb22-347" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"refs"</span><span class="kw">&gt;&lt;/div&gt;</span></span>
+<div class="sourceCode" id="cb41" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Causal Model Selection</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>:::{.callout-important}</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a><span class="fu">## What you will learn</span></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>How to tune hyper-parameters of a CATE model </span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>How to select a CATE model </span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>:::{.callout-note}</span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a><span class="fu">## Packages to load for replication</span></span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-17"><a href="#cb41-17" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb41-18"><a href="#cb41-18" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb41-19"><a href="#cb41-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-20"><a href="#cb41-20" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb41-21"><a href="#cb41-21" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb41-22"><a href="#cb41-22" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rsample)</span>
+<span id="cb41-23"><a href="#cb41-23" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(xgboost)</span>
+<span id="cb41-24"><a href="#cb41-24" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rlearner)</span>
+<span id="cb41-25"><a href="#cb41-25" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rsample)</span>
+<span id="cb41-26"><a href="#cb41-26" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(grf)</span>
+<span id="cb41-27"><a href="#cb41-27" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmnet)</span>
+<span id="cb41-28"><a href="#cb41-28" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb41-29"><a href="#cb41-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-32"><a href="#cb41-32" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb41-33"><a href="#cb41-33" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb41-34"><a href="#cb41-34" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb41-35"><a href="#cb41-35" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb41-36"><a href="#cb41-36" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rsample)</span>
+<span id="cb41-37"><a href="#cb41-37" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(xgboost)</span>
+<span id="cb41-38"><a href="#cb41-38" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rlearner)</span>
+<span id="cb41-39"><a href="#cb41-39" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rsample)</span>
+<span id="cb41-40"><a href="#cb41-40" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(grf)</span>
+<span id="cb41-41"><a href="#cb41-41" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmnet)</span>
+<span id="cb41-42"><a href="#cb41-42" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb41-43"><a href="#cb41-43" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb41-44"><a href="#cb41-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-45"><a href="#cb41-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-46"><a href="#cb41-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-47"><a href="#cb41-47" aria-hidden="true" tabindex="-1"></a>Model selection can be done via cross-validated MSE as the criteria when your goal is prediction. However, when your interest is in finding the best causal ML model, MSE is clearly not an appropriate measure. Instead, R-score can be used. Let $\tilde{Y}_i$ and $\tilde{T}_i$ denote $Y_i - \hat{f}(X_i)$ and $T_i - \hat{g}(X_i)$, respectively, where $\hat{f}(X_i)$ and $\hat{f}(X_i)$ are the predicted values (preferably based on cross-fitting or out-of-bad predictions if forest-based estimation is used) of $Y_i$ and $T_i$ based on any appropriate machine learning methods in the first stage of DML. Further, let $\hat{\theta}(X)$ denote CATE estimates by a CATE estimator (e.g., causal forest, X-learner)</span>
+<span id="cb41-48"><a href="#cb41-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-49"><a href="#cb41-49" aria-hidden="true" tabindex="-1"></a>R-score is written as follows:</span>
+<span id="cb41-50"><a href="#cb41-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-51"><a href="#cb41-51" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb41-52"><a href="#cb41-52" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb41-53"><a href="#cb41-53" aria-hidden="true" tabindex="-1"></a>\sum_{i=1}^N <span class="co">[</span><span class="ot">\tilde{Y}_i - \hat{\theta}(X)\cdot \tilde{T}_i</span><span class="co">]</span>^2</span>
+<span id="cb41-54"><a href="#cb41-54" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb41-55"><a href="#cb41-55" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb41-56"><a href="#cb41-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-57"><a href="#cb41-57" aria-hidden="true" tabindex="-1"></a>So, this is just the objective function of the second stage estimation of R-learner (DML) without the regularlization term with CATE estimates plugged in. @nie_quasi-oracle_2021 suggested using cross-validated R-score to select the model for CATE estimation. </span>
+<span id="cb41-58"><a href="#cb41-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-59"><a href="#cb41-59" aria-hidden="true" tabindex="-1"></a>:::{.callout-important}</span>
+<span id="cb41-60"><a href="#cb41-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-61"><a href="#cb41-61" aria-hidden="true" tabindex="-1"></a><span class="fu">## CV R-score v.s. non-CV R-score</span></span>
+<span id="cb41-62"><a href="#cb41-62" aria-hidden="true" tabindex="-1"></a>It is important to use cross-validated R-score for causal model selection especially when evaluating R-learners because they are trained to minimize the score. Just like regular prediction tasks, the more over-fit the trained model is, the lower the R-score. Though nobody would do this, you could train a deep deep regression tree to perfectly fit the data, which would have R-score of zero. </span>
+<span id="cb41-63"><a href="#cb41-63" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb41-64"><a href="#cb41-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-65"><a href="#cb41-65" aria-hidden="true" tabindex="-1"></a>:::{.callout-important}</span>
+<span id="cb41-66"><a href="#cb41-66" aria-hidden="true" tabindex="-1"></a>Causal model selection on R-score is conditional on the choice of modeling decisions made at the first stage of DML. That is, R-score measures how well the final stage estimation performed <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> given the first stage estimation<span class="kw">&lt;/span&gt;</span> (or the same $\tilde{Y}$ and $\tilde{T}$ data). When comparing R-score from different models, all of them should use the same $\tilde{Y}$ and $\tilde{T}$ data.</span>
+<span id="cb41-67"><a href="#cb41-67" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb41-68"><a href="#cb41-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-69"><a href="#cb41-69" aria-hidden="true" tabindex="-1"></a>Depending on whether you are selecting a model within the same model class (hyper-parameter tuning) or selecting a model among different classes of models (hyper-parameter tuning and model selection), procedures you follow are different.</span>
+<span id="cb41-70"><a href="#cb41-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-71"><a href="#cb41-71" aria-hidden="true" tabindex="-1"></a><span class="fu">## Hyper-parameter tuning </span></span>
+<span id="cb41-72"><a href="#cb41-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-73"><a href="#cb41-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-74"><a href="#cb41-74" aria-hidden="true" tabindex="-1"></a>:::{.callout-note}</span>
+<span id="cb41-75"><a href="#cb41-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-76"><a href="#cb41-76" aria-hidden="true" tabindex="-1"></a><span class="fu">## Causal model selection steps</span></span>
+<span id="cb41-77"><a href="#cb41-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-78"><a href="#cb41-78" aria-hidden="true" tabindex="-1"></a>For a given class of R-learner model you have chosen to use,</span>
+<span id="cb41-79"><a href="#cb41-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-80"><a href="#cb41-80" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Implement first stage estimations with cross-validation and calculate $\tilde{Y}_i$ and $\tilde{X}_i$.</span>
+<span id="cb41-81"><a href="#cb41-81" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Create a list of models with different hyper-parameter values under the same model class </span>
+<span id="cb41-82"><a href="#cb41-82" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>For each of the models, find cross-validated R-score</span>
+<span id="cb41-83"><a href="#cb41-83" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Select the model with the lowest R-score</span>
+<span id="cb41-84"><a href="#cb41-84" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Train the model on the whole data with the hyper-parameter value set chosen above </span>
+<span id="cb41-85"><a href="#cb41-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-86"><a href="#cb41-86" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb41-87"><a href="#cb41-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-88"><a href="#cb41-88" aria-hidden="true" tabindex="-1"></a>Let's go thorough these processes using a simple example. We use the following DGP:</span>
+<span id="cb41-89"><a href="#cb41-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-90"><a href="#cb41-90" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb41-91"><a href="#cb41-91" aria-hidden="true" tabindex="-1"></a>This is the same DGP as DGP A in @sec-comp-learners.</span>
+<span id="cb41-92"><a href="#cb41-92" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb41-93"><a href="#cb41-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-94"><a href="#cb41-94" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb41-95"><a href="#cb41-95" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb41-96"><a href="#cb41-96" aria-hidden="true" tabindex="-1"></a>Y_i &amp; =\theta(X_i)\cdot T + \alpha\cdot g(X_i) + \mu_i <span class="sc">\\</span></span>
+<span id="cb41-97"><a href="#cb41-97" aria-hidden="true" tabindex="-1"></a>T_i &amp; = Bernouli(f(X_i))</span>
+<span id="cb41-98"><a href="#cb41-98" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb41-99"><a href="#cb41-99" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb41-100"><a href="#cb41-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-101"><a href="#cb41-101" aria-hidden="true" tabindex="-1"></a>, where</span>
+<span id="cb41-102"><a href="#cb41-102" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb41-103"><a href="#cb41-103" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb41-104"><a href="#cb41-104" aria-hidden="true" tabindex="-1"></a>g(X_i) &amp; = sin(\pi X_{i,1}X_{i,2}) + 2(X_{i,3}-0.5)^2 + X_{i,4} + 0.5 X_{i,5}<span class="sc">\\</span></span>
+<span id="cb41-105"><a href="#cb41-105" aria-hidden="true" tabindex="-1"></a>f(X_i) &amp; = max(0.1, min(sin(\pi X_{i,1}X_{i,2}), 0.9)) <span class="sc">\\</span></span>
+<span id="cb41-106"><a href="#cb41-106" aria-hidden="true" tabindex="-1"></a>\theta(X_i) &amp; = (X_{i,1} + X_{i,2}) / 2 <span class="sc">\\</span></span>
+<span id="cb41-107"><a href="#cb41-107" aria-hidden="true" tabindex="-1"></a>X_i &amp; \sim Uni(0,1)^5</span>
+<span id="cb41-108"><a href="#cb41-108" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb41-109"><a href="#cb41-109" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb41-110"><a href="#cb41-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-113"><a href="#cb41-113" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb41-114"><a href="#cb41-114" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb41-115"><a href="#cb41-115" aria-hidden="true" tabindex="-1"></a>gen_data_A <span class="ot">&lt;-</span> <span class="cf">function</span>(N, alpha){</span>
+<span id="cb41-116"><a href="#cb41-116" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span></span>
+<span id="cb41-117"><a href="#cb41-117" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.table</span>(</span>
+<span id="cb41-118"><a href="#cb41-118" aria-hidden="true" tabindex="-1"></a>      <span class="at">x1 =</span> <span class="fu">runif</span>(N),</span>
+<span id="cb41-119"><a href="#cb41-119" aria-hidden="true" tabindex="-1"></a>      <span class="at">x2 =</span> <span class="fu">runif</span>(N),</span>
+<span id="cb41-120"><a href="#cb41-120" aria-hidden="true" tabindex="-1"></a>      <span class="at">x3 =</span> <span class="fu">runif</span>(N),</span>
+<span id="cb41-121"><a href="#cb41-121" aria-hidden="true" tabindex="-1"></a>      <span class="at">x4 =</span> <span class="fu">runif</span>(N),</span>
+<span id="cb41-122"><a href="#cb41-122" aria-hidden="true" tabindex="-1"></a>      <span class="at">x5 =</span> <span class="fu">runif</span>(N),</span>
+<span id="cb41-123"><a href="#cb41-123" aria-hidden="true" tabindex="-1"></a>      <span class="at">u =</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb41-124"><a href="#cb41-124" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
+<span id="cb41-125"><a href="#cb41-125" aria-hidden="true" tabindex="-1"></a>    .[, <span class="st">`</span><span class="at">:=</span><span class="st">`</span>(</span>
+<span id="cb41-126"><a href="#cb41-126" aria-hidden="true" tabindex="-1"></a>      <span class="at">g_x =</span> alpha <span class="sc">*</span> (<span class="fu">sin</span>(pi <span class="sc">*</span> x1<span class="sc">*</span>x2) <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>(x3<span class="fl">-0.5</span>)<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> x4 <span class="sc">+</span> <span class="fl">0.5</span><span class="sc">*</span>x5),</span>
+<span id="cb41-127"><a href="#cb41-127" aria-hidden="true" tabindex="-1"></a>      <span class="at">f_x =</span> <span class="fu">pmax</span>(<span class="fl">0.1</span>, <span class="fu">pmin</span>(<span class="fu">sin</span>(pi <span class="sc">*</span> x1<span class="sc">*</span>x2), <span class="fl">0.9</span>)),</span>
+<span id="cb41-128"><a href="#cb41-128" aria-hidden="true" tabindex="-1"></a>      <span class="at">theta_x =</span> (x1<span class="sc">+</span>x2)<span class="sc">/</span><span class="dv">2</span></span>
+<span id="cb41-129"><a href="#cb41-129" aria-hidden="true" tabindex="-1"></a>    )] <span class="sc">%&gt;%</span> </span>
+<span id="cb41-130"><a href="#cb41-130" aria-hidden="true" tabindex="-1"></a>    .[, t <span class="sc">:</span><span class="er">=</span> <span class="fu">as.numeric</span>(<span class="fu">runif</span>(N) <span class="sc">&lt;</span> f_x)] <span class="sc">%&gt;%</span> </span>
+<span id="cb41-131"><a href="#cb41-131" aria-hidden="true" tabindex="-1"></a>    .[, y_det <span class="sc">:</span><span class="er">=</span> theta_x <span class="sc">*</span> t <span class="sc">+</span> g_x] <span class="sc">%&gt;%</span> </span>
+<span id="cb41-132"><a href="#cb41-132" aria-hidden="true" tabindex="-1"></a>    .[, y <span class="sc">:</span><span class="er">=</span> y_det <span class="sc">+</span> u] <span class="sc">%&gt;%</span> </span>
+<span id="cb41-133"><a href="#cb41-133" aria-hidden="true" tabindex="-1"></a>    .[, id <span class="sc">:</span><span class="er">=</span> <span class="dv">1</span><span class="sc">:</span>.N]</span>
+<span id="cb41-134"><a href="#cb41-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-135"><a href="#cb41-135" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(data[])</span>
+<span id="cb41-136"><a href="#cb41-136" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb41-137"><a href="#cb41-137" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb41-138"><a href="#cb41-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-139"><a href="#cb41-139" aria-hidden="true" tabindex="-1"></a>Let's create a dataset according to the DGP (unfold the Code chunk above to see how <span class="in">`gen_data_A()`</span> is defined).</span>
+<span id="cb41-140"><a href="#cb41-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-143"><a href="#cb41-143" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb41-144"><a href="#cb41-144" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">78243</span>)</span>
+<span id="cb41-145"><a href="#cb41-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-146"><a href="#cb41-146" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb41-147"><a href="#cb41-147" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">gen_data_A</span>(<span class="at">N =</span> <span class="dv">3000</span>, <span class="at">alpha =</span> <span class="dv">1</span>)</span>
+<span id="cb41-148"><a href="#cb41-148" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb41-149"><a href="#cb41-149" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb41-150"><a href="#cb41-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-151"><a href="#cb41-151" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb41-152"><a href="#cb41-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-153"><a href="#cb41-153" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> Step 1 <span class="kw">&lt;/span&gt;</span>:</span>
+<span id="cb41-154"><a href="#cb41-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-155"><a href="#cb41-155" aria-hidden="true" tabindex="-1"></a>We use random forest implemented by <span class="in">`regression_forest()`</span> and  <span class="in">`probability_forest()`</span> by the <span class="in">`grf`</span> package to estimate $E<span class="co">[</span><span class="ot">Y|X</span><span class="co">]</span>$ and $E<span class="co">[</span><span class="ot">T|X</span><span class="co">]</span>$, respectively. For the sake of space and simplicity, we will not conduct cross-validation to tune hyper-parameters for these models in this example (hyper-parameter tuning via cross-validation of the first-stage estimation is covered in @sec-model-selection). </span>
+<span id="cb41-156"><a href="#cb41-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-157"><a href="#cb41-157" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; Estimate $E</span><span class="co">[</span><span class="ot">Y|X</span><span class="co">]</span><span class="at">$ and calculate $\tilde{Y}$</span></span>
+<span id="cb41-158"><a href="#cb41-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-161"><a href="#cb41-161" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb41-162"><a href="#cb41-162" aria-hidden="true" tabindex="-1"></a>rf_trained_y <span class="ot">&lt;-</span></span>
+<span id="cb41-163"><a href="#cb41-163" aria-hidden="true" tabindex="-1"></a>  <span class="fu">regression_forest</span>(</span>
+<span id="cb41-164"><a href="#cb41-164" aria-hidden="true" tabindex="-1"></a>    <span class="at">X =</span> data[, .(x1, x2, x3, x4, x5)],</span>
+<span id="cb41-165"><a href="#cb41-165" aria-hidden="true" tabindex="-1"></a>    <span class="at">Y =</span> data[, y]</span>
+<span id="cb41-166"><a href="#cb41-166" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb41-167"><a href="#cb41-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-168"><a href="#cb41-168" aria-hidden="true" tabindex="-1"></a><span class="co">#=== out-of-bag prediction of Y ===#</span></span>
+<span id="cb41-169"><a href="#cb41-169" aria-hidden="true" tabindex="-1"></a>data[, y_hat <span class="sc">:</span><span class="er">=</span> rf_trained_y<span class="sc">$</span>predictions]</span>
+<span id="cb41-170"><a href="#cb41-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-171"><a href="#cb41-171" aria-hidden="true" tabindex="-1"></a><span class="co">#=== calculate y_hat ===#</span></span>
+<span id="cb41-172"><a href="#cb41-172" aria-hidden="true" tabindex="-1"></a>data[, y_tilde <span class="sc">:</span><span class="er">=</span> y <span class="sc">-</span> y_hat]</span>
+<span id="cb41-173"><a href="#cb41-173" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb41-174"><a href="#cb41-174" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-177"><a href="#cb41-177" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb41-178"><a href="#cb41-178" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false </span></span>
+<span id="cb41-179"><a href="#cb41-179" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false </span></span>
+<span id="cb41-180"><a href="#cb41-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-181"><a href="#cb41-181" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> data) <span class="sc">+</span> </span>
+<span id="cb41-182"><a href="#cb41-182" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> y_det, <span class="at">x =</span> y_hat)) <span class="sc">+</span></span>
+<span id="cb41-183"><a href="#cb41-183" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb41-184"><a href="#cb41-184" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb41-185"><a href="#cb41-185" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb41-186"><a href="#cb41-186" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-187"><a href="#cb41-187" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; Estimate $E</span><span class="co">[</span><span class="ot">T|X</span><span class="co">]</span><span class="at">$ and calcualte $\tilde{T}$</span></span>
+<span id="cb41-188"><a href="#cb41-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-191"><a href="#cb41-191" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb41-192"><a href="#cb41-192" aria-hidden="true" tabindex="-1"></a>rf_trained_t <span class="ot">&lt;-</span></span>
+<span id="cb41-193"><a href="#cb41-193" aria-hidden="true" tabindex="-1"></a>  <span class="fu">probability_forest</span>(</span>
+<span id="cb41-194"><a href="#cb41-194" aria-hidden="true" tabindex="-1"></a>    <span class="at">X =</span> data[, .(x1, x2, x2, x3, x4, x5)],</span>
+<span id="cb41-195"><a href="#cb41-195" aria-hidden="true" tabindex="-1"></a>    <span class="at">Y =</span> data[, <span class="fu">factor</span>(t)],</span>
+<span id="cb41-196"><a href="#cb41-196" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb41-197"><a href="#cb41-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-198"><a href="#cb41-198" aria-hidden="true" tabindex="-1"></a><span class="co">#=== out-of-bag prediction of T ===#</span></span>
+<span id="cb41-199"><a href="#cb41-199" aria-hidden="true" tabindex="-1"></a>data[, t_hat <span class="sc">:</span><span class="er">=</span> rf_trained_t<span class="sc">$</span>predictions[, <span class="dv">2</span>]]</span>
+<span id="cb41-200"><a href="#cb41-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-201"><a href="#cb41-201" aria-hidden="true" tabindex="-1"></a><span class="co">#=== calculate t_hat ===#</span></span>
+<span id="cb41-202"><a href="#cb41-202" aria-hidden="true" tabindex="-1"></a>data[, t_tilde <span class="sc">:</span><span class="er">=</span> t <span class="sc">-</span> t_hat]</span>
+<span id="cb41-203"><a href="#cb41-203" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb41-204"><a href="#cb41-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-207"><a href="#cb41-207" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb41-208"><a href="#cb41-208" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false </span></span>
+<span id="cb41-209"><a href="#cb41-209" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false </span></span>
+<span id="cb41-210"><a href="#cb41-210" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-211"><a href="#cb41-211" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> data) <span class="sc">+</span> </span>
+<span id="cb41-212"><a href="#cb41-212" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> f_x, <span class="at">x =</span> t_hat)) <span class="sc">+</span></span>
+<span id="cb41-213"><a href="#cb41-213" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb41-214"><a href="#cb41-214" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb41-215"><a href="#cb41-215" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb41-216"><a href="#cb41-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-217"><a href="#cb41-217" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb41-218"><a href="#cb41-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-219"><a href="#cb41-219" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> Steps 2 and 3<span class="kw">&lt;/span&gt;</span>:</span>
+<span id="cb41-220"><a href="#cb41-220" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-221"><a href="#cb41-221" aria-hidden="true" tabindex="-1"></a>Suppose we have determined that we use causal forest for the second stage CATE estimation. Here is the list of hyper-parameter value sets we will examine in this example.</span>
+<span id="cb41-222"><a href="#cb41-222" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-225"><a href="#cb41-225" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb41-226"><a href="#cb41-226" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb41-227"><a href="#cb41-227" aria-hidden="true" tabindex="-1"></a>par_data <span class="ot">&lt;-</span></span>
+<span id="cb41-228"><a href="#cb41-228" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expand.grid</span>(</span>
+<span id="cb41-229"><a href="#cb41-229" aria-hidden="true" tabindex="-1"></a>    <span class="at">mtry =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">5</span>),</span>
+<span id="cb41-230"><a href="#cb41-230" aria-hidden="true" tabindex="-1"></a>    <span class="at">min.node.size =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">20</span>),</span>
+<span id="cb41-231"><a href="#cb41-231" aria-hidden="true" tabindex="-1"></a>    <span class="at">sample.fraction =</span> <span class="fu">c</span>(<span class="fl">0.4</span>, <span class="fl">0.5</span>)</span>
+<span id="cb41-232"><a href="#cb41-232" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb41-233"><a href="#cb41-233" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>()</span>
+<span id="cb41-234"><a href="#cb41-234" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb41-235"><a href="#cb41-235" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb41-236"><a href="#cb41-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-237"><a href="#cb41-237" aria-hidden="true" tabindex="-1"></a>For each of the parameter sets, we will find a cross-validated R-score. We use 5-fold cross validation repeated 3 times.</span>
+<span id="cb41-238"><a href="#cb41-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-241"><a href="#cb41-241" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb41-242"><a href="#cb41-242" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb41-243"><a href="#cb41-243" aria-hidden="true" tabindex="-1"></a>data_folds <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(data, <span class="at">v =</span> <span class="dv">5</span>, <span class="at">repeats =</span> <span class="dv">3</span>) </span>
+<span id="cb41-244"><a href="#cb41-244" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb41-245"><a href="#cb41-245" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb41-246"><a href="#cb41-246" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-247"><a href="#cb41-247" aria-hidden="true" tabindex="-1"></a>The following function find R-score for a given fold and parameter set.</span>
+<span id="cb41-248"><a href="#cb41-248" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-251"><a href="#cb41-251" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb41-252"><a href="#cb41-252" aria-hidden="true" tabindex="-1"></a>get_cv_rscore_np <span class="ot">&lt;-</span> <span class="cf">function</span>(n, parameters) {</span>
+<span id="cb41-253"><a href="#cb41-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-254"><a href="#cb41-254" aria-hidden="true" tabindex="-1"></a>  training_data <span class="ot">&lt;-</span> <span class="fu">analysis</span>(data_folds[n, ]<span class="sc">$</span>splits[[<span class="dv">1</span>]])</span>
+<span id="cb41-255"><a href="#cb41-255" aria-hidden="true" tabindex="-1"></a>  eval_data <span class="ot">&lt;-</span> <span class="fu">assessment</span>(data_folds[n, ]<span class="sc">$</span>splits[[<span class="dv">1</span>]])</span>
+<span id="cb41-256"><a href="#cb41-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-257"><a href="#cb41-257" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== train a CF model on training data ===#</span></span>
+<span id="cb41-258"><a href="#cb41-258" aria-hidden="true" tabindex="-1"></a>  cf_trained <span class="ot">&lt;-</span></span>
+<span id="cb41-259"><a href="#cb41-259" aria-hidden="true" tabindex="-1"></a>    <span class="fu">causal_forest</span>(</span>
+<span id="cb41-260"><a href="#cb41-260" aria-hidden="true" tabindex="-1"></a>      <span class="at">X =</span> training_data[, .(x1, x2, x3, x4, x5)],</span>
+<span id="cb41-261"><a href="#cb41-261" aria-hidden="true" tabindex="-1"></a>      <span class="at">Y =</span> training_data[, y],</span>
+<span id="cb41-262"><a href="#cb41-262" aria-hidden="true" tabindex="-1"></a>      <span class="at">W =</span> training_data[, t],</span>
+<span id="cb41-263"><a href="#cb41-263" aria-hidden="true" tabindex="-1"></a>      <span class="at">Y.hat =</span> training_data[, y_hat],</span>
+<span id="cb41-264"><a href="#cb41-264" aria-hidden="true" tabindex="-1"></a>      <span class="at">W.hat =</span> training_data[, t_hat],</span>
+<span id="cb41-265"><a href="#cb41-265" aria-hidden="true" tabindex="-1"></a>      <span class="at">mtry =</span> parameters[, mtry],</span>
+<span id="cb41-266"><a href="#cb41-266" aria-hidden="true" tabindex="-1"></a>      <span class="at">min.node.size =</span> parameters[, min.node.size],</span>
+<span id="cb41-267"><a href="#cb41-267" aria-hidden="true" tabindex="-1"></a>      <span class="at">sample.fraction =</span> parameters[, sample.fraction]</span>
+<span id="cb41-268"><a href="#cb41-268" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb41-269"><a href="#cb41-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-270"><a href="#cb41-270" aria-hidden="true" tabindex="-1"></a>  theta_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(cf_trained, eval_data[, .(x1, x2, x3, x4, x5)])</span>
+<span id="cb41-271"><a href="#cb41-271" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-272"><a href="#cb41-272" aria-hidden="true" tabindex="-1"></a>  rscore <span class="ot">&lt;-</span> eval_data[, <span class="fu">sum</span>((y_tilde <span class="sc">-</span> theta_hat <span class="sc">*</span> t_tilde)<span class="sc">^</span><span class="dv">2</span>)]</span>
+<span id="cb41-273"><a href="#cb41-273" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-274"><a href="#cb41-274" aria-hidden="true" tabindex="-1"></a>  return_data <span class="ot">&lt;-</span></span>
+<span id="cb41-275"><a href="#cb41-275" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.table</span>(</span>
+<span id="cb41-276"><a href="#cb41-276" aria-hidden="true" tabindex="-1"></a>      <span class="at">rscore =</span> rscore,</span>
+<span id="cb41-277"><a href="#cb41-277" aria-hidden="true" tabindex="-1"></a>      <span class="at">fold =</span> n</span>
+<span id="cb41-278"><a href="#cb41-278" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
+<span id="cb41-279"><a href="#cb41-279" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cbind</span>(., parameters)</span>
+<span id="cb41-280"><a href="#cb41-280" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-281"><a href="#cb41-281" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(return_data)</span>
+<span id="cb41-282"><a href="#cb41-282" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb41-283"><a href="#cb41-283" aria-hidden="true" tabindex="-1"></a><span class="in">```</span> </span>
+<span id="cb41-284"><a href="#cb41-284" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-285"><a href="#cb41-285" aria-hidden="true" tabindex="-1"></a>The following function calculates R-score for all the folds for a given parameter set.</span>
+<span id="cb41-286"><a href="#cb41-286" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-289"><a href="#cb41-289" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb41-290"><a href="#cb41-290" aria-hidden="true" tabindex="-1"></a>get_cv_rscore <span class="ot">&lt;-</span> <span class="cf">function</span>(parameters) {</span>
+<span id="cb41-291"><a href="#cb41-291" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb41-292"><a href="#cb41-292" aria-hidden="true" tabindex="-1"></a>    <span class="fu">seq_len</span>(<span class="fu">nrow</span>(data_folds)),</span>
+<span id="cb41-293"><a href="#cb41-293" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(n) <span class="fu">get_cv_rscore_np</span>(n, parameters)</span>
+<span id="cb41-294"><a href="#cb41-294" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb41-295"><a href="#cb41-295" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbindlist</span>()</span>
+<span id="cb41-296"><a href="#cb41-296" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb41-297"><a href="#cb41-297" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb41-298"><a href="#cb41-298" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-299"><a href="#cb41-299" aria-hidden="true" tabindex="-1"></a>For example, for the parameter set at the first row of <span class="in">`par_data`</span>,</span>
+<span id="cb41-300"><a href="#cb41-300" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-303"><a href="#cb41-303" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb41-304"><a href="#cb41-304" aria-hidden="true" tabindex="-1"></a><span class="fu">get_cv_rscore</span>(par_data[<span class="dv">1</span>, ])</span>
+<span id="cb41-305"><a href="#cb41-305" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb41-306"><a href="#cb41-306" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-307"><a href="#cb41-307" aria-hidden="true" tabindex="-1"></a>Repeat this for all the rows of <span class="in">`par_data`</span>,</span>
+<span id="cb41-308"><a href="#cb41-308" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-311"><a href="#cb41-311" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb41-312"><a href="#cb41-312" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb41-313"><a href="#cb41-313" aria-hidden="true" tabindex="-1"></a>cv_rscore <span class="ot">&lt;-</span></span>
+<span id="cb41-314"><a href="#cb41-314" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb41-315"><a href="#cb41-315" aria-hidden="true" tabindex="-1"></a>    <span class="fu">seq_len</span>(<span class="fu">nrow</span>(par_data)),</span>
+<span id="cb41-316"><a href="#cb41-316" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) <span class="fu">get_cv_rscore</span>(par_data[x, ])</span>
+<span id="cb41-317"><a href="#cb41-317" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb41-318"><a href="#cb41-318" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbindlist</span>()</span>
+<span id="cb41-319"><a href="#cb41-319" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb41-320"><a href="#cb41-320" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb41-321"><a href="#cb41-321" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-322"><a href="#cb41-322" aria-hidden="true" tabindex="-1"></a>Taking the mean of R-score by parameter set,</span>
+<span id="cb41-323"><a href="#cb41-323" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-326"><a href="#cb41-326" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb41-327"><a href="#cb41-327" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb41-328"><a href="#cb41-328" aria-hidden="true" tabindex="-1"></a>rscore <span class="ot">&lt;-</span> cv_rscore[, .(<span class="at">rscore =</span> <span class="fu">mean</span>(rscore)), <span class="at">by =</span> .(mtry, min.node.size, sample.fraction)]</span>
+<span id="cb41-329"><a href="#cb41-329" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb41-330"><a href="#cb41-330" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb41-331"><a href="#cb41-331" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-332"><a href="#cb41-332" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb41-333"><a href="#cb41-333" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-334"><a href="#cb41-334" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> Steps 4 and 5 <span class="kw">&lt;/span&gt;</span>:</span>
+<span id="cb41-335"><a href="#cb41-335" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-336"><a href="#cb41-336" aria-hidden="true" tabindex="-1"></a>And, the best parameter set is</span>
+<span id="cb41-337"><a href="#cb41-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-340"><a href="#cb41-340" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb41-341"><a href="#cb41-341" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb41-342"><a href="#cb41-342" aria-hidden="true" tabindex="-1"></a>best_par_cf <span class="ot">&lt;-</span> rscore[<span class="fu">which.min</span>(rscore), ]</span>
+<span id="cb41-343"><a href="#cb41-343" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb41-344"><a href="#cb41-344" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb41-345"><a href="#cb41-345" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-346"><a href="#cb41-346" aria-hidden="true" tabindex="-1"></a>We now train a CF on the entire dataset. </span>
+<span id="cb41-347"><a href="#cb41-347" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-350"><a href="#cb41-350" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb41-351"><a href="#cb41-351" aria-hidden="true" tabindex="-1"></a>cf_trained <span class="ot">&lt;-</span></span>
+<span id="cb41-352"><a href="#cb41-352" aria-hidden="true" tabindex="-1"></a>  <span class="fu">causal_forest</span>(</span>
+<span id="cb41-353"><a href="#cb41-353" aria-hidden="true" tabindex="-1"></a>    <span class="at">X =</span> data[, .(x1, x2, x3, x4, x5)],</span>
+<span id="cb41-354"><a href="#cb41-354" aria-hidden="true" tabindex="-1"></a>    <span class="at">Y =</span> data[, y],</span>
+<span id="cb41-355"><a href="#cb41-355" aria-hidden="true" tabindex="-1"></a>    <span class="at">W =</span> data[, t],</span>
+<span id="cb41-356"><a href="#cb41-356" aria-hidden="true" tabindex="-1"></a>    <span class="at">Y.hat =</span> data[, y_hat],</span>
+<span id="cb41-357"><a href="#cb41-357" aria-hidden="true" tabindex="-1"></a>    <span class="at">W.hat =</span> data[, t_hat],</span>
+<span id="cb41-358"><a href="#cb41-358" aria-hidden="true" tabindex="-1"></a>    <span class="at">mtry =</span> best_par_cf[, mtry],</span>
+<span id="cb41-359"><a href="#cb41-359" aria-hidden="true" tabindex="-1"></a>    <span class="at">min.node.size =</span> best_par_cf[, min.node.size],</span>
+<span id="cb41-360"><a href="#cb41-360" aria-hidden="true" tabindex="-1"></a>    <span class="at">sample.fraction =</span> best_par_cf[, sample.fraction]</span>
+<span id="cb41-361"><a href="#cb41-361" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb41-362"><a href="#cb41-362" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb41-363"><a href="#cb41-363" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-364"><a href="#cb41-364" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-365"><a href="#cb41-365" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-366"><a href="#cb41-366" aria-hidden="true" tabindex="-1"></a>We now use this trained model to predict $\theta(X)$.</span>
+<span id="cb41-367"><a href="#cb41-367" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-368"><a href="#cb41-368" aria-hidden="true" tabindex="-1"></a>:::{.callout-tip}</span>
+<span id="cb41-369"><a href="#cb41-369" aria-hidden="true" tabindex="-1"></a>Note that <span class="in">`causal_forest()`</span> lets you tune hyper-parameters using out-of-bag R-score internally, so you do not need to follow the process here in practice. See @sec-cf-tuning for how to specify tuning options for <span class="in">`causal_forest()`</span>.</span>
+<span id="cb41-370"><a href="#cb41-370" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb41-371"><a href="#cb41-371" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-372"><a href="#cb41-372" aria-hidden="true" tabindex="-1"></a>Though, not necessary, we can find an $R^2$-like score by contrasting the R-score of the trained model against the R-score based on a constant (non-heterogeneous) treatment effect estimate. Constant treatment effect can be obtained by solving the following equation with respect to $\theta$.</span>
+<span id="cb41-373"><a href="#cb41-373" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-374"><a href="#cb41-374" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb41-375"><a href="#cb41-375" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb41-376"><a href="#cb41-376" aria-hidden="true" tabindex="-1"></a>\sum_{i=1}^N \tilde{Y}_i - \theta\cdot \tilde{T}_i = 0</span>
+<span id="cb41-377"><a href="#cb41-377" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb41-378"><a href="#cb41-378" aria-hidden="true" tabindex="-1"></a>$$ </span>
+<span id="cb41-379"><a href="#cb41-379" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-382"><a href="#cb41-382" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb41-383"><a href="#cb41-383" aria-hidden="true" tabindex="-1"></a>theta_c <span class="ot">&lt;-</span> data[, <span class="fu">sum</span>(y_tilde)<span class="sc">/</span><span class="fu">sum</span>(t_tilde)]</span>
+<span id="cb41-384"><a href="#cb41-384" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb41-385"><a href="#cb41-385" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-386"><a href="#cb41-386" aria-hidden="true" tabindex="-1"></a>R-score associated with <span class="in">`theta_c`</span> is</span>
+<span id="cb41-387"><a href="#cb41-387" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-390"><a href="#cb41-390" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb41-391"><a href="#cb41-391" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb41-392"><a href="#cb41-392" aria-hidden="true" tabindex="-1"></a>rscore_base <span class="ot">&lt;-</span> data[, <span class="fu">sum</span>((y_tilde <span class="sc">-</span> theta_c <span class="sc">*</span> t_tilde)<span class="sc">^</span><span class="dv">2</span>)]</span>
+<span id="cb41-393"><a href="#cb41-393" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb41-394"><a href="#cb41-394" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb41-395"><a href="#cb41-395" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-396"><a href="#cb41-396" aria-hidden="true" tabindex="-1"></a>R-score for the trained CF model is</span>
+<span id="cb41-397"><a href="#cb41-397" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-400"><a href="#cb41-400" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb41-401"><a href="#cb41-401" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb41-402"><a href="#cb41-402" aria-hidden="true" tabindex="-1"></a>rscore_cf <span class="ot">&lt;-</span> data[, <span class="fu">sum</span>((y_tilde <span class="sc">-</span> cf_trained<span class="sc">$</span>predictions <span class="sc">*</span> t_tilde)<span class="sc">^</span><span class="dv">2</span>)]</span>
+<span id="cb41-403"><a href="#cb41-403" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb41-404"><a href="#cb41-404" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb41-405"><a href="#cb41-405" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-406"><a href="#cb41-406" aria-hidden="true" tabindex="-1"></a>The score of how well a CATE model performs in capturing the heterogeneity of treatment effect can be calculated as</span>
+<span id="cb41-407"><a href="#cb41-407" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-410"><a href="#cb41-410" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb41-411"><a href="#cb41-411" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">-</span> rscore_cf<span class="sc">/</span>rscore_base</span>
+<span id="cb41-412"><a href="#cb41-412" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb41-413"><a href="#cb41-413" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-414"><a href="#cb41-414" aria-hidden="true" tabindex="-1"></a>As you will see in @sec-python-causal-model-selection, this is the score <span class="in">`econml.score.RScorer`</span> returns when evaluating CATE models.</span>
+<span id="cb41-415"><a href="#cb41-415" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-416"><a href="#cb41-416" aria-hidden="true" tabindex="-1"></a>By the way, @fig-qua-cf shows the quality of CATE estimates by the trained CF model.</span>
+<span id="cb41-417"><a href="#cb41-417" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-420"><a href="#cb41-420" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb41-421"><a href="#cb41-421" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb41-422"><a href="#cb41-422" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Quality of CATE estimates by CF </span></span>
+<span id="cb41-423"><a href="#cb41-423" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-qua-cf</span></span>
+<span id="cb41-424"><a href="#cb41-424" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb41-425"><a href="#cb41-425" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> data[, theta_x], <span class="at">x =</span> cf_trained<span class="sc">$</span>predictions), <span class="at">size =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb41-426"><a href="#cb41-426" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb41-427"><a href="#cb41-427" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb41-428"><a href="#cb41-428" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"True Treatmente Effect"</span>) <span class="sc">+</span></span>
+<span id="cb41-429"><a href="#cb41-429" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Estimated Treatmente Effect"</span>)</span>
+<span id="cb41-430"><a href="#cb41-430" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb41-431"><a href="#cb41-431" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-432"><a href="#cb41-432" aria-hidden="true" tabindex="-1"></a><span class="fu">## Selecting from multiple classes of models</span></span>
+<span id="cb41-433"><a href="#cb41-433" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-434"><a href="#cb41-434" aria-hidden="true" tabindex="-1"></a>If you are comparing models when they are all under the R-learner class, selecting a model is rather straight forward. You can simply repeat the hyper-parameter tuning procedures presented above for each model, find the best model (hyper-parameter values) for each class, and then find the best model among all the best (within each class) models.</span>
+<span id="cb41-435"><a href="#cb41-435" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-436"><a href="#cb41-436" aria-hidden="true" tabindex="-1"></a>Let's say you are also considering an R-learner in addition to CF presented above, where $\theta(X)$ is assumed to be a linear-in-parameter model of $X$. </span>
+<span id="cb41-437"><a href="#cb41-437" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-438"><a href="#cb41-438" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb41-439"><a href="#cb41-439" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb41-440"><a href="#cb41-440" aria-hidden="true" tabindex="-1"></a>\theta(X) = \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + \beta_4 x_4 + \beta_5 x_5</span>
+<span id="cb41-441"><a href="#cb41-441" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb41-442"><a href="#cb41-442" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb41-443"><a href="#cb41-443" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-444"><a href="#cb41-444" aria-hidden="true" tabindex="-1"></a>You are considering using LASSO for the second stage estimation. So, you are minimizing the following objective function.</span>
+<span id="cb41-445"><a href="#cb41-445" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-446"><a href="#cb41-446" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb41-447"><a href="#cb41-447" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb41-448"><a href="#cb41-448" aria-hidden="true" tabindex="-1"></a>Min_{\beta_1,\dots, \beta_5}\sum_{i=1}^N <span class="co">[</span><span class="ot">\tilde{Y}_i - (\beta_1 x_{i,1} + \beta_2 x_{i,2} + \beta_3 x_{i,3} + \beta_4 x_{i,4} + \beta_5 x_{i,5})\cdot \tilde{T}_i</span><span class="co">]</span>^2 + \lambda |\beta|</span>
+<span id="cb41-449"><a href="#cb41-449" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb41-450"><a href="#cb41-450" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb41-451"><a href="#cb41-451" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-452"><a href="#cb41-452" aria-hidden="true" tabindex="-1"></a>where $\lambda$ is the penalization parameter and $|\beta|$ is the L1 norm.</span>
+<span id="cb41-453"><a href="#cb41-453" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-454"><a href="#cb41-454" aria-hidden="true" tabindex="-1"></a>Here is the list of $\lambda$ values at which we evaluate LASSO as the second stage model.</span>
+<span id="cb41-455"><a href="#cb41-455" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-458"><a href="#cb41-458" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb41-459"><a href="#cb41-459" aria-hidden="true" tabindex="-1"></a>lambda_ls <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.001</span>, <span class="fl">0.01</span>, <span class="fl">0.02</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="dv">1</span>)</span>
+<span id="cb41-460"><a href="#cb41-460" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb41-461"><a href="#cb41-461" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-462"><a href="#cb41-462" aria-hidden="true" tabindex="-1"></a>We now conduct cross-validation to find the R-score for each value of <span class="in">`lambda_ls`</span>. It is important to use the same $\tilde{Y}$ and $\tilde{T}$ data as the one used for CF. For that, we can simply use <span class="in">`data_folds`</span>. </span>
+<span id="cb41-463"><a href="#cb41-463" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-464"><a href="#cb41-464" aria-hidden="true" tabindex="-1"></a>The following function trains a LASSO for a given value of $\lambda$ and return cross-validated R-score.</span>
+<span id="cb41-465"><a href="#cb41-465" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-468"><a href="#cb41-468" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb41-469"><a href="#cb41-469" aria-hidden="true" tabindex="-1"></a>get_cv_rscore_np_lasso <span class="ot">&lt;-</span> <span class="cf">function</span>(n, lambda) {</span>
+<span id="cb41-470"><a href="#cb41-470" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-471"><a href="#cb41-471" aria-hidden="true" tabindex="-1"></a>  training_data <span class="ot">&lt;-</span> <span class="fu">analysis</span>(data_folds[n, ]<span class="sc">$</span>splits[[<span class="dv">1</span>]])</span>
+<span id="cb41-472"><a href="#cb41-472" aria-hidden="true" tabindex="-1"></a>  eval_data <span class="ot">&lt;-</span> <span class="fu">assessment</span>(data_folds[n, ]<span class="sc">$</span>splits[[<span class="dv">1</span>]])</span>
+<span id="cb41-473"><a href="#cb41-473" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-474"><a href="#cb41-474" aria-hidden="true" tabindex="-1"></a>  eval_data_mat <span class="ot">&lt;-</span> </span>
+<span id="cb41-475"><a href="#cb41-475" aria-hidden="true" tabindex="-1"></a>    eval_data[, .(x1, x2, x3, x4, x5)] <span class="sc">%&gt;%</span></span>
+<span id="cb41-476"><a href="#cb41-476" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.matrix</span>()</span>
+<span id="cb41-477"><a href="#cb41-477" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-478"><a href="#cb41-478" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== train a CF model on training data ===#</span></span>
+<span id="cb41-479"><a href="#cb41-479" aria-hidden="true" tabindex="-1"></a>  lasso_trained <span class="ot">&lt;-</span></span>
+<span id="cb41-480"><a href="#cb41-480" aria-hidden="true" tabindex="-1"></a>    <span class="fu">glmnet</span>(</span>
+<span id="cb41-481"><a href="#cb41-481" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> training_data[, .(x1 <span class="sc">*</span> t_tilde, x2 <span class="sc">*</span> t_tilde, x3 <span class="sc">*</span> t_tilde, x4 <span class="sc">*</span> t_tilde, x5<span class="sc">*</span> t_tilde)],</span>
+<span id="cb41-482"><a href="#cb41-482" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> training_data[, y_tilde],</span>
+<span id="cb41-483"><a href="#cb41-483" aria-hidden="true" tabindex="-1"></a>      <span class="at">lambda =</span> lambda</span>
+<span id="cb41-484"><a href="#cb41-484" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb41-485"><a href="#cb41-485" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-486"><a href="#cb41-486" aria-hidden="true" tabindex="-1"></a>  <span class="co">#=== predict theta(X) ===#</span></span>
+<span id="cb41-487"><a href="#cb41-487" aria-hidden="true" tabindex="-1"></a>  <span class="co"># note, you need to predict on X, not X *\ tilde{T} as you are interested in theta(X), not </span></span>
+<span id="cb41-488"><a href="#cb41-488" aria-hidden="true" tabindex="-1"></a>  <span class="co"># theta(X) * \tilde{T}</span></span>
+<span id="cb41-489"><a href="#cb41-489" aria-hidden="true" tabindex="-1"></a>  theta_hat <span class="ot">&lt;-</span> </span>
+<span id="cb41-490"><a href="#cb41-490" aria-hidden="true" tabindex="-1"></a>    <span class="fu">predict</span>(</span>
+<span id="cb41-491"><a href="#cb41-491" aria-hidden="true" tabindex="-1"></a>      lasso_trained, </span>
+<span id="cb41-492"><a href="#cb41-492" aria-hidden="true" tabindex="-1"></a>      <span class="at">newx =</span> eval_data_mat</span>
+<span id="cb41-493"><a href="#cb41-493" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb41-494"><a href="#cb41-494" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-495"><a href="#cb41-495" aria-hidden="true" tabindex="-1"></a>  rscore <span class="ot">&lt;-</span> eval_data[, <span class="fu">sum</span>((y_tilde <span class="sc">-</span> theta_hat <span class="sc">*</span> t_tilde)<span class="sc">^</span><span class="dv">2</span>)]</span>
+<span id="cb41-496"><a href="#cb41-496" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-497"><a href="#cb41-497" aria-hidden="true" tabindex="-1"></a>  return_data <span class="ot">&lt;-</span></span>
+<span id="cb41-498"><a href="#cb41-498" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.table</span>(</span>
+<span id="cb41-499"><a href="#cb41-499" aria-hidden="true" tabindex="-1"></a>      <span class="at">rscore =</span> rscore,</span>
+<span id="cb41-500"><a href="#cb41-500" aria-hidden="true" tabindex="-1"></a>      <span class="at">fold =</span> n,</span>
+<span id="cb41-501"><a href="#cb41-501" aria-hidden="true" tabindex="-1"></a>      <span class="at">lambda =</span> lambda</span>
+<span id="cb41-502"><a href="#cb41-502" aria-hidden="true" tabindex="-1"></a>    ) </span>
+<span id="cb41-503"><a href="#cb41-503" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-504"><a href="#cb41-504" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(return_data)</span>
+<span id="cb41-505"><a href="#cb41-505" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb41-506"><a href="#cb41-506" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb41-507"><a href="#cb41-507" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-508"><a href="#cb41-508" aria-hidden="true" tabindex="-1"></a>The following function calculates R-score for all the folds for a given value of $\lambda$.</span>
+<span id="cb41-509"><a href="#cb41-509" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-512"><a href="#cb41-512" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb41-513"><a href="#cb41-513" aria-hidden="true" tabindex="-1"></a>get_cv_rscore_lasso <span class="ot">&lt;-</span> <span class="cf">function</span>(lambda) {</span>
+<span id="cb41-514"><a href="#cb41-514" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb41-515"><a href="#cb41-515" aria-hidden="true" tabindex="-1"></a>    <span class="fu">seq_len</span>(<span class="fu">nrow</span>(data_folds)),</span>
+<span id="cb41-516"><a href="#cb41-516" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(n) <span class="fu">get_cv_rscore_np_lasso</span>(n, lambda)</span>
+<span id="cb41-517"><a href="#cb41-517" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb41-518"><a href="#cb41-518" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbindlist</span>()</span>
+<span id="cb41-519"><a href="#cb41-519" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb41-520"><a href="#cb41-520" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb41-521"><a href="#cb41-521" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-522"><a href="#cb41-522" aria-hidden="true" tabindex="-1"></a>For example, for the first value of $\lambda$ in <span class="in">`lambda_ls`</span>,</span>
+<span id="cb41-523"><a href="#cb41-523" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-526"><a href="#cb41-526" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb41-527"><a href="#cb41-527" aria-hidden="true" tabindex="-1"></a><span class="fu">get_cv_rscore_lasso</span>(lambda_ls[<span class="dv">1</span>])</span>
+<span id="cb41-528"><a href="#cb41-528" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb41-529"><a href="#cb41-529" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-530"><a href="#cb41-530" aria-hidden="true" tabindex="-1"></a>Repeat this for all the rows of <span class="in">`par_data`</span>, find the mean R-score by $\lambda$, and find the best $\lambda$ value.</span>
+<span id="cb41-531"><a href="#cb41-531" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-534"><a href="#cb41-534" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb41-535"><a href="#cb41-535" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb41-536"><a href="#cb41-536" aria-hidden="true" tabindex="-1"></a>cv_rscore_lasso <span class="ot">&lt;-</span></span>
+<span id="cb41-537"><a href="#cb41-537" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb41-538"><a href="#cb41-538" aria-hidden="true" tabindex="-1"></a>    lambda_ls,</span>
+<span id="cb41-539"><a href="#cb41-539" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) <span class="fu">get_cv_rscore_lasso</span>(x)</span>
+<span id="cb41-540"><a href="#cb41-540" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb41-541"><a href="#cb41-541" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbindlist</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb41-542"><a href="#cb41-542" aria-hidden="true" tabindex="-1"></a>  .[, .(<span class="at">rscore =</span> <span class="fu">mean</span>(rscore)), <span class="at">by =</span> lambda] <span class="sc">%&gt;%</span> </span>
+<span id="cb41-543"><a href="#cb41-543" aria-hidden="true" tabindex="-1"></a>  .[<span class="fu">which.min</span>(rscore), ]</span>
+<span id="cb41-544"><a href="#cb41-544" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb41-545"><a href="#cb41-545" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb41-546"><a href="#cb41-546" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-547"><a href="#cb41-547" aria-hidden="true" tabindex="-1"></a>Remember the R-score associated with the best hyper-parameter values for CF is </span>
+<span id="cb41-548"><a href="#cb41-548" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-551"><a href="#cb41-551" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb41-552"><a href="#cb41-552" aria-hidden="true" tabindex="-1"></a>best_par_cf</span>
+<span id="cb41-553"><a href="#cb41-553" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb41-554"><a href="#cb41-554" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-555"><a href="#cb41-555" aria-hidden="true" tabindex="-1"></a>So, in this case, we should go for LASSO with $\lambda = <span class="in">`r cv_rscore_lasso[, lambda]`</span>$.</span>
+<span id="cb41-556"><a href="#cb41-556" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-557"><a href="#cb41-557" aria-hidden="true" tabindex="-1"></a>Let's train LASSO with $\lambda = <span class="in">`r cv_rscore_lasso[, lambda]`</span>$ using the whole dataset. </span>
+<span id="cb41-558"><a href="#cb41-558" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-561"><a href="#cb41-561" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb41-562"><a href="#cb41-562" aria-hidden="true" tabindex="-1"></a>lasso_trained <span class="ot">&lt;-</span></span>
+<span id="cb41-563"><a href="#cb41-563" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glmnet</span>(</span>
+<span id="cb41-564"><a href="#cb41-564" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> data[, .(x1 <span class="sc">*</span> t_tilde, x2 <span class="sc">*</span> t_tilde, x3 <span class="sc">*</span> t_tilde, x4 <span class="sc">*</span> t_tilde, x5<span class="sc">*</span> t_tilde)],</span>
+<span id="cb41-565"><a href="#cb41-565" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> data[, y_tilde],</span>
+<span id="cb41-566"><a href="#cb41-566" aria-hidden="true" tabindex="-1"></a>    <span class="at">lambda =</span> cv_rscore_lasso[, lambda]</span>
+<span id="cb41-567"><a href="#cb41-567" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb41-568"><a href="#cb41-568" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-569"><a href="#cb41-569" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(lasso_trained)</span>
+<span id="cb41-570"><a href="#cb41-570" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb41-571"><a href="#cb41-571" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-572"><a href="#cb41-572" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-573"><a href="#cb41-573" aria-hidden="true" tabindex="-1"></a><span class="fu">## References {.unnumbered}</span></span>
+<span id="cb41-574"><a href="#cb41-574" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-575"><a href="#cb41-575" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"refs"</span><span class="kw">&gt;&lt;/div&gt;</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

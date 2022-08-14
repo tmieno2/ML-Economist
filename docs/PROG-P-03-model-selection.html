@@ -267,7 +267,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
-        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">C0P-causal-ml.qmd</a>
+        <a href="./C0P-causal-ml.html" class="sidebar-item-text sidebar-link">Causal Machine Learning (CML) Methods</a>
       <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
@@ -408,7 +408,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
    
   <ul>
   <li><a href="#prediction-model-selection" id="toc-prediction-model-selection" class="nav-link active" data-scroll-target="#prediction-model-selection"> <span class="header-section-number">23.1</span> Prediction model selection</a></li>
-  <li><a href="#causal-model-selection" id="toc-causal-model-selection" class="nav-link" data-scroll-target="#causal-model-selection"> <span class="header-section-number">23.2</span> Causal model selection</a></li>
+  <li><a href="#sec-python-causal-model-selection" id="toc-sec-python-causal-model-selection" class="nav-link" data-scroll-target="#sec-python-causal-model-selection"> <span class="header-section-number">23.2</span> Causal model selection</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/PROG-P-03-model-selection.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
@@ -563,8 +563,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>est.fit(Y, T, X<span class="op">=</span>X, W<span class="op">=</span>X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="causal-model-selection" class="level2" data-number="23.2">
-<h2 data-number="23.2" class="anchored" data-anchor-id="causal-model-selection"><span class="header-section-number">23.2</span> Causal model selection</h2>
+<section id="sec-python-causal-model-selection" class="level2" data-number="23.2">
+<h2 data-number="23.2" class="anchored" data-anchor-id="sec-python-causal-model-selection"><span class="header-section-number">23.2</span> Causal model selection</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> econml.dml <span class="im">import</span> DML, LinearDML, SparseLinearDML, NonParamDML</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> econml.metalearners <span class="im">import</span> XLearner, TLearner, SLearner, DomainAdaptationLearner</span>
@@ -890,7 +890,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb13-155"><a href="#cb13-155" aria-hidden="true" tabindex="-1"></a>est.fit(Y, T, X<span class="op">=</span>X, W<span class="op">=</span>X)</span>
 <span id="cb13-156"><a href="#cb13-156" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb13-157"><a href="#cb13-157" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-158"><a href="#cb13-158" aria-hidden="true" tabindex="-1"></a><span class="fu">## Causal model selection </span></span>
+<span id="cb13-158"><a href="#cb13-158" aria-hidden="true" tabindex="-1"></a><span class="fu">## Causal model selection {#sec-python-causal-model-selection}</span></span>
 <span id="cb13-159"><a href="#cb13-159" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-162"><a href="#cb13-162" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
 <span id="cb13-163"><a href="#cb13-163" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false </span></span>

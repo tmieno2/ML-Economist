@@ -442,7 +442,7 @@ ggplot() +
 While Lasso is frequently used. Ridge regression or elastic net is nowhere near as popular. 
 :::
 
-## Lasso implementation: R
+## Lasso implementation
 
 
 You can use the `glmnet()` from the `glmnet` package to run Lasso. For demonstration, we use the `QuickStartExample` data.
@@ -534,12 +534,6 @@ coef(cv_lasso, s = "lambda.1se")
 :::{.callout-note}
 glmnet() can be used to much broader class of models (e.g., Logistic regression, Poisson regression, Cox regression, etc). As the name suggests it's elastic <span style="color:red"> net </span> methods for <span style="color:red"> g</span>eneralized <span style="color:red"> l</span>inear <span style="color:red"> m</span>odel. 
 :::
-
-
-## Lasso implementation: Python
-
-Coming later.
-
 
 ## Scaling 
 

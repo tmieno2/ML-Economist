@@ -363,7 +363,7 @@ $$ {#eq-max-score}
 Note that it is much more computationally efficient to solve this maximization problem than the RSS minimization problem (@eq-rss-min). In the RSS minimization problem, for each split, you calculate the mean, subtract it from $Y_i$ for all the observations, square them and sum them. On the other hand, in the similarity score maximization problem, you can simply sum $Y_i$ and then square it for each split. So, programatically, tree building is done using @eq-max-score. You can also see the use of @eq-max-score in the extreme gradient boosting algorithm (@sec-xgb) and also in the implementation of GRF (@sec-grf).
 
 
-### Training a regression tree in R
+### Training a regression tree
 
 You can fit a regression tree using `rpart()` from the `rpart` package. Its syntax is similar to that of `lm()` for a quick fitting.
 

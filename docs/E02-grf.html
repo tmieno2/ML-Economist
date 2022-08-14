@@ -290,7 +290,7 @@ div.csl-indent {
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
-        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">C0P-causal-ml.qmd</a>
+        <a href="./C0P-causal-ml.html" class="sidebar-item-text sidebar-link">Causal Machine Learning (CML) Methods</a>
       <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
@@ -845,8 +845,8 @@ GRF: conceptual steps
 </details>
 <div id="fig-honest" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<div id="htmlwidget-d352795399bb0c96dbae" style="width:100%;height:325px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-d352795399bb0c96dbae">{"x":{"diagram":"\ndigraph {\n  graph [ranksep = 0.2, fontsize = 4]\n  node [shape = box]\n    SS [label = \"Subsamples for splitting\"]\n    SP [label = \"Subsamples for predicting\"]\n    BD [label = \"Bootstrapped Data\"]\n    TT [label = \"Trained tree\"]\n    PV [label = \"Predicted value\"]\n  edge [minlen = 2]\n    BD->SP\n    BD->SS\n    SS->TT\n    SP->PV\n    TT->SP [label=\"apply the splitting rules\"]\n  { rank = same; SS; SP}\n  { rank = same; TT}\n  { rank = same; PV}\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-9f7cd99da07885ee5365" style="width:100%;height:325px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-9f7cd99da07885ee5365">{"x":{"diagram":"\ndigraph {\n  graph [ranksep = 0.2, fontsize = 4]\n  node [shape = box]\n    SS [label = \"Subsamples for splitting\"]\n    SP [label = \"Subsamples for predicting\"]\n    BD [label = \"Bootstrapped Data\"]\n    TT [label = \"Trained tree\"]\n    PV [label = \"Predicted value\"]\n  edge [minlen = 2]\n    BD->SP\n    BD->SS\n    SS->TT\n    SP->PV\n    TT->SP [label=\"apply the splitting rules\"]\n  { rank = same; SS; SP}\n  { rank = same; TT}\n  { rank = same; PV}\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 <p></p><figcaption aria-hidden="true" class="figure-caption">Figure 17.1: Illustration of an honest tree</figcaption><p></p>
 </figure>
 </div>
@@ -1514,8 +1514,8 @@ g(X) &amp; = 10 \cdot [log(x_2+1) + 2\cdot x_3\times x_2]
 <div class="cell">
 <div id="fig-cf-tree" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<div id="htmlwidget-91939835f7582e3bf1b5" style="width:100%;height:371px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-91939835f7582e3bf1b5">{"x":{"diagram":"digraph nodes { \n node [shape=box] ;\n0 [label=\" x1 <= 1.44 \"] ;\n0 -> 1 [labeldistance=2.5, labelangle=45, headlabel=\"True\", arrowhead=normal];\n0 -> 2 [labeldistance=2.5, labelangle=-45, headlabel=\"False\", arrowhead=normal];\n1  [shape=box,style=filled,color=\".7 .3 1.0\" , label=\"size =  121 \n avg_Y = 38.6\navg_W = 0.55 \"];\n2  [shape=box,style=filled,color=\".7 .3 1.0\" , label=\"size =  129 \n avg_Y = 42.1\navg_W = 0.5 \"];\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-f9f45604ea27d8ef58dd" style="width:100%;height:371px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-f9f45604ea27d8ef58dd">{"x":{"diagram":"digraph nodes { \n node [shape=box] ;\n0 [label=\" x1 <= 1.44 \"] ;\n0 -> 1 [labeldistance=2.5, labelangle=45, headlabel=\"True\", arrowhead=normal];\n0 -> 2 [labeldistance=2.5, labelangle=-45, headlabel=\"False\", arrowhead=normal];\n1  [shape=box,style=filled,color=\".7 .3 1.0\" , label=\"size =  121 \n avg_Y = 38.6\navg_W = 0.55 \"];\n2  [shape=box,style=filled,color=\".7 .3 1.0\" , label=\"size =  129 \n avg_Y = 42.1\navg_W = 0.5 \"];\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 <p></p><figcaption aria-hidden="true" class="figure-caption">Figure 17.3: Example trees built in causal forest estimation</figcaption><p></p>
 </figure>
 </div>

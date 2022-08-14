@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Introduction to Machine Learning for Economists (Under Construction) - Preface</title>
+<title>Introduction to Machine Learning for Economists (Under Construction) - Causal Machine Learning (CML) Methods</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -78,6 +78,25 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 
@@ -88,7 +107,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./index.html" rel="prev">
+<link href="./C00-why-not-this.html" rel="next">
+<link href="./P04-local-linear-forest.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -133,13 +153,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </head>
 
-<body class="nav-sidebar floating">
+<body class="nav-sidebar floating slimcontent">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">Preface</h1>
+      <h1 class="quarto-secondary-nav-title">Causal Machine Learning (CML) Methods</h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -193,7 +213,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./H00-preface.html" class="sidebar-item-text sidebar-link active">Preface</a>
+  <a href="./H00-preface.html" class="sidebar-item-text sidebar-link">Preface</a>
   </div>
 </li>
         <li class="px-0"><hr class="sidebar-divider hi "></li>
@@ -266,7 +286,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
-        <a href="./C0P-causal-ml.html" class="sidebar-item-text sidebar-link">Causal Machine Learning (CML) Methods</a>
+        <a href="./C0P-causal-ml.html" class="sidebar-item-text sidebar-link active">Causal Machine Learning (CML) Methods</a>
       <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
@@ -406,17 +426,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#prediction-v.s.-causal-inference" id="toc-prediction-v.s.-causal-inference" class="nav-link active" data-scroll-target="#prediction-v.s.-causal-inference">Prediction v.s. Causal Inference</a></li>
-  <li><a href="#r-and-python" id="toc-r-and-python" class="nav-link" data-scroll-target="#r-and-python">R and Python</a></li>
+  <li><a href="#what-is-cml" id="toc-what-is-cml" class="nav-link active" data-scroll-target="#what-is-cml">What is CML?</a></li>
+  <li><a href="#some-notes-on-cml" id="toc-some-notes-on-cml" class="nav-link" data-scroll-target="#some-notes-on-cml">Some notes on CML</a></li>
   </ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/H00-preface.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/C0P-causal-ml.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title d-none d-lg-block">Preface</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<div class="quarto-title-block"><div><h1 class="title d-none d-lg-block">Causal Machine Learning (CML) Methods</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
 </div>
 
 
@@ -430,9 +450,32 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
-<section id="prediction-v.s.-causal-inference" class="level2">
-<h2 class="anchored" data-anchor-id="prediction-v.s.-causal-inference">Prediction v.s. Causal Inference</h2>
-<p>It is critical to understand the distinctions between <span style="color:blue"> prediction </span> and <span style="color:blue"> causal inference </span> for anybody who is interested in using machine learning (ML) methods. This is because a method designed to for the former objective may not work well for the latter objective, and vice versa.</p>
+<section id="what-is-cml" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="what-is-cml">What is CML?</h2>
+<p>Unlike prediction-oriented machine learning (POML) methods, the focus of causal machine learning (CML) methods is to identify the treatment effect of a treatment (or small number of distinct treatments).</p>
+<p><span class="math display">\[
+TE(X) = \theta(X)\cdot T
+\]</span></p>
+<p><span class="math inline">\(\theta(X)\)</span> is the impact of the treatment when <span class="math inline">\(T\)</span> is binary and marginal impact of the treatment when <span class="math inline">\(T\)</span> is continuous. <span class="math inline">\(\theta(X)\)</span> is a function of attributes (<span class="math inline">\(X\)</span>), meaning that the impact of the treatment can vary (heterogeneous) based on the value of the attributes.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><span class="math inline">\(\theta(X) = \theta\)</span>, where <span class="math inline">\(\theta\)</span> is a constant, is a special case where the treatment effect is not a function of any observed features.</p>
+</div><div class="">
+<p><span class="math inline">\(T\)</span> may be continuous or discrete.</p>
+</div></div>
+<p>CML considers the following model (following <a href="https://econml.azurewebsites.net/spec/estimation/dml.html">the documentation of the <code>econml</code> Python package</a>)</p>
+<p><span class="math display">\[
+\begin{aligned}
+Y &amp; = \theta(X)\cdot T + g(X, W) + \varepsilon \\
+T &amp; = f(X, W) + \eta
+\end{aligned}
+\]</span></p>
+<p><span class="math inline">\(W\)</span> are the collection of attributes that affect <span class="math inline">\(Y\)</span> along with <span class="math inline">\(X\)</span> (represented by <span class="math inline">\(g(X, W)\)</span>), but not as drivers of the heterogeneity in the impact of the treatment. <span class="math inline">\(X\)</span> not just affects <span class="math inline">\(Y\)</span> as drivers of the heterogeneity in the impact of the treatment (<span class="math inline">\(\theta(X)\cdot T\)</span>), but also directly along with <span class="math inline">\(W\)</span>.</p>
+<p>Both <span class="math inline">\(X\)</span> and <span class="math inline">\(W\)</span> are potential confounders. While we do control for them (eliminating their influence) by partialing out <span class="math inline">\(f(X, W)\)</span> and <span class="math inline">\(g(X, W)\)</span>, the sole focus is on the estimation of <span class="math inline">\(\theta(X)\)</span>. This is in stark contrast to the focus of the ML methods we have seen in earlier sections, which primarily focuses on the accurate prediction of the <span style="color:blue"> level</span> of the dependent variable, rather than how the level of the dependent variable <span style="color:blue"> changes </span> when treated like CML methods.</p>
+<p>In this chapter, we first cover double-debiased machine learning (DML) method by <span class="citation" data-cites="Chernozhukov2018">Chernozhukov et al. (<a href="#ref-Chernozhukov2018" role="doc-biblioref">2018</a>)</span>, which many prominent CML methods follow. We then move on to discuss R-leaner, followed by causal forest and orthogonal forest.</p>
+</section>
+<section id="some-notes-on-cml" class="level2">
+<h2 class="anchored" data-anchor-id="some-notes-on-cml">Some notes on CML</h2>
 <div class="callout-important callout callout-style-default no-icon callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -444,43 +487,28 @@ Important
 </div>
 <div class="callout-body-container callout-body">
 <ul>
-<li><span style="color:blue"> Prediction</span>: it aims at predicting accurately the <code>level</code> of the variable of interest (the dependent variable) well based on explanatory variables.</li>
-<li><span style="color:blue"> Causal Inference</span>: it aims at predicting the <code>change</code> in the dependent variable when an explanatory variable of interest changes its value.</li>
+<li><p>Point 1. The use of causal machine learning model does not guarantee you the estimate you got is indeed a causal effect.</p></li>
+<li><p>Point 2. Careful examinations of the underlying assumptions is necessary just like traditional causal inference methods.</p></li>
+<li><p>Point 3. CML is not a panacea at all. How can it be better than the traditional approaches?</p>
+<ul>
+<li>They may be able to capture complex non-linear interactions of variables without specifying how they interact</li>
+<li>They are robust to specification errors</li>
+<li>They can be less efficient to correctly specified (or well approximated) parametric models</li>
+</ul></li>
 </ul>
 </div>
 </div>
-<p>Examples where <span style="color:blue"> prediction </span>matters:</p>
-<ul>
-<li>prediction of the future price of corn when the modeler is interested in using the predicted price to make money in the futures market</li>
-<li>prediction of the crop yield by field when the modeler is interested in using the field-level predicted crop yields as an dependent or explanatory variable in a regression analysis (e.g., the impact of weather on crop yield)</li>
-<li>prediction of what is in the vicinity of a self-driving car (the user)</li>
-</ul>
-<p>What is common among these examples is that the users wants to use the <span style="color:blue"> level </span> or <code>state</code> of the dependent variable to drive their decisions.</p>
-<p>Examples where <span style="color:blue"> causal inference </span>matters:</p>
-<ul>
-<li>understand the impact of a micro-finance program on welfare in developing countries when the modelers is interested in whether they should implement such a program or not (does the benefit of implementing the program worth the cost?). The modelers do not care about what level of welfare people are gonna be at. They care about how much improvement (change) in welfare the program would make.</li>
-<li>understand the impact of water use limits for farmers on groundwater usage when the modeler (water managers) are interested in predicting how much water use reduction (change) they can expect.</li>
-<li>understand the impact of fertilizer on yield for when the modelers are interested in identifying the profit-maximizing fertilizer level. The modelers do not care about what the yield levels are going to be at different fertilizer levels. They care about how much yield improvement (change) can be achieved when more fertilizer is applied.</li>
-</ul>
-<p>What is common among these examples is that the users wants to use the information about the <span style="color:blue"> change </span> in the dependent variable after changing the value of an explanatory variable (implementing a policy) in driving their decisions.</p>
-<p>Now, you may think that once you can predict the <span style="color:blue"> level </span> of the dependent variable as a function of explanatory variables <span class="math inline">\(X\)</span>, say <span class="math inline">\(\hat{f}(X)\)</span>, where <span class="math inline">\(\hat{f}(\cdot)\)</span> is the trained model, then you can simply take the difference in the predicted values of the dependent variable evaluated at <span class="math inline">\(X\)</span> before (<span class="math inline">\(X_0\)</span>) and after (<span class="math inline">\(X_1\)</span>) to find the change in the dependent variable caused by the change in <span class="math inline">\(X\)</span>.</p>
-<p><span class="math display">\[
-\begin{aligned}
-\hat{f}(X_1) - \hat{f}(X_0)
-\end{aligned}
-\]</span></p>
-<p>You are indeed right and you can predict the change in the dependent variable when the value of an explanatory variable changes once the model is trained to predict the level of the dependent variable. However, this way of predicting the impact of <span class="math inline">\(X\)</span> (the continuous treatment version of the so-called S-learner) is often biased. Instead, (most of) causal machine learning methods razor-focus on <span style="color:blue"> directly </span> estimating the change in the dependent variable when the value of an explanatory variable changes and typically performs better.</p>
-<p>Traditionally, the vast majority of ML methods focused on prediction, rather than causal inference. It is only recently (I would say around 2015) that academics and practitioners in industry started to realize the limitation of prediction-oriented methods for many of the research and business problems they need to solve. In response, there are now an emerging tide of new kinds of machine learning methods called causal machine learning methods, which focus on causal identification of a treatment (e.g., pricing of a product, policy intervention, etc). The goal of this book is to learn such causal machine learning methods and add them to your econometric tool box for practical applications. This, however, does not mean we do not learn any prediction-oriented (traditional) machine learning methods. Indeed, it is essential to understand them because the prominent causal machine learning methods do use prediction-oriented ML methods in its process as we will see later. It is just that we do not use prediction-oriented ML methods by themselves for the task of identifying the causal impact of a treatment.</p>
-</section>
-<section id="r-and-python" class="level2">
-<h2 class="anchored" data-anchor-id="r-and-python">R and Python</h2>
-<ul>
-<li>R <code>reticulate</code> package: can call python functions from within R</li>
-</ul>
+<p>Point 1 is not just for CML, but for any statistical models in general. Any statistical model is just a mathematical manipulation of numbers. Model themselves have no ability to identify causal effects.</p>
+<p><span style="color:blue"> More on this later…. </span></p>
 
 
 <!-- -->
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-Chernozhukov2018" class="csl-entry" role="doc-biblioentry">
+Chernozhukov, Victor, Denis Chetverikov, Mert Demirer, Esther Duflo, Christian Hansen, Whitney Newey, and James Robins. 2018. <span>“<span class="nocase">Double/debiased machine learning for treatment and structural parameters</span>.”</span> <em>The Econometrics Journal</em> 21 (1): C1–68. <a href="https://doi.org/10.1111/ectj.12097">https://doi.org/10.1111/ectj.12097</a>.
+</div>
+</div>
 </section>
 
 </main> <!-- /main -->
@@ -616,61 +644,72 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./index.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Welcome</span>
+      <a href="./P04-local-linear-forest.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Local Linear Forest</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="./C00-why-not-this.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Why can’t we just do this?</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Preface {.unnumbered}</span></span>
+<div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Causal Machine Learning (CML) Methods {.unnumbered}</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">## Prediction v.s. Causal Inference</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>It is critical to understand the distinctions between <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> prediction <span class="kw">&lt;/span&gt;</span> and <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> causal inference <span class="kw">&lt;/span&gt;</span> for anybody who is interested in using machine learning (ML) methods. This is because a method designed to for the former objective may not work well for the latter objective, and vice versa.</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">## What is CML?</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>Unlike prediction-oriented machine learning (POML) methods, the focus of causal machine learning (CML) methods is to identify the treatment effect of a treatment (or small number of distinct treatments). </span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>:::{.callout-important}</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span><span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> Prediction<span class="kw">&lt;/span&gt;</span>: it aims at predicting accurately the <span class="in">`level`</span> of the variable of interest (the dependent variable) well based on explanatory variables. </span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span><span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> Causal Inference<span class="kw">&lt;/span&gt;</span>: it aims at predicting the <span class="in">`change`</span> in the dependent variable when an explanatory variable of interest changes its value. </span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>Examples where <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> prediction <span class="kw">&lt;/span&gt;</span>matters:</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>prediction of the future price of corn when the modeler is interested in using the predicted price to make money in the futures market</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>prediction of the crop yield by field when the modeler is interested in using the field-level predicted crop yields as an dependent or explanatory variable in a regression analysis (e.g., the impact of weather on crop yield)</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>prediction of what is in the vicinity of a self-driving car (the user)</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>What is common among these examples is that the users wants to use the <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> level <span class="kw">&lt;/span&gt;</span> or <span class="in">`state`</span> of the dependent variable to drive their decisions. </span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>Examples where <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> causal inference <span class="kw">&lt;/span&gt;</span>matters:</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>understand the impact of a micro-finance program on welfare in developing countries when the modelers is interested in whether they should implement such a program or not (does the benefit of implementing the program worth the cost?). The modelers do not care about what level of welfare people are gonna be at. They care about how much improvement (change) in welfare the program would make.</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>understand the impact of water use limits for farmers on groundwater usage when the modeler (water managers) are interested in predicting how much water use reduction (change) they can expect.</span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>understand the impact of fertilizer on yield for when the modelers are interested in identifying the profit-maximizing fertilizer level. The modelers do not care about what the yield levels are going to be at different fertilizer levels. They care about how much yield improvement (change) can be achieved when more fertilizer is applied.</span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>What is common among these examples is that the users wants to use the information about the <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> change <span class="kw">&lt;/span&gt;</span> in the dependent variable after changing the value of an explanatory variable (implementing a policy) in driving their decisions. </span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>TE(X) = \theta(X)\cdot T</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>$\theta(X)$ is the impact of the treatment when $T$ is binary and marginal impact of the treatment when $T$ is continuous. $\theta(X)$ is a function of attributes ($X$), meaning that the impact of the treatment can vary (heterogeneous) based on the value of the attributes. </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>$\theta(X) = \theta$, where $\theta$ is a constant, is a special case where the treatment effect is not a function of any observed features.</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>$T$ may be continuous or discrete.</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>CML considers the following model (following <span class="co">[</span><span class="ot">the documentation of the `econml` Python package</span><span class="co">](https://econml.azurewebsites.net/spec/estimation/dml.html)</span>)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>Y &amp; = \theta(X)\cdot T + g(X, W) + \varepsilon <span class="sc">\\</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>T &amp; = f(X, W) + \eta </span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>Now, you may think that once you can predict the <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> level <span class="kw">&lt;/span&gt;</span> of the dependent variable as a function of explanatory variables $X$, say $\hat{f}(X)$, where $\hat{f}(\cdot)$ is the trained model, then you can simply take the difference in the predicted values of the dependent variable evaluated at $X$ before ($X_0$) and after ($X_1$) to find the change in the dependent variable caused by the change in $X$.</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>$W$ are the collection of attributes that affect $Y$ along with $X$ (represented by $g(X, W)$), but not as drivers of the heterogeneity in the impact of the treatment. $X$ not just affects $Y$ as drivers of the heterogeneity in the impact of the treatment ($\theta(X)\cdot T$), but also directly along with $W$. </span>
 <span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>\hat{f}(X_1) - \hat{f}(X_0)</span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>Both $X$ and $W$ are potential confounders. While we do control for them (eliminating their influence) by partialing out $f(X, W)$ and $g(X, W)$, the sole focus is on the estimation of $\theta(X)$. This is in stark contrast to the focus of the ML methods we have seen in earlier sections, which primarily focuses on the accurate prediction of the <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> level<span class="kw">&lt;/span&gt;</span> of the dependent variable, rather than how the level of the dependent variable <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> changes <span class="kw">&lt;/span&gt;</span> when treated like CML methods.</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>In this chapter, we first cover double-debiased machine learning (DML) method by @Chernozhukov2018, which many prominent CML methods follow. We then move on to discuss R-leaner, followed by causal forest and orthogonal forest. </span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="fu">## Some notes on CML</span></span>
 <span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>You are indeed right and you can predict the change in the dependent variable when the value of an explanatory variable changes once the model is trained to predict the level of the dependent variable. However, this way of predicting the impact of $X$ (the continuous treatment version of the so-called S-learner) is often biased. Instead, (most of) causal machine learning methods razor-focus on <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> directly <span class="kw">&lt;/span&gt;</span> estimating the change in the dependent variable when the value of an explanatory variable changes and typically performs better. </span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>Traditionally, the vast majority of ML methods focused on prediction, rather than causal inference. It is only recently (I would say around 2015) that academics and practitioners in industry started to realize the limitation of prediction-oriented methods for many of the research and business problems they need to solve. In response, there are now an emerging tide of new kinds of machine learning methods called causal machine learning methods, which focus on causal identification of a treatment (e.g., pricing of a product, policy intervention, etc). The goal of this book is to learn such causal machine learning methods and add them to your econometric tool box for practical applications. This, however, does not mean we do not learn any prediction-oriented (traditional) machine learning methods. Indeed, it is essential to understand them because the prominent causal machine learning methods do use prediction-oriented ML methods in its process as we will see later. It is just that we do not use prediction-oriented ML methods by themselves for the task of identifying the causal impact of a treatment. </span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="fu">## R and Python</span></span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>R <span class="in">`reticulate`</span> package: can call python functions from within R</span>
-<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>:::{.callout-important}</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>Point 1. The use of causal machine learning model does not guarantee you the estimate you got is indeed a causal effect. </span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>Point 2. Careful examinations of the underlying assumptions is necessary just like traditional causal inference methods.</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>Point 3. CML is not a panacea at all. How can it be better than the traditional approaches?</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>They may be able to capture complex non-linear interactions of variables without specifying how they interact</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>They are robust to specification errors</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>They can be less efficient to correctly specified (or well approximated) parametric models</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>Point 1 is not just for CML, but for any statistical models in general. Any statistical model is just a mathematical manipulation of numbers. Model themselves have no ability to identify causal effects.</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> More on this later.... <span class="kw">&lt;/span&gt;</span></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 

@@ -286,7 +286,7 @@ div.csl-indent {
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
-        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">C0P-causal-ml.qmd</a>
+        <a href="./C0P-causal-ml.html" class="sidebar-item-text sidebar-link">Causal Machine Learning (CML) Methods</a>
       <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
@@ -430,7 +430,7 @@ div.csl-indent {
   <ul class="collapse">
   <li><a href="#what-is-it" id="toc-what-is-it" class="nav-link" data-scroll-target="#what-is-it"> <span class="header-section-number">6.1.1</span> What is it?</a></li>
   <li><a href="#sec-split-sim" id="toc-sec-split-sim" class="nav-link" data-scroll-target="#sec-split-sim"> <span class="header-section-number">6.1.2</span> A note on splitting algorithm</a></li>
-  <li><a href="#training-a-regression-tree-in-r" id="toc-training-a-regression-tree-in-r" class="nav-link" data-scroll-target="#training-a-regression-tree-in-r"> <span class="header-section-number">6.1.3</span> Training a regression tree in R</a></li>
+  <li><a href="#training-a-regression-tree" id="toc-training-a-regression-tree" class="nav-link" data-scroll-target="#training-a-regression-tree"> <span class="header-section-number">6.1.3</span> Training a regression tree</a></li>
   </ul></li>
   <li><a href="#sec-rf" id="toc-sec-rf" class="nav-link" data-scroll-target="#sec-rf"> <span class="header-section-number">6.2</span> Random Forest (RF)</a>
   <ul class="collapse">
@@ -850,8 +850,8 @@ Tip
 \tag{6.3}\]</span></span></p>
 <p>Note that it is much more computationally efficient to solve this maximization problem than the RSS minimization problem (<a href="#eq-rss-min">Equation&nbsp;<span>6.1</span></a>). In the RSS minimization problem, for each split, you calculate the mean, subtract it from <span class="math inline">\(Y_i\)</span> for all the observations, square them and sum them. On the other hand, in the similarity score maximization problem, you can simply sum <span class="math inline">\(Y_i\)</span> and then square it for each split. So, programatically, tree building is done using <a href="#eq-max-score">Equation&nbsp;<span>6.3</span></a>. You can also see the use of <a href="#eq-max-score">Equation&nbsp;<span>6.3</span></a> in the extreme gradient boosting algorithm (<a href="P03-xgb.html"><span>Chapter&nbsp;8</span></a>) and also in the implementation of GRF (<a href="E02-grf.html"><span>Chapter&nbsp;17</span></a>).</p>
 </section>
-<section id="training-a-regression-tree-in-r" class="level3" data-number="6.1.3">
-<h3 data-number="6.1.3" class="anchored" data-anchor-id="training-a-regression-tree-in-r"><span class="header-section-number">6.1.3</span> Training a regression tree in R</h3>
+<section id="training-a-regression-tree" class="level3" data-number="6.1.3">
+<h3 data-number="6.1.3" class="anchored" data-anchor-id="training-a-regression-tree"><span class="header-section-number">6.1.3</span> Training a regression tree</h3>
 <p>You can fit a regression tree using <code>rpart()</code> from the <code>rpart</code> package. Its syntax is similar to that of <code>lm()</code> for a quick fitting.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rpart</span>(</span>
@@ -1011,7 +1011,7 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 <span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(x_1, x_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -0.0210099</code></pre>
+<pre><code>[1] -0.03538683</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== second approach (positively correlated) ===#</span></span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>x_1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
@@ -1019,7 +1019,7 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 <span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(x_1, x_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.5034182</code></pre>
+<pre><code>[1] 0.5331155</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== third approach (negatively correlated) ===#</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>x_1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
@@ -1027,7 +1027,7 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 <span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(x_1, x_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -0.8086169</code></pre>
+<pre><code>[1] -0.7844734</code></pre>
 </div>
 </div>
 <p>The following function runs a single iteration of estimating <span class="math inline">\(E[x]\)</span> using the four approaches.</p>
@@ -1072,7 +1072,7 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_alpha</span>(<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   alpha_hat_0 alpha_hat_1 alpha_hat_2 alpha_hat_3
-1:  -0.4212967   0.6033362  -0.9302156  -0.1914999</code></pre>
+1:   0.6067736  -0.4103817   0.0126248  -0.1771292</code></pre>
 </div>
 </div>
 <p>Repeating this many times,</p>
@@ -2001,7 +2001,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb69-385"><a href="#cb69-385" aria-hidden="true" tabindex="-1"></a>Note that it is much more computationally efficient to solve this maximization problem than the RSS minimization problem (@eq-rss-min). In the RSS minimization problem, for each split, you calculate the mean, subtract it from $Y_i$ for all the observations, square them and sum them. On the other hand, in the similarity score maximization problem, you can simply sum $Y_i$ and then square it for each split. So, programatically, tree building is done using @eq-max-score. You can also see the use of @eq-max-score in the extreme gradient boosting algorithm (@sec-xgb) and also in the implementation of GRF (@sec-grf).</span>
 <span id="cb69-386"><a href="#cb69-386" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb69-387"><a href="#cb69-387" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb69-388"><a href="#cb69-388" aria-hidden="true" tabindex="-1"></a><span class="fu">### Training a regression tree in R</span></span>
+<span id="cb69-388"><a href="#cb69-388" aria-hidden="true" tabindex="-1"></a><span class="fu">### Training a regression tree</span></span>
 <span id="cb69-389"><a href="#cb69-389" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb69-390"><a href="#cb69-390" aria-hidden="true" tabindex="-1"></a>You can fit a regression tree using <span class="in">`rpart()`</span> from the <span class="in">`rpart`</span> package. Its syntax is similar to that of <span class="in">`lm()`</span> for a quick fitting.</span>
 <span id="cb69-391"><a href="#cb69-391" aria-hidden="true" tabindex="-1"></a></span>

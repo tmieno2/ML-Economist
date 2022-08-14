@@ -286,7 +286,7 @@ div.csl-indent {
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
-        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">C0P-causal-ml.qmd</a>
+        <a href="./C0P-causal-ml.html" class="sidebar-item-text sidebar-link">Causal Machine Learning (CML) Methods</a>
       <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
@@ -429,9 +429,8 @@ div.csl-indent {
   <li><a href="#sec-shrinkage" id="toc-sec-shrinkage" class="nav-link active" data-scroll-target="#sec-shrinkage"> <span class="header-section-number">4.1</span> Shrinkage Methods</a></li>
   <li><a href="#lasso" id="toc-lasso" class="nav-link" data-scroll-target="#lasso"> <span class="header-section-number">4.2</span> Lasso</a></li>
   <li><a href="#sec-ridge-en" id="toc-sec-ridge-en" class="nav-link" data-scroll-target="#sec-ridge-en"> <span class="header-section-number">4.3</span> Ridge and Elastic Net regression</a></li>
-  <li><a href="#lasso-implementation-r" id="toc-lasso-implementation-r" class="nav-link" data-scroll-target="#lasso-implementation-r"> <span class="header-section-number">4.4</span> Lasso implementation: R</a></li>
-  <li><a href="#lasso-implementation-python" id="toc-lasso-implementation-python" class="nav-link" data-scroll-target="#lasso-implementation-python"> <span class="header-section-number">4.5</span> Lasso implementation: Python</a></li>
-  <li><a href="#scaling" id="toc-scaling" class="nav-link" data-scroll-target="#scaling"> <span class="header-section-number">4.6</span> Scaling</a></li>
+  <li><a href="#lasso-implementation" id="toc-lasso-implementation" class="nav-link" data-scroll-target="#lasso-implementation"> <span class="header-section-number">4.4</span> Lasso implementation</a></li>
+  <li><a href="#scaling" id="toc-scaling" class="nav-link" data-scroll-target="#scaling"> <span class="header-section-number">4.5</span> Scaling</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/B04-regularization.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
@@ -574,7 +573,7 @@ Min_{\beta} &amp; \sum_{i=1}^N (y_i - \beta_1 x_1 - \beta_2 x_2)^2 \\
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>(Intercept)         x_1         x_2 
- 0.04941697  1.92273347  0.18124448 </code></pre>
+ 0.03255649  2.04563450  0.19408270 </code></pre>
 </div>
 </div>
 <p>We now calculate the value of the objective functions at different values of <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\beta_2\)</span>. Here is the set of <span class="math inline">\(\{\beta_1, \beta_2\}\)</span> combinations we look at.</p>
@@ -907,8 +906,8 @@ Note
 </div>
 </div>
 </section>
-<section id="lasso-implementation-r" class="level2" data-number="4.4">
-<h2 data-number="4.4" class="anchored" data-anchor-id="lasso-implementation-r"><span class="header-section-number">4.4</span> Lasso implementation: R</h2>
+<section id="lasso-implementation" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="lasso-implementation"><span class="header-section-number">4.4</span> Lasso implementation</h2>
 <p>You can use the <code>glmnet()</code> from the <code>glmnet</code> package to run Lasso. For demonstration, we use the <code>QuickStartExample</code> data.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== get the data ===#</span></span>
@@ -1106,7 +1105,7 @@ V20         -1.144987654</code></pre>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>cv_lasso<span class="sc">$</span>lambda.min</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.05725918</code></pre>
+<pre><code>[1] 0.08307327</code></pre>
 </div>
 </div>
 <p>You can access the coefficient estimates when <span class="math inline">\(\lambda\)</span> is <code>lambda.min</code> as follows</p>
@@ -1115,27 +1114,27 @@ V20         -1.144987654</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
                      s1
-(Intercept)  0.14291659
-V1           1.34431995
+(Intercept)  0.14936467
+V1           1.32975267
 V2           .         
-V3           0.71047211
+V3           0.69096092
 V4           .         
-V5          -0.85182173
-V6           0.55960366
-V7           0.04475230
-V8           0.35117414
+V5          -0.83122558
+V6           0.53669611
+V7           0.02005438
+V8           0.33193760
 V9           .         
-V10          0.01985732
-V11          0.19335515
+V10          .         
+V11          0.16239419
 V12          .         
 V13          .         
-V14         -1.09350480
-V15         -0.01564233
+V14         -1.07081121
+V15          .         
 V16          .         
 V17          .         
 V18          .         
 V19          .         
-V20         -1.07874251</code></pre>
+V20         -1.04340741</code></pre>
 </div>
 </div>
 <p>The following code gives you the coefficient estimates when <span class="math inline">\(\lambda\)</span> is <code>lambda.1se</code></p>
@@ -1144,27 +1143,27 @@ V20         -1.07874251</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
                     s1
-(Intercept)  0.1517961
-V1           1.3150929
+(Intercept)  0.1559184
+V1           1.2861359
 V2           .        
-V3           0.6654639
+V3           0.6142724
 V4           .        
-V5          -0.8090641
-V6           0.5129379
+V5          -0.7653592
+V6           0.4722462
 V7           .        
-V8           0.3119525
+V8           0.2730791
 V9           .        
 V10          .        
-V11          0.1311638
+V11          0.0753461
 V12          .        
 V13          .        
-V14         -1.0538491
+V14         -1.0238284
 V15          .        
 V16          .        
 V17          .        
 V18          .        
 V19          .        
-V20         -1.0090967</code></pre>
+V20         -0.9430068</code></pre>
 </div>
 </div>
 <div class="callout-note callout callout-style-default no-icon callout-captioned">
@@ -1181,12 +1180,8 @@ Note
 </div>
 </div>
 </section>
-<section id="lasso-implementation-python" class="level2" data-number="4.5">
-<h2 data-number="4.5" class="anchored" data-anchor-id="lasso-implementation-python"><span class="header-section-number">4.5</span> Lasso implementation: Python</h2>
-<p>Coming later.</p>
-</section>
-<section id="scaling" class="level2" data-number="4.6">
-<h2 data-number="4.6" class="anchored" data-anchor-id="scaling"><span class="header-section-number">4.6</span> Scaling</h2>
+<section id="scaling" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="scaling"><span class="header-section-number">4.5</span> Scaling</h2>
 <p>Unlike linear model estimation without shrinkage (regularization), shrinkage method is sensitive to the scaling of independent variables. Scaling of a variable has basically no consequence in linear model without regularization. It simply changes the interpretation of the scaled variable and the coefficient estimates on all the other variables remain unaffected. However, scaling of a single variable has a ripple effect to the other variables in shrinkage methods. This is because the penalization term: <span class="math inline">\(\lambda \huge[\normalsize(1-\alpha)||\beta||^2_2/2 + \alpha ||\beta||_1\huge]\)</span>. As you can see, <span class="math inline">\(\lambda\)</span> is applied universally to all the coefficients without any consideration of the scale of the variables.</p>
 <p>Let’s scale the first variable in <code>X</code> (this variable is influential as it survived even when <span class="math inline">\(\lambda\)</span> is very low) by 1/1000 and see what happens. Now, by default, the <code>standardize</code> option is set to <code>TRUE</code>. So, we need to set it to FALSE explicitly to see the effect.</p>
 <p>Here is before scaling:</p>
@@ -1195,28 +1190,28 @@ Note
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coef</span>(<span class="at">s =</span> <span class="st">"lambda.min"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
-                     s1
-(Intercept)  0.14894850
-V1           1.33450311
-V2           .         
-V3           0.68637683
-V4           .         
-V5          -0.81775106
-V6           0.53834467
-V7           0.01605235
-V8           0.33462300
-V9           .         
-V10          .         
-V11          0.15558443
-V12          .         
-V13          .         
-V14         -1.07590955
-V15          .         
-V16          .         
-V17          .         
-V18          .         
-V19          .         
-V20         -1.02266841</code></pre>
+                    s1
+(Intercept)  0.1482955
+V1           1.3381070
+V2           .        
+V3           0.6936938
+V4           .        
+V5          -0.8249778
+V6           0.5448439
+V7           0.0230429
+V8           0.3398575
+V9           .        
+V10          .        
+V11          0.1648445
+V12          .        
+V13          .        
+V14         -1.0801745
+V15          .        
+V16          .        
+V17          .        
+V18          .        
+V19          .        
+V20         -1.0338882</code></pre>
 </div>
 </div>
 <p>Here is after scaling:</p>
@@ -1230,27 +1225,27 @@ V20         -1.02266841</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
                      s1
-(Intercept)  0.51006512
+(Intercept)  0.48468325
 V1           .         
 V2           .         
-V3           0.62849796
-V4          -0.04310535
-V5          -0.81620636
-V6           0.77607216
-V7           0.07997284
-V8           0.10866329
+V3           0.58495226
+V4           .         
+V5          -0.77303610
+V6           0.72015880
+V7           0.03426215
+V8           0.08734948
 V9           .         
 V10          .         
-V11          0.52850027
+V11          0.46374479
 V12          .         
 V13          .         
-V14         -1.03651619
+V14         -1.02293498
 V15          .         
 V16          .         
 V17          .         
-V18          0.15666699
+V18          0.09113589
 V19          .         
-V20         -1.35182337</code></pre>
+V20         -1.28272851</code></pre>
 </div>
 </div>
 <p>As you can see, the coefficient on the first variable is 0 after scaling. Setting <code>standardize = TRUE</code> (or not doing anything with this option) gives you very similar results whether the data is scaled or not.</p>
@@ -1260,28 +1255,28 @@ V20         -1.35182337</code></pre>
 <span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coef</span>(<span class="at">s =</span> <span class="st">"lambda.min"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
-                      s1
-(Intercept)  0.145832036
-V1           1.340981414
-V2           .          
-V3           0.708347140
-V4           .          
-V5          -0.848087765
-V6           0.554823782
-V7           0.038519738
-V8           0.347221319
-V9           .          
-V10          0.010034050
-V11          0.186365265
-V12          .          
-V13          .          
-V14         -1.086006902
-V15         -0.004444319
-V16          .          
-V17          .          
-V18          .          
-V19          .          
-V20         -1.069942845</code></pre>
+                     s1
+(Intercept)  0.14867414
+V1           1.33377821
+V2           .         
+V3           0.69787701
+V4           .         
+V5          -0.83726751
+V6           0.54334327
+V7           0.02668633
+V8           0.33741131
+V9           .         
+V10          .         
+V11          0.17105029
+V12          .         
+V13          .         
+V14         -1.07552680
+V15          .         
+V16          .         
+V17          .         
+V18          .         
+V19          .         
+V20         -1.05278699</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== scaled ===#</span></span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cv.glmnet</span>(X_scaled, y, <span class="at">nfolds =</span> <span class="dv">5</span>, <span class="at">standardize =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
@@ -1289,27 +1284,27 @@ V20         -1.069942845</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
                        s1
-(Intercept)  1.357322e-01
-V1           1.351834e+03
-V2           2.364852e-03
-V3           7.183628e-01
-V4           6.067578e-04
-V5          -8.627891e-01
-V6           5.734104e-01
-V7           6.169129e-02
-V8           3.606567e-01
+(Intercept)  1.458320e-01
+V1           1.340981e+03
+V2           .           
+V3           7.083471e-01
+V4           .           
+V5          -8.480878e-01
+V6           5.548238e-01
+V7           3.851974e-02
+V8           3.472213e-01
 V9           .           
-V10          4.578076e-02
-V11          2.080908e-01
-V12         -7.469752e-03
-V13         -1.114226e-02
-V14         -1.110532e+00
-V15         -4.517600e-02
+V10          1.003405e-02
+V11          1.863653e-01
+V12          .           
+V13          .           
+V14         -1.086007e+00
+V15         -4.444319e-03
 V16          .           
 V17          .           
-V18          7.428251e-03
+V18          .           
 V19          .           
-V20         -1.099873e+00</code></pre>
+V20         -1.069943e+00</code></pre>
 </div>
 </div>
 <p>While you do not have to worry about scaling issues as long as you are using <code>glmnet()</code>, this is something worth remembering.</p>
@@ -1917,7 +1912,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb40-465"><a href="#cb40-465" aria-hidden="true" tabindex="-1"></a>While Lasso is frequently used. Ridge regression or elastic net is nowhere near as popular. </span>
 <span id="cb40-466"><a href="#cb40-466" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb40-467"><a href="#cb40-467" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-468"><a href="#cb40-468" aria-hidden="true" tabindex="-1"></a><span class="fu">## Lasso implementation: R</span></span>
+<span id="cb40-468"><a href="#cb40-468" aria-hidden="true" tabindex="-1"></a><span class="fu">## Lasso implementation</span></span>
 <span id="cb40-469"><a href="#cb40-469" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb40-470"><a href="#cb40-470" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb40-471"><a href="#cb40-471" aria-hidden="true" tabindex="-1"></a>You can use the <span class="in">`glmnet()`</span> from the <span class="in">`glmnet`</span> package to run Lasso. For demonstration, we use the <span class="in">`QuickStartExample`</span> data.</span>
@@ -2010,58 +2005,52 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb40-578"><a href="#cb40-578" aria-hidden="true" tabindex="-1"></a>glmnet() can be used to much broader class of models (e.g., Logistic regression, Poisson regression, Cox regression, etc). As the name suggests it's elastic <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:red"</span><span class="kw">&gt;</span> net <span class="kw">&lt;/span&gt;</span> methods for <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:red"</span><span class="kw">&gt;</span> g<span class="kw">&lt;/span&gt;</span>eneralized <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:red"</span><span class="kw">&gt;</span> l<span class="kw">&lt;/span&gt;</span>inear <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:red"</span><span class="kw">&gt;</span> m<span class="kw">&lt;/span&gt;</span>odel. </span>
 <span id="cb40-579"><a href="#cb40-579" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb40-580"><a href="#cb40-580" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-581"><a href="#cb40-581" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-582"><a href="#cb40-582" aria-hidden="true" tabindex="-1"></a><span class="fu">## Lasso implementation: Python</span></span>
-<span id="cb40-583"><a href="#cb40-583" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-584"><a href="#cb40-584" aria-hidden="true" tabindex="-1"></a>Coming later.</span>
-<span id="cb40-585"><a href="#cb40-585" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-581"><a href="#cb40-581" aria-hidden="true" tabindex="-1"></a><span class="fu">## Scaling </span></span>
+<span id="cb40-582"><a href="#cb40-582" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-583"><a href="#cb40-583" aria-hidden="true" tabindex="-1"></a>Unlike linear model estimation without shrinkage (regularization), shrinkage method is sensitive to the scaling of independent variables. Scaling of a variable has basically no consequence in linear model without regularization. It simply changes the interpretation of the scaled variable and the coefficient estimates on all the other variables remain unaffected. However, scaling of a single variable has a ripple effect to the other variables in shrinkage methods. This is because the penalization term: $\lambda \huge<span class="co">[</span><span class="ot">\normalsize(1-\alpha)||\beta||^2_2/2 + \alpha ||\beta||_1\huge</span><span class="co">]</span>$. As you can see, $\lambda$ is applied universally to all the coefficients without any consideration of the scale of the variables.</span>
+<span id="cb40-584"><a href="#cb40-584" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-585"><a href="#cb40-585" aria-hidden="true" tabindex="-1"></a>Let's scale the first variable in <span class="in">`X`</span> (this variable is influential as it survived even when $\lambda$ is very low) by 1/1000 and see what happens. Now, by default, the <span class="in">`standardize`</span> option is set to <span class="in">`TRUE`</span>. So, we need to set it to FALSE explicitly to see the effect.</span>
 <span id="cb40-586"><a href="#cb40-586" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-587"><a href="#cb40-587" aria-hidden="true" tabindex="-1"></a><span class="fu">## Scaling </span></span>
+<span id="cb40-587"><a href="#cb40-587" aria-hidden="true" tabindex="-1"></a>Here is before scaling:</span>
 <span id="cb40-588"><a href="#cb40-588" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-589"><a href="#cb40-589" aria-hidden="true" tabindex="-1"></a>Unlike linear model estimation without shrinkage (regularization), shrinkage method is sensitive to the scaling of independent variables. Scaling of a variable has basically no consequence in linear model without regularization. It simply changes the interpretation of the scaled variable and the coefficient estimates on all the other variables remain unaffected. However, scaling of a single variable has a ripple effect to the other variables in shrinkage methods. This is because the penalization term: $\lambda \huge<span class="co">[</span><span class="ot">\normalsize(1-\alpha)||\beta||^2_2/2 + \alpha ||\beta||_1\huge</span><span class="co">]</span>$. As you can see, $\lambda$ is applied universally to all the coefficients without any consideration of the scale of the variables.</span>
-<span id="cb40-590"><a href="#cb40-590" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-591"><a href="#cb40-591" aria-hidden="true" tabindex="-1"></a>Let's scale the first variable in <span class="in">`X`</span> (this variable is influential as it survived even when $\lambda$ is very low) by 1/1000 and see what happens. Now, by default, the <span class="in">`standardize`</span> option is set to <span class="in">`TRUE`</span>. So, we need to set it to FALSE explicitly to see the effect.</span>
-<span id="cb40-592"><a href="#cb40-592" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-593"><a href="#cb40-593" aria-hidden="true" tabindex="-1"></a>Here is before scaling:</span>
-<span id="cb40-594"><a href="#cb40-594" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-597"><a href="#cb40-597" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb40-598"><a href="#cb40-598" aria-hidden="true" tabindex="-1"></a><span class="fu">cv.glmnet</span>(X, y, <span class="at">nfolds =</span> <span class="dv">5</span>, <span class="at">standardize =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb40-599"><a href="#cb40-599" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coef</span>(<span class="at">s =</span> <span class="st">"lambda.min"</span>)</span>
-<span id="cb40-600"><a href="#cb40-600" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb40-601"><a href="#cb40-601" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-602"><a href="#cb40-602" aria-hidden="true" tabindex="-1"></a>Here is after scaling:</span>
-<span id="cb40-603"><a href="#cb40-603" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-606"><a href="#cb40-606" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb40-607"><a href="#cb40-607" aria-hidden="true" tabindex="-1"></a><span class="co">#=== scale the first variable ===#</span></span>
-<span id="cb40-608"><a href="#cb40-608" aria-hidden="true" tabindex="-1"></a>X_scaled <span class="ot">&lt;-</span> X</span>
-<span id="cb40-609"><a href="#cb40-609" aria-hidden="true" tabindex="-1"></a>X_scaled[, <span class="dv">1</span>] <span class="ot">&lt;-</span> X_scaled[, <span class="dv">1</span>] <span class="sc">/</span> <span class="dv">1000</span></span>
+<span id="cb40-591"><a href="#cb40-591" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb40-592"><a href="#cb40-592" aria-hidden="true" tabindex="-1"></a><span class="fu">cv.glmnet</span>(X, y, <span class="at">nfolds =</span> <span class="dv">5</span>, <span class="at">standardize =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb40-593"><a href="#cb40-593" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coef</span>(<span class="at">s =</span> <span class="st">"lambda.min"</span>)</span>
+<span id="cb40-594"><a href="#cb40-594" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb40-595"><a href="#cb40-595" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-596"><a href="#cb40-596" aria-hidden="true" tabindex="-1"></a>Here is after scaling:</span>
+<span id="cb40-597"><a href="#cb40-597" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-600"><a href="#cb40-600" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb40-601"><a href="#cb40-601" aria-hidden="true" tabindex="-1"></a><span class="co">#=== scale the first variable ===#</span></span>
+<span id="cb40-602"><a href="#cb40-602" aria-hidden="true" tabindex="-1"></a>X_scaled <span class="ot">&lt;-</span> X</span>
+<span id="cb40-603"><a href="#cb40-603" aria-hidden="true" tabindex="-1"></a>X_scaled[, <span class="dv">1</span>] <span class="ot">&lt;-</span> X_scaled[, <span class="dv">1</span>] <span class="sc">/</span> <span class="dv">1000</span></span>
+<span id="cb40-604"><a href="#cb40-604" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-605"><a href="#cb40-605" aria-hidden="true" tabindex="-1"></a><span class="fu">cv.glmnet</span>(X_scaled, y, <span class="at">nfolds =</span> <span class="dv">5</span>, <span class="at">standardize =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb40-606"><a href="#cb40-606" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coef</span>(<span class="at">s =</span> <span class="st">"lambda.min"</span>)</span>
+<span id="cb40-607"><a href="#cb40-607" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb40-608"><a href="#cb40-608" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-609"><a href="#cb40-609" aria-hidden="true" tabindex="-1"></a>As you can see, the coefficient on the first variable is 0 after scaling. Setting <span class="in">`standardize = TRUE`</span> (or not doing anything with this option) gives you very similar results whether the data is scaled or not.</span>
 <span id="cb40-610"><a href="#cb40-610" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-611"><a href="#cb40-611" aria-hidden="true" tabindex="-1"></a><span class="fu">cv.glmnet</span>(X_scaled, y, <span class="at">nfolds =</span> <span class="dv">5</span>, <span class="at">standardize =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb40-612"><a href="#cb40-612" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coef</span>(<span class="at">s =</span> <span class="st">"lambda.min"</span>)</span>
-<span id="cb40-613"><a href="#cb40-613" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb40-614"><a href="#cb40-614" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-615"><a href="#cb40-615" aria-hidden="true" tabindex="-1"></a>As you can see, the coefficient on the first variable is 0 after scaling. Setting <span class="in">`standardize = TRUE`</span> (or not doing anything with this option) gives you very similar results whether the data is scaled or not.</span>
-<span id="cb40-616"><a href="#cb40-616" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-619"><a href="#cb40-619" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb40-620"><a href="#cb40-620" aria-hidden="true" tabindex="-1"></a><span class="co">#=== not scaled ===#</span></span>
-<span id="cb40-621"><a href="#cb40-621" aria-hidden="true" tabindex="-1"></a><span class="fu">cv.glmnet</span>(X, y, <span class="at">nfolds =</span> <span class="dv">5</span>, <span class="at">standardize =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb40-622"><a href="#cb40-622" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coef</span>(<span class="at">s =</span> <span class="st">"lambda.min"</span>)</span>
-<span id="cb40-623"><a href="#cb40-623" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-624"><a href="#cb40-624" aria-hidden="true" tabindex="-1"></a><span class="co">#=== scaled ===#</span></span>
-<span id="cb40-625"><a href="#cb40-625" aria-hidden="true" tabindex="-1"></a><span class="fu">cv.glmnet</span>(X_scaled, y, <span class="at">nfolds =</span> <span class="dv">5</span>, <span class="at">standardize =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb40-626"><a href="#cb40-626" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coef</span>(<span class="at">s =</span> <span class="st">"lambda.min"</span>)</span>
-<span id="cb40-627"><a href="#cb40-627" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb40-628"><a href="#cb40-628" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-629"><a href="#cb40-629" aria-hidden="true" tabindex="-1"></a>While you do not have to worry about scaling issues as long as you are using <span class="in">`glmnet()`</span>, this is something worth remembering.</span>
+<span id="cb40-613"><a href="#cb40-613" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb40-614"><a href="#cb40-614" aria-hidden="true" tabindex="-1"></a><span class="co">#=== not scaled ===#</span></span>
+<span id="cb40-615"><a href="#cb40-615" aria-hidden="true" tabindex="-1"></a><span class="fu">cv.glmnet</span>(X, y, <span class="at">nfolds =</span> <span class="dv">5</span>, <span class="at">standardize =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb40-616"><a href="#cb40-616" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coef</span>(<span class="at">s =</span> <span class="st">"lambda.min"</span>)</span>
+<span id="cb40-617"><a href="#cb40-617" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-618"><a href="#cb40-618" aria-hidden="true" tabindex="-1"></a><span class="co">#=== scaled ===#</span></span>
+<span id="cb40-619"><a href="#cb40-619" aria-hidden="true" tabindex="-1"></a><span class="fu">cv.glmnet</span>(X_scaled, y, <span class="at">nfolds =</span> <span class="dv">5</span>, <span class="at">standardize =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb40-620"><a href="#cb40-620" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coef</span>(<span class="at">s =</span> <span class="st">"lambda.min"</span>)</span>
+<span id="cb40-621"><a href="#cb40-621" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb40-622"><a href="#cb40-622" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-623"><a href="#cb40-623" aria-hidden="true" tabindex="-1"></a>While you do not have to worry about scaling issues as long as you are using <span class="in">`glmnet()`</span>, this is something worth remembering.</span>
+<span id="cb40-624"><a href="#cb40-624" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-625"><a href="#cb40-625" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-626"><a href="#cb40-626" aria-hidden="true" tabindex="-1"></a><span class="fu">## References {.unnumbered}</span></span>
+<span id="cb40-627"><a href="#cb40-627" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-628"><a href="#cb40-628" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"refs"</span><span class="kw">&gt;&lt;/div&gt;</span></span>
+<span id="cb40-629"><a href="#cb40-629" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb40-630"><a href="#cb40-630" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb40-631"><a href="#cb40-631" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-632"><a href="#cb40-632" aria-hidden="true" tabindex="-1"></a><span class="fu">## References {.unnumbered}</span></span>
-<span id="cb40-633"><a href="#cb40-633" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-634"><a href="#cb40-634" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"refs"</span><span class="kw">&gt;&lt;/div&gt;</span></span>
-<span id="cb40-635"><a href="#cb40-635" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-636"><a href="#cb40-636" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-637"><a href="#cb40-637" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-638"><a href="#cb40-638" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-632"><a href="#cb40-632" aria-hidden="true" tabindex="-1"></a></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

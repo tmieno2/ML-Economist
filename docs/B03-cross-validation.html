@@ -286,7 +286,7 @@ div.csl-indent {
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
-        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">C0P-causal-ml.qmd</a>
+        <a href="./C0P-causal-ml.html" class="sidebar-item-text sidebar-link">Causal Machine Learning (CML) Methods</a>
       <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
@@ -1089,14 +1089,14 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Even though we compared different specification of the same approach (GAM), we can compare across different models as well. For example, you can find KCV for an RF model with a particular specifications of its hyper-parameters and compare the KCV with those of the GAM model specifications and see what comes at the top.</p>
+<p>Even though we compared different specifications of the same approach (GAM), we can compare across different models as well. For example, you can find KCV for an RF model with a particular specifications of its hyper-parameters and compare the KCV with those of the GAM model specifications and see what comes at the top.</p>
 </div>
 </div>
 </section>
 </section>
 <section id="repeated-k-fold-cross-validation-rkcv" class="level2" data-number="3.4">
 <h2 data-number="3.4" class="anchored" data-anchor-id="repeated-k-fold-cross-validation-rkcv"><span class="header-section-number">3.4</span> Repeated K-fold Cross-Validation (RKCV)</h2>
-<p>As its name suggest, repeated KCV repeats the process of KCV multiple times. Each KCV iteration splits the original data into k-fold in a different way. A single KCV may not be reliable as the original data was split into such a way that favors one parameter set of or model class over the others. However, if we repeat KCV multiple times, then we can safe-guard against this randomness in a KCV procedure. Repeated KCV is preferred over a single KCV.</p>
+<p>As its name suggests, repeated KCV repeats the process of KCV multiple times. Each KCV iteration splits the original data into k-fold in a different way. A single KCV may not be reliable as the original data can be split into such a way that favors one parameter set of or model class over the others. However, if we repeat KCV multiple times, then we can safe-guard against this randomness in a KCV procedure. Repeated KCV is preferred over a single KCV.</p>
 <p>You can use <code>rsample::vfold_cv()</code> to create repeated k-fold datasets by using the <code>repeats</code> argument.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== split into 5 groups ===#</span></span>
@@ -2020,12 +2020,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb46-550"><a href="#cb46-550" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb46-551"><a href="#cb46-551" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb46-552"><a href="#cb46-552" aria-hidden="true" tabindex="-1"></a>:::{.callout-note}</span>
-<span id="cb46-553"><a href="#cb46-553" aria-hidden="true" tabindex="-1"></a>Even though we compared different specification of the same approach (GAM), we can compare across different models as well. For example, you can find KCV for an RF model with a particular specifications of its hyper-parameters and compare the KCV with those of the GAM model specifications and see what comes at the top.  </span>
+<span id="cb46-553"><a href="#cb46-553" aria-hidden="true" tabindex="-1"></a>Even though we compared different specifications of the same approach (GAM), we can compare across different models as well. For example, you can find KCV for an RF model with a particular specifications of its hyper-parameters and compare the KCV with those of the GAM model specifications and see what comes at the top.  </span>
 <span id="cb46-554"><a href="#cb46-554" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb46-555"><a href="#cb46-555" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb46-556"><a href="#cb46-556" aria-hidden="true" tabindex="-1"></a><span class="fu">## Repeated K-fold Cross-Validation (RKCV)</span></span>
 <span id="cb46-557"><a href="#cb46-557" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-558"><a href="#cb46-558" aria-hidden="true" tabindex="-1"></a>As its name suggest, repeated KCV repeats the process of KCV multiple times. Each KCV iteration splits the original data into k-fold in a different way. A single KCV may not be reliable as the original data was split into such a way that favors one parameter set of or model class over the others. However, if we repeat KCV multiple times, then we can safe-guard against this randomness in a KCV procedure. Repeated KCV is preferred over a single KCV. </span>
+<span id="cb46-558"><a href="#cb46-558" aria-hidden="true" tabindex="-1"></a>As its name suggests, repeated KCV repeats the process of KCV multiple times. Each KCV iteration splits the original data into k-fold in a different way. A single KCV may not be reliable as the original data can be split into such a way that favors one parameter set of or model class over the others. However, if we repeat KCV multiple times, then we can safe-guard against this randomness in a KCV procedure. Repeated KCV is preferred over a single KCV. </span>
 <span id="cb46-559"><a href="#cb46-559" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb46-560"><a href="#cb46-560" aria-hidden="true" tabindex="-1"></a>You can use <span class="in">`rsample::vfold_cv()`</span> to create repeated k-fold datasets by using the <span class="in">`repeats`</span> argument.</span>
 <span id="cb46-561"><a href="#cb46-561" aria-hidden="true" tabindex="-1"></a></span>

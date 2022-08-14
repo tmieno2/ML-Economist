@@ -286,7 +286,7 @@ div.csl-indent {
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
-        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">C0P-causal-ml.qmd</a>
+        <a href="./C0P-causal-ml.html" class="sidebar-item-text sidebar-link">Causal Machine Learning (CML) Methods</a>
       <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
@@ -553,7 +553,7 @@ div.csl-indent {
 <span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">#=== train ===#</span></span>
 <span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>S_learner.fit(Y, T, X<span class="op">=</span>X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>&lt;econml.metalearners._metalearners.SLearner object at 0x2c6787f40&gt;</code></pre>
+<pre><code>&lt;econml.metalearners._metalearners.SLearner object at 0x2fb2f85e0&gt;</code></pre>
 </div>
 </div>
 <p>Estimate <span class="math inline">\(\theta(X)\)</span> using the <code>effect</code> method,</p>
@@ -563,8 +563,8 @@ div.csl-indent {
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">#=== see the first 10 ===#</span></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(S_te[:<span class="dv">10</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[0.10399956 0.12548629 0.14681032 0.00144599 0.13612467 0.20191013
- 0.25838514 0.13599036 0.11161683 0.10562265]</code></pre>
+<pre><code>[-0.76516667 -2.07001625  2.02609868 -0.71542536 -0.64143522 -0.98830189
+ -0.55782033 -0.14993465  0.38253134 -1.6275093 ]</code></pre>
 </div>
 </div>
 </section>
@@ -585,7 +585,7 @@ div.csl-indent {
 <span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="co">#=== train ===#</span></span>
 <span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>T_learner.fit(Y, T, X<span class="op">=</span>X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>&lt;econml.metalearners._metalearners.TLearner object at 0x2c687fe20&gt;</code></pre>
+<pre><code>&lt;econml.metalearners._metalearners.TLearner object at 0x2fb3c6d30&gt;</code></pre>
 </div>
 </div>
 <p>Estimate <span class="math inline">\(\theta(X)\)</span> using the <code>effect</code> method,</p>
@@ -595,8 +595,8 @@ div.csl-indent {
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co">#=== see the first 10 ===#</span></span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(T_te[:<span class="dv">10</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[ 0.48622386  2.61149431  0.97129611 -2.05730236  1.45988848  0.39169258
-  2.58590221  0.61471128  0.07130823  0.08548441]</code></pre>
+<pre><code>[-0.71515056 -2.42763261  2.24568161 -0.57371392 -0.79707705 -0.76623602
+  0.16654958  0.08192797 -0.22360214 -1.28999103]</code></pre>
 </div>
 </div>
 </section>
@@ -628,7 +628,7 @@ div.csl-indent {
 <span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="co">#=== train ===#</span></span>
 <span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>X_learner.fit(Y, T, X<span class="op">=</span>X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>&lt;econml.metalearners._metalearners.XLearner object at 0x2c68a3400&gt;</code></pre>
+<pre><code>&lt;econml.metalearners._metalearners.XLearner object at 0x2fb3ea3a0&gt;</code></pre>
 </div>
 </div>
 <p>Estimate <span class="math inline">\(\theta(X)\)</span> using the <code>effect</code> method,</p>
@@ -638,8 +638,8 @@ div.csl-indent {
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co">#=== see the first 10 ===#</span></span>
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(X_te[:<span class="dv">10</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[ 1.42279261  2.13361636  1.53439553  0.16138867  0.87456734  1.1597326
-  1.56113978  1.02188289  1.01338737 -0.23292347]</code></pre>
+<pre><code>[-1.13824654 -1.7027713   0.7839956  -1.90526433  0.27683218 -0.74647008
+ -0.37107499 -0.27217701 -1.82999661 -0.40550214]</code></pre>
 </div>
 </div>
 </section>
@@ -694,7 +694,7 @@ argmin_{\beta_1, \dots, \beta_k} \sum_{i=1}^N (\tilde{Y}_i - \beta_1 x_1\cdot \t
 <div class="cell">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>est.fit(Y, T, X <span class="op">=</span> X, W <span class="op">=</span> X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>&lt;econml.dml.dml.LinearDML object at 0x2c68d3fa0&gt;</code></pre>
+<pre><code>&lt;econml.dml.dml.LinearDML object at 0x2fb622f40&gt;</code></pre>
 </div>
 </div>
 <p>Predict <span class="math inline">\(\theta(X)\)</span> for <code>X_test</code>.</p>
@@ -703,7 +703,7 @@ argmin_{\beta_1, \dots, \beta_k} \sum_{i=1}^N (\tilde{Y}_i - \beta_1 x_1\cdot \t
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ldml_te[:<span class="dv">5</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[-2.12361228 -1.90592651 -2.17083228 -1.61453416 -2.24491242]</code></pre>
+<pre><code>[-3.71461623 -3.51207984 -4.05986023 -3.82403467 -3.08628935]</code></pre>
 </div>
 </div>
 </section>
@@ -728,7 +728,7 @@ argmin_{\beta_1, \dots, \beta_k} \sum_{i=1}^N (\tilde{Y}_i - \beta_1 x_1\cdot \t
 <div class="cell">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>est.fit(Y, T, X <span class="op">=</span> X, W <span class="op">=</span> X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>&lt;econml.dml.dml.NonParamDML object at 0x2c6a2ae80&gt;</code></pre>
+<pre><code>&lt;econml.dml.dml.NonParamDML object at 0x2fb669d60&gt;</code></pre>
 </div>
 </div>
 <p>Predict <span class="math inline">\(\theta(X)\)</span> for <code>X_test</code>.</p>
@@ -737,7 +737,7 @@ argmin_{\beta_1, \dots, \beta_k} \sum_{i=1}^N (\tilde{Y}_i - \beta_1 x_1\cdot \t
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ldml_te[:<span class="dv">5</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[0.28981164 0.32268947 1.30953616 0.81487114 0.48354545]</code></pre>
+<pre><code>[-1.06592186 -1.30652204  1.37932405 -0.67706317 -0.50867915]</code></pre>
 </div>
 </div>
 </section>
