@@ -286,7 +286,7 @@ div.csl-indent {
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
-        <a href="./C0P-causal-ml.html" class="sidebar-item-text sidebar-link">Causal Machine Learning (CML) Methods</a>
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">C0P-causal-ml.qmd</a>
       <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
@@ -388,6 +388,11 @@ div.csl-indent {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./PROG-P-02-CATE-econml.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Treatment Effect Estimation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PROG-P-03-model-selection.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Model selection</span></a>
   </div>
 </li>
     </ul>
@@ -636,21 +641,21 @@ r_{i,b} = - \huge[\normalsize\frac{\partial L(y_i, f(x_i))}{\partial f(x_i)}\hug
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== see the MSE history ===#  </span></span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>gbm_fit<span class="sc">$</span>cv.error</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  [1] 1.2295451 1.1072571 1.0176364 0.9373881 0.8615899 0.8072731 0.7566342
-  [8] 0.7143206 0.6737441 0.6419176 0.6129062 0.5804459 0.5596700 0.5421029
- [15] 0.5182294 0.4978283 0.4848324 0.4708769 0.4619371 0.4526592 0.4440877
- [22] 0.4386912 0.4309241 0.4239129 0.4176845 0.4139177 0.4103235 0.4067305
- [29] 0.4055928 0.3992281 0.3973359 0.3936153 0.3897196 0.3877925 0.3876174
- [36] 0.3854657 0.3841846 0.3846079 0.3819028 0.3813121 0.3797986 0.3782908
- [43] 0.3791445 0.3770870 0.3755764 0.3759947 0.3765421 0.3763687 0.3770776
- [50] 0.3751802 0.3733063 0.3723790 0.3712371 0.3706946 0.3704997 0.3710546
- [57] 0.3703444 0.3680535 0.3658173 0.3661080 0.3658335 0.3685748 0.3681126
- [64] 0.3693808 0.3688522 0.3688456 0.3673831 0.3659661 0.3649587 0.3650045
- [71] 0.3643323 0.3659344 0.3667823 0.3676779 0.3655047 0.3660717 0.3663016
- [78] 0.3651461 0.3648405 0.3651836 0.3648195 0.3649517 0.3637598 0.3625013
- [85] 0.3618442 0.3608229 0.3605836 0.3616264 0.3616049 0.3620176 0.3626192
- [92] 0.3624646 0.3633904 0.3637410 0.3632565 0.3642078 0.3637791 0.3634865
- [99] 0.3625049 0.3612956</code></pre>
+<pre><code>  [1] 1.2243528 1.1139719 1.0215202 0.9436246 0.8766572 0.8152658 0.7698759
+  [8] 0.7262623 0.6883937 0.6511721 0.6206925 0.5905561 0.5717081 0.5486969
+ [15] 0.5329732 0.5181517 0.5057841 0.4871951 0.4804361 0.4682136 0.4554821
+ [22] 0.4511540 0.4428885 0.4384436 0.4342596 0.4284958 0.4241013 0.4210649
+ [29] 0.4168547 0.4133858 0.4106722 0.4087804 0.4074383 0.4036589 0.4027479
+ [36] 0.4021035 0.4006859 0.3984964 0.3975167 0.3960598 0.3947615 0.3903773
+ [43] 0.3894816 0.3876658 0.3861466 0.3846947 0.3831926 0.3813931 0.3810900
+ [50] 0.3803180 0.3803114 0.3802443 0.3794819 0.3774949 0.3765138 0.3759664
+ [57] 0.3772763 0.3766223 0.3779372 0.3774579 0.3761195 0.3763337 0.3744067
+ [64] 0.3731305 0.3722248 0.3709644 0.3705061 0.3698544 0.3693110 0.3690058
+ [71] 0.3696459 0.3690743 0.3703043 0.3692208 0.3691192 0.3692644 0.3693905
+ [78] 0.3690833 0.3694410 0.3700307 0.3698180 0.3692292 0.3699958 0.3695956
+ [85] 0.3692612 0.3697432 0.3688485 0.3692301 0.3686638 0.3683745 0.3683762
+ [92] 0.3695444 0.3680860 0.3688281 0.3687956 0.3683033 0.3678365 0.3677957
+ [99] 0.3668735 0.3670792</code></pre>
 </div>
 </div>
 <p>You can visualize the CV results using <code>gbm.perf()</code>.</p>
@@ -660,7 +665,7 @@ r_{i,b} = - \huge[\normalsize\frac{\partial L(y_i, f(x_i))}{\partial f(x_i)}\hug
 <p><img src="P02-boosted-regression-forest_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 87</code></pre>
+<pre><code>[1] 99</code></pre>
 </div>
 </div>
 <p>Note that it will tell you what the optimal number of trees is <span style="color:blue"> given </span> the values of the other hyper-parameters (here default values). If you want to tune other parameters as well, you need to program it yourself.</p>

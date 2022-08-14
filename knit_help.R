@@ -86,6 +86,9 @@ quarto::quarto_render(here::here("LectureNotes/PROG-P-01-scikitlearn"))
 #=== CATE-econml ===#
 quarto::quarto_render(here::here("LectureNotes/PROG-P-02-CATE-econml.qmd"))
 
+#=== model selection ===#
+quarto::quarto_render(here::here("LectureNotes/PROG-P-03-model-selection.qmd"))
+
 #/*=================================================*/
 #' # Extensions
 #/*=================================================*/

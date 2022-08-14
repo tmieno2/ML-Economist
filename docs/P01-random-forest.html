@@ -286,7 +286,7 @@ div.csl-indent {
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
-        <a href="./C0P-causal-ml.html" class="sidebar-item-text sidebar-link">Causal Machine Learning (CML) Methods</a>
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">C0P-causal-ml.qmd</a>
       <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
@@ -388,6 +388,11 @@ div.csl-indent {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./PROG-P-02-CATE-econml.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Treatment Effect Estimation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PROG-P-03-model-selection.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Model selection</span></a>
   </div>
 </li>
     </ul>
@@ -1006,7 +1011,7 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 <span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(x_1, x_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.004918844</code></pre>
+<pre><code>[1] -0.0210099</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== second approach (positively correlated) ===#</span></span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>x_1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
@@ -1014,7 +1019,7 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 <span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(x_1, x_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.4920927</code></pre>
+<pre><code>[1] 0.5034182</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== third approach (negatively correlated) ===#</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>x_1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
@@ -1022,7 +1027,7 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 <span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(x_1, x_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -0.8087777</code></pre>
+<pre><code>[1] -0.8086169</code></pre>
 </div>
 </div>
 <p>The following function runs a single iteration of estimating <span class="math inline">\(E[x]\)</span> using the four approaches.</p>
@@ -1067,7 +1072,7 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_alpha</span>(<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   alpha_hat_0 alpha_hat_1 alpha_hat_2 alpha_hat_3
-1:  -0.7080817    -1.27043   -1.419943  0.03911597</code></pre>
+1:  -0.4212967   0.6033362  -0.9302156  -0.1914999</code></pre>
 </div>
 </div>
 <p>Repeating this many times,</p>

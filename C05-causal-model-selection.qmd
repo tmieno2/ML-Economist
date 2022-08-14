@@ -1,37 +1,318 @@
 # Causal Model Selection
 
-Model selection can be done via cross-validated MSE as the criteria when your goal is prediction. However, when your interest is in finding the best causal ML model, MSE is clearly not an appropriate measure. Instead, R-score can be used. 
+:::{.callout-important}
+
+## What you will learn
++ How to tune hyper-parameters of a CATE model 
++ How to select a CATE model 
+
+:::
+
+:::{.callout-note}
+
+## Packages to load for replication
+
+```{r}
+#| include: false
+
+library(data.table)
+library(tidyverse)
+library(rsample)
+library(xgboost)
+library(rlearner)
+library(rsample)
+library(grf)
+```
+
+```{r}
+#| eval: false
+library(data.table)
+library(tidyverse)
+library(rsample)
+library(xgboost)
+library(rlearner)
+library(rsample)
+library(grf)
+```
+:::
+
+
+
+Model selection can be done via cross-validated MSE as the criteria when your goal is prediction. However, when your interest is in finding the best causal ML model, MSE is clearly not an appropriate measure. Instead, R-score can be used. Let $\tilde{Y}_i$ and $\tilde{T}_i$ denote $Y_i - \hat{f}(X_i)$ and $T_i - \hat{g}(X_i)$, respectively, where $\hat{f}(X_i)$ and $\hat{f}(X_i)$ are the predicted values (preferably based on cross-fitting or out-of-bad predictions if forest-based estimation is used) of $Y_i$ and $T_i$ based on any appropriate machine learning methods in the first stage of DML. Further, let $\hat{\theta}(X)$ denote CATE estimates by a CATE estimator (e.g., causal forest, X-learner)
 
 R-score is written as follows:
 
 $$
 \begin{aligned}
-\sum_{i=1}^N [Y_i - \hat{f}(X_i) - \theta(X)\cdot (T_i - \hat{g}(X_i))]^2
+\sum_{i=1}^N [\tilde{Y}_i - \hat{\theta}(X)\cdot \tilde{T}_i]^2
 \end{aligned}
 $$
 
-+ $\tilde{Y}_i = Y_i - \hat{f}(X_i)$ 
-+ $\tilde{T}_i = T_i - \hat{g}(X_i)$
-
-where $\hat{f}(X_i)$ and $\hat{f}(X_i)$ are the predicted values (preferably based on cross-fitting or out-of-bad predictions if RF is used) of $Y_i$ and $T_i$ based on any appropriate machine learning methods in the first stage of DML.
+So, this is just the objective function of the second stage estimation of R-learner (DML) without the regularlization term with CATE estimates plugged in. @nie_quasi-oracle_2021 suggested using cross-validated R-score to select the model for CATE estimation. 
 
 :::{.callout-important}
-Model selection using R-score is <span style="color:red"> NOT</span> capable of identifying the best <span style="color:blue"> entire </span> DML process. Rather, causal model selection on R-score is conditional on the choice of modeling decisions made at the first stage of DML. That is, R-score measures how well the final stage estimation performed <span style="color:blue"> given the first stage estimation</span>. This means that comparing R-score values from DML approaches that use different first stage estimation methods is not meaningful.
+
+## CV R-score v.s. non-CV R-score
+It is important to use cross-validated R-score for causal model selection. Just like a regular predction task, the more over-fit the trained model is, the lower the R-score. Though nobody would do this, you could train a deep deep regression tree to perfectly fit the data, which would have R-score of zero.
+:::
+
+:::{.callout-important}
+Causal model selection on R-score is conditional on the choice of modeling decisions made at the first stage of DML. That is, R-score measures how well the final stage estimation performed <span style="color:blue"> given the first stage estimation</span> (or the same $\tilde{Y}$ and $\tilde{T}$ data). When comparing R-score from different models, all of them should use the same $\tilde{Y}$ and $\tilde{T}$ data.
+:::
+
+Depending on whether you are selecting a model within the same model class (hyper-parameter tuning) or selecting a model among different classes of models (hyper-parameter tuning and model selection), procedures you follow are different.
+
+## Hyper-parameter tuning 
+
+
+:::{.callout-note}
+
+## Causal model selection steps
+
+For a given class of R-learner model you have chosen to use,
+
+1. Implement first stage estimations with cross-validation and calculate $\tilde{Y}_i$ and $\tilde{X}_i$.
+3. Create a list of models with different hyper-parameter values under the same model class 
+3. For each of the models, find cross-validated R-score
+4. Select the model with the lowest R-score
+5. Train the model on the whole data with the hyper-parameter value set chosen above 
+
+:::
+
+Let's go thorough these processes using a simple example. We use the following DGP:
+
+::: {.column-margin}
+This is the same DGP as DGP A in @sec-comp-learners.
+:::
+
+$$
+\begin{aligned}
+Y_i & =\theta(X_i)\cdot T + \alpha\cdot g(X_i) + \mu_i \\
+T_i & = Bernouli(f(X_i))
+\end{aligned}
+$$
+
+, where
+$$
+\begin{aligned}
+g(X_i) & = sin(\pi X_{i,1}X_{i,2}) + 2(X_{i,3}-0.5)^2 + X_{i,4} + 0.5 X_{i,5}\\
+f(X_i) & = max(0.1, min(sin(\pi X_{i,1}X_{i,2}), 0.9)) \\
+\theta(X_i) & = (X_{i,1}, X_{i,2}) / 2 \\
+X_i & \sim Uni(0,1)^5
+\end{aligned}
+$$
+
+```{r}
+#| code-fold: true
+gen_data_A <- function(N, alpha){
+  data <-
+    data.table(
+      x1 = runif(N),
+      x2 = runif(N),
+      x3 = runif(N),
+      x4 = runif(N),
+      x5 = runif(N),
+      u = rnorm(N)
+    ) %>% 
+    .[, `:=`(
+      g_x = alpha * (sin(pi * x1*x2) + 2*(x3-0.5)^2 + x4 + 0.5*x5),
+      f_x = pmax(0.1, pmin(sin(pi * x1*x2), 0.9)),
+      theta_x = (x1+x2)/2
+    )] %>% 
+    .[, t := as.numeric(runif(N) < f_x)] %>% 
+    .[, y := theta_x * t + g_x + u] %>% 
+    .[, id := 1:.N]
+
+  return(data[])
+}
+```
+
+Let's create a dataset according to the DGP (unfold the Code chunk above to see how `gen_data_A()` is defined).
+
+```{r}
+set.seed(3902)
+
+(
+data <- gen_data_A(N = 1000, alpha = 1)
+)
+```
+
+---
+
+<span style="color:blue"> Step 1 </span>:
+
+We use random forest implemented by `regression_forest()` and  `probability_forest()` by the `grf` package to estimate $E[Y|X]$ and $E[T|X]$, respectively. For the sake of space and simplicity, we will not conduct cross-validation to tune hyper-parameters for these models in this example (hyper-parameter tuning via cross-validation of the first-stage estimation is covered in @sec-model-selection).
+
+> Estimate $E[Y|X]$ and calculate $\tilde{Y}$
+
+```{r}
+rf_trained_y <-
+  regression_forest(
+    X = data[, .(x1, x2, x3, x4, x5)],
+    Y = data[, y],
+  )
+
+#=== out-of-bag prediction of Y ===#
+data[, y_hat := rf_trained_y$predictions]
+
+#=== calculate y_hat ===#
+data[, y_tilde := y - y_hat]
+```
+
+> Estimate $E[T|X]$ and calcualte $\tilde{T}$
+
+```{r}
+rf_trained_t <-
+  probability_forest(
+    X = data[, .(x1, x2, x3, x4, x5)],
+    Y = data[, factor(t)],
+  )
+
+#=== out-of-bag prediction of T ===#
+data[, t_hat := rf_trained_t$predictions[, 2]]
+
+#=== calculate t_hat ===#
+data[, t_tilde := t - t_hat]
+```
+
+---
+
+<span style="color:blue"> Steps 2 and 3</span>:
+
+Suppose we have determined that we use causal forest for the second stage CATE estimation. Here is the list of hyper-parameter value sets we will examine in this example.
+
+```{r}
+(
+par_data <-
+  expand.grid(
+    mtry = c(2, 5),
+    min.node.size = c(5, 10, 20),
+    sample.fraction = c(0.4, 0.5)
+  ) %>% 
+  data.table()
+)
+```
+
+For each of the parameter sets, we will find a cross-validated R-score. We use 5-fold cross validation repeated 3 times.
+
+```{r}
+(
+data_folds <- vfold_cv(data, v = 5, repeats = 3) 
+)
+```
+
+The following function find R-score for a given fold and parameter set.
+
+```{r}
+get_cv_rscore_np <- function(n, parameters) {
+
+  training_data <- analysis(data_folds[n, ]$splits[[1]])
+  eval_data <- assessment(data_folds[n, ]$splits[[1]])
+
+  #=== train a CF model on training data ===#
+  cf_trained <-
+    causal_forest(
+      X = training_data[, .(x1, x2, x3, x4, x5)],
+      Y = training_data[, y],
+      W = training_data[, t],
+      Y.hat = training_data[, y_hat],
+      W.hat = training_data[, t_hat],
+      mtry = parameters[, mtry],
+      min.node.size = parameters[, min.node.size],
+      sample.fraction = parameters[, sample.fraction]
+    )
+
+  theta_hat <- predict(cf_trained, eval_data[, .(x1, x2, x3, x4, x5)])
+
+  rscore <- eval_data[, sum((y_tilde - theta_hat * t_tilde)^2)]
+
+  return_data <-
+    data.table(
+      rscore = rscore,
+      fold = n
+    ) %>% 
+    cbind(., parameters)
+
+  return(return_data)
+}
+``` 
+
+The following function calculates R-score for all the folds for a given parameter set.
+
+```{r}
+get_cv_rscore <- function(parameters) {
+  lapply(
+    seq_len(nrow(data_folds)),
+    function(n) get_cv_rscore_np(n, parameters)
+  ) %>% 
+  rbindlist()
+}
+```
+
+For example, for the parameter set at the first row of `par_data`,
+
+```{r}
+get_cv_rscore(par_data[1, ])
+```
+
+Repeat this for all the rows of `par_data`,
+
+```{r}
+#| cache: true
+(
+cv_rscore <-
+  lapply(
+    seq_len(nrow(par_data)),
+    function(x) get_cv_rscore(par_data[x, ])
+  ) %>% 
+  rbindlist()
+)
+```
+
+Taking the mean of R-score by parameter set,
+
+```{r}
+(
+rscore <- cv_rscore[, .(rscore = mean(rscore)), by = .(mtry, min.node.size, sample.fraction)]
+)
+```
+
+---
+
+<span style="color:blue"> Steps 4 and 5 </span>:
+
+And, the best parameter set is
+
+```{r}
+(
+best_par <- rscore[which.min(rscore), ]
+)
+```
+
+We now train a CF on the entire dataset. 
+
+```{r}
+cf_trained <-
+  causal_forest(
+    X = data[, .(x1, x2, x3, x4, x5)],
+    Y = data[, y],
+    W = data[, t],
+    Y.hat = data[, y_hat],
+    W.hat = data[, t_hat],
+    mtry = best_par[, mtry],
+    min.node.size = best_par[, min.node.size],
+    sample.fraction = best_par[, sample.fraction]
+  )
+```
+
+We now use this trained model to predict $\theta(X)$.
+
+:::{.callout-tip}
+Note that `causal_forest()` lets you tune hyper-parameters using out-of-bag R-score internally, so you do not need to follow the process here in practice. See @sec-cf-tuning for how to specify tuning options for `causal_forest()`.
 :::
 
 
-## Tuning hyper-parameters
+## References {.unnumbered}
 
-
-
-
-
-
-
-
-
-
-
-
-
+<div id="refs"></div>
 

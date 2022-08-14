@@ -2,176 +2,297 @@
 
 This chapter presents CATE estimation using the `econml` package [@econml]. The `causalml` package by Uber [@chen2020causalml] is less complete than `econml` at the moment, and we do not cover it.
 
+
+```{r}
+#| include: false
+library(reticulate)
+use_virtualenv(here::here("ml-learning"))
+```
+
+```{python}
+from econml.dml import DML, LinearDML, SparseLinearDML, NonParamDML, CausalForestDML
+from econml.metalearners import TLearner, SLearner, XLearner, DomainAdaptationLearner
+from econml.sklearn_extensions.model_selection import GridSearchCVList
+
+from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
+from sklearn.ensemble import GradientBoostingRegressor, GradientBoostingClassifier
+from sklearn.linear_model import Lasso
+from sklearn.model_selection import RepeatedKFold, train_test_split
+from numpy.random import binomial, multivariate_normal, normal, uniform
+import numpy as np
+
+#=== ignore warnings ===#
+import warnings
+warnings.filterwarnings("ignore")
+```
+
+Let's also generate synthetic dataset using `make_regression()`.
+
+```{python}
+# Define DGP
+def generate_data(n, d, controls_outcome, treatment_effect, propensity):
+    """Generates population data for given untreated_outcome, treatment_effect and propensity functions.
+    
+    Parameters
+    ----------
+        n (int): population size
+        d (int): number of covariates
+        controls_outcome (func): untreated outcome conditional on covariates
+        treatment_effect (func): treatment effect conditional on covariates
+        propensity (func): probability of treatment conditional on covariates
+    """
+    # Generate covariates
+    X = multivariate_normal(np.zeros(d), np.diag(np.ones(d)), n)
+    # Generate treatment
+    T = np.apply_along_axis(lambda x: binomial(1, propensity(x), 1)[0], 1, X)
+    # Calculate outcome
+    Y0 = np.apply_along_axis(lambda x: controls_outcome(x), 1, X)
+    treat_effect = np.apply_along_axis(lambda x: treatment_effect(x), 1, X)
+    Y = Y0 + treat_effect * T
+    return (Y, T, X)
+```
+
+```{python}
+# controls outcome, treatment effect, propensity definitions
+def generate_controls_outcome(d):
+    beta = uniform(-3, 3, d)
+    return lambda x: np.dot(x, beta) + normal(0, 1)
+
+treatment_effect = lambda x: (1 if x[1] > 0.1 else 0)*8
+propensity = lambda x: (0.8 if (x[2]>-0.5 and x[2]<0.5) else 0.2)
+```
+
+```{python}
+# DGP constants and test data
+d = 5
+n = 1000
+n_test = 250
+controls_outcome = generate_controls_outcome(d)
+X_test = multivariate_normal(np.zeros(d), np.diag(np.ones(d)), n_test)
+delta = 6/n_test
+X_test[:, 1] = np.arange(-3, 3, delta)
+```
+
+```{python}
+Y, T, X = generate_data(n, d, controls_outcome, treatment_effect, propensity)
+```
+
 ## Average Treatment Effect 
 
 `DoubleML`
 
+```{python}
+#| eval: false
+import DoubleML
 
-## X-, S-, and T-learner
+```
 
+
+## S-, X-, and T-learner
+
+This section shows how to train S-, X-, and T-learner. See @sec-het-dml for how these learners work, which would help you understand what you need to specify for each of the learners.  
+
+### S-learner
+
+To train an S-learner, you need to specify only one estimator, which estimates $E[Y|T, X, W]$. This can be done using `overall_model` in `SLearner`.
+
+```{python}
+#=== specify the overall model ===#
+overall_model = GradientBoostingRegressor(
+  n_estimators=100,
+  max_depth=6,
+  min_samples_leaf=10
+)
+
+#=== set up an S-learner ===#
+S_learner = SLearner(overall_model=overall_model)
+
+#=== train ===#
+S_learner.fit(Y, T, X=X)
+```
+
+Estimate $\theta(X)$ using the `effect` method,
+
+```{python}
+S_te = S_learner.effect(X_test)
+
+#=== see the first 10 ===#
+print(S_te[:10])
+```
+
+### T-learner
+
+To train a T-learner, you need to specify only one estimator, which estimates $E[Y|T=1, X, W]$ and $E[Y|T=0, X, W]$ sparately. This can be done using `models` in `TLearner`.
+
+```{python}
+#=== set up an estimator ===#
+models = GradientBoostingRegressor(
+  n_estimators=100, 
+  max_depth=6, 
+  min_samples_leaf=10
+)
+
+#=== set up a T-learner ===#
+T_learner = TLearner(models=models)
+
+#=== train ===#
+T_learner.fit(Y, T, X=X)
+```
+
+Estimate $\theta(X)$ using the `effect` method,
+
+```{python}
+T_te = T_learner.effect(X_test)
+
+#=== see the first 10 ===#
+print(T_te[:10])
+```
+
+### X-learner
+
+To train an X-learner, you need to specify two estimators
+
+1. Estimator that estimates $E[Y|T=1, X, W]$ and $E[Y|T=0, X, W]$ sparately just like T-learner. 
+2. Estimator that estimates $E[T|X, W]$ for weighting by propensity score
+
+This can be done using `models` (for the first) and `propensity_model` (for the second) in `XLearner`. 
+
+```{python}
+#=== set up an estimator for 1 ===#
+models = GradientBoostingRegressor(
+  n_estimators=100, 
+  max_depth=6, 
+  min_samples_leaf=10
+)
+#=== set up a propensity model ===#
+propensity_model = RandomForestClassifier(
+  n_estimators=100,
+  max_depth=6,
+  min_samples_leaf=10
+)
+
+#=== set up an X-learner ===#
+X_learner = XLearner(models=models, propensity_model=propensity_model)
+
+#=== train ===#
+X_learner.fit(Y, T, X=X)
+```
+
+Estimate $\theta(X)$ using the `effect` method,
+
+```{python}
+X_te = X_learner.effect(X_test)
+
+#=== see the first 10 ===#
+print(X_te[:10])
+```
 
 ## R-learner
 
-We saw a general R-learner framework for CATE estimation. We now look at an example of Linear DML, which uses a linear model at the final stage. So, we are assuming that $\theta(X)$ can be written as follows in @eq-model-framework:
+This section shows how to run various estimators that fall under R-learner, which is referred to as the `_Rlearner` class in `econml`. As we saw in @sec-het-dml, R-learner is a DML and `econml` offers many estimators under `_Rlearner`.
 
-$$
-\begin{aligned}
-\theta(X) = \alpha + \beta_1 x_1 + \beta_2 x_2 + \dots + \beta_k x_k
-\end{aligned}
-$$
++ `DML`
+  - `LinearDML`
+  - `SparseLinearDML`
+  - `KernelDML`
++ `NonParamDML`
++ `CausalForestDML`
 
-where $x_1$ through $x_k$ are the drivers of heterogeneity in treatment effects and $\beta_1$ through $\beta_k$ are their coefficients.
+All the estimators under `_Rlearner` require that estimators for $E[Y|X]$ and $E[T|X]$ are specified. This can be done by `model_y` for $E[Y|X]$ and `model_t` $E[T|X]$. However, some estimators require that you specify the final (second stage) model using `model_final` while others do not. 
 
-We use both Python and R for this demonstration. So, let's set things up for that.
-
-```{r}
-#| eval: false 
-library(reticulate)
-use_virtualenv("ml-learning")
-```
-
-For this demonstration, we use synthetic data according to the following data generating process:
-
-$$
-\begin{aligned}
-y_i = exp(x_{i,1}) d_i + x_{i,1} + \frac{1}{4}\cdot\frac{exp(x_{i,3})}{1 + exp(x_{i,3})} + \mu_i \\
-d_i = \frac{exp(x_{i,1})}{1 + exp(x_{i,1})} + \frac{1}{4}\cdot x_{i,3}+ \eta_i
-\end{aligned}
-$$
-
-Note that this is the same data generating process used in @sec-dml except that the impact of the treatment ($d$) now depends on $x_1$. We can use `gen_data()` function that is defined in @sec-dml-naive.
-
-```{r}
-#| eval: false 
-
-#=== sample size ===#
-N <- 1000 
-
-#=== generate data ===#
-synth_data <-
-  gen_data(
-    te_formula = formula(~ I(exp(x1)*d)),
-    n_obs = N *2
-  )
-
-X <- dplyr::select(synth_data, starts_with("x")) %>% as.matrix()
-y <- synth_data[, y]
-d <- synth_data[, d]
-```
-
-We now split the data into training and test datasets. 
-
-```{python}
-#| eval: false
-
-from sklearn.model_selection import train_test_split
-
-X_train, X_test, y_train, y_test, d_train, d_test = train_test_split(r.X, r.y, r.d,  test_size = 0.5, random_state = 8923)
-```
-
-Here, to train a linear DML model, we use the Python `econml` package, which offers one of the most comprehensive sets of off-the-shelf R-learner (DML) methods [@econml]. We can use the `DML` class to implement linear DML.
-
-```{python}
-#| eval: false
-from econml.dml import DML
-```
-
-::: {.column-margin}
-`DML` is a child class of `_Rlearner`, which is a private class. The `DML` class has several child classes: `LinearDML`, `SpatseLinearDML`, `NonParamDML`, and `CausalForestDML`. 
-:::
-
-As we saw above in @sec-est-steps, we need to specify three models:
-
-+ `model_y`: model for estimating $E[Y|X,W]$
-+ `model_t`: model for estimating $E[T|X,W]$
-+ `model_final`: model for estimating $\theta(X)$
+### DML
 
 In this example, let's use gradient boosting regression for both `model_y` and `model_t` and use lasso with cross-validation for `model_final`. Let's import `GradientBoostingRegressor()` and `LassoCV()` from the `scikitlearn` package.
 
-```{python}
-#| eval: false
-from sklearn.ensemble import GradientBoostingRegressor
-from sklearn.linear_model import LassoCV
-```
+### `LinearDML`
 
-We can now set up our DML framework like below:
+`LinearDML` is a DML estimator that uses <span style="color:blue"> unregularlized </span> linear model in the second stage. So, it assumes that $\theta(X)$ can be written as follows in @eq-model-framework:
+$$
+\begin{aligned}
+\theta(X) = \beta_1 x_1 + \beta_2 x_2 + \dots + \beta_k x_k
+\end{aligned}
+$$
 
-```{python}
-#| eval: false
-est = DML(
-    model_y = GradientBoostingRegressor(),
-    model_t = GradientBoostingRegressor(),
-    model_final = LassoCV(fit_intercept = False) 
-  )
-```
+It solves the following minimization problem,
 
-Note that no training has happened yet at this point. We simply created a recipe. Once we provide ingredients (data), we can cook (train) with the `fit()` method. 
+$$
+\begin{aligned}
+argmin_{\beta_1, \dots, \beta_k} \sum_{i=1}^N (\tilde{Y}_i - \beta_1 x_1\cdot \tilde{T}- \beta_2 x_2\cdot \tilde{T}, \dots, - \beta_K x_K\cdot \tilde{T})^2
+\end{aligned}
+$$
 
-```{python}
-#| eval: false
-est.fit(y_train, d_train, X = X_train, W = X_train)
-```
+This can be solved by simply regressing $\tilde{Y}_i$ on $x_1\cdot \tilde{T}$ through $x_K\cdot \tilde{T}$. Once $\beta_1, \dots,\beta_K$ are estimated, then $\hat{\theta}(X)$ is 
 
-+ first argument: dependent variable
-+ second argument: treatment variable 
-+ `X`: variables that drive treatment effect heterogeneity
-+ `W`: variables that affect the dependent variable directly
+$$
+\begin{aligned}
+\hat{\theta}(X) = \hat{\beta}_1 x_1 + \hat{\beta}_2 x_2 + \dots + \hat{\beta}_k x_k
+\end{aligned}
+$$
 
-::: {.column-margin}
-Here, we set `X = W`.
-:::
+So, it is easy to interpret how $X$ affects treatment effects using `LinearDML`. This estimator should be used only when there are small numbers of heterogeneity drivers, $X$.
 
-Once, the training is done. We can use the `effect()` method to predict $\theta(X)$.
+Since `LinearDML` runs a linear-in-parameter model without regularization, you do not need to specify the estimator for the final stage. We use `GradientBoostingRegressor()` for `model_y` and `GradientBoostingClassifier()` for `model_t`. Let's set up our `LinearDML`,
 
 ```{python}
-#| eval: false
-te_test = est.effect(X_test)
+est = LinearDML(
+  model_y = GradientBoostingRegressor(),
+  model_t = GradientBoostingClassifier()
+)
 ```
 
-@fig-est-theta-hat presents the estimated and true marginal treatment effect ($\theta(X)$) as a function of `x1`. 
+We now invoke the `fit` method. Here, $W=X$.
 
-```{r}
-#| eval: false 
-plot_data <- 
-  data.table(
-    x1 = py$X_test[, 1],
-    te = py$te_test
-  )
-
-ggplot(plot_data) +
-  geom_point(aes(y = te, x = x1)) +
-  geom_line(aes(y = exp(x1), x = x1), color = "blue") +
-  theme_bw()
+```{python}
+est.fit(Y, T, X = X, W = X)
 ```
 
-```{r}
-#| fig-cap: Estimated and true marginal treatment effects
-#| label: fig-est-theta-hat
-#| echo: false
-# plot_data <- 
-#   data.table(
-#     x1 = py$X_test[, 1],
-#     te = py$te_test
-#   )
+Predict $\theta(X)$ for `X_test`.
 
-# g_het_te <-
-#   ggplot(plot_data) +
-#   geom_point(aes(y = te, x = x1)) +
-#   geom_line(aes(y = exp(x1), x = x1), color = "blue") +
-#   theme_bw()
+```{python}
+ldml_te = est.effect(X_test)
 
-g_het_te <- readRDS("g_hte_te.rds")
-g_het_te
+print(ldml_te[:5])
 ```
 
-Since we forced $\theta(X)$ to be linear in `x1`, it is not surprising that the estimated MTE looks linear in `x1` even though the true MTE is an exponential function of `x1`. In the next chapter (@sec-forest-cate), we discuss CATE estimators based on forest, which estimates $\theta(X)$ non-parametrically, relaxing the assumption of $\theta(X)$ being linear-in-parameter.
+### `NonParamDML`
 
-:::{.callout-tip}
-There are many more variations in DML than the one presented here. For those who are interested, I recommend going through examples presented [here](https://github.com/microsoft/EconML/blob/main/notebooks/Double%20Machine%20Learning%20Examples.ipynb) for `DML`
-:::
+As the name suggests, it runs non-parametric regression (e.g., reandom forest) at the second stage. Unlike `LinearDML`, we need to specify `model_final`. Internally, it solves the following problem:
+
+$$
+\begin{aligned}
+\sum_{i=1}^N \tilde{T}_i^2(\frac{\tilde{Y}_i}{\tilde{T}_i} - \theta(X)) = 0
+\end{aligned}
+$$
+
+The estimator specified for `model_final` regress $\frac{\tilde{Y}_i}{\tilde{T}_i}$ and $X_i$ with sample weight of $\tilde{T}_i^2$.
+
+Let's use `GradientBoostingRegressor()` as the final model.
+
+```{python}
+est = NonParamDML(
+  model_y = GradientBoostingRegressor(),
+  model_t = GradientBoostingClassifier(),
+  model_final = GradientBoostingRegressor()
+)
+```
+
+We now invoke the `fit` method. Here, $W=X$.
+
+```{python}
+est.fit(Y, T, X = X, W = X)
+```
+
+Predict $\theta(X)$ for `X_test`.
+
+```{python}
+ldml_te = est.effect(X_test)
+
+print(ldml_te[:5])
+```
+
+### CausalForestDML
 
 
-## Causal Forest
 
 ## Orthogonal Forest
 

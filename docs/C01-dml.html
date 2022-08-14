@@ -290,7 +290,7 @@ div.csl-indent {
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
-        <a href="./C0P-causal-ml.html" class="sidebar-item-text sidebar-link">Causal Machine Learning (CML) Methods</a>
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">C0P-causal-ml.qmd</a>
       <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
@@ -392,6 +392,11 @@ div.csl-indent {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./PROG-P-02-CATE-econml.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Treatment Effect Estimation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PROG-P-03-model-selection.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Model selection</span></a>
   </div>
 </li>
     </ul>
@@ -1710,16 +1715,16 @@ No. Observations: 500</code></pre>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>dml_plr_obj<span class="sc">$</span><span class="fu">fit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>INFO  [11:44:33.329] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 5/5) 
-INFO  [11:44:33.806] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 3/5) 
-INFO  [11:44:34.273] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 1/5) 
-INFO  [11:44:34.719] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 2/5) 
-INFO  [11:44:35.170] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 4/5) 
-INFO  [11:44:35.894] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 1/5) 
-INFO  [11:44:36.353] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 4/5) 
-INFO  [11:44:36.812] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 3/5) 
-INFO  [11:44:37.285] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 5/5) 
-INFO  [11:44:37.764] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 2/5) </code></pre>
+<pre><code>INFO  [23:37:25.719] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 5/5) 
+INFO  [23:37:26.211] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 3/5) 
+INFO  [23:37:26.679] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 1/5) 
+INFO  [23:37:27.128] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 2/5) 
+INFO  [23:37:27.576] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 4/5) 
+INFO  [23:37:28.329] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 1/5) 
+INFO  [23:37:28.808] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 4/5) 
+INFO  [23:37:29.271] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 3/5) 
+INFO  [23:37:29.717] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 5/5) 
+INFO  [23:37:30.167] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 2/5) </code></pre>
 </div>
 </div>
 <p>See the results with <code>print()</code>. You can see <span class="math inline">\(\hat{\theta}\)</span> at the bottom.</p>
@@ -1772,21 +1777,21 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a><span class="co">#=== fit ===#</span></span>
 <span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a>dml_plr_obj_iv<span class="sc">$</span><span class="fu">fit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>INFO  [11:44:38.415] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 2/5) 
-INFO  [11:44:38.893] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 4/5) 
-INFO  [11:44:39.364] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 1/5) 
-INFO  [11:44:39.829] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 3/5) 
-INFO  [11:44:40.316] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 5/5) 
-INFO  [11:44:40.937] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 1/5) 
-INFO  [11:44:41.393] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 5/5) 
-INFO  [11:44:41.867] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 4/5) 
-INFO  [11:44:42.337] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 2/5) 
-INFO  [11:44:42.809] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 3/5) 
-INFO  [11:44:43.334] [mlr3] Applying learner 'regr.ranger' on task 'nuis_g' (iter 5/5) 
-INFO  [11:44:43.936] [mlr3] Applying learner 'regr.ranger' on task 'nuis_g' (iter 4/5) 
-INFO  [11:44:44.420] [mlr3] Applying learner 'regr.ranger' on task 'nuis_g' (iter 3/5) 
-INFO  [11:44:44.905] [mlr3] Applying learner 'regr.ranger' on task 'nuis_g' (iter 2/5) 
-INFO  [11:44:45.384] [mlr3] Applying learner 'regr.ranger' on task 'nuis_g' (iter 1/5) </code></pre>
+<pre><code>INFO  [23:37:30.816] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 2/5) 
+INFO  [23:37:31.281] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 4/5) 
+INFO  [23:37:31.747] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 1/5) 
+INFO  [23:37:32.205] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 3/5) 
+INFO  [23:37:32.671] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 5/5) 
+INFO  [23:37:33.275] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 1/5) 
+INFO  [23:37:33.720] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 5/5) 
+INFO  [23:37:34.167] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 4/5) 
+INFO  [23:37:34.615] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 2/5) 
+INFO  [23:37:35.057] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 3/5) 
+INFO  [23:37:35.553] [mlr3] Applying learner 'regr.ranger' on task 'nuis_g' (iter 5/5) 
+INFO  [23:37:36.130] [mlr3] Applying learner 'regr.ranger' on task 'nuis_g' (iter 4/5) 
+INFO  [23:37:36.597] [mlr3] Applying learner 'regr.ranger' on task 'nuis_g' (iter 3/5) 
+INFO  [23:37:37.064] [mlr3] Applying learner 'regr.ranger' on task 'nuis_g' (iter 2/5) 
+INFO  [23:37:37.526] [mlr3] Applying learner 'regr.ranger' on task 'nuis_g' (iter 1/5) </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== print the results ===#</span></span>
 <span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(dml_plr_obj_iv)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -2067,21 +2072,21 @@ No. Observations: 1000</code></pre>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>dml_pliv_obj<span class="sc">$</span><span class="fu">fit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>INFO  [11:44:45.996] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 2/5) 
-INFO  [11:44:46.479] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 3/5) 
-INFO  [11:44:46.958] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 4/5) 
-INFO  [11:44:47.440] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 5/5) 
-INFO  [11:44:47.908] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 1/5) 
-INFO  [11:44:48.537] [mlr3] Applying learner 'regr.ranger' on task 'nuis_r' (iter 3/5) 
-INFO  [11:44:48.997] [mlr3] Applying learner 'regr.ranger' on task 'nuis_r' (iter 5/5) 
-INFO  [11:44:49.451] [mlr3] Applying learner 'regr.ranger' on task 'nuis_r' (iter 2/5) 
-INFO  [11:44:50.029] [mlr3] Applying learner 'regr.ranger' on task 'nuis_r' (iter 1/5) 
-INFO  [11:44:50.487] [mlr3] Applying learner 'regr.ranger' on task 'nuis_r' (iter 4/5) 
-INFO  [11:44:50.984] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 5/5) 
-INFO  [11:44:51.436] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 3/5) 
-INFO  [11:44:51.894] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 4/5) 
-INFO  [11:44:52.345] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 2/5) 
-INFO  [11:44:52.794] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 1/5) </code></pre>
+<pre><code>INFO  [23:37:38.112] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 2/5) 
+INFO  [23:37:38.581] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 3/5) 
+INFO  [23:37:39.047] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 4/5) 
+INFO  [23:37:39.511] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 5/5) 
+INFO  [23:37:39.974] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 1/5) 
+INFO  [23:37:40.599] [mlr3] Applying learner 'regr.ranger' on task 'nuis_r' (iter 3/5) 
+INFO  [23:37:41.054] [mlr3] Applying learner 'regr.ranger' on task 'nuis_r' (iter 5/5) 
+INFO  [23:37:41.510] [mlr3] Applying learner 'regr.ranger' on task 'nuis_r' (iter 2/5) 
+INFO  [23:37:42.089] [mlr3] Applying learner 'regr.ranger' on task 'nuis_r' (iter 1/5) 
+INFO  [23:37:42.549] [mlr3] Applying learner 'regr.ranger' on task 'nuis_r' (iter 4/5) 
+INFO  [23:37:43.043] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 5/5) 
+INFO  [23:37:43.495] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 3/5) 
+INFO  [23:37:43.951] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 4/5) 
+INFO  [23:37:44.401] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 2/5) 
+INFO  [23:37:44.849] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 1/5) </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(dml_pliv_obj)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -2141,16 +2146,16 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <span id="cb60-16"><a href="#cb60-16" aria-hidden="true" tabindex="-1"></a><span class="co">#=== fit ===#</span></span>
 <span id="cb60-17"><a href="#cb60-17" aria-hidden="true" tabindex="-1"></a>dml_pl_obj<span class="sc">$</span><span class="fu">fit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>INFO  [11:44:53.418] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 3/5) 
-INFO  [11:44:53.888] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 1/5) 
-INFO  [11:44:54.363] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 2/5) 
-INFO  [11:44:54.839] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 4/5) 
-INFO  [11:44:55.305] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 5/5) 
-INFO  [11:44:55.934] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 1/5) 
-INFO  [11:44:56.391] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 2/5) 
-INFO  [11:44:56.847] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 3/5) 
-INFO  [11:44:57.310] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 5/5) 
-INFO  [11:44:57.769] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 4/5) </code></pre>
+<pre><code>INFO  [23:37:45.474] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 3/5) 
+INFO  [23:37:45.941] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 1/5) 
+INFO  [23:37:46.412] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 2/5) 
+INFO  [23:37:46.882] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 4/5) 
+INFO  [23:37:47.346] [mlr3] Applying learner 'regr.ranger' on task 'nuis_l' (iter 5/5) 
+INFO  [23:37:47.970] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 1/5) 
+INFO  [23:37:48.425] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 2/5) 
+INFO  [23:37:48.878] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 3/5) 
+INFO  [23:37:49.335] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 5/5) 
+INFO  [23:37:49.794] [mlr3] Applying learner 'regr.ranger' on task 'nuis_m' (iter 4/5) </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(dml_pl_obj)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">

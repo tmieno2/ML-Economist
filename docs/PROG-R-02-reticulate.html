@@ -267,7 +267,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
-        <a href="./C0P-causal-ml.html" class="sidebar-item-text sidebar-link">Causal Machine Learning (CML) Methods</a>
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">C0P-causal-ml.qmd</a>
       <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
         <i class="bi bi-chevron-right ms-2"></i>
       </a>
@@ -369,6 +369,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./PROG-P-02-CATE-econml.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Treatment Effect Estimation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PROG-P-03-model-selection.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Model selection</span></a>
   </div>
 </li>
     </ul>
@@ -641,21 +646,8 @@ Tip
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(synth_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>List of 2
- $ :[[ 1.4649944  -0.17713836  0.88586352 ...  0.05907441  1.09976599
-  -0.40625161]
- [-0.89462401 -1.4348529   1.0520037  ...  0.34328588 -0.04932831
-  -1.54376141]
- [ 1.12908372  1.01140982 -0.13517644 ...  0.60035475 -0.65366504
-  -0.28248023]
- ...
- [ 0.86846283  0.55731802 -0.47741222 ...  1.80427412 -0.81294912
-  -0.83775918]
- [-1.14917653 -0.1635096   0.5295092  ...  1.42499691 -1.5558915
-   2.03518107]
- [-0.45903111 -0.36568454 -0.59911521 ...  0.55501302 -0.46528405
-  -1.74544894]]
- $ :[ 168.28301984  -95.31783719  163.00132715 ...    8.48171647 -137.40988386
-  132.03129657]</code></pre>
+ $ : num [1:2000, 1:20] 1.465 -0.8946 1.1291 -0.0123 -0.124 ...
+ $ : num [1:2000(1d)] 168.3 -95.3 163 31.4 -112.7 ...</code></pre>
 </div>
 </div>
 <p>We can then generate <span class="math inline">\(X\)</span> and <span class="math inline">\(y\)</span> like below.</p>
@@ -687,7 +679,7 @@ Tip
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== test the fit ===#</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>reg_rf<span class="sc">$</span><span class="fu">score</span>(X_test, y_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>0.697275334521768</code></pre>
+<pre><code>[1] 0.7067612</code></pre>
 </div>
 </div>
 </section>
@@ -737,7 +729,7 @@ Tip
 <div class="cell">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>py<span class="sc">$</span>numpy<span class="sc">$</span>random<span class="sc">$</span><span class="fu">RandomState</span>(<span class="fu">as.integer</span>(<span class="dv">123</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>RandomState(MT19937) at 0x166C6D940</code></pre>
+<pre><code>RandomState(MT19937) at 0x2BAF91640</code></pre>
 </div>
 </div>
 <p>You can source user-defined functions on Python as well. Here is the python code in the file called <code>make_data.py</code>. <code>train_test_RF()</code> takes some of the arguments for <code>make_regression()</code> as its arguments, split the data, train RF on the train data, evaluate the fit, and then return the test score.</p>
@@ -783,7 +775,7 @@ Tip
 <span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">rng =</span> rng</span>
 <span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>0.6941499016471182</code></pre>
+<pre><code>[1] 0.7085618</code></pre>
 </div>
 </div>
 </section>
@@ -1063,303 +1055,302 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb39-117"><a href="#cb39-117" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb39-118"><a href="#cb39-118" aria-hidden="true" tabindex="-1"></a>After this, all your python codes will be run on the VE when you are running them through the <span class="in">`reticulate`</span> package. We will now look at how we actually run Python codes from R.</span>
 <span id="cb39-119"><a href="#cb39-119" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-120"><a href="#cb39-120" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-121"><a href="#cb39-121" aria-hidden="true" tabindex="-1"></a><span class="fu">## R and Python REPL simultaneously {#sec-r-python-repl}</span></span>
-<span id="cb39-122"><a href="#cb39-122" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-123"><a href="#cb39-123" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
-<span id="cb39-124"><a href="#cb39-124" aria-hidden="true" tabindex="-1"></a>RPEL stands for read-evaluate-print-loop.</span>
-<span id="cb39-125"><a href="#cb39-125" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb39-126"><a href="#cb39-126" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-127"><a href="#cb39-127" aria-hidden="true" tabindex="-1"></a>Within your R session, you can start a Python session that is embedded in it by running <span class="in">`repl_python()`</span> from R. This will allow you to go back and forth between R and Python. Objects created in Python can be accessed from R using the <span class="in">`py`</span> object as described above. This provides an ideal environment where you can test the interactions of your R and Python codes in a seamless manner. </span>
-<span id="cb39-128"><a href="#cb39-128" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-129"><a href="#cb39-129" aria-hidden="true" tabindex="-1"></a>You initiate a Python environment using <span class="in">`repl_python()`</span>. If you are using RStudio, this is what it looks like. </span>
-<span id="cb39-130"><a href="#cb39-130" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-133"><a href="#cb39-133" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-134"><a href="#cb39-134" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb39-135"><a href="#cb39-135" aria-hidden="true" tabindex="-1"></a><span class="fu">repl_python</span>()</span>
-<span id="cb39-136"><a href="#cb39-136" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-137"><a href="#cb39-137" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-140"><a href="#cb39-140" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-141"><a href="#cb39-141" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb39-142"><a href="#cb39-142" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"figures/repl_python.png"</span>)</span>
-<span id="cb39-143"><a href="#cb39-143" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-144"><a href="#cb39-144" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-145"><a href="#cb39-145" aria-hidden="true" tabindex="-1"></a>As you can see on the console tab, a python session has been initiated, which is connected your R session. As long as you are using RStudio, you do not have to worry about switching between R and Python manually. RStudio is smart enough to know where the codes are coming from and execute codes where they should be executed. That is, if you run codes from a python (R) file, they will be sent to the python (R) console. </span>
-<span id="cb39-146"><a href="#cb39-146" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-147"><a href="#cb39-147" aria-hidden="true" tabindex="-1"></a>Picture below shows what the console looks like after I executed <span class="in">`library(data.table)`</span> while I am still on the python console. You can see <span class="in">`&gt;&gt;&gt; quit`</span> (exit from python) before <span class="in">`library(data.table)`</span> was executed on R. </span>
-<span id="cb39-148"><a href="#cb39-148" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-151"><a href="#cb39-151" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-152"><a href="#cb39-152" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb39-153"><a href="#cb39-153" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"figures/python_repl_to_R_automatic.png"</span>)</span>
-<span id="cb39-154"><a href="#cb39-154" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-155"><a href="#cb39-155" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-156"><a href="#cb39-156" aria-hidden="true" tabindex="-1"></a>Let's now define an object called <span class="in">`a`</span> in python.</span>
-<span id="cb39-157"><a href="#cb39-157" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-160"><a href="#cb39-160" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-161"><a href="#cb39-161" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb39-162"><a href="#cb39-162" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"figures/python_a.png"</span>)</span>
-<span id="cb39-163"><a href="#cb39-163" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-164"><a href="#cb39-164" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-165"><a href="#cb39-165" aria-hidden="true" tabindex="-1"></a>:::{.callout-tip}</span>
-<span id="cb39-166"><a href="#cb39-166" aria-hidden="true" tabindex="-1"></a>From R, you can access objects defined on Python by using <span class="in">`py$`</span> prefix to the object name on python. This is like you are accessing an element of a list on R. <span class="in">`py`</span> has a list of objects defined on Python.</span>
-<span id="cb39-167"><a href="#cb39-167" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb39-168"><a href="#cb39-168" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-169"><a href="#cb39-169" aria-hidden="true" tabindex="-1"></a>Let's now confirm this by accessing <span class="in">`a`</span> on R.</span>
-<span id="cb39-170"><a href="#cb39-170" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-173"><a href="#cb39-173" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-174"><a href="#cb39-174" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb39-175"><a href="#cb39-175" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"figures/r_a.png"</span>)</span>
-<span id="cb39-176"><a href="#cb39-176" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-177"><a href="#cb39-177" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-178"><a href="#cb39-178" aria-hidden="true" tabindex="-1"></a>:::{.callout-tip}</span>
-<span id="cb39-179"><a href="#cb39-179" aria-hidden="true" tabindex="-1"></a>When you access R objects in Python, you can use <span class="in">`r.`</span> in front of the object name. We first run <span class="in">`b &lt;- 1:10`</span> and then confirm <span class="in">`r.b`</span> can get you the Python equivalent of <span class="in">`b`</span> in R.</span>
-<span id="cb39-180"><a href="#cb39-180" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb39-181"><a href="#cb39-181" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-184"><a href="#cb39-184" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-185"><a href="#cb39-185" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb39-186"><a href="#cb39-186" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"figures/python_b.png"</span>)</span>
-<span id="cb39-187"><a href="#cb39-187" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-188"><a href="#cb39-188" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-189"><a href="#cb39-189" aria-hidden="true" tabindex="-1"></a>Great. This seamless integration is really nice especially when you are writing an R-centric program that include pythons codes and are tying to debug.</span>
-<span id="cb39-190"><a href="#cb39-190" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-191"><a href="#cb39-191" aria-hidden="true" tabindex="-1"></a>Whenever R and Python exchange objects, they are automatically converted to their counterparts in the receiving program. For example, a vector with multiple elements in R will be converted to a list in Python, and vice versa. See <span class="co">[</span><span class="ot">here</span><span class="co">](https://rstudio.github.io/reticulate/)</span> for more examples.</span>
-<span id="cb39-192"><a href="#cb39-192" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-193"><a href="#cb39-193" aria-hidden="true" tabindex="-1"></a><span class="fu">## Importing Python modules</span></span>
-<span id="cb39-194"><a href="#cb39-194" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-195"><a href="#cb39-195" aria-hidden="true" tabindex="-1"></a>You can import Python modules and use them as if they are R functions. This way of interacting with Python involves the least direct interactions with Python among all the options that the <span class="in">`reticulate`</span> package provides us with. Unlike the approach above (@sec-r-python-repl), you do not see outcomes of your Python codes on the Python console. Rather, you will see the outcomes translated to R object on R. </span>
-<span id="cb39-196"><a href="#cb39-196" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-197"><a href="#cb39-197" aria-hidden="true" tabindex="-1"></a>You can import a python module using <span class="in">`import()`</span> like below, which imports the Python <span class="in">`os`</span> package.</span>
-<span id="cb39-198"><a href="#cb39-198" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-201"><a href="#cb39-201" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-202"><a href="#cb39-202" aria-hidden="true" tabindex="-1"></a>(</span>
-<span id="cb39-203"><a href="#cb39-203" aria-hidden="true" tabindex="-1"></a>os <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"os"</span>)</span>
-<span id="cb39-204"><a href="#cb39-204" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb39-205"><a href="#cb39-205" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-206"><a href="#cb39-206" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-207"><a href="#cb39-207" aria-hidden="true" tabindex="-1"></a>The imported module is assigned to <span class="in">`os`</span> on R. You can access functions in a module using <span class="in">`$`</span> instead of <span class="in">`.`</span> as done in Python.</span>
-<span id="cb39-208"><a href="#cb39-208" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-209"><a href="#cb39-209" aria-hidden="true" tabindex="-1"></a>For example, the following code use <span class="in">`listdir()`</span> from the <span class="in">`os`</span> module.</span>
-<span id="cb39-210"><a href="#cb39-210" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-213"><a href="#cb39-213" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-214"><a href="#cb39-214" aria-hidden="true" tabindex="-1"></a>os<span class="sc">$</span><span class="fu">listdir</span>(<span class="st">"."</span>) <span class="sc">%&gt;%</span> <span class="fu">head</span>()</span>
-<span id="cb39-215"><a href="#cb39-215" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-216"><a href="#cb39-216" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-217"><a href="#cb39-217" aria-hidden="true" tabindex="-1"></a>Let's rewrite the above sample Python code using this method. First, we import all the modules (not the functions) we need.</span>
-<span id="cb39-218"><a href="#cb39-218" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-221"><a href="#cb39-221" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-222"><a href="#cb39-222" aria-hidden="true" tabindex="-1"></a>sk_ds <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"sklearn.datasets"</span>)</span>
-<span id="cb39-223"><a href="#cb39-223" aria-hidden="true" tabindex="-1"></a>sk_ms <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"sklearn.model_selection"</span>)</span>
-<span id="cb39-224"><a href="#cb39-224" aria-hidden="true" tabindex="-1"></a>sk_ensemble <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"sklearn.ensemble"</span>)</span>
-<span id="cb39-225"><a href="#cb39-225" aria-hidden="true" tabindex="-1"></a>np <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"numpy"</span>)</span>
-<span id="cb39-226"><a href="#cb39-226" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-227"><a href="#cb39-227" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-228"><a href="#cb39-228" aria-hidden="true" tabindex="-1"></a>If you try this, you will get a complaint. </span>
-<span id="cb39-229"><a href="#cb39-229" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-232"><a href="#cb39-232" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-233"><a href="#cb39-233" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: true</span></span>
-<span id="cb39-234"><a href="#cb39-234" aria-hidden="true" tabindex="-1"></a>make_regression <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"sklearn.datasets.make_regression"</span>)</span>
-<span id="cb39-235"><a href="#cb39-235" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-236"><a href="#cb39-236" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-237"><a href="#cb39-237" aria-hidden="true" tabindex="-1"></a>Now, let's define parameters used in <span class="in">`make_regression()`</span>.</span>
-<span id="cb39-238"><a href="#cb39-238" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-241"><a href="#cb39-241" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-242"><a href="#cb39-242" aria-hidden="true" tabindex="-1"></a>n_samples <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="dv">2000</span>)</span>
-<span id="cb39-243"><a href="#cb39-243" aria-hidden="true" tabindex="-1"></a>n_features <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="dv">20</span>)</span>
-<span id="cb39-244"><a href="#cb39-244" aria-hidden="true" tabindex="-1"></a>n_informative <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="dv">15</span>)</span>
-<span id="cb39-245"><a href="#cb39-245" aria-hidden="true" tabindex="-1"></a>noise <span class="ot">&lt;-</span> <span class="dv">2</span></span>
-<span id="cb39-246"><a href="#cb39-246" aria-hidden="true" tabindex="-1"></a>rng <span class="ot">&lt;-</span> np<span class="sc">$</span>random<span class="sc">$</span><span class="fu">RandomState</span>(<span class="fu">as.integer</span>(<span class="dv">123</span>))</span>
-<span id="cb39-247"><a href="#cb39-247" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-248"><a href="#cb39-248" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-249"><a href="#cb39-249" aria-hidden="true" tabindex="-1"></a>Note that the values of <span class="in">`n_sample`</span>, <span class="in">`n_features`</span>, and <span class="in">`n_informative`</span> are made integers explicitly. This is because Python accepts only integers for those parameters (see <span class="co">[</span><span class="ot">here</span><span class="co">](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_regression.html)</span>). <span class="in">`noise`</span> is a float and you can be loose about what type of numeric value you provide.</span>
-<span id="cb39-250"><a href="#cb39-250" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-251"><a href="#cb39-251" aria-hidden="true" tabindex="-1"></a>Now, in the Python code below, <span class="in">`make_regression`</span> create a tuple (like a list on R) of tuple of length 2: the first one is an array of 2000 by 20 (assigned to <span class="in">`X`</span>) and the second one is an array of 2000 by 1 (assigned to <span class="in">`y`</span>). Python has a convenient way of assigning the elements of a tuple to new objects as shown below. </span>
-<span id="cb39-252"><a href="#cb39-252" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-255"><a href="#cb39-255" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb39-256"><a href="#cb39-256" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false </span></span>
-<span id="cb39-257"><a href="#cb39-257" aria-hidden="true" tabindex="-1"></a>X, y <span class="op">=</span> make_regression(</span>
-<span id="cb39-258"><a href="#cb39-258" aria-hidden="true" tabindex="-1"></a>  n_samples, </span>
-<span id="cb39-259"><a href="#cb39-259" aria-hidden="true" tabindex="-1"></a>  n_features, </span>
-<span id="cb39-260"><a href="#cb39-260" aria-hidden="true" tabindex="-1"></a>  n_informative <span class="op">=</span> n_informative, </span>
-<span id="cb39-261"><a href="#cb39-261" aria-hidden="true" tabindex="-1"></a>  noise <span class="op">=</span> noise, </span>
-<span id="cb39-262"><a href="#cb39-262" aria-hidden="true" tabindex="-1"></a>  random_state <span class="op">=</span> rng</span>
-<span id="cb39-263"><a href="#cb39-263" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb39-264"><a href="#cb39-264" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-265"><a href="#cb39-265" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-266"><a href="#cb39-266" aria-hidden="true" tabindex="-1"></a>R is a bit clumsy on this. So, we can just assign the list of arrays into a single object as a list like below and then extract its elements separately later.  </span>
-<span id="cb39-267"><a href="#cb39-267" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-270"><a href="#cb39-270" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-271"><a href="#cb39-271" aria-hidden="true" tabindex="-1"></a>synth_data <span class="ot">&lt;-</span></span>
-<span id="cb39-272"><a href="#cb39-272" aria-hidden="true" tabindex="-1"></a>  sk_ds<span class="sc">$</span><span class="fu">make_regression</span>(</span>
-<span id="cb39-273"><a href="#cb39-273" aria-hidden="true" tabindex="-1"></a>    n_samples, </span>
-<span id="cb39-274"><a href="#cb39-274" aria-hidden="true" tabindex="-1"></a>    n_features, </span>
-<span id="cb39-275"><a href="#cb39-275" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_informative =</span> n_informative, </span>
-<span id="cb39-276"><a href="#cb39-276" aria-hidden="true" tabindex="-1"></a>    <span class="at">noise =</span> noise, </span>
-<span id="cb39-277"><a href="#cb39-277" aria-hidden="true" tabindex="-1"></a>    <span class="at">random_state =</span> rng</span>
-<span id="cb39-278"><a href="#cb39-278" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb39-279"><a href="#cb39-279" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-280"><a href="#cb39-280" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-281"><a href="#cb39-281" aria-hidden="true" tabindex="-1"></a>Here is the structure of the data created.</span>
-<span id="cb39-282"><a href="#cb39-282" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-285"><a href="#cb39-285" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-286"><a href="#cb39-286" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(synth_data)</span>
-<span id="cb39-287"><a href="#cb39-287" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-288"><a href="#cb39-288" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-289"><a href="#cb39-289" aria-hidden="true" tabindex="-1"></a>We can then generate $X$ and $y$ like below.</span>
-<span id="cb39-290"><a href="#cb39-290" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-293"><a href="#cb39-293" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-294"><a href="#cb39-294" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> synth_data[[<span class="dv">1</span>]]</span>
-<span id="cb39-295"><a href="#cb39-295" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> synth_data[[<span class="dv">2</span>]]</span>
-<span id="cb39-296"><a href="#cb39-296" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-297"><a href="#cb39-297" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-298"><a href="#cb39-298" aria-hidden="true" tabindex="-1"></a>We now split the dataset into the train and test datasets using <span class="in">`train_test_split()`</span>.</span>
-<span id="cb39-299"><a href="#cb39-299" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-302"><a href="#cb39-302" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-303"><a href="#cb39-303" aria-hidden="true" tabindex="-1"></a>train_test_ls <span class="ot">&lt;-</span> sk_ms<span class="sc">$</span><span class="fu">train_test_split</span>(X, y, <span class="at">random_state =</span> rng)</span>
-<span id="cb39-304"><a href="#cb39-304" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-305"><a href="#cb39-305" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-306"><a href="#cb39-306" aria-hidden="true" tabindex="-1"></a>Assign each element of <span class="in">`train_test_ls`</span> to R objects with appropriate names.</span>
-<span id="cb39-307"><a href="#cb39-307" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-310"><a href="#cb39-310" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-311"><a href="#cb39-311" aria-hidden="true" tabindex="-1"></a>X_train <span class="ot">&lt;-</span> train_test_ls[[<span class="dv">1</span>]]</span>
-<span id="cb39-312"><a href="#cb39-312" aria-hidden="true" tabindex="-1"></a>X_test <span class="ot">&lt;-</span> train_test_ls[[<span class="dv">2</span>]]</span>
-<span id="cb39-313"><a href="#cb39-313" aria-hidden="true" tabindex="-1"></a>y_train <span class="ot">&lt;-</span> train_test_ls[[<span class="dv">3</span>]]</span>
-<span id="cb39-314"><a href="#cb39-314" aria-hidden="true" tabindex="-1"></a>y_test <span class="ot">&lt;-</span> train_test_ls[[<span class="dv">4</span>]]</span>
-<span id="cb39-315"><a href="#cb39-315" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-316"><a href="#cb39-316" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-317"><a href="#cb39-317" aria-hidden="true" tabindex="-1"></a>Then, train RF on the train data, and then test the fit.</span>
-<span id="cb39-318"><a href="#cb39-318" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-321"><a href="#cb39-321" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-322"><a href="#cb39-322" aria-hidden="true" tabindex="-1"></a><span class="co">#=== set up an RF ===#</span></span>
-<span id="cb39-323"><a href="#cb39-323" aria-hidden="true" tabindex="-1"></a>reg_rf <span class="ot">&lt;-</span> sk_ensemble<span class="sc">$</span><span class="fu">RandomForestRegressor</span>(<span class="at">max_features =</span> <span class="st">"sqrt"</span>)</span>
-<span id="cb39-324"><a href="#cb39-324" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-325"><a href="#cb39-325" aria-hidden="true" tabindex="-1"></a><span class="co">#=== train an RF on the train data ===#</span></span>
-<span id="cb39-326"><a href="#cb39-326" aria-hidden="true" tabindex="-1"></a>reg_rf<span class="sc">$</span><span class="fu">fit</span>(X_train, y_train)</span>
-<span id="cb39-327"><a href="#cb39-327" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-328"><a href="#cb39-328" aria-hidden="true" tabindex="-1"></a><span class="co">#=== test the fit ===#</span></span>
-<span id="cb39-329"><a href="#cb39-329" aria-hidden="true" tabindex="-1"></a>reg_rf<span class="sc">$</span><span class="fu">score</span>(X_test, y_test)</span>
-<span id="cb39-330"><a href="#cb39-330" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-331"><a href="#cb39-331" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-332"><a href="#cb39-332" aria-hidden="true" tabindex="-1"></a><span class="fu">## Sourcing Python scripts</span></span>
-<span id="cb39-333"><a href="#cb39-333" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-334"><a href="#cb39-334" aria-hidden="true" tabindex="-1"></a>Another way to run Python codes from R is to source a python script to make python functions and modules available.</span>
-<span id="cb39-335"><a href="#cb39-335" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-336"><a href="#cb39-336" aria-hidden="true" tabindex="-1"></a>Here is the Python code in the file called <span class="in">`import_modules.py`</span>.</span>
-<span id="cb39-337"><a href="#cb39-337" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-340"><a href="#cb39-340" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb39-341"><a href="#cb39-341" aria-hidden="true" tabindex="-1"></a><span class="co"># | eval: false</span></span>
-<span id="cb39-342"><a href="#cb39-342" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-343"><a href="#cb39-343" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
-<span id="cb39-344"><a href="#cb39-344" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> make_regression</span>
-<span id="cb39-345"><a href="#cb39-345" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestRegressor</span>
-<span id="cb39-346"><a href="#cb39-346" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy</span>
-<span id="cb39-347"><a href="#cb39-347" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-348"><a href="#cb39-348" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-349"><a href="#cb39-349" aria-hidden="true" tabindex="-1"></a>You can source this file using <span class="in">`source_python()`</span>.</span>
-<span id="cb39-350"><a href="#cb39-350" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-353"><a href="#cb39-353" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-354"><a href="#cb39-354" aria-hidden="true" tabindex="-1"></a><span class="fu">source_python</span>(<span class="st">"import_modules.py"</span>)</span>
-<span id="cb39-355"><a href="#cb39-355" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-356"><a href="#cb39-356" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-357"><a href="#cb39-357" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
-<span id="cb39-358"><a href="#cb39-358" aria-hidden="true" tabindex="-1"></a><span class="in">`import_modules.py`</span> is included in <span class="co">[</span><span class="ot">the github repository</span><span class="co">](https://github.com/tmieno2/ML-Economist)</span>.</span>
-<span id="cb39-359"><a href="#cb39-359" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb39-360"><a href="#cb39-360" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-361"><a href="#cb39-361" aria-hidden="true" tabindex="-1"></a>The first three lines are importing functions (<span class="in">`train_test_split`</span>, <span class="in">`make_regression`</span>, and <span class="in">`RandomForestRegressor`</span>), while the last line is importing a module (<span class="in">`numpy`</span>).  When functions are imported in this manner, they can be used without <span class="in">`py$`</span> as if they are R functions.</span>
-<span id="cb39-362"><a href="#cb39-362" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-365"><a href="#cb39-365" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-366"><a href="#cb39-366" aria-hidden="true" tabindex="-1"></a>synth_data <span class="ot">&lt;-</span></span>
-<span id="cb39-367"><a href="#cb39-367" aria-hidden="true" tabindex="-1"></a>  <span class="fu">make_regression</span>(</span>
-<span id="cb39-368"><a href="#cb39-368" aria-hidden="true" tabindex="-1"></a>    n_samples, </span>
-<span id="cb39-369"><a href="#cb39-369" aria-hidden="true" tabindex="-1"></a>    n_features, </span>
-<span id="cb39-370"><a href="#cb39-370" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_informative =</span> n_informative, </span>
-<span id="cb39-371"><a href="#cb39-371" aria-hidden="true" tabindex="-1"></a>    <span class="at">noise =</span> noise, </span>
-<span id="cb39-372"><a href="#cb39-372" aria-hidden="true" tabindex="-1"></a>    <span class="at">random_state =</span> rng</span>
-<span id="cb39-373"><a href="#cb39-373" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb39-374"><a href="#cb39-374" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-375"><a href="#cb39-375" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(synth_data)</span>
-<span id="cb39-376"><a href="#cb39-376" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-377"><a href="#cb39-377" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-378"><a href="#cb39-378" aria-hidden="true" tabindex="-1"></a>However, a module imported in this manner cannot be used without <span class="in">`py$`</span>. So, you cannot do this. </span>
-<span id="cb39-379"><a href="#cb39-379" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-382"><a href="#cb39-382" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-383"><a href="#cb39-383" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: true</span></span>
-<span id="cb39-384"><a href="#cb39-384" aria-hidden="true" tabindex="-1"></a>numpy<span class="sc">$</span>random<span class="sc">$</span><span class="fu">RandomState</span>(<span class="fu">as.integer</span>(<span class="dv">123</span>))</span>
-<span id="cb39-385"><a href="#cb39-385" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-386"><a href="#cb39-386" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-387"><a href="#cb39-387" aria-hidden="true" tabindex="-1"></a>Rather, you need to do this:</span>
-<span id="cb39-388"><a href="#cb39-388" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-391"><a href="#cb39-391" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-392"><a href="#cb39-392" aria-hidden="true" tabindex="-1"></a>py<span class="sc">$</span>numpy<span class="sc">$</span>random<span class="sc">$</span><span class="fu">RandomState</span>(<span class="fu">as.integer</span>(<span class="dv">123</span>))</span>
-<span id="cb39-393"><a href="#cb39-393" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-394"><a href="#cb39-394" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-395"><a href="#cb39-395" aria-hidden="true" tabindex="-1"></a>You can source user-defined functions on Python as well. Here is the python code in the file called <span class="in">`make_data.py`</span>. <span class="in">`train_test_RF()`</span> takes some of the arguments for <span class="in">`make_regression()`</span> as its arguments, split the data, train RF on the train data, evaluate the fit, and then return the test score.</span>
-<span id="cb39-396"><a href="#cb39-396" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-399"><a href="#cb39-399" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb39-400"><a href="#cb39-400" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false </span></span>
-<span id="cb39-401"><a href="#cb39-401" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> train_test_RF(n_samples, n_features, n_informative, noise, rng):</span>
-<span id="cb39-402"><a href="#cb39-402" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-403"><a href="#cb39-403" aria-hidden="true" tabindex="-1"></a>  <span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
-<span id="cb39-404"><a href="#cb39-404" aria-hidden="true" tabindex="-1"></a>  <span class="im">from</span> sklearn.datasets <span class="im">import</span> make_regression</span>
-<span id="cb39-405"><a href="#cb39-405" aria-hidden="true" tabindex="-1"></a>  <span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestRegressor</span>
-<span id="cb39-406"><a href="#cb39-406" aria-hidden="true" tabindex="-1"></a>  <span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb39-407"><a href="#cb39-407" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb39-408"><a href="#cb39-408" aria-hidden="true" tabindex="-1"></a>  X, y <span class="op">=</span> make_regression(</span>
-<span id="cb39-409"><a href="#cb39-409" aria-hidden="true" tabindex="-1"></a>    n_samples, </span>
-<span id="cb39-410"><a href="#cb39-410" aria-hidden="true" tabindex="-1"></a>    n_features, </span>
-<span id="cb39-411"><a href="#cb39-411" aria-hidden="true" tabindex="-1"></a>    n_informative <span class="op">=</span> n_informative, </span>
-<span id="cb39-412"><a href="#cb39-412" aria-hidden="true" tabindex="-1"></a>    noise <span class="op">=</span> noise, </span>
-<span id="cb39-413"><a href="#cb39-413" aria-hidden="true" tabindex="-1"></a>    random_state <span class="op">=</span> rng</span>
-<span id="cb39-414"><a href="#cb39-414" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb39-415"><a href="#cb39-415" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb39-416"><a href="#cb39-416" aria-hidden="true" tabindex="-1"></a>  X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(</span>
-<span id="cb39-417"><a href="#cb39-417" aria-hidden="true" tabindex="-1"></a>      X, y, random_state <span class="op">=</span> rng</span>
-<span id="cb39-418"><a href="#cb39-418" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb39-419"><a href="#cb39-419" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-420"><a href="#cb39-420" aria-hidden="true" tabindex="-1"></a>  reg_rf <span class="op">=</span> RandomForestRegressor(max_features <span class="op">=</span> <span class="st">"sqrt"</span>)</span>
-<span id="cb39-421"><a href="#cb39-421" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-422"><a href="#cb39-422" aria-hidden="true" tabindex="-1"></a>  reg_rf.fit(X_train, y_train)</span>
-<span id="cb39-423"><a href="#cb39-423" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-424"><a href="#cb39-424" aria-hidden="true" tabindex="-1"></a>  test_score <span class="op">=</span> reg_rf.score(X_test, y_test)</span>
-<span id="cb39-425"><a href="#cb39-425" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-426"><a href="#cb39-426" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> test_score</span>
-<span id="cb39-427"><a href="#cb39-427" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-428"><a href="#cb39-428" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-429"><a href="#cb39-429" aria-hidden="true" tabindex="-1"></a>Sourcing this file using <span class="in">`source_python()`</span>,</span>
-<span id="cb39-430"><a href="#cb39-430" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-433"><a href="#cb39-433" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-434"><a href="#cb39-434" aria-hidden="true" tabindex="-1"></a><span class="fu">source_python</span>(<span class="st">"run_rf.py"</span>)</span>
-<span id="cb39-435"><a href="#cb39-435" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-436"><a href="#cb39-436" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-437"><a href="#cb39-437" aria-hidden="true" tabindex="-1"></a>Once this is done, <span class="in">`train_test_RF()`</span> is now available to use on R. </span>
-<span id="cb39-438"><a href="#cb39-438" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-441"><a href="#cb39-441" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-442"><a href="#cb39-442" aria-hidden="true" tabindex="-1"></a><span class="fu">train_test_RF</span>(</span>
-<span id="cb39-443"><a href="#cb39-443" aria-hidden="true" tabindex="-1"></a>  n_samples, </span>
-<span id="cb39-444"><a href="#cb39-444" aria-hidden="true" tabindex="-1"></a>  n_features, </span>
-<span id="cb39-445"><a href="#cb39-445" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_informative =</span> n_informative, </span>
-<span id="cb39-446"><a href="#cb39-446" aria-hidden="true" tabindex="-1"></a>  <span class="at">noise =</span> noise, </span>
-<span id="cb39-447"><a href="#cb39-447" aria-hidden="true" tabindex="-1"></a>  <span class="at">rng =</span> rng</span>
-<span id="cb39-448"><a href="#cb39-448" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb39-449"><a href="#cb39-449" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-450"><a href="#cb39-450" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-451"><a href="#cb39-451" aria-hidden="true" tabindex="-1"></a><span class="fu">## Python in Rmarkdown or Quarto</span></span>
-<span id="cb39-452"><a href="#cb39-452" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-453"><a href="#cb39-453" aria-hidden="true" tabindex="-1"></a>Using R and Python in an Rmarkdown or Quarto file is extremely easy. You can have both R and Python codes in the same Rmd file. When you write R (python) codes, you use R (python) code chunks indicated by <span class="in">`{R}`</span> (<span class="in">`{python}`</span>) like below.</span>
-<span id="cb39-454"><a href="#cb39-454" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-457"><a href="#cb39-457" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-458"><a href="#cb39-458" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb39-459"><a href="#cb39-459" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"figures/reticulate_in_rmd.png"</span>)</span>
-<span id="cb39-460"><a href="#cb39-460" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-461"><a href="#cb39-461" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-462"><a href="#cb39-462" aria-hidden="true" tabindex="-1"></a>First code chunk is an R code chunk and loads libraries including <span class="in">`reticulate`</span>. </span>
-<span id="cb39-463"><a href="#cb39-463" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-464"><a href="#cb39-464" aria-hidden="true" tabindex="-1"></a>:::{.callout-tip}</span>
-<span id="cb39-465"><a href="#cb39-465" aria-hidden="true" tabindex="-1"></a>If you do not load the <span class="in">`reticulate`</span> package, python code chunks still run, but the objects defined on python would not be available on R.</span>
-<span id="cb39-466"><a href="#cb39-466" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb39-467"><a href="#cb39-467" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-468"><a href="#cb39-468" aria-hidden="true" tabindex="-1"></a>The second code chunk is a python code chunk and generate synthetic data using <span class="in">`make_regression`</span> from <span class="in">`sklearn.datasets`</span>. </span>
-<span id="cb39-469"><a href="#cb39-469" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-470"><a href="#cb39-470" aria-hidden="true" tabindex="-1"></a>The third code chunk is an R code chunk. It uses <span class="in">`X`</span> and <span class="in">`y`</span> generated on Python to train an RF using <span class="in">`ranger()`</span>.</span>
+<span id="cb39-120"><a href="#cb39-120" aria-hidden="true" tabindex="-1"></a><span class="fu">## R and Python REPL simultaneously {#sec-r-python-repl}</span></span>
+<span id="cb39-121"><a href="#cb39-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-122"><a href="#cb39-122" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb39-123"><a href="#cb39-123" aria-hidden="true" tabindex="-1"></a>RPEL stands for read-evaluate-print-loop.</span>
+<span id="cb39-124"><a href="#cb39-124" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb39-125"><a href="#cb39-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-126"><a href="#cb39-126" aria-hidden="true" tabindex="-1"></a>Within your R session, you can start a Python session that is embedded in it by running <span class="in">`repl_python()`</span> from R. This will allow you to go back and forth between R and Python. Objects created in Python can be accessed from R using the <span class="in">`py`</span> object as described above. This provides an ideal environment where you can test the interactions of your R and Python codes in a seamless manner. </span>
+<span id="cb39-127"><a href="#cb39-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-128"><a href="#cb39-128" aria-hidden="true" tabindex="-1"></a>You initiate a Python environment using <span class="in">`repl_python()`</span>. If you are using RStudio, this is what it looks like. </span>
+<span id="cb39-129"><a href="#cb39-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-132"><a href="#cb39-132" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb39-133"><a href="#cb39-133" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb39-134"><a href="#cb39-134" aria-hidden="true" tabindex="-1"></a><span class="fu">repl_python</span>()</span>
+<span id="cb39-135"><a href="#cb39-135" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-136"><a href="#cb39-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-139"><a href="#cb39-139" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb39-140"><a href="#cb39-140" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb39-141"><a href="#cb39-141" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"figures/repl_python.png"</span>)</span>
+<span id="cb39-142"><a href="#cb39-142" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-143"><a href="#cb39-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-144"><a href="#cb39-144" aria-hidden="true" tabindex="-1"></a>As you can see on the console tab, a python session has been initiated, which is connected your R session. As long as you are using RStudio, you do not have to worry about switching between R and Python manually. RStudio is smart enough to know where the codes are coming from and execute codes where they should be executed. That is, if you run codes from a python (R) file, they will be sent to the python (R) console. </span>
+<span id="cb39-145"><a href="#cb39-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-146"><a href="#cb39-146" aria-hidden="true" tabindex="-1"></a>Picture below shows what the console looks like after I executed <span class="in">`library(data.table)`</span> while I am still on the python console. You can see <span class="in">`&gt;&gt;&gt; quit`</span> (exit from python) before <span class="in">`library(data.table)`</span> was executed on R. </span>
+<span id="cb39-147"><a href="#cb39-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-150"><a href="#cb39-150" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb39-151"><a href="#cb39-151" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb39-152"><a href="#cb39-152" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"figures/python_repl_to_R_automatic.png"</span>)</span>
+<span id="cb39-153"><a href="#cb39-153" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-154"><a href="#cb39-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-155"><a href="#cb39-155" aria-hidden="true" tabindex="-1"></a>Let's now define an object called <span class="in">`a`</span> in python.</span>
+<span id="cb39-156"><a href="#cb39-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-159"><a href="#cb39-159" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb39-160"><a href="#cb39-160" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb39-161"><a href="#cb39-161" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"figures/python_a.png"</span>)</span>
+<span id="cb39-162"><a href="#cb39-162" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-163"><a href="#cb39-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-164"><a href="#cb39-164" aria-hidden="true" tabindex="-1"></a>:::{.callout-tip}</span>
+<span id="cb39-165"><a href="#cb39-165" aria-hidden="true" tabindex="-1"></a>From R, you can access objects defined on Python by using <span class="in">`py$`</span> prefix to the object name on python. This is like you are accessing an element of a list on R. <span class="in">`py`</span> has a list of objects defined on Python.</span>
+<span id="cb39-166"><a href="#cb39-166" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb39-167"><a href="#cb39-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-168"><a href="#cb39-168" aria-hidden="true" tabindex="-1"></a>Let's now confirm this by accessing <span class="in">`a`</span> on R.</span>
+<span id="cb39-169"><a href="#cb39-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-172"><a href="#cb39-172" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb39-173"><a href="#cb39-173" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb39-174"><a href="#cb39-174" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"figures/r_a.png"</span>)</span>
+<span id="cb39-175"><a href="#cb39-175" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-176"><a href="#cb39-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-177"><a href="#cb39-177" aria-hidden="true" tabindex="-1"></a>:::{.callout-tip}</span>
+<span id="cb39-178"><a href="#cb39-178" aria-hidden="true" tabindex="-1"></a>When you access R objects in Python, you can use <span class="in">`r.`</span> in front of the object name. We first run <span class="in">`b &lt;- 1:10`</span> and then confirm <span class="in">`r.b`</span> can get you the Python equivalent of <span class="in">`b`</span> in R.</span>
+<span id="cb39-179"><a href="#cb39-179" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb39-180"><a href="#cb39-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-183"><a href="#cb39-183" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb39-184"><a href="#cb39-184" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb39-185"><a href="#cb39-185" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"figures/python_b.png"</span>)</span>
+<span id="cb39-186"><a href="#cb39-186" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-187"><a href="#cb39-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-188"><a href="#cb39-188" aria-hidden="true" tabindex="-1"></a>Great. This seamless integration is really nice especially when you are writing an R-centric program that include pythons codes and are tying to debug.</span>
+<span id="cb39-189"><a href="#cb39-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-190"><a href="#cb39-190" aria-hidden="true" tabindex="-1"></a>Whenever R and Python exchange objects, they are automatically converted to their counterparts in the receiving program. For example, a vector with multiple elements in R will be converted to a list in Python, and vice versa. See <span class="co">[</span><span class="ot">here</span><span class="co">](https://rstudio.github.io/reticulate/)</span> for more examples.</span>
+<span id="cb39-191"><a href="#cb39-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-192"><a href="#cb39-192" aria-hidden="true" tabindex="-1"></a><span class="fu">## Importing Python modules</span></span>
+<span id="cb39-193"><a href="#cb39-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-194"><a href="#cb39-194" aria-hidden="true" tabindex="-1"></a>You can import Python modules and use them as if they are R functions. This way of interacting with Python involves the least direct interactions with Python among all the options that the <span class="in">`reticulate`</span> package provides us with. Unlike the approach above (@sec-r-python-repl), you do not see outcomes of your Python codes on the Python console. Rather, you will see the outcomes translated to R object on R. </span>
+<span id="cb39-195"><a href="#cb39-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-196"><a href="#cb39-196" aria-hidden="true" tabindex="-1"></a>You can import a python module using <span class="in">`import()`</span> like below, which imports the Python <span class="in">`os`</span> package.</span>
+<span id="cb39-197"><a href="#cb39-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-200"><a href="#cb39-200" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb39-201"><a href="#cb39-201" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb39-202"><a href="#cb39-202" aria-hidden="true" tabindex="-1"></a>os <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"os"</span>)</span>
+<span id="cb39-203"><a href="#cb39-203" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb39-204"><a href="#cb39-204" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-205"><a href="#cb39-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-206"><a href="#cb39-206" aria-hidden="true" tabindex="-1"></a>The imported module is assigned to <span class="in">`os`</span> on R. You can access functions in a module using <span class="in">`$`</span> instead of <span class="in">`.`</span> as done in Python.</span>
+<span id="cb39-207"><a href="#cb39-207" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-208"><a href="#cb39-208" aria-hidden="true" tabindex="-1"></a>For example, the following code use <span class="in">`listdir()`</span> from the <span class="in">`os`</span> module.</span>
+<span id="cb39-209"><a href="#cb39-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-212"><a href="#cb39-212" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb39-213"><a href="#cb39-213" aria-hidden="true" tabindex="-1"></a>os<span class="sc">$</span><span class="fu">listdir</span>(<span class="st">"."</span>) <span class="sc">%&gt;%</span> <span class="fu">head</span>()</span>
+<span id="cb39-214"><a href="#cb39-214" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-215"><a href="#cb39-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-216"><a href="#cb39-216" aria-hidden="true" tabindex="-1"></a>Let's rewrite the above sample Python code using this method. First, we import all the modules (not the functions) we need.</span>
+<span id="cb39-217"><a href="#cb39-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-220"><a href="#cb39-220" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb39-221"><a href="#cb39-221" aria-hidden="true" tabindex="-1"></a>sk_ds <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"sklearn.datasets"</span>)</span>
+<span id="cb39-222"><a href="#cb39-222" aria-hidden="true" tabindex="-1"></a>sk_ms <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"sklearn.model_selection"</span>)</span>
+<span id="cb39-223"><a href="#cb39-223" aria-hidden="true" tabindex="-1"></a>sk_ensemble <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"sklearn.ensemble"</span>)</span>
+<span id="cb39-224"><a href="#cb39-224" aria-hidden="true" tabindex="-1"></a>np <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"numpy"</span>)</span>
+<span id="cb39-225"><a href="#cb39-225" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-226"><a href="#cb39-226" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-227"><a href="#cb39-227" aria-hidden="true" tabindex="-1"></a>If you try this, you will get a complaint. </span>
+<span id="cb39-228"><a href="#cb39-228" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-231"><a href="#cb39-231" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb39-232"><a href="#cb39-232" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: true</span></span>
+<span id="cb39-233"><a href="#cb39-233" aria-hidden="true" tabindex="-1"></a>make_regression <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"sklearn.datasets.make_regression"</span>)</span>
+<span id="cb39-234"><a href="#cb39-234" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-235"><a href="#cb39-235" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-236"><a href="#cb39-236" aria-hidden="true" tabindex="-1"></a>Now, let's define parameters used in <span class="in">`make_regression()`</span>.</span>
+<span id="cb39-237"><a href="#cb39-237" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-240"><a href="#cb39-240" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb39-241"><a href="#cb39-241" aria-hidden="true" tabindex="-1"></a>n_samples <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="dv">2000</span>)</span>
+<span id="cb39-242"><a href="#cb39-242" aria-hidden="true" tabindex="-1"></a>n_features <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="dv">20</span>)</span>
+<span id="cb39-243"><a href="#cb39-243" aria-hidden="true" tabindex="-1"></a>n_informative <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="dv">15</span>)</span>
+<span id="cb39-244"><a href="#cb39-244" aria-hidden="true" tabindex="-1"></a>noise <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb39-245"><a href="#cb39-245" aria-hidden="true" tabindex="-1"></a>rng <span class="ot">&lt;-</span> np<span class="sc">$</span>random<span class="sc">$</span><span class="fu">RandomState</span>(<span class="fu">as.integer</span>(<span class="dv">123</span>))</span>
+<span id="cb39-246"><a href="#cb39-246" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-247"><a href="#cb39-247" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-248"><a href="#cb39-248" aria-hidden="true" tabindex="-1"></a>Note that the values of <span class="in">`n_sample`</span>, <span class="in">`n_features`</span>, and <span class="in">`n_informative`</span> are made integers explicitly. This is because Python accepts only integers for those parameters (see <span class="co">[</span><span class="ot">here</span><span class="co">](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_regression.html)</span>). <span class="in">`noise`</span> is a float and you can be loose about what type of numeric value you provide.</span>
+<span id="cb39-249"><a href="#cb39-249" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-250"><a href="#cb39-250" aria-hidden="true" tabindex="-1"></a>Now, in the Python code below, <span class="in">`make_regression`</span> create a tuple (like a list on R) of tuple of length 2: the first one is an array of 2000 by 20 (assigned to <span class="in">`X`</span>) and the second one is an array of 2000 by 1 (assigned to <span class="in">`y`</span>). Python has a convenient way of assigning the elements of a tuple to new objects as shown below. </span>
+<span id="cb39-251"><a href="#cb39-251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-254"><a href="#cb39-254" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb39-255"><a href="#cb39-255" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false </span></span>
+<span id="cb39-256"><a href="#cb39-256" aria-hidden="true" tabindex="-1"></a>X, y <span class="op">=</span> make_regression(</span>
+<span id="cb39-257"><a href="#cb39-257" aria-hidden="true" tabindex="-1"></a>  n_samples, </span>
+<span id="cb39-258"><a href="#cb39-258" aria-hidden="true" tabindex="-1"></a>  n_features, </span>
+<span id="cb39-259"><a href="#cb39-259" aria-hidden="true" tabindex="-1"></a>  n_informative <span class="op">=</span> n_informative, </span>
+<span id="cb39-260"><a href="#cb39-260" aria-hidden="true" tabindex="-1"></a>  noise <span class="op">=</span> noise, </span>
+<span id="cb39-261"><a href="#cb39-261" aria-hidden="true" tabindex="-1"></a>  random_state <span class="op">=</span> rng</span>
+<span id="cb39-262"><a href="#cb39-262" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb39-263"><a href="#cb39-263" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-264"><a href="#cb39-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-265"><a href="#cb39-265" aria-hidden="true" tabindex="-1"></a>R is a bit clumsy on this. So, we can just assign the list of arrays into a single object as a list like below and then extract its elements separately later.  </span>
+<span id="cb39-266"><a href="#cb39-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-269"><a href="#cb39-269" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb39-270"><a href="#cb39-270" aria-hidden="true" tabindex="-1"></a>synth_data <span class="ot">&lt;-</span></span>
+<span id="cb39-271"><a href="#cb39-271" aria-hidden="true" tabindex="-1"></a>  sk_ds<span class="sc">$</span><span class="fu">make_regression</span>(</span>
+<span id="cb39-272"><a href="#cb39-272" aria-hidden="true" tabindex="-1"></a>    n_samples, </span>
+<span id="cb39-273"><a href="#cb39-273" aria-hidden="true" tabindex="-1"></a>    n_features, </span>
+<span id="cb39-274"><a href="#cb39-274" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_informative =</span> n_informative, </span>
+<span id="cb39-275"><a href="#cb39-275" aria-hidden="true" tabindex="-1"></a>    <span class="at">noise =</span> noise, </span>
+<span id="cb39-276"><a href="#cb39-276" aria-hidden="true" tabindex="-1"></a>    <span class="at">random_state =</span> rng</span>
+<span id="cb39-277"><a href="#cb39-277" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb39-278"><a href="#cb39-278" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-279"><a href="#cb39-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-280"><a href="#cb39-280" aria-hidden="true" tabindex="-1"></a>Here is the structure of the data created.</span>
+<span id="cb39-281"><a href="#cb39-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-284"><a href="#cb39-284" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb39-285"><a href="#cb39-285" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(synth_data)</span>
+<span id="cb39-286"><a href="#cb39-286" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-287"><a href="#cb39-287" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-288"><a href="#cb39-288" aria-hidden="true" tabindex="-1"></a>We can then generate $X$ and $y$ like below.</span>
+<span id="cb39-289"><a href="#cb39-289" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-292"><a href="#cb39-292" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb39-293"><a href="#cb39-293" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> synth_data[[<span class="dv">1</span>]]</span>
+<span id="cb39-294"><a href="#cb39-294" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> synth_data[[<span class="dv">2</span>]]</span>
+<span id="cb39-295"><a href="#cb39-295" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-296"><a href="#cb39-296" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-297"><a href="#cb39-297" aria-hidden="true" tabindex="-1"></a>We now split the dataset into the train and test datasets using <span class="in">`train_test_split()`</span>.</span>
+<span id="cb39-298"><a href="#cb39-298" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-301"><a href="#cb39-301" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb39-302"><a href="#cb39-302" aria-hidden="true" tabindex="-1"></a>train_test_ls <span class="ot">&lt;-</span> sk_ms<span class="sc">$</span><span class="fu">train_test_split</span>(X, y, <span class="at">random_state =</span> rng)</span>
+<span id="cb39-303"><a href="#cb39-303" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-304"><a href="#cb39-304" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-305"><a href="#cb39-305" aria-hidden="true" tabindex="-1"></a>Assign each element of <span class="in">`train_test_ls`</span> to R objects with appropriate names.</span>
+<span id="cb39-306"><a href="#cb39-306" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-309"><a href="#cb39-309" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb39-310"><a href="#cb39-310" aria-hidden="true" tabindex="-1"></a>X_train <span class="ot">&lt;-</span> train_test_ls[[<span class="dv">1</span>]]</span>
+<span id="cb39-311"><a href="#cb39-311" aria-hidden="true" tabindex="-1"></a>X_test <span class="ot">&lt;-</span> train_test_ls[[<span class="dv">2</span>]]</span>
+<span id="cb39-312"><a href="#cb39-312" aria-hidden="true" tabindex="-1"></a>y_train <span class="ot">&lt;-</span> train_test_ls[[<span class="dv">3</span>]]</span>
+<span id="cb39-313"><a href="#cb39-313" aria-hidden="true" tabindex="-1"></a>y_test <span class="ot">&lt;-</span> train_test_ls[[<span class="dv">4</span>]]</span>
+<span id="cb39-314"><a href="#cb39-314" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-315"><a href="#cb39-315" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-316"><a href="#cb39-316" aria-hidden="true" tabindex="-1"></a>Then, train RF on the train data, and then test the fit.</span>
+<span id="cb39-317"><a href="#cb39-317" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-320"><a href="#cb39-320" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb39-321"><a href="#cb39-321" aria-hidden="true" tabindex="-1"></a><span class="co">#=== set up an RF ===#</span></span>
+<span id="cb39-322"><a href="#cb39-322" aria-hidden="true" tabindex="-1"></a>reg_rf <span class="ot">&lt;-</span> sk_ensemble<span class="sc">$</span><span class="fu">RandomForestRegressor</span>(<span class="at">max_features =</span> <span class="st">"sqrt"</span>)</span>
+<span id="cb39-323"><a href="#cb39-323" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-324"><a href="#cb39-324" aria-hidden="true" tabindex="-1"></a><span class="co">#=== train an RF on the train data ===#</span></span>
+<span id="cb39-325"><a href="#cb39-325" aria-hidden="true" tabindex="-1"></a>reg_rf<span class="sc">$</span><span class="fu">fit</span>(X_train, y_train)</span>
+<span id="cb39-326"><a href="#cb39-326" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-327"><a href="#cb39-327" aria-hidden="true" tabindex="-1"></a><span class="co">#=== test the fit ===#</span></span>
+<span id="cb39-328"><a href="#cb39-328" aria-hidden="true" tabindex="-1"></a>reg_rf<span class="sc">$</span><span class="fu">score</span>(X_test, y_test)</span>
+<span id="cb39-329"><a href="#cb39-329" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-330"><a href="#cb39-330" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-331"><a href="#cb39-331" aria-hidden="true" tabindex="-1"></a><span class="fu">## Sourcing Python scripts</span></span>
+<span id="cb39-332"><a href="#cb39-332" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-333"><a href="#cb39-333" aria-hidden="true" tabindex="-1"></a>Another way to run Python codes from R is to source a python script to make python functions and modules available.</span>
+<span id="cb39-334"><a href="#cb39-334" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-335"><a href="#cb39-335" aria-hidden="true" tabindex="-1"></a>Here is the Python code in the file called <span class="in">`import_modules.py`</span>.</span>
+<span id="cb39-336"><a href="#cb39-336" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-339"><a href="#cb39-339" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb39-340"><a href="#cb39-340" aria-hidden="true" tabindex="-1"></a><span class="co"># | eval: false</span></span>
+<span id="cb39-341"><a href="#cb39-341" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-342"><a href="#cb39-342" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb39-343"><a href="#cb39-343" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> make_regression</span>
+<span id="cb39-344"><a href="#cb39-344" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestRegressor</span>
+<span id="cb39-345"><a href="#cb39-345" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy</span>
+<span id="cb39-346"><a href="#cb39-346" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-347"><a href="#cb39-347" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-348"><a href="#cb39-348" aria-hidden="true" tabindex="-1"></a>You can source this file using <span class="in">`source_python()`</span>.</span>
+<span id="cb39-349"><a href="#cb39-349" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-352"><a href="#cb39-352" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb39-353"><a href="#cb39-353" aria-hidden="true" tabindex="-1"></a><span class="fu">source_python</span>(<span class="st">"import_modules.py"</span>)</span>
+<span id="cb39-354"><a href="#cb39-354" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-355"><a href="#cb39-355" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-356"><a href="#cb39-356" aria-hidden="true" tabindex="-1"></a>::: {.column-margin}</span>
+<span id="cb39-357"><a href="#cb39-357" aria-hidden="true" tabindex="-1"></a><span class="in">`import_modules.py`</span> is included in <span class="co">[</span><span class="ot">the github repository</span><span class="co">](https://github.com/tmieno2/ML-Economist)</span>.</span>
+<span id="cb39-358"><a href="#cb39-358" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb39-359"><a href="#cb39-359" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-360"><a href="#cb39-360" aria-hidden="true" tabindex="-1"></a>The first three lines are importing functions (<span class="in">`train_test_split`</span>, <span class="in">`make_regression`</span>, and <span class="in">`RandomForestRegressor`</span>), while the last line is importing a module (<span class="in">`numpy`</span>).  When functions are imported in this manner, they can be used without <span class="in">`py$`</span> as if they are R functions.</span>
+<span id="cb39-361"><a href="#cb39-361" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-364"><a href="#cb39-364" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb39-365"><a href="#cb39-365" aria-hidden="true" tabindex="-1"></a>synth_data <span class="ot">&lt;-</span></span>
+<span id="cb39-366"><a href="#cb39-366" aria-hidden="true" tabindex="-1"></a>  <span class="fu">make_regression</span>(</span>
+<span id="cb39-367"><a href="#cb39-367" aria-hidden="true" tabindex="-1"></a>    n_samples, </span>
+<span id="cb39-368"><a href="#cb39-368" aria-hidden="true" tabindex="-1"></a>    n_features, </span>
+<span id="cb39-369"><a href="#cb39-369" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_informative =</span> n_informative, </span>
+<span id="cb39-370"><a href="#cb39-370" aria-hidden="true" tabindex="-1"></a>    <span class="at">noise =</span> noise, </span>
+<span id="cb39-371"><a href="#cb39-371" aria-hidden="true" tabindex="-1"></a>    <span class="at">random_state =</span> rng</span>
+<span id="cb39-372"><a href="#cb39-372" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb39-373"><a href="#cb39-373" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-374"><a href="#cb39-374" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(synth_data)</span>
+<span id="cb39-375"><a href="#cb39-375" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-376"><a href="#cb39-376" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-377"><a href="#cb39-377" aria-hidden="true" tabindex="-1"></a>However, a module imported in this manner cannot be used without <span class="in">`py$`</span>. So, you cannot do this. </span>
+<span id="cb39-378"><a href="#cb39-378" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-381"><a href="#cb39-381" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb39-382"><a href="#cb39-382" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: true</span></span>
+<span id="cb39-383"><a href="#cb39-383" aria-hidden="true" tabindex="-1"></a>numpy<span class="sc">$</span>random<span class="sc">$</span><span class="fu">RandomState</span>(<span class="fu">as.integer</span>(<span class="dv">123</span>))</span>
+<span id="cb39-384"><a href="#cb39-384" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-385"><a href="#cb39-385" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-386"><a href="#cb39-386" aria-hidden="true" tabindex="-1"></a>Rather, you need to do this:</span>
+<span id="cb39-387"><a href="#cb39-387" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-390"><a href="#cb39-390" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb39-391"><a href="#cb39-391" aria-hidden="true" tabindex="-1"></a>py<span class="sc">$</span>numpy<span class="sc">$</span>random<span class="sc">$</span><span class="fu">RandomState</span>(<span class="fu">as.integer</span>(<span class="dv">123</span>))</span>
+<span id="cb39-392"><a href="#cb39-392" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-393"><a href="#cb39-393" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-394"><a href="#cb39-394" aria-hidden="true" tabindex="-1"></a>You can source user-defined functions on Python as well. Here is the python code in the file called <span class="in">`make_data.py`</span>. <span class="in">`train_test_RF()`</span> takes some of the arguments for <span class="in">`make_regression()`</span> as its arguments, split the data, train RF on the train data, evaluate the fit, and then return the test score.</span>
+<span id="cb39-395"><a href="#cb39-395" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-398"><a href="#cb39-398" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb39-399"><a href="#cb39-399" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false </span></span>
+<span id="cb39-400"><a href="#cb39-400" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> train_test_RF(n_samples, n_features, n_informative, noise, rng):</span>
+<span id="cb39-401"><a href="#cb39-401" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-402"><a href="#cb39-402" aria-hidden="true" tabindex="-1"></a>  <span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb39-403"><a href="#cb39-403" aria-hidden="true" tabindex="-1"></a>  <span class="im">from</span> sklearn.datasets <span class="im">import</span> make_regression</span>
+<span id="cb39-404"><a href="#cb39-404" aria-hidden="true" tabindex="-1"></a>  <span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestRegressor</span>
+<span id="cb39-405"><a href="#cb39-405" aria-hidden="true" tabindex="-1"></a>  <span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb39-406"><a href="#cb39-406" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb39-407"><a href="#cb39-407" aria-hidden="true" tabindex="-1"></a>  X, y <span class="op">=</span> make_regression(</span>
+<span id="cb39-408"><a href="#cb39-408" aria-hidden="true" tabindex="-1"></a>    n_samples, </span>
+<span id="cb39-409"><a href="#cb39-409" aria-hidden="true" tabindex="-1"></a>    n_features, </span>
+<span id="cb39-410"><a href="#cb39-410" aria-hidden="true" tabindex="-1"></a>    n_informative <span class="op">=</span> n_informative, </span>
+<span id="cb39-411"><a href="#cb39-411" aria-hidden="true" tabindex="-1"></a>    noise <span class="op">=</span> noise, </span>
+<span id="cb39-412"><a href="#cb39-412" aria-hidden="true" tabindex="-1"></a>    random_state <span class="op">=</span> rng</span>
+<span id="cb39-413"><a href="#cb39-413" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb39-414"><a href="#cb39-414" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb39-415"><a href="#cb39-415" aria-hidden="true" tabindex="-1"></a>  X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(</span>
+<span id="cb39-416"><a href="#cb39-416" aria-hidden="true" tabindex="-1"></a>      X, y, random_state <span class="op">=</span> rng</span>
+<span id="cb39-417"><a href="#cb39-417" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb39-418"><a href="#cb39-418" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-419"><a href="#cb39-419" aria-hidden="true" tabindex="-1"></a>  reg_rf <span class="op">=</span> RandomForestRegressor(max_features <span class="op">=</span> <span class="st">"sqrt"</span>)</span>
+<span id="cb39-420"><a href="#cb39-420" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-421"><a href="#cb39-421" aria-hidden="true" tabindex="-1"></a>  reg_rf.fit(X_train, y_train)</span>
+<span id="cb39-422"><a href="#cb39-422" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-423"><a href="#cb39-423" aria-hidden="true" tabindex="-1"></a>  test_score <span class="op">=</span> reg_rf.score(X_test, y_test)</span>
+<span id="cb39-424"><a href="#cb39-424" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-425"><a href="#cb39-425" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> test_score</span>
+<span id="cb39-426"><a href="#cb39-426" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-427"><a href="#cb39-427" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-428"><a href="#cb39-428" aria-hidden="true" tabindex="-1"></a>Sourcing this file using <span class="in">`source_python()`</span>,</span>
+<span id="cb39-429"><a href="#cb39-429" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-432"><a href="#cb39-432" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb39-433"><a href="#cb39-433" aria-hidden="true" tabindex="-1"></a><span class="fu">source_python</span>(<span class="st">"run_rf.py"</span>)</span>
+<span id="cb39-434"><a href="#cb39-434" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-435"><a href="#cb39-435" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-436"><a href="#cb39-436" aria-hidden="true" tabindex="-1"></a>Once this is done, <span class="in">`train_test_RF()`</span> is now available to use on R. </span>
+<span id="cb39-437"><a href="#cb39-437" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-440"><a href="#cb39-440" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb39-441"><a href="#cb39-441" aria-hidden="true" tabindex="-1"></a><span class="fu">train_test_RF</span>(</span>
+<span id="cb39-442"><a href="#cb39-442" aria-hidden="true" tabindex="-1"></a>  n_samples, </span>
+<span id="cb39-443"><a href="#cb39-443" aria-hidden="true" tabindex="-1"></a>  n_features, </span>
+<span id="cb39-444"><a href="#cb39-444" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_informative =</span> n_informative, </span>
+<span id="cb39-445"><a href="#cb39-445" aria-hidden="true" tabindex="-1"></a>  <span class="at">noise =</span> noise, </span>
+<span id="cb39-446"><a href="#cb39-446" aria-hidden="true" tabindex="-1"></a>  <span class="at">rng =</span> rng</span>
+<span id="cb39-447"><a href="#cb39-447" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb39-448"><a href="#cb39-448" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-449"><a href="#cb39-449" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-450"><a href="#cb39-450" aria-hidden="true" tabindex="-1"></a><span class="fu">## Python in Rmarkdown or Quarto</span></span>
+<span id="cb39-451"><a href="#cb39-451" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-452"><a href="#cb39-452" aria-hidden="true" tabindex="-1"></a>Using R and Python in an Rmarkdown or Quarto file is extremely easy. You can have both R and Python codes in the same Rmd file. When you write R (python) codes, you use R (python) code chunks indicated by <span class="in">`{R}`</span> (<span class="in">`{python}`</span>) like below.</span>
+<span id="cb39-453"><a href="#cb39-453" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-456"><a href="#cb39-456" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb39-457"><a href="#cb39-457" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb39-458"><a href="#cb39-458" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"figures/reticulate_in_rmd.png"</span>)</span>
+<span id="cb39-459"><a href="#cb39-459" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-460"><a href="#cb39-460" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-461"><a href="#cb39-461" aria-hidden="true" tabindex="-1"></a>First code chunk is an R code chunk and loads libraries including <span class="in">`reticulate`</span>. </span>
+<span id="cb39-462"><a href="#cb39-462" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-463"><a href="#cb39-463" aria-hidden="true" tabindex="-1"></a>:::{.callout-tip}</span>
+<span id="cb39-464"><a href="#cb39-464" aria-hidden="true" tabindex="-1"></a>If you do not load the <span class="in">`reticulate`</span> package, python code chunks still run, but the objects defined on python would not be available on R.</span>
+<span id="cb39-465"><a href="#cb39-465" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb39-466"><a href="#cb39-466" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-467"><a href="#cb39-467" aria-hidden="true" tabindex="-1"></a>The second code chunk is a python code chunk and generate synthetic data using <span class="in">`make_regression`</span> from <span class="in">`sklearn.datasets`</span>. </span>
+<span id="cb39-468"><a href="#cb39-468" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-469"><a href="#cb39-469" aria-hidden="true" tabindex="-1"></a>The third code chunk is an R code chunk. It uses <span class="in">`X`</span> and <span class="in">`y`</span> generated on Python to train an RF using <span class="in">`ranger()`</span>.</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

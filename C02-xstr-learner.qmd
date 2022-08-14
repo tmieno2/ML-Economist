@@ -34,7 +34,6 @@ library(rlearner)
 library(mgcv)
 library(rsample)
 library(xgboost)
-library(rlearner)
 ```
 
 ```{r}
@@ -46,7 +45,6 @@ library(rlearner)
 library(mgcv)
 library(rsample)
 library(xgboost)
-library(rlearner)
 ```
 :::
 
@@ -191,7 +189,7 @@ theta_hat <- mu_hat_1 - mu_hat_0
 
 1. Regress $Y$ on $X$ using the treated observations to estimate $\mu_1(X)$ using any appropriate ML regression methods.
 2. Regress $Y$ on $X$ using the control observations to estimate $\mu_0(X)$ using any appropriate ML regression methods.
-3. Estimate $\hat{\theta}(X)$ as $\hat{\mu}_1(X)-\hat{\mu}(X)$
+3. Estimate $\hat{\theta}(X)$ as $\hat{\mu}_1(X)-\hat{\mu}_0(X)$
 
 This approach is named T-learner by @kunzel_metalearners_2019 because it involves estimating <span style='color:red'>t</span>wo functions.
 
@@ -625,7 +623,7 @@ The results look pretty good mostly because we are cheating and using the correc
 
 
 
-## Comparing the learners
+## Comparing the learners {#sec-comp-learners}
 
 In this section, we compare the performance of the learners under two DGPs, which fall under the following general model:
 
