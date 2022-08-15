@@ -16,6 +16,7 @@
 
 ## Background knowledge
 
++ (necessary) how a regression tree is built (@sec-rt)
 + (necessary) random forest (@sec-rf)
 + (necessary) local regression (@sec-local)
 
@@ -479,9 +480,9 @@ So, instead of $12.47$ and $14.23$, the predicted values from the honest tree ar
 
 More generally, in GRF, honesty is applied by using the evaluation data to solve @eq-opt based on the weight $\alpha_i(x)$ derived from the trained forest using the splitting data. Honesty is required for the GRF estimator to be consistent and asymptotically normal [@athey2019generalized]. However, the application of honesty can do more damage than help when the sample size is small.
 
-## Understanding GRF better by example (#sec-understand-grf-example)
+## Understanding GRF better by example {#sec-understand-grf-example}
 
-This section goes through CF model training and CATE prediction step by step with codes to enhance our understanding of how GRF works. In the process, we also learn the role of many of the hyper-parameters. They include those that are common across all the GRF methods and those that are specific to CF. 
+This section goes through CF model training and CATE prediction step by step with codes to enhance our understanding of how GRF (and CF) works. In the process, we also learn the role of many of the hyper-parameters that are common across models that fall under GRF. We also learn the role of hyper-parameter that are specific to CF as well. 
 
 While the process explained here is for CF, the vast majority of the process is exactly the same for other models under GRF. Here are some differences:
 
@@ -493,7 +494,7 @@ While the process explained here is for CF, the vast majority of the process is 
 Obviously, the codes here are only for illustration and should not be used in practice.
 :::
 
-We will use a synthetic data generated from the following generating process:
+We will use a synthetic data generated from the following DGP:
 
 $$
 \begin{aligned}
@@ -509,11 +510,11 @@ g(X) & = 10 \cdot [log(x_2+1) + 2\cdot x_3\times x_2]
 \end{aligned}
 $$
 
-We have 10 feature variables $x_1, \dots, x_{10}$ and only $x_1$ through $x_3$ plays a role.  
+We have 10 feature variables $x_1, \dots, x_{10}$ and only $x_1$ through $x_3$ play a role.  
 
 + $x_1, x_2 \sim U[0, 3]^2$
 + $x_3 \sim N(1, 1)$
-+ $x_4, \dots, x_{10} \sim U[0, 1]^{10}$
++ $x_4, \dots, x_{10} \sim U[0, 1]^{7}$
 
 The error term and the treatment variable is defined as follows. 
 
@@ -948,7 +949,7 @@ After training a causal forest model, we have trees like the one shown in @fig-c
 get_tree(cf_trained, 1) %>% plot()
 ```
 
-You probably noticed that the total number of samples in the leaves is only $250$ instead of $1000$, which is the total number of observations in `data`. When causal forest was trained on this dataset, only half of the entire sample are randomly selected for building each tree (due to the default setting of `sample.fraction = 0.5`). The halved sample is further split into two groups, each containing $250$ observations (due to the default setting of `honesty = TRUE` and `honest.fraction = 0.5`). Let's call them $J_1$ and $J_2$. Then, $J_1$ is used to train a tree to find the splitting rules (e.g., $x_1 \leq 1.44$ for the first tree). See @sec-build-trees for how only a subset of the drawn samples was used to determine the splitting rules. Once the splitting rules are determined (tree building process is complete), then $J_1$ is "vacated" (or thrown out) from the tree. This will become clearer when we talk about finding individual weights.
+You probably noticed that the total number of samples in the leaves is only $250$ instead of $1000$, which is the total number of observations in `data`. When causal forest was trained on this dataset, only half of the entire sample are randomly selected for building each tree (due to the default setting of `sample.fraction = 0.5`). The halved sample is further split into two groups, each containing $250$ observations (due to the default setting of `honesty = TRUE` and `honest.fraction = 0.5`). Let's call them $J_1$ and $J_2$. Then, $J_1$ is used to train a tree to find the splitting rules (e.g., $x_1 \leq 1.44$ for the first tree). See @sec-build-trees for how only a subset of the drawn samples was used to determine the splitting rules. Once the splitting rules are determined (tree building process is complete), then $J_1$ "vacates" the tree. Then, $J_2$ repopulates the tree. In other words, the splitting rule associated with the tree is applied to each of the samples in $J_2$ and place it in the node they belong to. So, the size value in each of the terminal nodes represents how many samples in $J_2$ are in each node. The statistics for each terminal node are from the samples in $J_2$ within the node. This will become clearer when we talk about finding individual weights.
 
 Let's take a look at a tree to see what happened. We can use `get_tree()` to access individual trees from `cf_trained`. 
 
@@ -973,10 +974,13 @@ nodes <- a_tree$nodes
 )
 ```
 
-`nodes` is a list of three elements (one root node and two terminal nodes here). The `samples` attribute gives you row indices of the samples that belong to the terminal node. 
+`nodes` is a list of three elements (one root node and two terminal nodes here). The `samples` attribute gives you row indices of the samples that belong to the terminal nodes. 
 
 ```{r}
+#=== left node ===#  
 nodes[[2]]$samples
+
+#=== right node ===#  
 nodes[[3]]$samples
 ```
 
@@ -991,11 +995,15 @@ J1_rows <- J1_J2_rows[J1_J2_rows %in% J2_rows]
 )
 ```
 
-As you can see, there are 250 samples in $J_1$ as well.
+As you can see, there are 250 samples in $J_1$ as well. They were used to find the splitting rule. 
+
+For all the trees, the information we went through here is stored and can be used for predicting $\theta(X)$.
 
 ---
 
-Suppose you are interested in predicting $\hat{\theta}$ at $X_0 = \{x_1 = 2, x_2,\dots, x_{10} = 1\}$. For a given tree, we give 1 to the observations in <span style="color:red">$J_1$</span> that belong to the same leaf as $X_0$. For example, for the first tree, $X_0$ belongs to the right leaf because $x1 = 2 > 1.44$ for $X_0$. We can tell which node $X_0$ belongs to by supplying $X_0$ to `get_leaf_node()`.
+Suppose you are interested in predicting $\hat{\theta}$ (CATE, here) at $X_0 = \{x_1 = 2, x_2,\dots, x_{10} = 1\}$. We can simply use `predict()` function in practice. But, we look into what is happening in `prediction()` behind the scene here. 
+
+For a given tree, we give 1 to the observations in <span style="color:red">$J_2$</span> that belong to the same leaf as $X_0$. For example, for the first tree, $X_0$ belongs to the right leaf because $x1 = 2 > 1.44$ for $X_0$. We can tell which node $X_0$ belongs to by supplying $X_0$ to `get_leaf_node()`.
 
 ```{r}
 X_0 <- matrix(c(2, rep(1, 9)), nrow = 1)
@@ -1040,7 +1048,7 @@ get_eta <- function(t, X_0) {
 
 ```
 
-We apply `get_eta()` for each of the 2000 trees.
+We apply `get_eta()` to each of the 2000 trees.
 
 ```{r}
 (
@@ -1092,9 +1100,14 @@ weights <- get_forest_weights(cf_trained, X_0)
 Let's compare the weights and see if we did it right.
 
 ```{r}
-mean(as.matrix(weights) - data_with_wights$weight)
+mean(abs(as.matrix(weights) - data_with_wights$weight))
 ```
 
+Great, virtually the same.
+
+## Clustering 
+
+## Hyper-parmeter tuning
 
 ## References {.unnumbered}
 

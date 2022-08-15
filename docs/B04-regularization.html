@@ -573,8 +573,8 @@ Min_{\beta} &amp; \sum_{i=1}^N (y_i - \beta_1 x_1 - \beta_2 x_2)^2 \\
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>ols_coefs_1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x_1 <span class="sc">+</span> x_2, <span class="at">data =</span> data)<span class="sc">$</span>coefficient</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>(Intercept)         x_1         x_2 
- 0.04304428  2.00508397  0.20106751 </code></pre>
+<pre><code> (Intercept)          x_1          x_2 
+-0.006005028  2.029380795  0.141220376 </code></pre>
 </div>
 </div>
 <p>We now calculate the value of the objective functions at different values of <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\beta_2\)</span>. Here is the set of <span class="math inline">\(\{\beta_1, \beta_2\}\)</span> combinations we look at.</p>
@@ -1106,7 +1106,7 @@ V20         -1.144987654</code></pre>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>cv_lasso<span class="sc">$</span>lambda.min</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.05725918</code></pre>
+<pre><code>[1] 0.03276581</code></pre>
 </div>
 </div>
 <p>You can access the coefficient estimates when <span class="math inline">\(\lambda\)</span> is <code>lambda.min</code> as follows</p>
@@ -1114,28 +1114,28 @@ V20         -1.144987654</code></pre>
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(cv_lasso, <span class="at">s =</span> <span class="st">"lambda.min"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
-                     s1
-(Intercept)  0.14291659
-V1           1.34431995
-V2           .         
-V3           0.71047211
-V4           .         
-V5          -0.85182173
-V6           0.55960366
-V7           0.04475230
-V8           0.35117414
-V9           .         
-V10          0.01985732
-V11          0.19335515
-V12          .         
-V13          .         
-V14         -1.09350480
-V15         -0.01564233
-V16          .         
-V17          .         
-V18          .         
-V19          .         
-V20         -1.07874251</code></pre>
+                      s1
+(Intercept)  0.128660890
+V1           1.358328625
+V2           0.008183930
+V3           0.729395934
+V4           0.014458167
+V5          -0.870720166
+V6           0.582517165
+V7           0.076231973
+V8           0.367970084
+V9           .          
+V10          0.068030038
+V11          0.215812809
+V12         -0.024238268
+V13         -0.019278242
+V14         -1.124155296
+V15         -0.070162005
+V16         -0.002157957
+V17          .          
+V18          0.019755628
+V19          .          
+V20         -1.114758360</code></pre>
 </div>
 </div>
 <p>The following code gives you the coefficient estimates when <span class="math inline">\(\lambda\)</span> is <code>lambda.1se</code></p>
@@ -1143,28 +1143,28 @@ V20         -1.07874251</code></pre>
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(cv_lasso, <span class="at">s =</span> <span class="st">"lambda.1se"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
-                    s1
-(Intercept)  0.1559184
-V1           1.2861359
-V2           .        
-V3           0.6142724
-V4           .        
-V5          -0.7653592
-V6           0.4722462
-V7           .        
-V8           0.2730791
-V9           .        
-V10          .        
-V11          0.0753461
-V12          .        
-V13          .        
-V14         -1.0238284
-V15          .        
-V16          .        
-V17          .        
-V18          .        
-V19          .        
-V20         -0.9430068</code></pre>
+                     s1
+(Intercept)  0.15473991
+V1           1.29441444
+V2           .         
+V3           0.62890756
+V4           .         
+V5          -0.77785401
+V6           0.48387954
+V7           .         
+V8           0.28419264
+V9           .         
+V10          .         
+V11          0.09130386
+V12          .         
+V13          .         
+V14         -1.03241106
+V15          .         
+V16          .         
+V17          .         
+V18          .         
+V19          .         
+V20         -0.96190123</code></pre>
 </div>
 </div>
 <div class="callout-note callout callout-style-default no-icon callout-captioned">
@@ -1191,28 +1191,28 @@ Note
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coef</span>(<span class="at">s =</span> <span class="st">"lambda.min"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
-                     s1
-(Intercept)  0.14214043
-V1           1.35008145
-V2           .         
-V3           0.71254916
-V4           .         
-V5          -0.84793937
-V6           0.56523023
-V7           0.04652535
-V8           0.35685700
-V9           .         
-V10          0.02211779
-V11          0.19502765
-V12          .         
-V13          .         
-V14         -1.09983026
-V15         -0.01380723
-V16          .         
-V17          .         
-V18          .         
-V19          .         
-V20         -1.07198206</code></pre>
+                      s1
+(Intercept)  0.144972142
+V1           1.347294582
+V2           .          
+V3           0.710566556
+V4           .          
+V5          -0.843772317
+V6           0.560984722
+V7           0.040488094
+V8           0.353438701
+V9           .          
+V10          0.012575264
+V11          0.188217969
+V12          .          
+V13          .          
+V14         -1.093002349
+V15         -0.002483784
+V16          .          
+V17          .          
+V18          .          
+V19          .          
+V20         -1.062531091</code></pre>
 </div>
 </div>
 <p>Here is after scaling:</p>
@@ -1225,28 +1225,28 @@ V20         -1.07198206</code></pre>
 <span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coef</span>(<span class="at">s =</span> <span class="st">"lambda.min"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
-                      s1
-(Intercept)  0.490904543
-V1           .          
-V2           .          
-V3           0.598387687
-V4          -0.007149295
-V5          -0.784860502
-V6           0.735536678
-V7           0.047407166
-V8           0.093717145
-V9           .          
-V10          .          
-V11          0.481905661
-V12          .          
-V13          .          
-V14         -1.027583967
-V15          .          
-V16          .          
-V17          .          
-V18          0.109041875
-V19          .          
-V20         -1.302806861</code></pre>
+                     s1
+(Intercept)  0.48468325
+V1           .         
+V2           .         
+V3           0.58495226
+V4           .         
+V5          -0.77303610
+V6           0.72015880
+V7           0.03426215
+V8           0.08734948
+V9           .         
+V10          .         
+V11          0.46374479
+V12          .         
+V13          .         
+V14         -1.02293498
+V15          .         
+V16          .         
+V17          .         
+V18          0.09113589
+V19          .         
+V20         -1.28272851</code></pre>
 </div>
 </div>
 <p>As you can see, the coefficient on the first variable is 0 after scaling. Setting <code>standardize = TRUE</code> (or not doing anything with this option) gives you very similar results whether the data is scaled or not.</p>
@@ -1257,27 +1257,27 @@ V20         -1.302806861</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
                      s1
-(Intercept)  0.14936467
-V1           1.32975267
+(Intercept)  0.14867414
+V1           1.33377821
 V2           .         
-V3           0.69096092
+V3           0.69787701
 V4           .         
-V5          -0.83122558
-V6           0.53669611
-V7           0.02005438
-V8           0.33193760
+V5          -0.83726751
+V6           0.54334327
+V7           0.02668633
+V8           0.33741131
 V9           .         
 V10          .         
-V11          0.16239419
+V11          0.17105029
 V12          .         
 V13          .         
-V14         -1.07081121
+V14         -1.07552680
 V15          .         
 V16          .         
 V17          .         
 V18          .         
 V19          .         
-V20         -1.04340741</code></pre>
+V20         -1.05278699</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== scaled ===#</span></span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cv.glmnet</span>(X_scaled, y, <span class="at">nfolds =</span> <span class="dv">5</span>, <span class="at">standardize =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
@@ -1285,27 +1285,27 @@ V20         -1.04340741</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>21 x 1 sparse Matrix of class "dgCMatrix"
                        s1
-(Intercept)  1.479271e-01
-V1           1.337394e+03
-V2           .           
-V3           7.040865e-01
-V4           .           
-V5          -8.428531e-01
-V6           5.494035e-01
-V7           3.270391e-02
-V8           3.424305e-01
-V9           .           
-V10          1.206608e-03
-V11          1.789960e-01
-V12          .           
-V13          .           
-V14         -1.079993e+00
-V15          .           
-V16          .           
-V17          .           
-V18          .           
-V19          .           
-V20         -1.061382e+00</code></pre>
+(Intercept)    0.14867414
+V1          1333.77821030
+V2             .         
+V3             0.69787701
+V4             .         
+V5            -0.83726751
+V6             0.54334327
+V7             0.02668633
+V8             0.33741131
+V9             .         
+V10            .         
+V11            0.17105029
+V12            .         
+V13            .         
+V14           -1.07552680
+V15            .         
+V16            .         
+V17            .         
+V18            .         
+V19            .         
+V20           -1.05278699</code></pre>
 </div>
 </div>
 <p>While you do not have to worry about scaling issues as long as you are using <code>glmnet()</code>, this is something worth remembering.</p>
