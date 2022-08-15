@@ -1,14 +1,9 @@
 # Model Selection (Prediction) {#sec-model-selection}
 
-When you use a DML approach, the first stage estimations are prediction tasks. In this section, R and python codes (and the `reticulate` version of the python codes) to select a model for the first stage estimations are presented.
+When you use a DML approach, the first stage estimations are prediction tasks. In this section, R codes to select a model for the first stage estimations are presented. We first implement the task using `mlr3` (@sec-mlr3-model-selection) and then use the `reticulate` pacakge to emulate the task done in Python in @sec-python-model-selection from within R (@sec-reticulate-model-selection).
 
-
-
-
-## `reticulate` implementation in R
-
-::: {.column-margin}
-**Packages to load for replication**
+:::{.callout-note}
+## Packages to load for replication
 
 ```{r}
 #| include: false
@@ -28,115 +23,7 @@ library(tidyverse)
 ```
 :::
 
-Here is the R codes that does the same thing as above using the `reticulate` package without needing to interact with Python console directly.
-
-```{r}
-#| eval: false 
-
-#--------------------------
-# Import modules  
-#--------------------------
-library(reticulate)
-sk_ensemble <- import("sklearn.ensemble") 
-sk_lm <- import("sklearn.linear_model")
-sk_ms <- import("sklearn.model_selection")
-econml_sk_ms <- import("econml.sklearn_extensions.model_selection")
-econml_dml <- import("econml.dml")
-
-sk_data <- import("sklearn.datasets")
-make_regression <- sk_data$make_regression
-np <- import("numpy")
-
-#--------------------------
-# Generate synthetic data
-#--------------------------
-#=== set parameters for data generation ===#
-n_samples <- 2000L
-n_features <- 20L
-n_informative <- 15L
-noise <- 2L
-rng <- np$random$RandomState(8934L)
-
-#=== generate synthetic data ===#
-data <-
-  make_regression(
-    n_samples, 
-    n_features, 
-    n_informative = n_informative, 
-    noise = noise, 
-    random_state = rng
-  )
-
-#=== Create data matrices ===#
-XT <- data[[1]]
-T <- XT[, 1]
-X <- XT[, -1]
-Y  <- data[[2]]
-
-#--------------------------
-# Set up GridSearchCVList
-#--------------------------
-#=== list of estimators ===#
-est_list <- 
-  c(
-    sk_lm$Lasso(max_iter=1000L), 
-    sk_ensemble$GradientBoostingRegressor(),
-    sk_ensemble$RandomForestRegressor(min_samples_leaf = 5L)
-  ) 
-
-#=== list of parameter values ===#
-par_grid_list <- 
-  list(
-    list(alpha = c(0.001, 0.01, 0.1, 1, 10)),
-    list(
-      max_depth = as.integer(c(3, 5, 10)), 
-      n_estimators = as.integer(c(50, 100, 200))
-    ),
-    list(
-      max_depth = as.integer(c(3, 5, 10)), 
-      max_features = as.integer(c(3, 5, 10, 20))
-    )
-  )
-
-#=== CV specification ===#
-rk_cv <- 
-  sk_ms$RepeatedKFold(
-    n_splits = 4L, 
-    n_repeats = 2L, 
-    random_state = 123L
-  )
-
-#=== set up a GridSearchCVList ===#
-first_stage <-
-  econml_sk_ms$GridSearchCVList(
-    estimator_list = est_list,
-    param_grid_list = par_grid_list,
-    cv = rk_cv
-  )
-
-#--------------------------
-# Run CV
-#--------------------------
-#=== Y ===#
-model_y <- first_stage$fit(X, Y)$best_estimator_
-
-#=== T ===#
-model_t <- first_stage$fit(X, T)$best_estimator_
-
-#--------------------------
-# DML
-#--------------------------
-#=== set up a linear DML ===#
-est = econml_dml$LinearDML(
-    model_y = model_y, 
-    model_t = model_t
-)
-
-#=== train ===#
-est$fit(Y, T, X=X, W=X)
-```
-
-## R implementation using `mlr3`
+## R implementation using `mlr3` {#sec-mlr3-model-selection}
 
 You can use `benchmark_grid()` and `benchmark()` to imitate `GridSearchCVList()` from the Python `econml` package with a bit of extra coding. 
 
@@ -154,7 +41,7 @@ reg_task <-
   )
 ```
 
-We can create a list of learners that vary in the value of hyper-parameters we would like to tune. Suppose you are interested in using random forest and extreme gradient boosting. We can create such a list for each of them and then combine. Let's do that for random forest first. It is much like what we did for `GridSearchCVList()` above.
+We can create a list of learners that vary in the value of hyper-parameters we would like to tune. Suppose you are interested in using random forest and extreme gradient boosting. We can create such a list for each of them and then combine. Let's do that for random forest first. It is much like what we did for `GridSearchCVList()` in @sec-python-model-selection.
 
 First create a sequence of values for parameters to be tuned. 
 
@@ -266,8 +153,117 @@ best_nr <- as.data.table(bmr_perf) %>%
 best_learner <- all_learners[[best_nr]] 
 ``` 
 
+## `reticulate` implementation in R {#sec-reticulate-model-selection}
 
 
+
+Here is the R codes that emulates what is done in @sec-python-model-selection using the `reticulate` package from within R.
+
+```{r}
+#| eval: false 
+
+#--------------------------
+# Import modules  
+#--------------------------
+library(reticulate)
+sk_ensemble <- import("sklearn.ensemble") 
+sk_lm <- import("sklearn.linear_model")
+sk_ms <- import("sklearn.model_selection")
+econml_sk_ms <- import("econml.sklearn_extensions.model_selection")
+econml_dml <- import("econml.dml")
+
+sk_data <- import("sklearn.datasets")
+make_regression <- sk_data$make_regression
+np <- import("numpy")
+
+#--------------------------
+# Generate synthetic data
+#--------------------------
+#=== set parameters for data generation ===#
+n_samples <- 2000L
+n_features <- 20L
+n_informative <- 15L
+noise <- 2L
+rng <- np$random$RandomState(8934L)
+
+#=== generate synthetic data ===#
+data <-
+  make_regression(
+    n_samples, 
+    n_features, 
+    n_informative = n_informative, 
+    noise = noise, 
+    random_state = rng
+  )
+
+#=== Create data matrices ===#
+XT <- data[[1]]
+T <- XT[, 1]
+X <- XT[, -1]
+Y  <- data[[2]]
+
+#--------------------------
+# Set up GridSearchCVList
+#--------------------------
+#=== list of estimators ===#
+est_list <- 
+  c(
+    sk_lm$Lasso(max_iter=1000L), 
+    sk_ensemble$GradientBoostingRegressor(),
+    sk_ensemble$RandomForestRegressor(min_samples_leaf = 5L)
+  ) 
+
+#=== list of parameter values ===#
+par_grid_list <- 
+  list(
+    list(alpha = c(0.001, 0.01, 0.1, 1, 10)),
+    list(
+      max_depth = as.integer(c(3, 5, 10)), 
+      n_estimators = as.integer(c(50, 100, 200))
+    ),
+    list(
+      max_depth = as.integer(c(3, 5, 10)), 
+      max_features = as.integer(c(3, 5, 10, 20))
+    )
+  )
+
+#=== CV specification ===#
+rk_cv <- 
+  sk_ms$RepeatedKFold(
+    n_splits = 4L, 
+    n_repeats = 2L, 
+    random_state = 123L
+  )
+
+#=== set up a GridSearchCVList ===#
+first_stage <-
+  econml_sk_ms$GridSearchCVList(
+    estimator_list = est_list,
+    param_grid_list = par_grid_list,
+    cv = rk_cv
+  )
+
+#--------------------------
+# Run CV
+#--------------------------
+#=== Y ===#
+model_y <- first_stage$fit(X, Y)$best_estimator_
+
+#=== T ===#
+model_t <- first_stage$fit(X, T)$best_estimator_
+
+#--------------------------
+# DML
+#--------------------------
+#=== set up a linear DML ===#
+est = econml_dml$LinearDML(
+    model_y = model_y, 
+    model_t = model_t
+)
+
+#=== train ===#
+est$fit(Y, T, X=X, W=X)
+```
 
 
 

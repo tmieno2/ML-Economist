@@ -397,6 +397,7 @@ div.csl-indent {
 </li>
     </ul>
   </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
     <div class="sidebar-item-container"> 
         <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">Appendices</a>
@@ -489,7 +490,7 @@ Packages to load for replication
 </div>
 </div>
 </div>
-<p>Model selection can be done via cross-validated MSE as the criteria when your goal is prediction. However, when your interest is in finding the best causal ML model, MSE is clearly not an appropriate measure. Instead, R-score can be used. Let <span class="math inline">\(\tilde{Y}_i\)</span> and <span class="math inline">\(\tilde{T}_i\)</span> denote <span class="math inline">\(Y_i - \hat{f}(X_i)\)</span> and <span class="math inline">\(T_i - \hat{g}(X_i)\)</span>, respectively, where <span class="math inline">\(\hat{f}(X_i)\)</span> and <span class="math inline">\(\hat{f}(X_i)\)</span> are the predicted values (preferably based on cross-fitting or out-of-bad predictions if forest-based estimation is used) of <span class="math inline">\(Y_i\)</span> and <span class="math inline">\(T_i\)</span> based on any appropriate machine learning methods in the first stage of DML. Further, let <span class="math inline">\(\hat{\theta}(X)\)</span> denote CATE estimates by a CATE estimator (e.g., causal forest, X-learner)</p>
+<p>Model selection can be done via cross-validated MSE of the outcome as the criteria when your goal is prediction. However, when your interest is in finding the best causal ML model, MSE of the outcome is clearly not an appropriate measure. Instead, <span class="citation" data-cites="nie_quasi-oracle_2021">Nie and Wager (<a href="#ref-nie_quasi-oracle_2021" role="doc-biblioref">2021</a>)</span> suggested the use of R-score. Let <span class="math inline">\(\tilde{Y}_i\)</span> and <span class="math inline">\(\tilde{T}_i\)</span> denote <span class="math inline">\(Y_i - \hat{f}(X_i)\)</span> and <span class="math inline">\(T_i - \hat{g}(X_i)\)</span>, respectively, where <span class="math inline">\(\hat{f}(X_i)\)</span> and <span class="math inline">\(\hat{f}(X_i)\)</span> are the predicted values (preferably based on cross-fitting or out-of-bad predictions if forest-based estimation is used) of <span class="math inline">\(Y_i\)</span> and <span class="math inline">\(T_i\)</span> based on any appropriate machine learning methods in the first stage of DML. Further, let <span class="math inline">\(\hat{\theta}(X)\)</span> denote CATE estimates by a CATE estimator (e.g., causal forest, X-learner)</p>
 <p>R-score is written as follows:</p>
 <p><span class="math display">\[
 \begin{aligned}
@@ -503,11 +504,11 @@ Packages to load for replication
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-caption-container flex-fill">
-CV R-score v.s. non-CV R-score
+CV R-score v.s. non-CV R-score for R-learners
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>It is important to use cross-validated R-score for causal model selection especially when evaluating R-learners because they are trained to minimize the score. Just like regular prediction tasks, the more over-fit the trained model is, the lower the R-score. Though nobody would do this, you could train a deep deep regression tree to perfectly fit the data, which would have R-score of zero.</p>
+<p>It is important to use cross-validated R-score for causal model selection especially when evaluating R-learners because they are trained to minimize the score. Just like regular prediction tasks, the more over-fit the trained model is, the lower the R-score. Though nobody would do this, you could train a deep deep regression tree to perfectly fit the data at the second stage estimation, which would have R-score of zero.</p>
 </div>
 </div>
 <div class="callout-important callout callout-style-default no-icon callout-captioned">
@@ -520,7 +521,7 @@ Important
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Causal model selection on R-score is conditional on the choice of modeling decisions made at the first stage of DML. That is, R-score measures how well the final stage estimation performed <span style="color:blue"> given the first stage estimation</span> (or the same <span class="math inline">\(\tilde{Y}\)</span> and <span class="math inline">\(\tilde{T}\)</span> data). When comparing R-score from different models, all of them should use the same <span class="math inline">\(\tilde{Y}\)</span> and <span class="math inline">\(\tilde{T}\)</span> data.</p>
+<p>Causal model selection on R-score is conditional on the choice of modeling decisions made at the first stage of DML. That is, R-score measures how well the final stage estimation performed <span style="color:blue"> given the first stage estimation</span> (or <span class="math inline">\(\tilde{Y}\)</span> and <span class="math inline">\(\tilde{T}\)</span> data). When comparing R-score from different models, all of them should use the same <span class="math inline">\(\tilde{Y}\)</span> and <span class="math inline">\(\tilde{T}\)</span> data.</p>
 </div>
 </div>
 <p>Depending on whether you are selecting a model within the same model class (hyper-parameter tuning) or selecting a model among different classes of models (hyper-parameter tuning and model selection), procedures you follow are different.</p>
@@ -1270,7 +1271,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb41-44"><a href="#cb41-44" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb41-45"><a href="#cb41-45" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb41-46"><a href="#cb41-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-47"><a href="#cb41-47" aria-hidden="true" tabindex="-1"></a>Model selection can be done via cross-validated MSE as the criteria when your goal is prediction. However, when your interest is in finding the best causal ML model, MSE is clearly not an appropriate measure. Instead, R-score can be used. Let $\tilde{Y}_i$ and $\tilde{T}_i$ denote $Y_i - \hat{f}(X_i)$ and $T_i - \hat{g}(X_i)$, respectively, where $\hat{f}(X_i)$ and $\hat{f}(X_i)$ are the predicted values (preferably based on cross-fitting or out-of-bad predictions if forest-based estimation is used) of $Y_i$ and $T_i$ based on any appropriate machine learning methods in the first stage of DML. Further, let $\hat{\theta}(X)$ denote CATE estimates by a CATE estimator (e.g., causal forest, X-learner)</span>
+<span id="cb41-47"><a href="#cb41-47" aria-hidden="true" tabindex="-1"></a>Model selection can be done via cross-validated MSE of the outcome as the criteria when your goal is prediction. However, when your interest is in finding the best causal ML model, MSE of the outcome is clearly not an appropriate measure. Instead, @nie_quasi-oracle_2021 suggested the use of R-score. Let $\tilde{Y}_i$ and $\tilde{T}_i$ denote $Y_i - \hat{f}(X_i)$ and $T_i - \hat{g}(X_i)$, respectively, where $\hat{f}(X_i)$ and $\hat{f}(X_i)$ are the predicted values (preferably based on cross-fitting or out-of-bad predictions if forest-based estimation is used) of $Y_i$ and $T_i$ based on any appropriate machine learning methods in the first stage of DML. Further, let $\hat{\theta}(X)$ denote CATE estimates by a CATE estimator (e.g., causal forest, X-learner)</span>
 <span id="cb41-48"><a href="#cb41-48" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb41-49"><a href="#cb41-49" aria-hidden="true" tabindex="-1"></a>R-score is written as follows:</span>
 <span id="cb41-50"><a href="#cb41-50" aria-hidden="true" tabindex="-1"></a></span>
@@ -1284,12 +1285,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb41-58"><a href="#cb41-58" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb41-59"><a href="#cb41-59" aria-hidden="true" tabindex="-1"></a>:::{.callout-important}</span>
 <span id="cb41-60"><a href="#cb41-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-61"><a href="#cb41-61" aria-hidden="true" tabindex="-1"></a><span class="fu">## CV R-score v.s. non-CV R-score</span></span>
-<span id="cb41-62"><a href="#cb41-62" aria-hidden="true" tabindex="-1"></a>It is important to use cross-validated R-score for causal model selection especially when evaluating R-learners because they are trained to minimize the score. Just like regular prediction tasks, the more over-fit the trained model is, the lower the R-score. Though nobody would do this, you could train a deep deep regression tree to perfectly fit the data, which would have R-score of zero. </span>
+<span id="cb41-61"><a href="#cb41-61" aria-hidden="true" tabindex="-1"></a><span class="fu">## CV R-score v.s. non-CV R-score for R-learners</span></span>
+<span id="cb41-62"><a href="#cb41-62" aria-hidden="true" tabindex="-1"></a>It is important to use cross-validated R-score for causal model selection especially when evaluating R-learners because they are trained to minimize the score. Just like regular prediction tasks, the more over-fit the trained model is, the lower the R-score. Though nobody would do this, you could train a deep deep regression tree to perfectly fit the data at the second stage estimation, which would have R-score of zero. </span>
 <span id="cb41-63"><a href="#cb41-63" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb41-64"><a href="#cb41-64" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb41-65"><a href="#cb41-65" aria-hidden="true" tabindex="-1"></a>:::{.callout-important}</span>
-<span id="cb41-66"><a href="#cb41-66" aria-hidden="true" tabindex="-1"></a>Causal model selection on R-score is conditional on the choice of modeling decisions made at the first stage of DML. That is, R-score measures how well the final stage estimation performed <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> given the first stage estimation<span class="kw">&lt;/span&gt;</span> (or the same $\tilde{Y}$ and $\tilde{T}$ data). When comparing R-score from different models, all of them should use the same $\tilde{Y}$ and $\tilde{T}$ data.</span>
+<span id="cb41-66"><a href="#cb41-66" aria-hidden="true" tabindex="-1"></a>Causal model selection on R-score is conditional on the choice of modeling decisions made at the first stage of DML. That is, R-score measures how well the final stage estimation performed <span class="kw">&lt;span</span> <span class="er">style</span><span class="ot">=</span><span class="st">"color:blue"</span><span class="kw">&gt;</span> given the first stage estimation<span class="kw">&lt;/span&gt;</span> (or $\tilde{Y}$ and $\tilde{T}$ data). When comparing R-score from different models, all of them should use the same $\tilde{Y}$ and $\tilde{T}$ data.</span>
 <span id="cb41-67"><a href="#cb41-67" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb41-68"><a href="#cb41-68" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb41-69"><a href="#cb41-69" aria-hidden="true" tabindex="-1"></a>Depending on whether you are selecting a model within the same model class (hyper-parameter tuning) or selecting a model among different classes of models (hyper-parameter tuning and model selection), procedures you follow are different.</span>

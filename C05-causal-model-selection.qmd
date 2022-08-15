@@ -40,7 +40,7 @@ library(glmnet)
 
 
 
-Model selection can be done via cross-validated MSE as the criteria when your goal is prediction. However, when your interest is in finding the best causal ML model, MSE is clearly not an appropriate measure. Instead, R-score can be used. Let $\tilde{Y}_i$ and $\tilde{T}_i$ denote $Y_i - \hat{f}(X_i)$ and $T_i - \hat{g}(X_i)$, respectively, where $\hat{f}(X_i)$ and $\hat{f}(X_i)$ are the predicted values (preferably based on cross-fitting or out-of-bad predictions if forest-based estimation is used) of $Y_i$ and $T_i$ based on any appropriate machine learning methods in the first stage of DML. Further, let $\hat{\theta}(X)$ denote CATE estimates by a CATE estimator (e.g., causal forest, X-learner)
+Model selection can be done via cross-validated MSE of the outcome as the criteria when your goal is prediction. However, when your interest is in finding the best causal ML model, MSE of the outcome is clearly not an appropriate measure. Instead, @nie_quasi-oracle_2021 suggested the use of R-score. Let $\tilde{Y}_i$ and $\tilde{T}_i$ denote $Y_i - \hat{f}(X_i)$ and $T_i - \hat{g}(X_i)$, respectively, where $\hat{f}(X_i)$ and $\hat{f}(X_i)$ are the predicted values (preferably based on cross-fitting or out-of-bad predictions if forest-based estimation is used) of $Y_i$ and $T_i$ based on any appropriate machine learning methods in the first stage of DML. Further, let $\hat{\theta}(X)$ denote CATE estimates by a CATE estimator (e.g., causal forest, X-learner)
 
 R-score is written as follows:
 
@@ -54,12 +54,12 @@ So, this is just the objective function of the second stage estimation of R-lear
 
 :::{.callout-important}
 
-## CV R-score v.s. non-CV R-score
-It is important to use cross-validated R-score for causal model selection especially when evaluating R-learners because they are trained to minimize the score. Just like regular prediction tasks, the more over-fit the trained model is, the lower the R-score. Though nobody would do this, you could train a deep deep regression tree to perfectly fit the data, which would have R-score of zero. 
+## CV R-score v.s. non-CV R-score for R-learners
+It is important to use cross-validated R-score for causal model selection especially when evaluating R-learners because they are trained to minimize the score. Just like regular prediction tasks, the more over-fit the trained model is, the lower the R-score. Though nobody would do this, you could train a deep deep regression tree to perfectly fit the data at the second stage estimation, which would have R-score of zero. 
 :::
 
 :::{.callout-important}
-Causal model selection on R-score is conditional on the choice of modeling decisions made at the first stage of DML. That is, R-score measures how well the final stage estimation performed <span style="color:blue"> given the first stage estimation</span> (or the same $\tilde{Y}$ and $\tilde{T}$ data). When comparing R-score from different models, all of them should use the same $\tilde{Y}$ and $\tilde{T}$ data.
+Causal model selection on R-score is conditional on the choice of modeling decisions made at the first stage of DML. That is, R-score measures how well the final stage estimation performed <span style="color:blue"> given the first stage estimation</span> (or $\tilde{Y}$ and $\tilde{T}$ data). When comparing R-score from different models, all of them should use the same $\tilde{Y}$ and $\tilde{T}$ data.
 :::
 
 Depending on whether you are selecting a model within the same model class (hyper-parameter tuning) or selecting a model among different classes of models (hyper-parameter tuning and model selection), procedures you follow are different.

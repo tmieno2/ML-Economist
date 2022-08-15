@@ -57,7 +57,7 @@ quarto::quarto_render(here::here("LectureNotes/C02-xstr-learner.qmd"))
 quarto::quarto_render(here::here("LectureNotes/C03-cf-orf.qmd"))
 
 # === model selection ===#
-quarto::quarto_render(here::here("LectureNotes/C05-model-selection.qmd"))
+quarto::quarto_render(here::here("LectureNotes/C05-causal-model-selection.qmd"))
 
 # === scikitlearn ===#
 quarto::quarto_render(here::here("LectureNotes/scikitlearn.qmd"))
