@@ -32,7 +32,11 @@
 library(tidyverse)
 library(data.table)
 library(ranger)
+library(parallel)
 library(grf)
+library(rpart)
+library(rattle)
+library(wooldridge)
 ```
 
 ```{r}
@@ -41,7 +45,11 @@ library(grf)
 library(tidyverse)
 library(data.table)
 library(ranger)
+library(parallel)
 library(grf)
+library(rpart)
+library(rattle)
+library(wooldridge)
 ```
 :::
 
@@ -361,34 +369,7 @@ The standard CART splitting algorithm is applied on the pseudo outcomes to build
 
 ## Honesty {#sec-grf-honest}
 
-GRF applies <span style="color:blue"> honesty </span>when it trains forests. Specifically, when building a tree, the bootstrapped sample is first split into two groups: subsamples for <span style="color:blue"> splitting</span> and <span style="color:blue">prediction</span>. Then, the a tree is trained on the subsample for splitting and then generate the splitting rules. However, when predicting (say $E[Y|X]$ at $X=x$), the value of $Y$ from the subsamples for splitting are not used. Rather, only the splitting rules are taken from the trained tree and then they are applied to the subsamples for prediction (@fig-honest illustrates this process). 
-
-::: {.column-margin}
-
-**Packages to load for replication**
-
-```{r}
-#| include: false
-
-library(tidyverse)
-library(data.table)
-library(grf)
-library(rpart)
-library(rattle)
-library(wooldridge)
-```
-
-```{r}
-#| eval: false
-
-library(tidyverse)
-library(data.table)
-library(grf)
-library(rpart)
-library(rattle)
-library(wooldridge)
-```
-:::
+GRF applies <span style="color:blue"> honesty </span>when it trains forests. Specifically, when building a tree, the subsample for the tree randomly selected without replacement is first split into two groups: subsample for <span style="color:blue"> splitting</span> and <span style="color:blue">prediction</span>. Then, the a tree is trained on the subsample for splitting and then find the splitting rules using the standard CART algorithm. However, when predicting (say $E[Y|X]$ at $X=x$), the value of $Y$ from the subsample for splitting are NOT used. Rather, only the splitting rules are taken from the trained tree and then they are applied to the subsample for prediction (@fig-honest illustrates this process). 
 
 ```{r}
 #| code-fold: true
@@ -402,9 +383,9 @@ DiagrammeR::grViz(
 digraph {
   graph [ranksep = 0.2, fontsize = 4]
   node [shape = box]
-    SS [label = 'Subsamples for splitting']
-    SP [label = 'Subsamples for predicting']
-    BD [label = 'Bootstrapped Data']
+    SS [label = 'Subsample for splitting']
+    SP [label = 'Subsample for predicting']
+    BD [label = 'Sample for the tree']
     TT [label = 'Trained tree']
     PV [label = 'Predicted value']
   edge [minlen = 2]
@@ -424,25 +405,29 @@ digraph {
 Let's demonstrate this using a very simple regression tree with two terminal nodes using the `mlb` data from the `wooldridge` package.
 
 ```{r}
-data(mlb1)
+data(mlb1, package = "wooldridge")
 mlb1_dt <- data.table(mlb1)
 ```
 
 We would like to train a RF using this data where the dependent variable is logged salary (`lsalary`). We will illustrate the honesty rule by working on building a single tree within the process of building a forest.
 
-We first bootstrap data.
+We first sample the data without replacement. Here, we draw half of the entire sample randomly without replacement following the default value of `0.5` for the `sample.fraction` parameter.
 
 ```{r}
 set.seed(358349)
+
 num_obs <- nrow(mlb1_dt)
-row_indices <- sample(seq_len(num_obs), num_obs, replace = TRUE)
+row_indices <- sample(seq_len(num_obs), num_obs / 2, replace = FALSE)
 boot_mlb1_dt <- mlb1_dt[row_indices, ]
 ```
 
-We now split the bootstrapped data into two groups: for splitting and prediction. 
+`boot_mlb1_dt` is the data that are involved in this tree. The rest of the samples in `mlb1_dt` will have nothing to do with this tree whatsoever.
+
+We now split the sampled data into two groups: for splitting and prediction. 
 
 ```{r}
-rows_split <- sample(seq_len(num_obs), num_obs / 2, replace = FALSE)
+num_obs_sub <- nrow(boot_mlb1_dt) 
+rows_split <- sample(seq_len(num_obs_sub), num_obs_sub / 2, replace = FALSE)
 
 #=== data for splitting ===#
 split_data <- boot_mlb1_dt[rows_split, ]
@@ -461,22 +446,22 @@ tree_trained <-
   rpart(
     lsalary ~ hits + runsyr, 
     data = split_data, 
-    control = rpart.control(minsplit = 120)
+    control = rpart.control(minsplit = 60)
   )
 
 fancyRpartPlot(tree_trained, digits = 4)
 ```
 
-So the splitting rule is `hits < 356` as shown in @fig-tree-sub. At the terminal nodes, you see the prediction of `lsalary`: $12.47$ for the left and $14.23$ for the right. These predictions are NOT honest. They are obtained from the observed values of `lsalary` within the node using the splitting data (the data the tree is trained for). Instead of using these prediction values, an honest prediction applied the splitting rules (`hits < 356`) to the data reserved for prediction.
+So the splitting rule is `hits < 338` as shown in @fig-tree-sub. At the terminal nodes, you see the prediction of `lsalary`: $12.41$ for the left and $14.36$ for the right. These predictions are NOT honest. They are obtained from the observed values of `lsalary` within the node using the splitting data (the data the tree is trained for). Instead of using these prediction values, an honest prediction applied the splitting rules (`hits < 338`) to the data reserved for prediction.
 
 ```{r}
 (
-honest_pred <- eval_data[, mean(lsalary), by = hits < 356]
+honest_pred <- eval_data[, mean(lsalary), by = hits < 338]
 )
 ```
 
 
-So, instead of $12.47$ and $14.23$, the predicted values from the honest tree are $`r round(honest_pred[hits == TRUE, V1], digits = 2)`$ and $`r round(honest_pred[hits == FALSE, V1], digits = 2)`$ for the left and right nodes, respectively. Trees are built in this manner many times to form a forest.
+So, instead of $12.41$ and $14.36$, the predicted values from the honest tree are $`r round(honest_pred[hits == TRUE, V1], digits = 2)`$ and $`r round(honest_pred[hits == FALSE, V1], digits = 2)`$ for the left and right nodes, respectively. Trees are built in this manner many times to form a forest.
 
 More generally, in GRF, honesty is applied by using the evaluation data to solve @eq-opt based on the weight $\alpha_i(x)$ derived from the trained forest using the splitting data. Honesty is required for the GRF estimator to be consistent and asymptotically normal [@athey2019generalized]. However, the application of honesty can do more damage than help when the sample size is small.
 
@@ -1105,9 +1090,273 @@ mean(abs(as.matrix(weights) - data_with_wights$weight))
 
 Great, virtually the same.
 
-## Clustering 
+## Clustering
 
-## Hyper-parmeter tuning
+In this section, we will conduct MC simulations to see how cluserting affects CF estimation of CATE ($\theta(X)$) and the standard error of $\hat{\theta}(X)$. We use the folloinwg data generating process:
+
+:::{.callout-note}
+
+## DGP 1
+
+$$
+\begin{aligned}
+Y_i & = (3 x_{i,1} + 0.5(x_{i,2} x_{i,3}))\cdot T_i + x_{i,3} + 2 x_{i,3} x_{i,4} + \mu_i \\
+T_i|X_i & = Bernouli((1+x_{i,1})/2) \\
+\mu_i|X_i & = N(0,1)
+\end{aligned}
+$$
+
++ $x_1 \sim U[0,1]$
++ $x_2\sim U[0,2]$
++ $x_3\sim U[0,5]$
++ $x_4\dots, x_10\sim N(0,1)^7$
++ $\mu\sim N(0, 9)$
+
+:::
+
+```{r}
+#| code-fold: true
+
+gen_cl_var <-  function(G, Ng){
+  var <-
+    MASS::mvrnorm(
+      G, mu = rep(0, Ng), 
+      Sigma = matrix(0.75, nrow = Ng, ncol = Ng) + 0.25 * diag(Ng)
+    ) %>% t() %>% c()
+
+  return(var)
+}
+
+gen_data <- function(N = 1000, G = 40, K = 10){
+
+  Ng <- N/G # number of observations per group
+
+  #=== error term ===#    
+  mu <- gen_cl_var(G, Ng) * 3
+
+  #=== X ===#
+  X <- 
+    lapply(
+      1:K,
+      function(x) gen_cl_var(G, Ng)
+    ) %>%
+    do.call("cbind", .) %>%
+    data.table() %>% 
+    setnames(names(.), paste0("x", seq_len(K)))
+
+  group <- rep(1:G, each = Ng)
+
+  data <-
+    cbind(X, mu, group) %>% 
+    #=== convert x1 and x3 to unif ===#
+    .[, `:=`(
+      x1 = pnorm(x1, sd = sqrt(2)),
+      x2 = pnorm(x2, sd = sqrt(2)) * 2,
+      x3 = pnorm(x3, sd = sqrt(2)) * 5
+    )] %>% 
+    .[, T := runif(N) < ((0.5+x1)/2)] %>% 
+    .[, theta_x := 3 * x1 + x2 * x3 / 2] %>%
+    .[, g_x := x3 + 2 * x1 * x4] %>%
+    .[, det_Y := theta_x * T + g_x] %>%
+    .[, Y := det_Y + mu] %>% 
+    .[, id := 1:.N]
+
+  return(data)
+}
+```
+
+Here is a dataset that is generated according to the DGP.
+
+::: {.column-margin}
+Unfold the Code chunk above to see how `gen_data()` is defined.
+:::
+
+```{r}
+set.seed(428943)
+data <- gen_data() 
+```
+
+@fig-viz-cluster-data presents the values of individual outcomes ($Y$), error ($\mu$), and outcomes less errors ($\theta(X)\cdot T + g(X)$) and their respective means by cluster (`group`). You can observe that data are clustered by `group`.
+
+```{r}
+#| code-fold: true
+#| fig-cap: Visualization of clustered data 
+#| label: fig-viz-cluster-data
+
+plot_data <-
+  data[, .(id, Y, det_Y, mu, group)] %>% 
+  melt(id.var = c("id", "group")) %>% 
+  .[, type := fcase(
+    variable == "Y", "Y",
+    variable == "det_Y", "Y - Error",
+    variable == "mu", "Error"
+  )] %>% 
+  .[, type := factor(type, levels = c("Y", "Error", "Y - Error"))]
+
+ggplot(data = plot_data) +
+  geom_point(aes(y = value, x = factor(group)), size = 0.3) +
+  geom_point(
+    data = plot_data[, .(value = mean(value)), by = .(group, type)],
+    aes(y = value, x = factor(group)),
+    color = "red"
+  ) +
+  xlab("group") +
+  facet_grid(type ~ .) +
+  theme(
+    axis.text.x = element_text(size = 6, angle = 90)
+  ) +
+  theme_bw() 
+
+```
+
+We now run MC simulations. We use the same test data for all the iterations so that we can find the standard error estimates averaged over iterations. The following function trains CFs with and without clustering by `group`, estimate $\theta(X)$ at the test data along with the estimate of the variance of $\hat{\theta}(X)$. 
+
+```{r}
+#=== use fixed test data ===#
+test_data <- gen_data() %>% 
+  .[, test_id := 1:.N]
+
+run_MC_sim <- function(i){
+
+  print(i)
+
+  train_data <- gen_data()
+
+  cf_trained_no_cluster <-
+    causal_forest(
+      X = select(train_data, starts_with("x")),
+      Y = train_data[, Y],
+      W = train_data[, T]
+    )
+
+  thta_hat_no_cl <- 
+    predict(
+      cf_trained_no_cluster, 
+      select(test_data, starts_with("x")),
+      estimate.variance = TRUE
+    )  %>% 
+    data.table() %>% 
+    .[, theta_true := test_data$theta_x] %>% 
+    .[, id := test_data$id] %>% 
+    .[, type := "No clustering"]
+
+  cf_trained_with_cluster <-
+    causal_forest(
+      X = select(train_data, starts_with("x")),
+      Y = train_data[, Y],
+      W = train_data[, T],
+      cluster = train_data[, group]
+    )
+
+  thta_hat_with_cl <- 
+    predict(
+      cf_trained_with_cluster, 
+      select(test_data, starts_with("x")),
+      estimate.variance = TRUE
+    ) %>% 
+    data.table() %>% 
+    .[, theta_true := test_data$theta_x] %>% 
+    .[, id := test_data$id] %>% 
+    .[, type := "With clustering"]
+
+  return_data <- 
+    rbind(thta_hat_no_cl, thta_hat_with_cl) %>% 
+    .[, sim := i]
+
+  return(return_data)
+}
+
+```
+
+Let's repeat the experiment 200 times.
+
+```{r}
+#| eval: false 
+set.seed(428943)
+
+mc_results <-
+  lapply(
+    seq_len(200),
+    run_MC_sim
+  )
+```
+
+```{r}
+#| eval: false
+#| echo:  false
+set.seed(428943)
+
+mc_results <-
+  mclapply(
+    seq_len(200),
+    run_MC_sim,
+    mc.cores = detectCores() / 4 * 3
+  ) %>% 
+  rbindlist()
+
+saveRDS(mc_results, here::here("LectureNotes/Data/mc_cf_cluster.rds"))
+```
+
+```{r}
+#| echo: false
+mc_results <- readRDS("Data/mc_cf_cluster.rds")
+```
+
+@fig-cate-group-mse shows the distribution of MSE of CATE estimation by CF with and without clustering by `group`. As you can see, clustering is making things worse in this instance.
+
+```{r}
+#| code-fold: true
+#| fig-cap: MSE of CATE estimation by CF with and without clustering by group
+#| label: fig-cate-group-mse
+
+mc_results %>% 
+  .[, .(mse = mean((theta_true - predictions)^2)), by = .(sim, type)] %>% 
+  ggplot(data = .) + 
+    geom_density(aes(x = mse, fill = type), alpha = 0.5) +
+    theme_bw()
+```
+
+@fig-sd-test shows the distribution of the ratio of the standard deviation of $\hat{\theta}(X)$ to the mean of the estimate of the standard deviation of $\hat{\theta}(X)$. Ratio less than 1 indicates that the estimate of the standard deviation of $\hat{\theta}(X)$ is under-estimating the true standard deviation of $\hat{\theta}(X)$.
+
+```{r}
+#| code-fold: true
+#| fig-cap: Ratio of the estimated standard error of CATE to the standard deviation of CATE
+#| label: fig-sd-test
+
+mc_results %>% 
+  .[, .(sd = sd(predictions), sd_est = mean(sqrt(variance.estimates))), by = .(id, type)] %>% 
+  .[, ratio := sd_est/sd] %>% 
+  ggplot(data = .) + 
+    geom_density(aes(x = ratio, fill = type), alpha = 0.5) +
+    theme_bw()
+```
+
+## Hyper-parameter tuning
+
+You can write your own codes to conduct cross-validation just like any other ML methods as we saw in @sec-cross-validation (cross-validation is a general approach that can be applied to any ML methods) to tune hyper-parameters. However, the `grf` package offers internal tuning options based on out-of-bag error (see @sec-rf-implementation for what out-of-bag prediction is).
+
+You can define which hyper-parameters to tune using `tune.parameters` option. For example, `tune.parameters = c("min.node.size", "mtry")` would tune `min.node.size` and `mtry`.
+
+The cross-validation procedure takes the following steps:
+
+:::{.callout-note}
+
+## Cross-validation steps
+
++ Draw `tune.num.reps` numbers of random points in the space of possible values of parameters specified by `tune.parameters`
++ For each of the `tune.num.reps` sets of parameter values, `tune.num.trees` of trees are built and out-of-bag errors are calculated
++ Regress the error estimates on parameter values using smoothing functions 
++ Redraw `tune.num.draws` numbers of random points in the space of possible values of parameters
++ Pick the set of parameter values that minimizes out-of-bag error. 
+
+:::
+
+
+
+
+
+
+
 
 ## References {.unnumbered}
 
