@@ -728,12 +728,12 @@ Warning
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>cf_trained<span class="sc">$</span>predictions <span class="sc">%&gt;%</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>          [,1]
-[1,]  687.1393
-[2,]  946.6872
-[3,]  187.3482
-[4,] 1569.0517
-[5,]  629.9950
-[6,] 1143.3927</code></pre>
+[1,]  527.3655
+[2,]  755.3315
+[3,] -375.9183
+[4,] 1749.1893
+[5,]  633.8102
+[6,] 1280.3834</code></pre>
 </div>
 </div>
 </section>
@@ -744,23 +744,23 @@ Warning
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">split_frequencies</span>(cf_trained)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     [,1] [,2] [,3] [,4] [,5] [,6]
-[1,]  237 1514  101   45   32   67
-[2,] 1395 1064  679   32  152  272
-[3,] 1936  524 1097   25  196  201
-[4,] 1379  324  766    5   97   82</code></pre>
+[1,]  277 1492   86   38   33   70
+[2,] 1397 1052  703   32  136  241
+[3,] 1912  476 1043   23  199  221
+[4,] 1381  280  771    3   95   91</code></pre>
 </div>
 </div>
-<p>In this table, rows represent the depth of the nodes and columns represent covariates. For example, the second variable (<code>educ</code>) was used to do the first split 1514 times and split a node at the second depth 1064 times. A variable with higher numbers of splits at earlier stages is more influential in driving treatment effect heterogeneity. <code>variable_importance()</code> returns a measure of how important each variable is in explaining treatment effect heterogeneity based on the split information.</p>
+<p>In this table, rows represent the depth of the nodes and columns represent covariates. For example, the second variable (<code>educ</code>) was used to do the first split 1492 times and split a node at the second depth 1052 times. A variable with higher numbers of splits at earlier stages is more influential in driving treatment effect heterogeneity. <code>variable_importance()</code> returns a measure of how important each variable is in explaining treatment effect heterogeneity based on the split information.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">variable_importance</span>(cf_trained)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>           [,1]
-[1,] 0.21236320
-[2,] 0.60044103
-[3,] 0.10291529
-[4,] 0.01797325
-[5,] 0.02413831
-[6,] 0.04216891</code></pre>
+[1,] 0.22802828
+[2,] 0.59122871
+[3,] 0.09886125
+[4,] 0.01546479
+[5,] 0.02392077
+[6,] 0.04249621</code></pre>
 </div>
 </div>
 <p>So, according to this measure, the second variable (<code>educ</code>) is the most important variable. While variable of importance measure is informative, it does not tell us <span style="color:blue">how </span> the variables are affecting treatment effects. For that, we need to look at <span class="math inline">\(\theta(X)\)</span> at different values of <span class="math inline">\(X\)</span>.</p>
@@ -785,7 +785,7 @@ Warning
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  predictions variance.estimates
-1   -7512.412            2194242</code></pre>
+1   -6726.852            4142013</code></pre>
 </div>
 </div>
 <p>Unlike linear-in-parameter model, there are no coefficients that can immediately tell us how influential each of <span class="math inline">\(X\)</span> is in driving the treatment effect heterogeneity. One way to see the impact of a variable is to change its value while the value of the rest of <span class="math inline">\(X\)</span> is fixed. For example, for the given observed value of <span class="math inline">\(X\)</span> except <code>educ</code>, you can vary the value of <code>educ</code> to see how <code>educ</code> affects the treatment effect. We can do this for all the observations and then can get a good picture of how the treatment effect varies across individuals at different values of <code>educ</code>.</p>
@@ -834,18 +834,18 @@ Warning
 <span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  .[, .(theta_hat, se)]</span>
 <span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>        theta_hat        se
-    1:   454.7407 1014.1734
-    2:   472.2442  977.1713
-    3:   506.3854 1007.0151
-    4:   544.9027 1068.8522
-    5:   540.4566 1432.5713
-   ---                     
-80246: -5807.1101 2050.0903
-80247: -5795.1478 2180.4811
-80248: -5771.9151 2130.5489
-80249: -5770.8895 2154.5895
-80250: -5770.5312 2152.1874</code></pre>
+<pre><code>        theta_hat       se
+    1:   419.6973 1476.082
+    2:   424.7473 1488.281
+    3:   471.9035 1419.829
+    4:   503.9728 1405.593
+    5:   446.5035 1471.795
+   ---                    
+80246: -5688.5824 1631.428
+80247: -5696.2044 1655.378
+80248: -5690.1868 1660.140
+80249: -5687.9668 1613.420
+80250: -5687.9668 1613.420</code></pre>
 </div>
 </div>
 <p><a href="#fig-ind-3">Figure&nbsp;<span>13.1</span></a> shows the impact of <code>age</code> on treatment effect for the first three individuals of <code>data_trt</code>. For example, if an individual that has the identical values for <span class="math inline">\(X\)</span> except <code>age</code> and also this person is 40 years old, then the treatment effect of the training program would be about $1,000. Standard errors are fairly large and treatment effects are not statistically significantly different from 0 at any value of <code>age</code> for all three individuals. The impact of <code>age</code> seems to be very similar for all the individuals. However, you can see shifts in <span class="math inline">\(\hat{\theta}\)</span> among them. Those shifts are due to the differences in other covariates.</p>

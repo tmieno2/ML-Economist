@@ -438,7 +438,7 @@ div.csl-indent {
   <li><a href="#bagging-bootstrap-averaging" id="toc-bagging-bootstrap-averaging" class="nav-link" data-scroll-target="#bagging-bootstrap-averaging"> <span class="header-section-number">6.2.1</span> Bagging (Bootstrap Averaging)</a></li>
   <li><a href="#random-forest-rf" id="toc-random-forest-rf" class="nav-link" data-scroll-target="#random-forest-rf"> <span class="header-section-number">6.2.2</span> Random Forest (RF)</a></li>
   </ul></li>
-  <li><a href="#implementation" id="toc-implementation" class="nav-link" data-scroll-target="#implementation"> <span class="header-section-number">6.3</span> Implementation</a></li>
+  <li><a href="#sec-rf-implementation" id="toc-sec-rf-implementation" class="nav-link" data-scroll-target="#sec-rf-implementation"> <span class="header-section-number">6.3</span> Implementation</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/tmieno2/ML-Economist/edit/master/P01-random-forest.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
@@ -1012,7 +1012,7 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 <span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(x_1, x_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -0.0272246</code></pre>
+<pre><code>[1] -0.06101003</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== second approach (positively correlated) ===#</span></span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>x_1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
@@ -1020,7 +1020,7 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 <span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(x_1, x_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.5203703</code></pre>
+<pre><code>[1] 0.5385431</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co">#=== third approach (negatively correlated) ===#</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>x_1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
@@ -1028,7 +1028,7 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 <span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(x_1, x_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -0.7989847</code></pre>
+<pre><code>[1] -0.7870174</code></pre>
 </div>
 </div>
 <p>The following function runs a single iteration of estimating <span class="math inline">\(E[x]\)</span> using the four approaches.</p>
@@ -1073,7 +1073,7 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_alpha</span>(<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   alpha_hat_0 alpha_hat_1 alpha_hat_2 alpha_hat_3
-1:  -0.9378108  -0.5568843   -0.288834  -0.1875634</code></pre>
+1:   -0.947945  -0.2254613  -0.6612343 -0.07682633</code></pre>
 </div>
 </div>
 <p>Repeating this many times,</p>
@@ -1280,8 +1280,8 @@ Var(\frac{x_1 + x_2}{2}) &amp; = \frac{Var(x_1)}{4} + \frac{Var(x_2)}{4} + \frac
 </div>
 </section>
 </section>
-<section id="implementation" class="level2 page-columns page-full" data-number="6.3">
-<h2 data-number="6.3" class="anchored" data-anchor-id="implementation"><span class="header-section-number">6.3</span> Implementation</h2>
+<section id="sec-rf-implementation" class="level2 page-columns page-full" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="sec-rf-implementation"><span class="header-section-number">6.3</span> Implementation</h2>
 <p>We can use <code>ranger()</code> from the <code>ranger</code> package to train an RF model. Another commonly used R package for RF is the <code>randomForest</code> package. However, <code>ranger()</code> is much faster.</p>
 <p>The <code>ranger()</code> function has many options you can specify that determine how trees are built. Here are some of the important ones (see <a href="https://cran.r-project.org/web/packages/ranger/ranger.pdf">here</a> for the complete description of the hyper-parameters.):</p>
 <ul>
@@ -2381,7 +2381,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb69-812"><a href="#cb69-812" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb69-813"><a href="#cb69-813" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb69-814"><a href="#cb69-814" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb69-815"><a href="#cb69-815" aria-hidden="true" tabindex="-1"></a><span class="fu">## Implementation</span></span>
+<span id="cb69-815"><a href="#cb69-815" aria-hidden="true" tabindex="-1"></a><span class="fu">## Implementation {#sec-rf-implementation}</span></span>
 <span id="cb69-816"><a href="#cb69-816" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb69-817"><a href="#cb69-817" aria-hidden="true" tabindex="-1"></a>We can use <span class="in">`ranger()`</span> from the <span class="in">`ranger`</span> package to train an RF model. Another commonly used R package for RF is the <span class="in">`randomForest`</span> package. However, <span class="in">`ranger()`</span> is much faster. </span>
 <span id="cb69-818"><a href="#cb69-818" aria-hidden="true" tabindex="-1"></a></span>

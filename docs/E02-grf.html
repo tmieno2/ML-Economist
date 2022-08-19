@@ -842,8 +842,8 @@ GRF: conceptual steps
 </details>
 <div id="fig-honest" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<div id="htmlwidget-aa577b99db7d07204c78" style="width:100%;height:325px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-aa577b99db7d07204c78">{"x":{"diagram":"\ndigraph {\n  graph [ranksep = 0.2, fontsize = 4]\n  node [shape = box]\n    SS [label = \"Subsample for splitting\"]\n    SP [label = \"Subsample for predicting\"]\n    BD [label = \"Sample for the tree\"]\n    TT [label = \"Trained tree\"]\n    PV [label = \"Predicted value\"]\n  edge [minlen = 2]\n    BD->SP\n    BD->SS\n    SS->TT\n    SP->PV\n    TT->SP [label=\"apply the splitting rules\"]\n  { rank = same; SS; SP}\n  { rank = same; TT}\n  { rank = same; PV}\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-4ba79d189d84acc867b8" style="width:100%;height:325px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-4ba79d189d84acc867b8">{"x":{"diagram":"\ndigraph {\n  graph [ranksep = 0.2, fontsize = 4]\n  node [shape = box]\n    SS [label = \"Subsample for splitting\"]\n    SP [label = \"Subsample for predicting\"]\n    BD [label = \"Sample for the tree\"]\n    TT [label = \"Trained tree\"]\n    PV [label = \"Predicted value\"]\n  edge [minlen = 2]\n    BD->SP\n    BD->SS\n    SS->TT\n    SP->PV\n    TT->SP [label=\"apply the splitting rules\"]\n  { rank = same; SS; SP}\n  { rank = same; TT}\n  { rank = same; PV}\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 <p></p><figcaption aria-hidden="true" class="figure-caption">Figure 17.1: Illustration of an honest tree</figcaption><p></p>
 </figure>
 </div>
@@ -1514,8 +1514,8 @@ g(X) &amp; = 10 \cdot [log(x_2+1) + 2\cdot x_3\times x_2]
 <div class="cell">
 <div id="fig-cf-tree" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<div id="htmlwidget-42e90f7333de15c46b02" style="width:100%;height:371px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-42e90f7333de15c46b02">{"x":{"diagram":"digraph nodes { \n node [shape=box] ;\n0 [label=\" x1 <= 1.44 \"] ;\n0 -> 1 [labeldistance=2.5, labelangle=45, headlabel=\"True\", arrowhead=normal];\n0 -> 2 [labeldistance=2.5, labelangle=-45, headlabel=\"False\", arrowhead=normal];\n1  [shape=box,style=filled,color=\".7 .3 1.0\" , label=\"size =  121 \n avg_Y = 38.6\navg_W = 0.55 \"];\n2  [shape=box,style=filled,color=\".7 .3 1.0\" , label=\"size =  129 \n avg_Y = 42.1\navg_W = 0.5 \"];\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-493f9da442108ae486f6" style="width:100%;height:371px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-493f9da442108ae486f6">{"x":{"diagram":"digraph nodes { \n node [shape=box] ;\n0 [label=\" x1 <= 1.44 \"] ;\n0 -> 1 [labeldistance=2.5, labelangle=45, headlabel=\"True\", arrowhead=normal];\n0 -> 2 [labeldistance=2.5, labelangle=-45, headlabel=\"False\", arrowhead=normal];\n1  [shape=box,style=filled,color=\".7 .3 1.0\" , label=\"size =  121 \n avg_Y = 38.6\navg_W = 0.55 \"];\n2  [shape=box,style=filled,color=\".7 .3 1.0\" , label=\"size =  129 \n avg_Y = 42.1\navg_W = 0.5 \"];\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 <p></p><figcaption aria-hidden="true" class="figure-caption">Figure 17.3: Example trees built in causal forest estimation</figcaption><p></p>
 </figure>
 </div>
@@ -2061,7 +2061,7 @@ T_i|X_i &amp; = Bernouli((1+x_{i,1})/2) \\
 </section>
 <section id="hyper-parameter-tuning" class="level2" data-number="17.7">
 <h2 data-number="17.7" class="anchored" data-anchor-id="hyper-parameter-tuning"><span class="header-section-number">17.7</span> Hyper-parameter tuning</h2>
-<p>You can write your own codes to conduct cross-validation just like any other ML methods as we saw in <a href="B03-cross-validation.html"><span>Chapter&nbsp;3</span></a> (cross-validation is a general approach that can be applied to any ML methods) to tune hyper-parameters. However, the <code>grf</code> package offers internal tuning options based on out-of-bag error (see <span class="quarto-unresolved-ref">?sec-rf-implementation</span> for what out-of-bag prediction is).</p>
+<p>You can write your own codes to conduct cross-validation just like any other ML methods as we saw in <a href="B03-cross-validation.html"><span>Chapter&nbsp;3</span></a> (cross-validation is a general approach that can be applied to any ML methods) to tune hyper-parameters. However, the <code>grf</code> package offers internal tuning options based on out-of-bag error (see <a href="P01-random-forest.html#sec-rf-implementation"><span>Section&nbsp;6.3</span></a> for what out-of-bag prediction is).</p>
 <p>You can define which hyper-parameters to tune using <code>tune.parameters</code> option. For example, <code>tune.parameters = c("min.node.size", "mtry")</code> would tune <code>min.node.size</code> and <code>mtry</code>.</p>
 <p>The cross-validation procedure takes the following steps:</p>
 <div class="callout-note callout callout-style-default no-icon callout-captioned">
@@ -3594,18 +3594,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb86-1460"><a href="#cb86-1460" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb86-1461"><a href="#cb86-1461" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb86-1462"><a href="#cb86-1462" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb86-1463"><a href="#cb86-1463" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-1463"><a href="#cb86-1463" aria-hidden="true" tabindex="-1"></a><span class="fu">## References {.unnumbered}</span></span>
 <span id="cb86-1464"><a href="#cb86-1464" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb86-1465"><a href="#cb86-1465" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-1465"><a href="#cb86-1465" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"refs"</span><span class="kw">&gt;&lt;/div&gt;</span></span>
 <span id="cb86-1466"><a href="#cb86-1466" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb86-1467"><a href="#cb86-1467" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb86-1468"><a href="#cb86-1468" aria-hidden="true" tabindex="-1"></a><span class="fu">## References {.unnumbered}</span></span>
+<span id="cb86-1468"><a href="#cb86-1468" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb86-1469"><a href="#cb86-1469" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb86-1470"><a href="#cb86-1470" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">id</span><span class="ot">=</span><span class="st">"refs"</span><span class="kw">&gt;&lt;/div&gt;</span></span>
-<span id="cb86-1471"><a href="#cb86-1471" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb86-1472"><a href="#cb86-1472" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb86-1473"><a href="#cb86-1473" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb86-1474"><a href="#cb86-1474" aria-hidden="true" tabindex="-1"></a></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
